@@ -102,3 +102,20 @@ dist
 
 # TernJS port file
 .tern-port
+
+node_modules/
+/npm-shrinkwrap.json
+*~
+*.db
+*.DS_Store
+/tmp/
+/testbuilds/
+/test.html
+/captchas.html
+/install.json
+/.tests_enabled
+/.events
+/.events2
+/dist/
+/builds/*.gz
+/test/
