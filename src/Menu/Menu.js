@@ -1,7 +1,7 @@
-import Callbacks from "../classes/Callbacks";
-import UI from "../General/UI";
-import { g, Conf } from "../globals/globals";
-import $ from "../platform/$";
+import Callbacks from '../classes/Callbacks'
+import UI from '../General/UI'
+import { g, Conf } from '../globals/globals'
+import $ from '../platform/$'
 
 /*
  * decaffeinate suggestions:
@@ -10,49 +10,52 @@ import $ from "../platform/$";
  */
 var Menu = {
   init() {
-    if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) { return; }
+    if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) {
+      return
+    }
 
     this.button = $.el('a', {
       className: 'menu-button',
-      href:      'javascript:;'
-    }
-    );
+      href: 'javascript:;',
+    })
 
-    $.extend(this.button, {innerHTML: "<i class=\"fa fa-angle-down\"></i>"});
+    $.extend(this.button, { innerHTML: '<i class="fa fa-angle-down"></i>' })
 
-    this.menu = new UI.Menu('post');
+    this.menu = new UI.Menu('post')
     Callbacks.Post.push({
       name: 'Menu',
-      cb:   this.node
-    });
+      cb: this.node,
+    })
 
     return Callbacks.CatalogThread.push({
       name: 'Menu',
-      cb:   this.catalogNode
-    });
+      cb: this.catalogNode,
+    })
   },
 
   node() {
     if (this.isClone) {
-      const button = $('.menu-button', this.nodes.info);
-      $.rmClass(button, 'active');
-      $.rm($('.dialog', this.nodes.info));
-      Menu.makeButton(this, button);
-      return;
+      const button = $('.menu-button', this.nodes.info)
+      $.rmClass(button, 'active')
+      $.rm($('.dialog', this.nodes.info))
+      Menu.makeButton(this, button)
+      return
     }
-    return $.add(this.nodes.info, Menu.makeButton(this));
+    return $.add(this.nodes.info, Menu.makeButton(this))
   },
 
   catalogNode() {
-    return $.after(this.nodes.icons, Menu.makeButton(this.thread.OP));
+    return $.after(this.nodes.icons, Menu.makeButton(this.thread.OP))
   },
 
   makeButton(post, button) {
-    if (!button) { button = Menu.button.cloneNode(true); }
-    $.on(button, 'click', function(e) {
-      return Menu.menu.toggle(e, this, post);
-    });
-    return button;
-  }
-};
-export default Menu;
+    if (!button) {
+      button = Menu.button.cloneNode(true)
+    }
+    $.on(button, 'click', function (e) {
+      return Menu.menu.toggle(e, this, post)
+    })
+    return button
+  },
+}
+export default Menu
