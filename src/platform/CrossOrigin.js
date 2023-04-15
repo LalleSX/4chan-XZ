@@ -258,7 +258,16 @@ var CrossOrigin = {
   },
 
   cache(url, cb) {
-    return $.cache(url, cb, { ajax: CrossOrigin.ajax })
+    if (platform === 'userscript') {
+      return CrossOrigin.file(url, cb)
+    }
+    return eventPageRequest({ type: 'cache', url }, function (result) {
+      if (result) {
+        return cb(result)
+      } else {
+        return cb(null)
+      }
+    })
   },
 
   permission(cb, cbFail, origins) {

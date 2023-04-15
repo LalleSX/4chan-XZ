@@ -17,6 +17,7 @@ import { debounce, dict, MINUTE, platform, SECOND } from './helpers'
 const $ = (selector, root = document.body) => root.querySelector(selector)
 
 $.id = (id) => d.getElementById(id)
+$.dict = dict
 
 $.ajaxPage = function (url, options) {
   if (options.responseType == null) {
@@ -1251,6 +1252,7 @@ if (platform === 'crx') {
         $.deleteValue(g.NAMESPACE + key)
       }
     }
+
 
     $.get = $.oneItemSugar((items, cb) => $.queueTask($.getSync, items, cb))
 

@@ -1,16 +1,15 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-let requestID = 0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  const id = requestID;
-  requestID++;
+  const id = request;
+  request++;
   sendResponse(id);
-  return handlers[request.type](request, response => chrome.tabs.sendMessage(sender.tab.id, {id, data: response}));});
+  const type = request.type;
+  if (handlers[type]) {
+    return handlers[type](request, response => chrome.tabs.sendMessage(sender.tab.id, {id, data: response}));
+  } else {
+    console.warn("Unknown request type", type);
+    return false;
+  }});
 
 var handlers = {
   permission(request, cb) {

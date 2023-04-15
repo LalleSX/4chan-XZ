@@ -73,7 +73,7 @@ var ExpandComment = {
 
   parse(req, a, post) {
     let postObj, spoilerRange
-    const { status } = req
+    const { status } = req.status
     if (![200, 304].includes(status)) {
       a.textContent = status
         ? `Error ${req.statusText} (${status})`

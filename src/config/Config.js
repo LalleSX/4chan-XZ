@@ -681,6 +681,7 @@ http://eye.swfchan.com/search/?q=%name;types:swf
 current-catalog-text:"Catalog"
 current-expired-text:"Expired"
 current-archive-text:"Archive"]
+[ g pol ]
 [external-text:"FAQ","${meta.name}"]\
 `,
 

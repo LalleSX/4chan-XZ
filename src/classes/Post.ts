@@ -213,7 +213,7 @@ export default class Post {
 
   parseComment() {
     // Merge text nodes and remove empty ones.
-    let bq
+    let bq: HTMLElement
     this.nodes.comment.normalize()
 
     // Get the comment's text.
@@ -221,7 +221,7 @@ export default class Post {
     // Remove:
     //   'Comment too long'...
     //   EXIF data. (/p/)
-    this.nodes.commentClean = bq = this.nodes.comment.cloneNode(true)
+    this.nodes.commentClean = bq = this.nodes.comment.cloneNode(true) as HTMLElement
     g.SITE.cleanComment?.(bq)
     return (this.info.comment = this.nodesToText(bq))
   }
@@ -249,8 +249,8 @@ export default class Post {
     return this.nodesToText(bq)
   }
 
-  nodesToText(bq) {
-    let node
+  nodesToText(bq: HTMLElement) {
+    let node: Node
     let text = ''
     const nodes = $.X('.//br|.//text()', bq)
     let i = 0
@@ -260,7 +260,7 @@ export default class Post {
     return text
   }
 
-  cleanSpoilers(bq) {
+  cleanSpoilers(bq: HTMLElement) {
     const spoilers = $$(g.SITE.selectors.spoiler, bq)
     for (var node of spoilers) {
       $.replace(node, $.tn('[spoiler]'))
@@ -274,7 +274,7 @@ export default class Post {
     }
   }
 
-  parseQuote(quotelink) {
+  parseQuote(quotelink: HTMLAnchorElement) {
     // Only add quotes that link to posts on an imageboard.
     // Don't add:
     //  - board links. (>>>/b/)
@@ -470,11 +470,11 @@ export class PostClone extends Post {
 
   static suffix = 0
 
-  constructor(origin, context, contractThumb) {
+  constructor(origin: Post, context: any, contractThumb: boolean) {
     super()
     this.isClone = true
 
-    let file, fileRoots, key
+    let file: any, fileRoots: HTMLAnchorElement , key: string
     this.origin = origin
     this.context = context
     for (key of [

@@ -318,54 +318,52 @@ var Embedding = {
         return $.toggleClass(this, 'embed-removed')
       }
     },
-
+    
     title(req, data) {
-      let text
-      const { key, uid, options, link, post } = data
-      const service = Embedding.types[key].title
-
-      let { status } = req
+      const { key, uid, options, link, post } = data;
+      const service = Embedding.types[key].title;
+    
+      let status = req.status;
       if ([200, 304].includes(status) && service.status) {
-        status = service.status(req.response)[0]
+        status = service.status(req.response)[0];
       }
-
+    
       if (!status) {
-        return
+        return;
       }
-
-      text = `[${key}] ${(() => {
+    
+      const getText = () => {
         switch (status) {
           case 200:
           case 304:
-            text = service.text(req.response, uid)
-            if (typeof text === 'string') {
-              return text
-            } else {
-              return (text = link.textContent)
-            }
+            const text = service.text(req.response, uid);
+            return typeof text === 'string' ? text : link.textContent;
           case 404:
-            return 'Not Found'
+            return 'Not Found';
           case 403:
           case 401:
-            return 'Forbidden or Private'
+            return 'Forbidden or Private';
           default:
-            return `${status}'d`
+            return `${status}'d`;
         }
-      })()}`
-
-      link.dataset.original = link.textContent
-      link.textContent = text
-      for (var post2 of post.clones) {
-        for (var link2 of $$('a.linkify', post2.nodes.comment)) {
+      };
+    
+      const text = `[${key}] ${getText()}`;
+    
+      link.dataset.original = link.textContent;
+      link.textContent = text;
+    
+      for (const post2 of post.clones) {
+        for (const link2 of $$('a.linkify', post2.nodes.comment)) {
           if (link2.href === link.href) {
             if (link2.dataset.original == null) {
-              link2.dataset.original = link2.textContent
+              link2.dataset.original = link2.textContent;
             }
-            link2.textContent = text
+            link2.textContent = text;
           }
         }
       }
-    },
+    }
   },
 
   ordered_types: [

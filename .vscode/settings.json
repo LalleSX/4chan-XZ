@@ -1,0 +1,8 @@
+{
+    "search.exclude": {
+        "*.jst": true,
+        "*.md": true,
+        "*.yaml": true,
+        "package*.json": true
+    }
+}

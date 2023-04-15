@@ -3,6 +3,7 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
+import $ from '../platform/$'
 class ShimSet {
   constructor() {
     this.elements = $.dict()
