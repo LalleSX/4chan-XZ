@@ -1,6 +1,7 @@
 import SimpleDict from './SimpleDict'
 import $ from '../platform/$'
 import { g } from '../globals/globals'
+import Post from './Post'
 
 /*
  * decaffeinate suggestions:
@@ -8,15 +9,35 @@ import { g } from '../globals/globals'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 export default class Thread {
+  board: string
+  ID: number
+  threadID: number
+  boardID: string
+  siteID: string
+  fullID: string
+  posts: SimpleDict<Post>
+  isDead: boolean
+  isHidden: boolean
+  isSticky: boolean
+  isClosed: boolean
+  isArchived: boolean
+  postLimit: boolean
+  fileLimit: boolean
+  lastPost: number
+  ipCount: undefined
+  json: null | any
+  OP: null | Post
+  catalogView: null | any
+  nodes: { root: null | HTMLElement }
   toString() {
     return this.ID
   }
 
-  constructor(ID, board) {
+  constructor(ID: string, board: string) {
     this.board = board
     this.ID = +ID
     this.threadID = this.ID
-    this.boardID = this.board.ID
+    this.boardID = g.BOARD.ID
     this.siteID = g.SITE.ID
     this.fullID = `${this.board}.${this.ID}`
     this.posts = new SimpleDict()
@@ -40,8 +61,8 @@ export default class Thread {
     g.threads.push(this.fullID, this)
   }
 
-  setPage(pageNum) {
-    let icon
+  setPage(pageNum: number): void {
+    let icon: HTMLElement | null
     const { info, reply } = this.OP.nodes
     if (!(icon = $('.page-num', info))) {
       icon = $.el('span', { className: 'page-num' })
@@ -54,7 +75,7 @@ export default class Thread {
     }
   }
 
-  setCount(type, count, reachedLimit) {
+  setCount(type: string, count: number, reachedLimit: boolean): void {
     if (!this.catalogView) {
       return
     }
@@ -63,7 +84,7 @@ export default class Thread {
     return (reachedLimit ? $.addClass : $.rmClass)(el, 'warning')
   }
 
-  setStatus(type, status) {
+  setStatus(type: string, status: boolean): void {
     const name = `is${type}`
     if (this[name] === status) {
       return
@@ -77,7 +98,7 @@ export default class Thread {
     return this.setIcon('Archived', this.isArchived)
   }
 
-  setIcon(type, status) {
+  setIcon(type: string, status: boolean): void {
     const typeLC = type.toLowerCase()
     let icon = $(`.${typeLC}Icon`, this.OP.nodes.info)
     if (!!icon === status) {
@@ -117,11 +138,11 @@ export default class Thread {
     )
   }
 
-  kill() {
+  kill(): boolean {
     return (this.isDead = true)
   }
 
-  collect() {
+  collect(): boolean {
     let n = 0
     this.posts.forEach(function (post) {
       if (post.clones.length) {
@@ -132,7 +153,7 @@ export default class Thread {
     })
     if (!n) {
       g.threads.rm(this.fullID)
-      return this.board.threads.rm(this)
+      return this.board.threads.rm(this.ID)
     }
   }
 }
