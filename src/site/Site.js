@@ -4,6 +4,11 @@ import $ from '../platform/$'
 import { dict } from '../platform/helpers'
 import SW from './SW'
 
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 var Site = {
   defaultProperties: {
     '4chan.org': { software: 'yotsuba' },
@@ -14,7 +19,7 @@ var Site = {
     'smug.nepu.moe': { canonical: 'smuglo.li' },
   },
 
-  init(cb: () => void): void {
+  init(cb) {
     $.extend(Conf['siteProperties'], Site.defaultProperties)
     let hostname = Site.resolve()
     if (hostname && $.hasOwn(SW, Conf['siteProperties'][hostname].software)) {
@@ -23,7 +28,7 @@ var Site = {
     }
     return $.onExists(doc, 'body', () => {
       for (var software in SW) {
-        var changes = null
+        var changes
         if ((changes = SW[software].detect?.())) {
           changes.software = software
           hostname = location.hostname.replace(/^www\./, '')
@@ -50,13 +55,13 @@ var Site = {
     })
   },
 
-  resolve(url = location.href): string {
-    let { hostname: hostname } = new URL(url)
+  resolve(url = location) {
+    let { hostname } = url
     while (hostname && !$.hasOwn(Conf['siteProperties'], hostname)) {
       hostname = hostname.replace(/^[^.]*\.?/, '')
     }
     if (hostname) {
-      let canonical: string
+      let canonical
       if ((canonical = Conf['siteProperties'][hostname].canonical)) {
         hostname = canonical
       }
@@ -64,13 +69,14 @@ var Site = {
     return hostname
   },
 
-  parseURL(url: any): any {
+  parseURL(url) {
     const siteID = Site.resolve(url)
     return Main.parseURL(g.sites[siteID], url)
   },
-  set(hostname: string) {
+
+  set(hostname) {
     for (var ID in Conf['siteProperties']) {
-      var site: HTMLElement
+      var site
       var properties = Conf['siteProperties'][ID]
       if (properties.canonical) {
         continue

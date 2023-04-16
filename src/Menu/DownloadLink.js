@@ -3,8 +3,13 @@ import ImageCommon from '../Images/ImageCommon'
 import $ from '../platform/$'
 import Menu from './Menu'
 
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 const DownloadLink = {
-  init(): void {
+  init() {
     if (
       !['index', 'thread'].includes(g.VIEW) ||
       !Conf['Menu'] ||
@@ -13,7 +18,7 @@ const DownloadLink = {
       return
     }
 
-    const a: HTMLAnchorElement = $.el('a', {
+    const a = $.el('a', {
       className: 'download-link',
       textContent: 'Download file',
     })
@@ -24,7 +29,7 @@ const DownloadLink = {
     return Menu.menu.addEntry({
       el: a,
       order: 100,
-      open({file}) {
+      open({ file }) {
         if (!file) {
           return false
         }
