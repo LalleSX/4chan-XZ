@@ -86,6 +86,7 @@ import Header from '../General/Header'
 import { c, Conf, d, doc, docSet, E, g } from '../globals/globals'
 import Menu from '../Menu/Menu'
 import BoardConfig from '../General/BoardConfig'
+import CaptchaReplace from '../Posting/Captcha.replace'
 import Get from '../General/Get'
 import { dict, platform } from '../platform/helpers'
 import Polyfill from '../General/Polyfill'
@@ -1074,6 +1075,7 @@ User agent: ${navigator.userAgent}\
     ['Board Configuration', BoardConfig],
     ['Normalize URL', NormalizeURL],
     ['Delay Redirect on Post', PostRedirect],
+    ['Captcha Configuration', CaptchaReplace],
     ['Image Host Rewriting', ImageHost],
     ['Redirect', Redirect],
     ['Header', Header],

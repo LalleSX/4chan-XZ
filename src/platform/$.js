@@ -54,20 +54,6 @@ $.ajaxPage = function (url, options) {
   r.send(form)
   return r
 }
-$.cache = function (key, value, time) {
-  if (value == null) {
-    value = null
-  }
-  if (time == null) {
-    time = MINUTE
-  }
-  if (value) {
-    return $.set(key, value, time)
-  } else {
-    return $.get(key)
-  }
-}
-
 $.ready = function (fc) {
   if (d.readyState !== 'loading') {
     $.queueTask(fc)

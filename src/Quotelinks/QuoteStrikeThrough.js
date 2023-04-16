@@ -3,8 +3,13 @@ import Get from '../General/Get'
 import { g, Conf } from '../globals/globals'
 import $ from '../platform/$'
 
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 const QuoteStrikeThrough = {
-  init(): void {
+  init() {
     if (
       !['index', 'thread'].includes(g.VIEW) ||
       (!Conf['Reply Hiding Buttons'] &&
@@ -20,7 +25,7 @@ const QuoteStrikeThrough = {
     })
   },
 
-  node(): void {
+  node() {
     if (this.isClone) {
       return
     }

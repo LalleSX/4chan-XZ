@@ -69,7 +69,14 @@ var QuotePreview = {
     $.add(Header.hover, qp)
     new Fetcher(boardID, threadID, postID, qp, Get.postFromNode(this))
 
-    UI.hover({root: this, el: qp, latestEvent: e, endEvents: 'mouseout click', cb: QuotePreview.mouseout, cbArgs: [this]})
+    UI.hover({
+      root: this,
+      el: qp,
+      latestEvent: e,
+      endEvents: 'mouseout click',
+      cb: QuotePreview.mouseout,
+    })
+
     if (
       Conf['Quote Highlighting'] &&
       (origin = g.posts.get(`${boardID}.${postID}`))

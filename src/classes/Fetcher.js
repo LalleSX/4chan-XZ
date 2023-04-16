@@ -11,6 +11,7 @@ import CrossOrigin from '../platform/CrossOrigin'
 import Get from '../General/Get'
 import { dict } from '../platform/helpers'
 
+
 export default class Fetcher {
   static initClass() {
     this.prototype.archiveTags = {
@@ -79,20 +80,53 @@ export default class Fetcher {
     this.root.textContent = `Loading post No.${this.postID}...`
     if (this.threadID) {
       const that = this
-      $.cache(
-        g.SITE.urls.threadJSON({
-          boardID: this.boardID,
-          threadID: this.threadID,
-        }),
-        function ({ isCached }) {
-          return that.fetchedPost(this, isCached)
+      Fetcher.fetchThread(
+        this.boardID,
+        this.threadID,
+        function (req, isCached) {
+          that.fetchedThread(req, isCached)
         },
+        true,
       )
     } else {
-      this.archivedPost()
+      const that = this
+      Fetcher.fetchPost(
+        this.boardID,
+        this.postID,
+        function (req, isCached) {
+          that.fetchedPost(req, isCached)
+        },
+        true,
+      )
     }
   }
-
+  
+  fetchedThread(req) {
+    const { status, response } = req
+    const { boardID, threadID } = this
+    const board = g.boards[boardID]
+    if (status === 404) {
+      this.root.textContent = `Thread No.${threadID} not found.`
+      return
+    }
+    if (status !== 200) {
+      this.root.textContent = `Error loading thread No.${threadID}.`
+      return
+    }
+    if (response === '') {
+      this.root.textContent = `Thread No.${threadID} is empty.`
+      return
+    }
+    const thread = new Thread(
+      g.SITE.Build.threadFromObject(response, boardID),board)
+    Main.callbackNodes('Thread', [thread])
+    const post = thread.posts.get(this.postID)
+    if (post) {
+      this.insert(post)
+    } else {
+      this.root.textContent = `Post No.${this.postID} not found.`
+    }
+  }
   insert(post) {
     // Stop here if the container has been removed while loading.
     if (!this.root.parentNode) {
@@ -146,76 +180,75 @@ export default class Fetcher {
   }
 
   fetchedPost(req, isCached) {
-    // In case of multiple callbacks for the same request,
-    // don't parse the same original post more than once.
-    let post
-    if ((post = g.posts.get(`${this.boardID}.${this.postID}`))) {
-      this.insert(post)
-      return
+    const { status, response } = req;
+    const { boardID, postID, threadID } = this;
+    const postKey = `${boardID}.${postID}`;
+  
+    const post = g.posts.get(postKey);
+    if (post) {
+      this.insert(post);
+      return;
     }
-
-    const { status } = req
+  
     if (status !== 200) {
-      // The thread can die by the time we check a quote.
-      if (status && this.archivedPost()) {
-        return
-      }
-
-      $.addClass(this.root, 'warning')
-      this.root.textContent =
-        status === 404
-          ? `Thread No.${this.threadID} 404'd.`
-          : !status
-          ? 'Connection Error'
-          : `Error ${req.statusText} (${req.status}).`
-      return
+      this.handleNon200Status(status);
+      return;
     }
-
-    const { posts } = req.response
-    g.SITE.Build.spoilerRange[this.boardID] = posts[0].custom_spoiler
-    for (post of posts) {
-      if (post.no === this.postID) {
-        break
-      }
-    } // we found it!
-
-    if (post.no !== this.postID) {
-      // Cached requests can be stale and must be rechecked.
-      if (isCached) {
-        const api = g.SITE.urls.threadJSON({
-          boardID: this.boardID,
-          threadID: this.threadID,
-        })
-        $.cleanCache((url) => url === api)
-        const that = this
-        $.cache(api, function () {
-          return that.fetchedPost(this, false)
-        })
-        return
-      }
-
-      // The post can be deleted by the time we check a quote.
-      if (this.archivedPost()) {
-        return
-      }
-
-      $.addClass(this.root, 'warning')
-      this.root.textContent = `Post No.${this.postID} was not found.`
-      return
+  
+    const { posts } = response;
+    g.SITE.Build.spoilerRange[boardID] = posts[0].custom_spoiler;
+  
+    const foundPost = posts.find((p) => p.no === postID);
+  
+    if (!foundPost) {
+      this.handlePostNotFound(isCached);
+      return;
     }
-
-    const board = g.boards[this.boardID] || new Board(this.boardID)
-    const thread =
-      g.threads.get(`${this.boardID}.${this.threadID}`) ||
-      new Thread(this.threadID, board)
-    post = new Post(
-      g.SITE.Build.postFromObject(post, this.boardID),
+  
+    const board = g.boards[boardID] || new Board(boardID);
+    const threadKey = `${boardID}.${threadID}`;
+    const thread = g.threads.get(threadKey) || new Thread(threadID, board);
+    const newPost = new Post(
+      g.SITE.Build.postFromObject(foundPost, boardID),
       thread,
       board,
       { isFetchedQuote: true },
-    )
-    Main.callbackNodes('Post', [post])
-    return this.insert(post)
+    );
+    Main.callbackNodes("Post", [newPost]);
+    return this.insert(newPost);
+  }
+  
+  handleNon200Status(status, req) {
+    $.addClass(this.root, "warning");
+    this.root.textContent =
+      status === 404
+        ? `Thread No.${this.threadID} 404'd.`
+        : !status
+        ? "Connection Error"
+        : `Error ${req.statusText} (${req.status}).`;
+  
+    if (status && this.archivedPost()) {
+      return;
+    }
+  }
+  
+  handlePostNotFound(isCached) {
+    if (isCached) {
+      const api = g.SITE.urls.threadJSON({
+        boardID: this.boardID,
+        threadID: this.threadID,
+      });
+      $.cleanCache((url) => url === api);
+      $.cache(api, () => this.fetchedPost(this, false));
+      return;
+    }
+  
+    if (this.archivedPost()) {
+      return;
+    }
+  
+    $.addClass(this.root, "warning");
+    this.root.textContent = `Post No.${this.postID} was not found.`;
   }
 
   archivedPost() {

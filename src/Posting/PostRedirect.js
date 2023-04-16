@@ -1,8 +1,13 @@
 import { d } from '../globals/globals'
 import $ from '../platform/$'
 
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 const PostRedirect = {
-  init(): void {
+  init() {
     return $.on(d, 'QRPostSuccessful', (e) => {
       if (!e.detail.redirect) {
         return
@@ -19,7 +24,7 @@ const PostRedirect = {
 
   delays: 0,
 
-  delay(): (() => void) | null {
+  delay() {
     if (!this.event) {
       return null
     }

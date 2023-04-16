@@ -10,22 +10,7 @@ import { dict, HOUR } from '../platform/helpers'
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-
-interface BoardConfig {
-  cbs: (() => void)[]
-  init(): void
-  load(): void
-  set(boards: { [key: string]: any }): void
-  ready(cb: () => void): void
-  sfwBoards(sfw: boolean): string[]
-  isSFW(board: string): boolean
-  domain(board: string): string
-  isArchived(board: string): boolean
-  noAudio(boardID: string): boolean
-  title(boardID: string): string
-}
-
-var BoardConfig: BoardConfig = {
+var BoardConfig = {
   cbs: [],
 
   init() {

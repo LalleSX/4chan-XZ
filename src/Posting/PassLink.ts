@@ -11,7 +11,7 @@ const PassLink = {
   },
 
   ready(): void {
-    let styleSelector: HTMLElement
+    let styleSelector
     if (!(styleSelector = $.id('styleSelector'))) {
       return
     }

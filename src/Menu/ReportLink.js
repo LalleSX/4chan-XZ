@@ -40,7 +40,7 @@ var ReportLink = {
     const { url, dims } = ReportLink
     const id = Date.now()
     const set = `toolbar=0,scrollbars=1,location=0,status=1,menubar=0,resizable=1,${dims}`
-    return window.open(url, id.toString(), set)
+    return window.open(url, id, set)
   },
 }
 export default ReportLink
