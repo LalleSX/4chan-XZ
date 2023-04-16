@@ -1,6 +1,5 @@
 import Redirect from "../Archive/Redirect";
 import PassMessage from "../Miscellaneous/PassMessage";
-import Report from "../Miscellaneous/Report";
 import $ from "../platform/$";
 import $$ from "../platform/$$";
 import Captcha from "../Posting/Captcha";
@@ -9,20 +8,12 @@ import ImageHost from "../Images/ImageHost";
 import { g, Conf, E, d, doc } from "../globals/globals";
 import BoardConfig from "../General/BoardConfig";
 import CSS from "../css/CSS";
-
 import generatePostInfoHtml from './SW.yotsuba.Build/PostInfoHtml';
 import generateFileHtml from "./SW.yotsuba.Build/FileHtml";
 import generateCatalogThreadHtml from "./SW.yotsuba.Build/CatalogThreadHtml";
 import h, { hFragment, isEscaped } from "../globals/jsx";
 import { dict, MINUTE } from "../platform/helpers";
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 const SWYotsuba = {
   isOPContainerThread: false,
   hasIPCount: true,

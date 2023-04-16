@@ -161,7 +161,9 @@ aero|asia|biz|cat|com|coop|dance|info|int|jobs|mobi|moe|museum|name|net|org|post
 |\
 [\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\
 |\
+(\
 [-\\w\\d.@]+@[a-z\\d.-]+\\.[a-z\\d]\
+)\
 )`,
     'i',
   ),

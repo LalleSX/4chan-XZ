@@ -2,11 +2,6 @@ import BoardConfig from '../General/BoardConfig'
 import { d, g } from '../globals/globals'
 import SimpleDict from './SimpleDict'
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 export default class Board {
   toString() {
     return this.ID
@@ -20,7 +15,7 @@ export default class Board {
     this.posts = new SimpleDict()
     this.config = BoardConfig.boards?.[this.ID] || {}
 
-    g.boards[this] = this
+    g.boards[this.ID] = this
   }
 
   cooldowns() {

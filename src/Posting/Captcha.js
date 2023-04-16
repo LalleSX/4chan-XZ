@@ -1,5 +1,4 @@
 import $ from '../platform/$'
-import CaptchaReplace from './Captcha.replace'
 import CaptchaT from './Captcha.t'
 import meta from '../../package.json'
 import Main from '../main/Main'
@@ -178,7 +177,6 @@ const Captcha = {
       return $.event('CaptchaCount', this.captchas.length)
     },
   },
-  Replace: CaptchaReplace,
   t: CaptchaT,
   v2: {
     lifetime: 2 * MINUTE,

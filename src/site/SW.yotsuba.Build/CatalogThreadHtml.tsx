@@ -2,14 +2,14 @@ import h, { hFragment, EscapedHtml } from '../../globals/jsx'
 
 export default function generateCatalogThreadHtml(
   thread,
-  src,
-  imgClass,
-  data,
-  postCount,
-  fileCount,
-  pageCount,
-  staticPath,
-  gifIcon,
+  src: string,
+  imgClass: string,
+  data: any,
+  postCount: number,
+  fileCount: number,
+  pageCount: number,
+  staticPath: string,
+  gifIcon: string,
 ): EscapedHtml {
   return (
     <>

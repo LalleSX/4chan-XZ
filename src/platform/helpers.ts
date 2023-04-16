@@ -25,7 +25,7 @@ export const debounce = (wait: number, fn: Function) => {
 
 export const dict = () => Object.create(null)
 
-dict.clone = function (obj) {
+dict.clone = function (obj: object) {
   if (typeof obj !== 'object' || obj === null) {
     return obj
   } else if (obj instanceof Array) {
