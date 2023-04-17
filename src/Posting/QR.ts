@@ -24,8 +24,83 @@ import { DAY, dict, SECOND } from '../platform/helpers'
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-
-var QR = {
+interface QR {
+  initReady(initReady: boolean): any;
+  postingIsEnabled: boolean;
+  nodes: any;
+  open(): unknown;
+  close(): unknown;
+  captcha: { init(): any; moreNeeded(): void; getThread(): { boardID: string; threadID: string }; setup(focus: any): any; destroy(): boolean; updateThread(): any; getOne(): {}; setUsed(): any; occupied(): boolean } | { lifetime: number; init(): void; timeouts: {}; prevNeeded: number; noscriptURL(): string; moreNeeded(): void; toggle(): any; setup(focus: any, force: any): any; setupNoscript(): any; setupJS(): any; afterSetup(mutations: any): void; setupIFrame(iframe: any): void; fixQRPosition(): string; setupTextArea(textarea: any): void; destroy(): boolean; getOne(isReply: any): any; save(pasted: any, token: any): any; count(): void; reload(): any; occupied(): boolean };
+  min_width: number;
+  min_height: number;
+  max_width: number;
+  max_height: number;
+  max_size: number;
+  max_size_video: number;
+  max_comment: number;
+  max_width_video: number;
+  max_height_video: number;
+  max_duration_video: number;
+  forcedAnon: boolean;
+  spoiler: boolean;
+  link: any;
+  getFile(d: Document, arg1: string, getFile: any): unknown;
+  drawFile(d: Document, arg1: string, drawFile: any): unknown;
+  setFile(d: Document, arg1: string, setFile: any): unknown;
+  paste(d: Document, arg1: string, paste: any): unknown;
+  dragOver(d: Document, arg1: string, dragOver: any): unknown;
+  dropFile(d: Document, arg1: string, dropFile: any): unknown;
+  drag(d: Document, arg1: string, drag: any): unknown;
+  generatePostableThreadsList(d: Document, arg1: string, generatePostableThreadsList: any): unknown;
+  statusCheck(d: Document, arg1: string, statusCheck: any): unknown;
+  hide(): unknown;
+  posts: any;
+  abort(): void;
+  status(): void;
+  quote(quote: any, arg1: string, quote1: any): unknown;
+  unhide(): unknown;
+  dialog(): unknown;
+  shortcut(shortcut: any, arg1: string): unknown;
+  req: any;
+  cleanNotifications(): unknown;
+  blur(): unknown;
+  post: any;
+  cooldown: any;
+  inBubble(): unknown;
+  hasFocus: any;
+  texPreviewHide(): unknown;
+  setCustomCooldown(enabled: any): unknown;
+  notifications: any;
+  selected: any;
+  openPost(): unknown;
+  openError(): unknown;
+  error(div: any): unknown;
+  handleFiles(arg0: any[]): unknown;
+  extensionFromType(extensionFromType: any, type: any): unknown;
+  handleUrl(src: any): unknown;
+  handleFile(file: any, length: any): unknown;
+  flagsInput(): unknown;
+  toggleHide(autohide: any, arg1: string, toggleHide: any): unknown;
+  submit(status: any, arg1: string, submit: any): unknown;
+  toggleSJIS(sjisToggle: any, arg1: string, toggleSJIS: any): unknown;
+  texPreviewShow(texButton: any, arg1: string, texPreviewShow: any): unknown;
+  oekaki: any;
+  openFileInput(fileButton: any, arg1: string, openFileInput: any): unknown;
+  toggleCustomCooldown(customCooldown: any, arg1: string, toggleCustomCooldown: any): unknown;
+  focus(arg0: string, focus: any, arg2: boolean): unknown;
+  pasteFF: MutationCallback;
+  persona: any;
+  flags(): unknown;
+  response: any;
+  currentCaptcha: any;
+  connectionError(): any;
+  errorCount: any;
+  waitForThread(URL: string, open: (() => Window | VMScriptGMTabControl) | (() => string)): unknown;
+  characterCount(): unknown;
+  validExtension(validExtension: any): any;
+  mimeTypes: any;
+}
+var QR: QR = {
   mimeTypes: [
     'image/jpeg',
     'image/png',
@@ -35,8 +110,9 @@ var QR = {
     'application/x-shockwave-flash',
     'video/webm',
   ],
-
-  validExtension: /\.(jpe?g|png|gif|pdf|swf|webm)$/i,
+  validExtension: function (ext: string) {
+    return this.mimeTypes.includes(this.typeFromExtension[ext])
+  },
 
   typeFromExtension: {
     jpg: 'image/jpeg',
@@ -48,14 +124,21 @@ var QR = {
     webm: 'video/webm',
   },
 
-  extensionFromType: {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/gif': 'gif',
-    'application/pdf': 'pdf',
-    'application/vnd.adobe.flash.movie': 'swf',
-    'application/x-shockwave-flash': 'swf',
-    'video/webm': 'webm',
+  extensionFromType: function (type: string) {
+    switch (type) {
+      case 'image/jpeg':
+        return 'jpg'
+      case 'image/png':
+        return 'png'
+      case 'image/gif':
+        return 'gif'
+      case 'application/pdf':
+        return 'pdf'
+      case 'application/vnd.adobe.flash.movie':
+        return 'swf'
+      case 'video/webm':
+        return 'webm'
+    }
   },
 
   init() {
@@ -66,7 +149,7 @@ var QR = {
 
     this.posts = []
 
-    $.on(d, '4chanXInitFinished', () => BoardConfig.ready(QR.initReady))
+    $.on(d, '4chanXInitFinished', () => BoardConfig.ready(QR.initReady)) 
 
     Callbacks.Post.push({
       name: 'Quick Reply',
@@ -200,7 +283,8 @@ var QR = {
   open() {
     if (QR.nodes) {
       if (QR.nodes.el.hidden) {
-        QR.captcha.setup()
+        QR.nodes.el.hidden = false
+        QR.unhide()
       }
       QR.nodes.el.hidden = false
       QR.unhide()
@@ -944,8 +1028,7 @@ var QR = {
       QR.abort()
       return
     }
-
-    $.forceSync('cooldowns')
+    $.forceSync()
     if (QR.cooldown.seconds) {
       if (force) {
         QR.cooldown.clear()
@@ -988,7 +1071,7 @@ var QR = {
     }
 
     if (
-      QR.captcha.isEnabled &&
+      QR.captcha &&
       !(QR.captcha === Captcha.v2 && /\b_ct=/.test(d.cookie) && threadID) &&
       !(err && !force)
     ) {
@@ -1000,9 +1083,7 @@ var QR = {
       }
       if (!captcha) {
         err = 'No valid captcha.'
-        QR.captcha.setup(
-          !QR.cooldown.auto || d.activeElement === QR.nodes.status,
-        )
+        QR.captcha.setup(!QR.cooldown.auto || d.activeElement === QR.nodes.status, true)
       }
     }
 
@@ -1942,6 +2023,22 @@ var QR = {
   },
 
   post: class {
+    nodes: { el: any; rm: any; spoiler: any; span: any }
+    spoiler: any
+    thread: string | number
+    name: any
+    email: any
+    sub: any
+    flag: any
+    isLocked: boolean
+    file: any
+    com: any
+    quotedText: string
+    errors: any[]
+    filename: any
+    filesize: string
+    pasting: boolean
+    draggable: any
     constructor(select) {
       this.select = this.select.bind(this)
       const el = $.el('a', {
@@ -2048,6 +2145,9 @@ var QR = {
       $.rm(this.nodes.el)
       URL.revokeObjectURL(this.URL)
       return this.dismissErrors()
+    }
+    URL(URL: any) {
+      throw new Error('Method not implemented.')
     }
 
     lock(lock = true) {
@@ -2375,14 +2475,10 @@ var QR = {
         this.nodes.el.dataset.height = height
         this.nodes.el.dataset.width = width
         if (height > QR.max_height || width > QR.max_width) {
-          this.fileError(
-            `Image too large (image: ${height}x${width}px, max: ${QR.max_height}x${QR.max_width}px)`,
-          )
+          this.fileError(`Image too large (image: ${height}x${width}px, max: ${QR.max_height}x${QR.max_width}px)`, meta.faq + '#image-too-large')
         }
         if (height < QR.min_height || width < QR.min_width) {
-          return this.fileError(
-            `Image too small (image: ${height}x${width}px, min: ${QR.min_height}x${QR.min_width}px)`,
-          )
+          return this.fileError(`Image too small (image: ${height}x${width}px, min: ${QR.min_height}x${QR.min_width}px)`, meta.faq + '#image-too-small')
         }
       } else {
         const { videoHeight, videoWidth, duration } = el
@@ -2392,24 +2488,18 @@ var QR = {
         const max_height = Math.min(QR.max_height, QR.max_height_video)
         const max_width = Math.min(QR.max_width, QR.max_width_video)
         if (videoHeight > max_height || videoWidth > max_width) {
-          this.fileError(
-            `Video too large (video: ${videoHeight}x${videoWidth}px, max: ${max_height}x${max_width}px)`,
-          )
+          this.fileError(`Video too large (video: ${videoHeight}x${videoWidth}px, max: ${max_height}x${max_width}px)`, meta.faq + '#video-too-large')
         }
         if (videoHeight < QR.min_height || videoWidth < QR.min_width) {
-          this.fileError(
-            `Video too small (video: ${videoHeight}x${videoWidth}px, min: ${QR.min_height}x${QR.min_width}px)`,
-          )
+          this.fileError(`Video too small (video: ${videoHeight}x${videoWidth}px, min: ${QR.min_height}x${QR.min_width}px)`, meta.faq + '#video-too-small')
         }
         if (!isFinite(duration)) {
-          this.fileError('Video lacks duration metadata (try remuxing)')
+          this.fileError ('Video has no duration', meta.faq + '#video-has-no-duration')
         } else if (duration > QR.max_duration_video) {
-          this.fileError(
-            `Video too long (video: ${duration}s, max: ${QR.max_duration_video}s)`,
-          )
+          this.fileError(`Video too long (video: ${duration}s, max: ${QR.max_duration_video}s)`, meta.faq + '#video-too-long')
         }
         if (BoardConfig.noAudio(g.BOARD.ID) && $.hasAudio(el)) {
-          return this.fileError('Audio not allowed')
+          return this.fileError('Audio not allowed', meta.faq + '#audio-not-allowed')
         }
       }
     }
@@ -2471,7 +2561,7 @@ var QR = {
       $.rmClass(this.nodes.el, 'has-file')
       this.showFileData()
       URL.revokeObjectURL(this.URL)
-      this.dismissErrors((error) => $.hasClass(error, 'file-error'))
+      this.dismissErrors()
       return this.preventAutoPost()
     }
 
@@ -2536,6 +2626,9 @@ var QR = {
       e.dataTransfer.setDragImage(this, e.clientX - left, e.clientY - top)
       return $.addClass(this, 'drag')
     }
+    getBoundingClientRect(): { left: any; top: any } {
+      throw new Error('Method not implemented.')
+    }
 
     dragEnd() {
       return $.rmClass(this, 'drag')
@@ -2569,6 +2662,9 @@ var QR = {
       QR.posts.splice(newIndex, 0, post)
       QR.status()
       return QR.captcha.updateThread?.()
+    }
+    parentNode(arg0: string, parentNode: any) {
+      throw new Error('Method not implemented.')
     }
   },
 }

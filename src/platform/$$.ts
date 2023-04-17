@@ -1,6 +1,4 @@
 import { d } from '../globals/globals';
 
-const $$ = (selector: string, root: HTMLElement | null = d.body): Element[] =>
-  Array.from(root?.querySelectorAll(selector) ?? []) as Element[];
-
+const $$ = (selector: string, root = d.body) => [...Array.from(root.querySelectorAll(selector))];
 export default $$;
