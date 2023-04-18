@@ -4,6 +4,7 @@
     "noImplicitAny": false,
     "removeComments": false,
     "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
     "target": "ES2020",
     "allowJs": true,
     "checkJs": true,
@@ -13,7 +14,8 @@
     "jsxFragmentFactory": "hFragment",
     "types": [
       "@violentmonkey/types",
-      "@types/chrome"
+      "@types/chrome",
+      "@types/jquery"
     ],
     "lib": [
       "DOM",
