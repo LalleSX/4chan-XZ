@@ -6,7 +6,7 @@
 import $ from '../platform/$'
 class ShimSet {
   constructor() {
-    this.elements = $.dict()
+    this.elements = $.cache()
     this.size = 0
   }
   has(value) {

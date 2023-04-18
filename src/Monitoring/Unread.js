@@ -145,7 +145,7 @@ var Unread = {
     Unread.readCount = 0
     Unread.thread.posts.forEach((post) => Unread.addPost.call(post))
 
-    $.forceSync('Remember Last Read Post')
+    $.forceSync()
     if (
       Conf['Remember Last Read Post'] &&
       (!Unread.thread.isDead || Unread.thread.isArchived)
@@ -306,7 +306,7 @@ var Unread = {
 
   saveLastReadPost: debounce(2 * SECOND, function () {
     let ID
-    $.forceSync('Remember Last Read Post')
+    $.forceSync()
     if (!Conf['Remember Last Read Post'] || !Unread.db) {
       return
     }
@@ -391,7 +391,7 @@ var Unread = {
   },
 
   saveThreadWatcherCount: debounce(2 * SECOND, function () {
-    $.forceSync('Remember Last Read Post')
+    $.forceSync()
     if (
       Conf['Remember Last Read Post'] &&
       (!Unread.thread.isDead || Unread.thread.isArchived)

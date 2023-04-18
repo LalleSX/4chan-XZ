@@ -51,10 +51,7 @@ var ExpandComment = {
     }
     a.textContent = `Post No.${post} Loading...`
     return $.cache(
-      g.SITE.urls.threadJSON({
-        boardID: post.boardID,
-        threadID: post.threadID,
-      }),
+      g.SITE.urls.threadJSON(post.thread.ID, post.thread.page),
       function () {
         return ExpandComment.parse(this, a, post)
       },
@@ -83,7 +80,7 @@ var ExpandComment = {
 
     const { posts } = req.response
     if ((spoilerRange = posts[0].custom_spoiler)) {
-      g.SITE.Build.spoilerRange[g.BOARD] = spoilerRange
+      g.SITE.Build.spoilerRange = spoilerRange
     }
 
     for (postObj of posts) {
@@ -102,13 +99,8 @@ var ExpandComment = {
     // Fix pathnames
     for (var quote of $$('.quotelink', clone)) {
       var href = quote.getAttribute('href')
-      if (href[0] === '/') {
-        continue
-      } // Cross-board quote, or board link
-      if (href[0] === '#') {
-        quote.href = `${a.pathname.split(/\/+/).splice(0, 4).join('/')}${href}`
-      } else {
-        quote.href = `${a.pathname.split(/\/+/).splice(0, 3).join('/')}/${href}`
+      if (href && !href.match(/^https?:/)) {
+        quote.setAttribute('href', g.SITE.urls.thread(post.thread.ID) + href)
       }
     }
     post.nodes.shortComment = comment

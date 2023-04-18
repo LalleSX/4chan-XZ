@@ -17,7 +17,7 @@ import { debounce, dict, MINUTE, platform, SECOND } from "./helpers";
 const $ = (selector, root = document.body) => root.querySelector(selector);
 
 $.id = id => d.getElementById(id);
-
+$.cache = dict();
 $.ready = function (fc) {
   if (d.readyState !== 'loading') {
     $.queueTask(fc);

@@ -287,7 +287,7 @@ var ThreadWatcher = {
       } else if (Conf['Auto Watch Reply']) {
         return ThreadWatcher.add(
           g.threads.get(boardID + '.' + threadID) ||
-            new Thread(threadID, g.boards[boardID] || new Board(boardID)),
+            new Thread(threadID + '', boardID),
           cb,
         )
       }
@@ -305,7 +305,9 @@ var ThreadWatcher = {
           !e.detail.threads.includes(`${boardID}.${threadID}`)
         ) {
           if (
-            !e.detail.threads.some((fullID) => +fullID.split('.')[1] > threadID)
+            !e.detail.threads.some((fullID) => {
+              return fullID.split('.')[1] === threadID
+            })
           ) {
             continue
           }

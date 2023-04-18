@@ -75,6 +75,7 @@ var QuotePreview = {
       latestEvent: e,
       endEvents: 'mouseout click',
       cb: QuotePreview.mouseout,
+      cbArgs: [this, qp],
     })
 
     if (

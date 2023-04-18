@@ -93,7 +93,7 @@ var Report = {
           return Report.archiveSubmit(urls, reason.value, (results) => {
             this.action =
               '#archiveresults=' + encodeURIComponent(JSON.stringify(results))
-            return this.submit()
+              return submit.click()
           })
         }
       })

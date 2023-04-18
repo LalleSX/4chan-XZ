@@ -90,7 +90,7 @@ var Banner = {
         Banner.original[this.className] = this.cloneNode(true)
       }
       this.contentEditable = true
-      for (var br of $$('br', this)) {
+      for (var br of $$('br', this.parentNode)) {
         $.replace(br, $.tn('\n'))
       }
       return this.focus()
@@ -104,7 +104,7 @@ var Banner = {
     },
 
     blur() {
-      for (var br of $$('br', this)) {
+      for (var br of $$('br', this.parentNode)) {
         $.replace(br, $.tn('\n'))
       }
       if ((this.textContent = this.textContent.replace(/\n*$/, ''))) {

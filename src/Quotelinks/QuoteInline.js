@@ -128,7 +128,7 @@ var QuoteInline = {
     // Will only unhide if there's no inlined backlinks of it anymore.
     if (isBacklink && Conf['Forward Hiding']) {
       $.addClass(post.nodes.root, 'forwarded')
-      post.forwarded++ || (post.forwarded = 1)
+      post.forwarded = (post.forwarded || 0) + 1
     }
 
     // Decrease the unread count if this post
@@ -152,7 +152,7 @@ var QuoteInline = {
     const qroot = $.x('ancestor::*[contains(@class,"postContainer")][1]', root)
     const { parentNode } = root
     $.rm(root)
-    $.event('PostsRemoved', null, parentNode)
+    $.event('remove', root)
 
     if (!$('.inline', qroot)) {
       $.rmClass(qroot, 'hasInline')

@@ -171,17 +171,13 @@ var UnreadIndex = {
     const thread = Get.threadFromNode(this)
     UnreadIndex.lastReadPost[thread.fullID] = thread.lastPost
     UnreadIndex.db.set({
-      boardID: thread.board.ID,
+      boardID: g.BOARD.ID,
       threadID: thread.ID,
       val: thread.lastPost,
     })
     $.rm(UnreadIndex.hr[thread.fullID])
     thread.nodes.root.classList.remove('unread-thread')
-    return ThreadWatcher.update(g.SITE.ID, thread.board.ID, thread.ID, {
-      last: thread.lastPost,
-      unread: 0,
-      quotingYou: 0,
-    })
+    return ThreadWatcher.update(thread)
   },
 }
 export default UnreadIndex

@@ -105,26 +105,25 @@ var ExpandThread = {
   },
 
   expand(thread, a) {
-    let status
-    ExpandThread.statuses[thread] = status = {}
-    a.textContent = g.SITE.Build.summaryText(
-      '...',
-      ...Array.from(a.textContent.match(/\d+/g)),
-    )
-    status.req = $.cache(
-      g.SITE.urls.threadJSON({ boardID: thread.board.ID, threadID: thread.ID }),
-      function () {
-        if (this !== status.req) {
-          return
-        } // aborted
-        delete status.req
-        return ExpandThread.parse(this, thread, a)
-      },
-    )
-    return (status.numReplies = $$(
-      g.SITE.selectors.replyOriginal,
-      thread.nodes.root,
-    ).length)
+    const status = (ExpandThread.statuses[thread.ID] = {
+      numReplies: 0,
+      req: null,
+    })
+    const req = new XMLHttpRequest()
+    status.req = req
+    req.open('GET', thread.url, true)
+    req.responseType = 'document'
+    req.onload = function () {
+      if (req.status === 200) {
+        return ExpandThread.expandCb(thread, a, req.response)
+      } else { // 404, 403, etc.
+        return ExpandThread.contract(thread, a, thread.nodes.root)
+      }
+    }
+    req.onerror = function () {
+      return ExpandThread.contract(thread, a, thread.nodes.root)
+    }
+    return req.send()
   },
 
   contract(thread, a, threadRoot) {
@@ -152,9 +151,8 @@ var ExpandThread = {
     for (var reply of replies) {
       // rm clones
       if (Conf['Quote Inlining']) {
-        var inlined
-        while ((inlined = $('.inlined', reply))) {
-          inlined.click()
+        for (var quote of $$('.quote', reply)) {
+          $.rm(quote)
         }
       }
       postsCount++

@@ -206,7 +206,7 @@ var ThreadUpdater = {
         case 404:
           // XXX workaround for 4chan sending false 404s
           return $.ajax(
-            g.SITE.urls.catalogJSON({ boardID: ThreadUpdater.thread.board.ID }),
+            g.SITE.urls.catalogJSON(ThreadUpdater.thread.board),
             {
               onloadend() {
                 let confirmed
@@ -345,10 +345,7 @@ var ThreadUpdater = {
       oldReq.abort()
     }
     return (ThreadUpdater.req = $.whenModified(
-      g.SITE.urls.threadJSON({
-        boardID: ThreadUpdater.thread.board.ID,
-        threadID: ThreadUpdater.thread.ID,
-      }),
+      g.SITE.urls.threadJSON(ThreadUpdater.thread.fullID),
       'ThreadUpdater',
       ThreadUpdater.cb.load,
       { timeout: MINUTE },
@@ -386,9 +383,8 @@ var ThreadUpdater = {
     // XXX Reject updates that falsely delete the last post.
     if (
       postObjects[postObjects.length - 1].no < lastPost &&
-      new Date(req.getResponseHeader('Last-Modified')) -
-        thread.posts.get(lastPost).info.date <
-        30 * SECOND
+      postObjects.length > 1 &&
+      !OP.archived
     ) {
       return
     }

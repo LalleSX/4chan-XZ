@@ -54,6 +54,7 @@ export default class Post {
     return el
   })()
   normalizedOriginal: any
+  static get: any
 
   toString() {
     return this.ID

@@ -1,8 +1,8 @@
-import Notice from '../classes/Notice.js'
-import { Conf } from '../globals/globals.js'
-import $ from '../platform/$.js'
-import CrossOrigin from '../platform/CrossOrigin.js'
-import { DAY, dict } from '../platform/helpers.js'
+import Notice from '../classes/Notice'
+import { Conf } from '../globals/globals'
+import $ from '../platform/$'
+import CrossOrigin from '../platform/CrossOrigin'
+import { DAY, dict } from '../platform/helpers'
 import archives from './archives.json'
 /*
  * decaffeinate suggestions:

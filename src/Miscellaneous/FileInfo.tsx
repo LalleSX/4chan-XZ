@@ -105,10 +105,7 @@ var FileInfo = {
     },
     n() {
       const fullname = this.file.name
-      const shortname = SW.yotsuba.Build.shortFilename(
-        this.file.name,
-        this.isReply,
-      )
+      const shortname = this.file.url.match(/[^/]*$/)[0]
       if (fullname === shortname) {
         return { innerHTML: E(fullname), [isEscaped]: true }
       } else {
