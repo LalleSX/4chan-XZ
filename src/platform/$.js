@@ -14,7 +14,7 @@ import CrossOrigin from "./CrossOrigin";
 import { debounce, dict, MINUTE, platform, SECOND } from "./helpers";
 
 // not chainable
-const $ = (selector: string, root: HTMLElement = doc) => root.querySelector(selector);
+const $ = (selector, root = document.body) => root.querySelector(selector);
 
 $.id = id => d.getElementById(id);
 
@@ -97,7 +97,7 @@ $.ajax = (function () {
         // https://bugs.chromium.org/p/chromium/issues/detail?id=920638
         $.on(r, 'load', () => {
           if (!Conf['Work around CORB Bug'] && r.readyState === 4 && r.status === 200 && r.statusText === '' && r.response === null) {
-            $.set('Work around CORB Bug', (Conf['Work around CORB Bug'] = Date.now()), cb => cb());
+            $.set('Work around CORB Bug', (Conf['Work around CORB Bug'] = Date.now()));
           }
         });
       }
@@ -106,7 +106,8 @@ $.ajax = (function () {
       // XXX Some content blockers in Firefox (e.g. Adblock Plus and NoScript) throw an exception instead of simulating a connection error.
       if (err.result !== 0x805e0006) { throw err; }
       r.onloadend = onloadend;
-      r.onerror();
+      $.queueTask($.event, 'error', null, r);
+      $.queueTask($.event, 'loadend', null, r);
     }
     return r;
   });
@@ -114,7 +115,8 @@ $.ajax = (function () {
   if (platform === 'userscript') {
     return r;
   } else {
-    let requestID: number
+    // # XXX https://bugs.chromium.org/p/chromium/issues/detail?id=920638
+    let requestID = 0;
     const requests = dict();
 
     $.ajaxPageInit = function () {
@@ -122,7 +124,7 @@ $.ajax = (function () {
         window.FCX.requests = Object.create(null);
 
         document.addEventListener('4chanXAjax', function (e) {
-          let fd: FormData, r: XMLHttpRequest;
+          let fd, r;
           const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail;
           window.FCX.requests[id] = (r = new XMLHttpRequest());
           r.open(type, url, true);
@@ -135,7 +137,7 @@ $.ajax = (function () {
           r.timeout = timeout;
           r.withCredentials = withCredentials;
           if (onprogress) {
-            r.upload.onprogress = function (e: ProgressEvent) {
+            r.upload.onprogress = function (e) {
               const { loaded, total } = e;
               const detail = { loaded, total, id };
               return document.dispatchEvent(new CustomEvent('4chanXAjaxProgress', { bubbles: true, detail }));
@@ -154,35 +156,58 @@ $.ajax = (function () {
           };
           if (form) {
             fd = new FormData();
-            for (var [key, value] of form.entries()) {
-              fd.append(key, value);
+            for (var entry of form) {
+              fd.append(entry[0], entry[1]);
             }
+          } else {
+            fd = null;
           }
           return r.send(fd);
-        });
-      }, 'ajaxPageInit');
+        }
+          , false);
+
+        return document.addEventListener('4chanXAjaxAbort', function (e) {
+          let r;
+          if (!(r = window.FCX.requests[e.detail.id])) { return; }
+          return r.abort();
+        }
+          , false);
+      });
+
+      $.on(d, '4chanXAjaxProgress', function (e) {
+        let req;
+        if (!(req = requests[e.detail.id])) { return; }
+        return req.upload.onprogress.call(req.upload, e.detail);
+      });
+
+      return $.on(d, '4chanXAjaxLoadend', function (e) {
+        let req;
+        if (!(req = requests[e.detail.id])) { return; }
+        delete requests[e.detail.id];
+        if (e.detail.status) {
+          for (var key of ['status', 'statusText', 'response', 'responseHeaderString']) {
+            req[key] = e.detail[key];
+          }
+          if (req.responseType === 'document') {
+            req.response = new DOMParser().parseFromString(e.detail.response, 'text/html');
+          }
+        }
+        return req.onloadend();
+      });
     };
 
-    $.on(d, '4chanXAjaxProgress', function (e: CustomEvent) {
+    return $.ajaxPage = function (url, options = {}) {
       let req;
-      if (!(req = requests[e.detail.id])) { return; }
-      return req.upload.onprogress.call(req.upload, e.detail);
-    });
-
-    return $.on(d, '4chanXAjaxLoadend', function (e: CustomEvent) {
-      let req: XMLHttpRequest;
-      if (!(req = requests[e.detail.id])) { return; }
-      delete requests[e.detail.id];
-      if (e.detail.status) {
-        for (var key of ['status', 'statusText', 'response', 'responseHeaderString']) {
-          req[key] = e.detail[key];
-        }
-        if (req.responseType === 'document') {
-          req.response = new DOMParser().parseFromString(e.detail.response, 'text/html');
-        }
-      }
-      return req.onloadend.call(req);
-    });
+      let { onloadend, timeout, responseType, withCredentials, type, onprogress, form, headers } = options;
+      const id = requestID++;
+      requests[id] = (req = new CrossOrigin.Request());
+      $.extend(req, { responseType, onloadend });
+      req.upload = { onprogress };
+      req.abort = () => $.event('4chanXAjaxAbort', { id });
+      if (form) { form = Array.from(form.entries()); }
+      $.event('4chanXAjax', { url, timeout, responseType, withCredentials, type, onprogress: !!onprogress, form, headers, id });
+      return req;
+    };
   }
 })();
 
@@ -464,17 +489,34 @@ $.debounce = function (wait, fn) {
   };
 };
 
-$.queueTask = function (fn: VoidFunction) {
-  if (typeof queueMicrotask === 'function') {
-    return queueMicrotask(fn);
-  } else {
-    return setTimeout(fn, 0);
+$.queueTask = (function () {
+  // inspired by https://www.w3.org/Bugs/Public/show_bug.cgi?id=15007
+  const taskQueue = [];
+  const execTask = function () {
+    const task = taskQueue.shift();
+    const func = task[0];
+    const args = Array.prototype.slice.call(task, 1);
+    return func.apply(func, args);
+  };
+  if (window.MessageChannel) {
+    const taskChannel = new MessageChannel();
+    taskChannel.port1.onmessage = execTask;
+    return function () {
+      taskQueue.push(arguments);
+      return taskChannel.port2.postMessage(null);
+    };
+  } else { // XXX Firefox
+    return function () {
+      taskQueue.push(arguments);
+      return setTimeout(execTask, 0);
+    };
   }
-};
+})();
 
 $.global = function (fn, data) {
   if (doc) {
-    const script = $.el('script', { type: 'application/json' }, { textContent: JSON.stringify(data) });
+    const script = $.el('script',
+      { textContent: `(${fn}).call(document.currentScript.dataset);` });
     if (data) { $.extend(script.dataset, data); }
     $.add((d.head || doc), script);
     $.rm(script);
@@ -488,7 +530,7 @@ $.global = function (fn, data) {
   }
 };
 
-$.bytesToString = function (size: number) {
+$.bytesToString = function (size) {
   let unit = 0; // Bytes
   while (size >= 1024) {
     size /= 1024;
@@ -506,9 +548,10 @@ $.bytesToString = function (size: number) {
   return `${size} ${['B', 'KB', 'MB', 'GB'][unit]}`;
 };
 
-$.minmax = (value: number, min: number, max: number) => value < min ?
+$.minmax = (value, min, max) => value < min ?
   min
-  : value > max ?
+  :
+  value > max ?
     max
     :
     value;
@@ -906,7 +949,7 @@ if (platform === 'crx') {
       }
     };
 
-    $.get = $.oneItemSugar((items, cb) => $.queueTask(() => $.getSync(items, cb)));
+    $.get = $.oneItemSugar((items, cb) => $.queueTask($.getSync, items, cb));
 
     $.getSync = function (items, cb) {
       for (var key in items) {
