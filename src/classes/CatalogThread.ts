@@ -1,6 +1,12 @@
 import $ from '../platform/$'
+import Board from './Board'
+import Thread from './Thread'
 
 export default class CatalogThread {
+  ID: string
+  thread: Thread
+  board: Board
+  nodes: { root: any; thumb: any; icons: any; postCount: any; fileCount: any; pageCount: any; replies: any }
   toString() {
     return this.ID
   }

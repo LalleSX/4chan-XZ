@@ -1,6 +1,8 @@
 import BoardConfig from '../General/BoardConfig'
 import { d, g } from '../globals/globals'
 import SimpleDict from './SimpleDict'
+import Thread from './Thread'
+import Post from './Post'
 
 /*
  * decaffeinate suggestions:
@@ -8,6 +10,12 @@ import SimpleDict from './SimpleDict'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 export default class Board {
+  ID: string
+  boardID: string
+  siteID: string
+  threads: SimpleDict<Thread>
+  posts: SimpleDict<Post>
+  config: string | { cooldowns: { threads: number; replies: number; images: number; }; }
   toString() {
     return this.ID
   }
@@ -20,12 +28,12 @@ export default class Board {
     this.posts = new SimpleDict()
     this.config = BoardConfig.boards?.[this.ID] || {}
 
-    g.boards[this] = this
+    g.boards[this.ID] = this
   }
 
   cooldowns() {
-    const c2 = (this.config || {}).cooldowns || {}
-    const c = {
+    const c2: { threads: number; replies: number; images: number; } = this.config.cooldowns || {}
+    const c: { thread: number; reply: number; image: number; thread_global: number; } = {
       thread: c2.threads || 0,
       reply: c2.replies || 0,
       image: c2.images || 0,

@@ -5,21 +5,23 @@
  */
 import $ from '../platform/$'
 class ShimSet {
+  elements: string
+  size: number
   constructor() {
     this.elements = $.cache()
     this.size = 0
   }
-  has(value) {
-    return value in this.elements
+  has(value: string) {
+    return !!this.elements[value]
   }
-  add(value) {
+  add(value: string) {
     if (this.elements[value]) {
       return
     }
     this.elements[value] = true
     return this.size++
   }
-  delete(value) {
+  delete(value: string) {
     if (!this.elements[value]) {
       return
     }
