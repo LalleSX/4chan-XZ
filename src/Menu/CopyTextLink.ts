@@ -2,12 +2,14 @@ import { g, Conf, d } from '../globals/globals'
 import $ from '../platform/$'
 import Menu from './Menu'
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-var CopyTextLink = {
+interface CopyTextLink {
+  text: string
+  init(): VoidFunction
+  copy(): VoidFunction
+}
+
+const CopyTextLink: CopyTextLink = {
+  text: '',
   init() {
     if (
       !['index', 'thread'].includes(g.VIEW) ||

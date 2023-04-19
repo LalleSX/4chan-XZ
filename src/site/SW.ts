@@ -1,5 +1,5 @@
 import SWTinyboard from './SW.tinyboard'
 import SWYotsuba from './SW.yotsuba'
 
-const SW = { tinyboard: SWTinyboard, yotsuba: SWYotsuba }
+const SW = { tinyboard: SWTinyboard, yotsuba: SWYotsuba } as const
 export default SW

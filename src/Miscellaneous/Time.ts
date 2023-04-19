@@ -8,7 +8,7 @@ import { g, Conf } from '../globals/globals'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 var Time = {
-  init() {
+  init(): VoidFunction {
     if (
       !['index', 'thread', 'archive'].includes(g.VIEW) ||
       !Conf['Time Formatting']
@@ -22,18 +22,15 @@ var Time = {
     })
   },
 
-  node() {
-    if (!this.info.date || this.isClone) {
-      return
+  node(): any {
+    if (!this.info.date || this.isClone) { 
+      return; 
     }
-    const { textContent } = this.nodes.date
-    return (this.nodes.date.textContent =
-      textContent.match(/^\s*/)[0] +
-      Time.format(Conf['time'], this.info.date) +
-      textContent.match(/\s*$/)[0])
+    const { textContent } = this.nodes.date;
+    return this.nodes.date.textContent = textContent.match(/^\s*/)[0] + Time.format(Conf['time'], this.info.date) + textContent.match(/\s*$/)[0];
   },
 
-  format(formatString, date) {
+  format(formatString: string, date: Date): string {
     return formatString.replace(/%(.)/g, function (s, c) {
       if ($.hasOwn(Time.formatters, c)) {
         return Time.formatters[c].call(date)
@@ -68,16 +65,16 @@ var Time = {
     'December',
   ],
 
-  localeFormat(date, options, defaultValue) {
+  localeFormat(date: Date, options: any, defaultValue: string): string {
     if (Conf['timeLocale']) {
       try {
         return Intl.DateTimeFormat(Conf['timeLocale'], options).format(date)
-      } catch (error) {}
+      } catch (error) { }
     }
     return defaultValue
   },
 
-  localeFormatPart(date, options, part, defaultValue) {
+  localeFormatPart(date: Date, options: any, part: string, defaultValue: string): string {
     if (Conf['timeLocale']) {
       try {
         const parts = Intl.DateTimeFormat(
@@ -93,12 +90,12 @@ var Time = {
             }
           })
           .join('')
-      } catch (error) {}
+      } catch (error) { }
     }
     return defaultValue
   },
 
-  zeroPad(n) {
+  zeroPad(n: number): number | string {
     if (n < 10) {
       return `0${n}`
     } else {
@@ -107,59 +104,59 @@ var Time = {
   },
 
   formatters: {
-    a() {
+    a(): string {
       return Time.localeFormat(
         this,
         { weekday: 'short' },
         Time.day[this.getDay()].slice(0, 3),
       )
     },
-    A() {
+    A(): string {
       return Time.localeFormat(
         this,
         { weekday: 'long' },
         Time.day[this.getDay()],
       )
     },
-    b() {
+    b(): string {
       return Time.localeFormat(
         this,
         { month: 'short' },
         Time.month[this.getMonth()].slice(0, 3),
       )
     },
-    B() {
+    B(): string {
       return Time.localeFormat(
         this,
         { month: 'long' },
         Time.month[this.getMonth()],
       )
     },
-    d() {
+    d(): string | number {
       return Time.zeroPad(this.getDate())
     },
-    e() {
+    e(): number {
       return this.getDate()
     },
-    H() {
+    H(): string | number {
       return Time.zeroPad(this.getHours())
     },
-    I() {
+    I(): string | number {
       return Time.zeroPad(this.getHours() % 12 || 12)
     },
-    k() {
+    k(): number {
       return this.getHours()
     },
-    l() {
+    l(): number {
       return this.getHours() % 12 || 12
     },
-    m() {
+    m(): string | number {
       return Time.zeroPad(this.getMonth() + 1)
     },
-    M() {
+    M(): string | number {
       return Time.zeroPad(this.getMinutes())
     },
-    p() {
+    p(): string {
       return Time.localeFormatPart(
         this,
         { hour: 'numeric', hour12: true },
@@ -167,19 +164,19 @@ var Time = {
         this.getHours() < 12 ? 'AM' : 'PM',
       )
     },
-    P() {
+    P(): string {
       return Time.formatters.p.call(this).toLowerCase()
     },
-    S() {
+    S(): string | number {
       return Time.zeroPad(this.getSeconds())
     },
-    y() {
+    y(): string {
       return this.getFullYear().toString().slice(2)
     },
-    Y() {
+    Y(): number {
       return this.getFullYear()
     },
-    '%'() {
+    '%'(): string {
       return '%'
     },
   },

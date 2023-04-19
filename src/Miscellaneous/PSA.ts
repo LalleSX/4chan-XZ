@@ -4,15 +4,15 @@ import Main from '../main/Main'
 import $ from '../platform/$'
 
 const PSA = {
-  init() {
-    let el
+  init(): void {
+    let el: HTMLElement
     if (g.SITE.software === 'yotsuba' && g.BOARD.ID === 'qa') {
       const announcement = {
         innerHTML:
           'Stay in touch with your <a href="https://www.4chan-x.net/qa_friends.html" target="_blank" rel="noopener">/qa/ friends</a>!',
       }
-      el = $.el('div', { className: 'fcx-announcement' }, announcement)
-      $.onExists(doc, '.boardBanner', (banner) => $.after(banner, el))
+      el = $.el('span', announcement) as HTMLElement
+      $.onExists(doc, '.boardBanner', (banner: HTMLElement) => $.after(banner, el))
     }
     if (
       'samachan.org' in Conf['siteProperties'] &&

@@ -874,8 +874,9 @@ var Embedding = {
     {
       key: 'YouTube',
       regExp:
-        /^\w+:\/\/(?:youtu.be\/|[\w.]*youtube[\w.]*\/.*(?:v=|\bembed\/|\bv\/))([\w\-]{11})(.*)/,
+        /^\w+:\/\/(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/)?(\w+)/,
       el(a) {
+        const isShort = a.href.includes('youtube.com/shorts/')
         let start = a.dataset.options.match(/\b(?:star)?t\=(\w+)/)
         if (start) {
           start = start[1]
@@ -888,11 +889,15 @@ var Embedding = {
             1 * start.match(/(\d+)s/)[1]
         }
         const el = $.el('iframe', {
-          src: `//www.youtube.com/embed/${a.dataset.uid}?rel=0&wmode=opaque${
-            start ? '&start=' + start : ''
-          }`,
+          src: `//www.youtube.com/embed/${a.dataset.uid}${isShort ? '?t=0s&enablejsapi=1&controls=0&loop=1&mute=1&playsinline=1' : `?rel=0&wmode=opaque${start ? '&start=' + start : ''}`}`,
         })
         el.setAttribute('allowfullscreen', 'true')
+        if (isShort) {
+          el.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share')
+          el.setAttribute('allowfullscreen', '')
+          el.setAttribute('loading', 'lazy')
+          el.setAttribute('class', 'youtube-short')
+        }
         return el
       },
       title: {
@@ -907,17 +912,18 @@ var Embedding = {
             const m = _.error.match(/^(\d*)\s*(.*)/)
             return [+m[1], m[2]]
           } else {
-            return [200, 'OK']
+            return [200, null]
           }
         },
       },
       preview: {
         url(uid) {
-          return `https://img.youtube.com/vi/${uid}/0.jpg`
+          const isShort = uid.includes('shorts')
+          return `https://img.youtube.com/vi/${uid}${isShort ? '/mqdefault.jpg' : '/0.jpg'}`
         },
         height: 360,
       },
-    },
+    },    
   ],
 }
 export default Embedding

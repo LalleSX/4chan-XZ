@@ -2,14 +2,10 @@ import Callbacks from '../classes/Callbacks'
 import UI from '../General/UI'
 import { g, Conf } from '../globals/globals'
 import $ from '../platform/$'
+import Post from '../classes/Post'
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-var Menu = {
-  init() {
+var Menu: any = {
+  init(): VoidFunction {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) {
       return
     }
@@ -33,7 +29,7 @@ var Menu = {
     })
   },
 
-  node() {
+  node(): HTMLElement {
     if (this.isClone) {
       const button = $('.menu-button', this.nodes.info)
       $.rmClass(button, 'active')
@@ -44,15 +40,15 @@ var Menu = {
     return $.add(this.nodes.info, Menu.makeButton(this))
   },
 
-  catalogNode() {
+  catalogNode(): HTMLElement {
     return $.after(this.nodes.icons, Menu.makeButton(this.thread.OP))
   },
 
-  makeButton(post, button) {
+  makeButton(post: Post, button?: HTMLElement): HTMLElement {
     if (!button) {
       button = Menu.button.cloneNode(true)
     }
-    $.on(button, 'click', function (e) {
+    $.on(button, 'click', (e: Event) => {
       return Menu.menu.toggle(e, this, post)
     })
     return button

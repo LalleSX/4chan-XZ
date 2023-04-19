@@ -19,7 +19,7 @@ var Site = {
     'smug.nepu.moe': { canonical: 'smuglo.li' },
   },
 
-  init(cb) {
+  init(cb: () => void): void {
     $.extend(Conf['siteProperties'], Site.defaultProperties)
     let hostname = Site.resolve()
     if (hostname && $.hasOwn(SW, Conf['siteProperties'][hostname].software)) {
@@ -28,7 +28,7 @@ var Site = {
     }
     return $.onExists(doc, 'body', () => {
       for (var software in SW) {
-        var changes
+        var changes: { [key: string]: string }
         if ((changes = SW[software].detect?.())) {
           changes.software = software
           hostname = location.hostname.replace(/^www\./, '')
@@ -55,7 +55,7 @@ var Site = {
     })
   },
 
-  resolve(url = location) {
+  resolve(url = location): string {
     let { hostname } = url
     while (hostname && !$.hasOwn(Conf['siteProperties'], hostname)) {
       hostname = hostname.replace(/^[^.]*\.?/, '')
@@ -69,14 +69,14 @@ var Site = {
     return hostname
   },
 
-  parseURL(url) {
-    const siteID = Site.resolve(url)
-    return Main.parseURL(g.sites[siteID], url)
+  parseURL(url: Location): ReturnType<typeof Main.parseURL> {
+    var siteID = Site.resolve(url)
+    return siteID ? g.sites[siteID].parseURL(url) : null
   },
 
-  set(hostname) {
+  set(hostname: string): typeof g.SITE {
     for (var ID in Conf['siteProperties']) {
-      var site
+      var site: typeof g.SITE
       var properties = Conf['siteProperties'][ID]
       if (properties.canonical) {
         continue
