@@ -18,6 +18,19 @@ const $ = (selector, root = document.body) => root.querySelector(selector);
 
 $.id = id => d.getElementById(id);
 $.cache = dict();
+$.ajaxPage = function (url, options) {
+  if (options == null) { options = {}; }
+  const { onloadend, timeout, responseType, withCredentials, type, onprogress, form, headers } = options;
+  const r = new XMLHttpRequest();
+  const id = ++Request;
+  const e = new CustomEvent('4chanXAjax', { detail: { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } });
+  d.dispatchEvent(e);
+  r.onloadend = function () {
+    delete window.FCX.requests[id];
+    return onloadend.apply(this, arguments);
+  };
+  return r;
+}
 $.ready = function (fc) {
   if (d.readyState !== 'loading') {
     $.queueTask(fc);
@@ -215,29 +228,40 @@ $.ajax = (function () {
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
 $.lastModified = dict();
-$.whenModified = function (url, bucket, cb, options = {}) {
-  let t;
-  const { timeout, ajax } = options;
-  const params = [];
-  // XXX https://bugs.chromium.org/p/chromium/issues/detail?id=643659
-  if ($.engine === 'blink') { params.push(`s=${bucket}`); }
-  if (url.split('/')[2] === 'a.4cdn.org') { params.push(`t=${Date.now()}`); }
-  const url0 = url;
-  if (params.length) { url += '?' + params.join('&'); }
-  const headers = dict();
-  if ((t = $.lastModified[bucket]?.[url0]) != null) {
-    headers['If-Modified-Since'] = t;
+$.whenModified = function(url, bucket, cb, options = {}) {
+  const { timeout, ajax = $.ajax } = options;
+  let params = [];
+  let lastModifiedTime;
+
+  if ($.engine === 'blink') {
+    params.push(`s=${bucket}`);
   }
-  const r = (ajax || $.ajax)(url, {
+  if (url.split('/')[2] === 'a.4cdn.org') {
+    params.push(`t=${Date.now()}`);
+  }
+
+  const originalUrl = url;
+  if (params.length) {
+    url += '?' + params.join('&');
+  }
+
+  const headers = {};
+  if ((lastModifiedTime = $.lastModified[bucket]?.[originalUrl]) != null) {
+    headers['If-Modified-Since'] = lastModifiedTime;
+  }
+
+  return ajax(url, {
     onloadend() {
-      ($.lastModified[bucket] || ($.lastModified[bucket] = dict()))[url0] = this.getResponseHeader('Last-Modified');
-      return cb.call(this);
+      const lastModifiedHeader = this.getResponseHeader('Last-Modified');
+      $.lastModified[bucket] = $.lastModified[bucket] || {};
+      $.lastModified[bucket][originalUrl] = lastModifiedHeader;
+      cb.call(this);
     },
     timeout,
     headers
   });
-  return r;
 };
+
 
 (function () {
   const reqs = dict();

@@ -115,7 +115,7 @@ export default class DataBoard {
           return
         }
         delete this.data[siteID].boards[boardID][threadID]
-        return this.deleteIfEmpty({ siteID, boardID })
+        return this.deleteIfEmpty({ siteID, boardID, threadID })
       } else {
         return delete this.data[siteID].boards[boardID]
       }
@@ -129,7 +129,7 @@ export default class DataBoard {
     if (threadID) {
       if (!Object.keys(this.data[siteID].boards[boardID][threadID]).length) {
         delete this.data[siteID].boards[boardID][threadID]
-        return this.deleteIfEmpty({ siteID, boardID })
+        return this.deleteIfEmpty({ siteID, boardID, threadID: null })
       }
     } else if (!Object.keys(this.data[siteID].boards[boardID]).length) {
       return delete this.data[siteID].boards[boardID]
@@ -201,7 +201,7 @@ export default class DataBoard {
         if (postID != null) {
           for (thread = 0; thread < board.length; thread++) {
             var ID = board[thread]
-            if (postID in thread) {
+            if (ID == postID) {
               val = thread[postID]
               break
             }
@@ -221,7 +221,7 @@ export default class DataBoard {
     const siteID = g.SITE.ID
     for (boardID in this.data[siteID].boards) {
       var val = this.data[siteID].boards[boardID]
-      this.deleteIfEmpty({ siteID, boardID })
+      this.deleteIfEmpty({ siteID, boardID, threadID: val })
     }
     const now = Date.now()
     if (
@@ -288,7 +288,7 @@ export default class DataBoard {
       }
     }
     this.data[siteID].boards[boardID] = threads
-    this.deleteIfEmpty({ siteID, boardID })
+    this.deleteIfEmpty({ siteID, boardID, threadID: null })
     return $.set(this.key, this.data)
   }
 
