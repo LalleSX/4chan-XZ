@@ -15,7 +15,7 @@
     "types": [
       "@violentmonkey/types",
       "@types/chrome",
-      "@types/jquery"
+      "@types/jquery",
     ],
     "lib": [
       "DOM",

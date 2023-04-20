@@ -44,6 +44,12 @@ export interface Board {
   config: BoardConfig
   posts: SimpleDict<Post>
   threads: SimpleDict<Thread>
+  threadsByBumpTime: Thread[]
+  threadsByReplyTime: Thread[]
+  threadsByImageCount: Thread[]
+  threadsByReplyCount: Thread[]
+  threadsByCreationTime: Thread[]
+  threadsByLastModifiedTime: Thread[]
 }
 
 export const Conf = Object.create(null)
@@ -59,6 +65,7 @@ export const g: {
   SITE?: typeof SWTinyboard
   BOARD?: Board
   VIEW?: string
+  xpath?: HTMLElement
 } = {
   VERSION: version.version,
   NAMESPACE: meta.name,

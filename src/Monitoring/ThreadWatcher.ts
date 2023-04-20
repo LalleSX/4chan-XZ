@@ -21,18 +21,20 @@ import UI from '../General/UI'
 import Get from '../General/Get'
 import { dict, HOUR, MINUTE } from '../platform/helpers'
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-
 var ThreadWatcher = {
+  db: null as DataBoard,
+  dbLM: null as DataBoard,
+  dialog: null as HTMLDivElement,
+  enabled: false,
+  list: null as HTMLDivElement,
+  refreshButton: null as HTMLButtonElement,
+  closeButton: null as HTMLButtonElement,
+  shortcut: null as HTMLAnchorElement,
+  status: null as HTMLDivElement,
+  unreadEnabled: false,
+  unreaddb: null as DataBoard,
   init() {
-    let sc
+    let sc: HTMLAnchorElement
     if (!(this.enabled = Conf['Thread Watcher'])) {
       return
     }
@@ -139,14 +141,14 @@ var ThreadWatcher = {
     })
   },
 
-  isWatched(thread) {
+  isWatched(thread: Thread) {
     return !!ThreadWatcher.db?.get({
       boardID: thread.board.ID,
       threadID: thread.ID,
     })
   },
 
-  isWatchedRaw(boardID, threadID) {
+  isWatchedRaw(boardID: string, threadID: string) {
     return !!ThreadWatcher.db?.get({ boardID, threadID })
   },
 
@@ -156,7 +158,7 @@ var ThreadWatcher = {
   },
 
   node() {
-    let toggler
+    let toggler: HTMLAnchorElement
     if (this.isReply) {
       return
     }
