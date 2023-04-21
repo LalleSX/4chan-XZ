@@ -1275,7 +1275,7 @@ var QR = {
       QR.cooldown.changes = dict();
       QR.cooldown.auto = false;
       QR.cooldown.update();
-      return $.queueTask($.delete, 'cooldowns');
+      return $.queueTask($.delete('cooldowns', dict()));
     },
 
     update() {

@@ -1,3 +1,5 @@
+import SimpleDict from "../classes/SimpleDict";
+
 export interface ElementProperties {
   [key: string]: any;
 }
@@ -11,3 +13,33 @@ interface AjaxPageOptions {
   form?: FormData;
   headers?: Record<string, string>;
 }
+export interface LastModified {
+  [bucket: string]: { [url: string]: string | undefined };
+}
+export interface WhenModifiedOptions {
+  timeout?: number;
+  ajax?: (url: string, settings?: AjaxPageOptions) => Promise<string>;
+}
+
+  declare global {
+    interface JQueryStatic {
+      engine?: string;
+      lastModified: LastModified;
+      whenModified: (
+        url: string,
+        bucket: string,
+        cb: (this: JQueryXHR) => void,
+        options?: WhenModifiedOptions
+      ) => JQueryXHR;
+    }
+  }
+  export type Dict = { [key: string]: any };
+  export interface SyncObject {
+    setValue: (key: string, val: any) => void;
+    deleteValue: (key: string) => void;
+    oldValue?: Dict;
+    syncing?: Dict;
+    hasStorage?: boolean;
+    cantSync?: boolean;
+    cantSet?: boolean;
+  }

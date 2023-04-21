@@ -121,7 +121,13 @@ var ImageExpand = {
         ) {
           return
         }
-        return $.queueTask(func, post)
+        return $.queueTask(function () {
+          if (file.isExpanded) {
+            return ImageExpand.contract(post)
+          } else {
+            return ImageExpand.expand(post)
+          }
+        })
       }
 
       if (
