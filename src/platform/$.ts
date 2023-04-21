@@ -228,7 +228,7 @@ $.ajax = (function () {
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
 $.lastModified = dict();
-$.whenModified = function(url, bucket, cb, options = {}) {
+$.whenModified = function (url, bucket, cb, options = {}) {
   const { timeout, ajax = $.ajax } = options;
   let params = [];
   let lastModifiedTime;
