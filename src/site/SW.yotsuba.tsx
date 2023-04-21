@@ -287,8 +287,8 @@ $\
   cleanComment(bq) {
     let abbr;
     if (abbr = $('.abbr', bq)) { // 'Comment too long' or 'EXIF data available'
-      for (var node of $$('.abbr + br, .exif', bq)) {
-        $.rm(node);
+      for (let node of $$('.abbr, .abbr-exp', abbr)) {
+        $.replace(node, $.tn(node.textContent));
       }
       for (let i = 0; i < 2; i++) {
         var br;
@@ -337,7 +337,9 @@ $\
 
   testNativeExtension() {
     return $.global(function() {
-      if (window.Parser?.postMenuIcon) { return this.enabled = 'true'; }
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
+        return true;
+      }
     });
   },
 
@@ -413,10 +415,15 @@ $\
       const o = {
         // id
         ID: data.no,
+        info: null,
+        capcodeHighlight: data.capcode === 'admin_highlight',
+        files: [],
+        file: null,
         postID: data.no,
         threadID: data.resto || data.no,
         boardID,
         siteID,
+        extra: {},
         isReply: !!data.resto,
         // thread status
         isSticky: !!data.sticky,
@@ -471,6 +478,7 @@ $\
         name: ($.unescape(data.filename)) + data.ext,
         url: site.urls.file({ siteID, boardID }, filename),
         height: data.h,
+        dimensions: '',
         width: data.w,
         MD5: data.md5,
         size: $.bytesToString(data.fsize),
@@ -579,7 +587,7 @@ $\
       $.extend(container, wholePost);
 
       // Fix quotelinks
-      for (var quote of $$('.quotelink', container)) {
+      for (var quote of container.querySelectorAll('a.quoteLink')) {
         var href = quote.getAttribute('href');
         if (href[0] === '#') {
           if (!this.sameThread(boardID, threadID)) {

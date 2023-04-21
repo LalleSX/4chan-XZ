@@ -1,21 +1,14 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-// loosely follows the jquery api:
-// http://api.jquery.com/
-
 import Notice from "../classes/Notice";
 import { c, Conf, d, doc, g } from "../globals/globals";
 import CrossOrigin from "./CrossOrigin";
 import { debounce, dict, MINUTE, platform, SECOND } from "./helpers";
+import { AjaxPageOptions, ElementProperties } from "../types/$";
 
 // not chainable
 const $ = (selector, root = document.body) => root.querySelector(selector);
-
+type AjaxPageRequest = XMLHttpRequest & {
+  abort: () => void;
+}
 $.id = id => d.getElementById(id);
 $.cache = dict();
 $.ajaxPage = function (url, options) {
@@ -344,19 +337,9 @@ $.addStyle = function (css, id, test = 'head') {
 };
 
 $.addCSP = function (policy) {
-  const meta = $.el('meta', {
-    httpEquiv: 'Content-Security-Policy',
-    content: policy
-  }
-  );
-  if (d.head) {
-    $.add(d.head, meta);
-    return $.rm(meta);
-  } else {
-    const head = $.add((doc || d), $.el('head'));
-    $.add(head, meta);
-    return $.rm(head);
-  }
+  const meta = $.el('meta', { httpEquiv: 'Content-Security-Policy', content: policy }, { display: 'none' });
+  $.onExists(doc, 'head', () => $.add(d.head, meta));
+  return meta;
 };
 
 $.x = function (path, root) {
@@ -413,11 +396,10 @@ $.before = (root, el) => root.parentNode.insertBefore($.nodes(el), root);
 
 $.replace = (root, el) => root.parentNode.replaceChild($.nodes(el), root);
 
-$.el = function (tag, properties, properties2) {
-  const el = d.createElement(tag);
-  if (properties) { $.extend(el, properties); }
-  if (properties2) { $.extend(el, properties2); }
-  return el;
+$.el = function (tag: keyof HTMLElementTagNameMap, properties?: ElementProperties, properties2?: ElementProperties): HTMLElement {
+  const element = document.createElement(tag);
+  Object.assign(element, properties, properties2);
+  return element;
 };
 
 $.on = function (el, events, handler) {
@@ -555,42 +537,41 @@ $.global = function (fn, data) {
 };
 
 $.bytesToString = function (size) {
-  let unit = 0; // Bytes
-  while (size >= 1024) {
-    size /= 1024;
-    unit++;
+  if (size < 1024) {
+    return `${size} B`;
+  } else if (size < 1048576) {
+    return `${(size / 1024).toFixed(1)} KB`;
+  } else if (size < 1073741824) {
+    return `${(size / 1048576).toFixed(1)} MB`;
+  } else {
+    return `${(size / 1073741824).toFixed(1)} GB`;
   }
-  // Remove trailing 0s.
-  size =
-    unit > 1 ?
-      // Keep the size as a float if the size is greater than 2^20 B.
-      // Round to hundredth.
-      Math.round(size * 100) / 100
-      :
-      // Round to an integer otherwise.
-      Math.round(size);
-  return `${size} ${['B', 'KB', 'MB', 'GB'][unit]}`;
 };
 
-$.minmax = (value, min, max) => value < min ?
-  min
-  :
-  value > max ?
-    max
-    :
-    value;
+$.minmax = (value, min, max) => Math.max(min, Math.min(max, value));
 
-$.hasAudio = video => video.mozHasAudio || !!video.webkitAudioDecodedByteCount;
+$.hasAudio = function (el: HTMLVideoElement | HTMLAudioElement) {
+  if (el.tagName === 'VIDEO') {
+    return !el.muted;
+  } else if (el.tagName === 'AUDIO') {
+    return true;
+  } else {
+    return el.querySelector('video:not([muted]), audio') != null;
+  }
+};
 
-$.luma = rgb => (rgb[0] * 0.299) + (rgb[1] * 0.587) + (rgb[2] * 0.114);
+$.luma = (rgb: number[]) => { // rgb: [r, g, b]
+  const [r, g, b] = rgb;
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
 
 $.unescape = function (text) {
   if (text == null) { return text; }
   return text.replace(/<[^>]*>/g, '').replace(/&(amp|#039|quot|lt|gt|#44);/g, c => ({ '&amp;': '&', '&#039;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>', '&#44;': ',' })[c]);
 };
 
-$.isImage = url => /\.(jpe?g|jfif|png|gif|bmp|webp|avif|jxl)$/i.test(url);
-$.isVideo = url => /\.(webm|mp4|ogv)$/i.test(url);
+$.isImage = url => /\.(jpe?g|png|gif|bmp|webp|svg|ico|tiff?)$/i.test(url);
+$.isVideo = url => /\.(webm|mp4|og[gv]|m4v|mov|avi|flv|wmv|mpg|mpeg|mkv|rm|rmvb|3gp|3g2|asf|swf|vob)$/i.test(url);
 
 $.engine = (function () {
   if (/Edge\//.test(navigator.userAgent)) { return 'edge'; }

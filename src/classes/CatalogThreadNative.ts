@@ -9,6 +9,7 @@ export default class CatalogThreadNative {
   siteID: number
   threadID: number
   ID: string
+  thread: any
   toString() {
     return this.ID
   }

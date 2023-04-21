@@ -115,12 +115,12 @@ var ImageLoader = {
     if (!replace && !ImageLoader.prefetchEnabled) {
       return
     }
-    if ($.hasClass(doc, 'catalog-mode')) {
+    if ($.hasClass(d, 'catalog-mode')) {
       return
     }
     if (
       ![post, ...Array.from(post.clones)].some((clone) =>
-        doc.contains(clone.nodes.root),
+        d.contains(clone.nodes.root),
       )
     ) {
       return
@@ -175,12 +175,13 @@ var ImageLoader = {
     return g.posts.forEach(function (post) {
       for (post of [post, ...Array.from(post.clones)]) {
         for (var file of post.files) {
-          if (file.videoThumb) {
-            var { thumb } = file
-            if (Header.isNodeVisible(thumb) || post.nodes.root === qpClone) {
-              thumb.play()
-            } else {
-              thumb.pause()
+          if (file.isVideo && !file.isPrefetched) {
+            const { thumb } = file
+            if (qpClone === thumb) {
+              continue
+            }
+            if (thumb.getBoundingClientRect().top < window.innerHeight) {
+              ImageLoader.prefetch(post, file)
             }
           }
         }

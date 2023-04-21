@@ -89,9 +89,6 @@ var Get = {
       }
     }
     // First:
-    //   In every posts,
-    //   if it did quote this post,
-    //   get all their backlinks.
     posts.forEach(function (qPost) {
       if (qPost.quotes.includes(fullID)) {
         return handleQuotes(qPost, 'quotelinks')
@@ -99,10 +96,6 @@ var Get = {
     })
 
     // Second:
-    //   If we have quote backlinks:
-    //   in all posts this post quoted
-    //   and their clones,
-    //   get all of their backlinks.
     if (Conf['Quote Backlinks']) {
       for (var quote of post.quotes) {
         var qPost
@@ -113,7 +106,6 @@ var Get = {
     }
 
     // Third:
-    //   Filter out irrelevant quotelinks.
     return quotelinks.filter(function (quotelink) {
       const { boardID, postID } = Get.postDataFromLink(quotelink)
       return boardID === post.board.ID && postID === post.ID

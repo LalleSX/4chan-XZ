@@ -12,13 +12,7 @@ import Settings from './Settings'
 import UI from './UI'
 import meta from '../../package.json'
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 var Header = {
   init() {
     $.onExists(doc, 'body', () => {

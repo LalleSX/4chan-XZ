@@ -143,10 +143,8 @@ const Test = {
   testOne(post) {
     Test.postsRemaining++
     return $.cache(
-      g.SITE.urls.threadJSON({
-        boardID: post.boardID,
-        threadID: post.threadID,
-      }),
+      g.SITE.urls.threadJSON(post.thread.ID, post.board),
+      { responseType: 'json' },
       function () {
         if (!this.response) {
           return
@@ -179,7 +177,7 @@ const Test = {
 
             for (var key in Config.filter) {
               if (
-                !key === 'General' &&
+                key !== 'MD5' ||
                 !(key === 'MD5' && post.board.ID === 'f')
               ) {
                 var val1 = Filter.values(key, obj)

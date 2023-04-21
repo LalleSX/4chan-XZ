@@ -130,8 +130,10 @@ var Volume = {
     if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) {
       return
     }
-    if (!(el = $('video:not([data-md5])', this))) {
-      return
+    if (this instanceof HTMLAnchorElement) { 
+      el = this.querySelector('video')
+    } else {
+      el = this.querySelector('video, audio')
     }
     if (el.muted || !$.hasAudio(el)) {
       return
