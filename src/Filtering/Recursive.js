@@ -1,6 +1,6 @@
-import Callbacks from '../classes/Callbacks';
-import { g } from '../globals/globals';
-import { dict } from '../platform/helpers';
+import Callbacks from '../classes/Callbacks'
+import { g } from '../globals/globals'
+import { dict } from '../platform/helpers'
 
 /*
  * decaffeinate suggestions:
@@ -12,24 +12,24 @@ var Recursive = {
   recursives: dict(),
   init() {
     if (!['index', 'thread'].includes(g.VIEW)) {
-      return;
+      return
     }
     return Callbacks.Post.push({
       name: 'Recursive',
       cb: this.node,
-    });
+    })
   },
 
   node() {
     if (this.isClone || this.isFetchedQuote) {
-      return;
+      return
     }
     for (var quote of this.quotes) {
-      var obj;
+      var obj
       if ((obj = Recursive.recursives[quote])) {
         for (var i = 0; i < obj.recursives.length; i++) {
-          var recursive = obj.recursives[i];
-          recursive(this, ...Array.from(obj.args[i]));
+          var recursive = obj.recursives[i]
+          recursive(this, ...Array.from(obj.args[i]))
         }
       }
     }
@@ -41,32 +41,32 @@ var Recursive = {
       (Recursive.recursives[post.fullID] = {
         recursives: [],
         args: [],
-      });
-    obj.recursives.push(recursive);
-    return obj.args.push(args);
+      })
+    obj.recursives.push(recursive)
+    return obj.args.push(args)
   },
 
   rm(recursive, post) {
-    let obj;
+    let obj
     if (!(obj = Recursive.recursives[post.fullID])) {
-      return;
+      return
     }
     for (let i = 0; i < obj.recursives.length; i++) {
-      var rec = obj.recursives[i];
+      var rec = obj.recursives[i]
       if (rec === recursive) {
-        obj.recursives.splice(i, 1);
-        obj.args.splice(i, 1);
+        obj.recursives.splice(i, 1)
+        obj.args.splice(i, 1)
       }
     }
   },
 
   apply(recursive, post, ...args) {
-    const { fullID } = post;
+    const { fullID } = post
     return g.posts.forEach(function (post) {
       if (post.quotes.includes(fullID)) {
-        return recursive(post, ...Array.from(args));
+        return recursive(post, ...Array.from(args))
       }
-    });
+    })
   },
-};
-export default Recursive;
+}
+export default Recursive

@@ -1,5 +1,5 @@
-import h from '../../globals/jsx';
-import meta from '../../../package.json';
+import h from '../../globals/jsx'
+import meta from '../../../package.json'
 
 const passMessagePage = (
   <div class="box-inner">
@@ -27,5 +27,5 @@ const passMessagePage = (
       .
     </div>
   </div>
-);
-export default passMessagePage;
+)
+export default passMessagePage

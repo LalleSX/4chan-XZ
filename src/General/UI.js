@@ -1,8 +1,8 @@
-import { Conf, d, doc } from '../globals/globals';
-import Main from '../main/Main';
-import $ from '../platform/$';
-import $$ from '../platform/$$';
-import Header from './Header';
+import { Conf, d, doc } from '../globals/globals'
+import Main from '../main/Main'
+import $ from '../platform/$'
+import $$ from '../platform/$$'
+import Header from './Header'
 
 /*
  * decaffeinate suggestions:
@@ -16,47 +16,47 @@ const dialog = function (id, properties) {
   const el = $.el('div', {
     className: 'dialog',
     id,
-  });
-  $.extend(el, properties);
-  el.style.cssText = Conf[`${id}.position`];
+  })
+  $.extend(el, properties)
+  el.style.cssText = Conf[`${id}.position`]
 
-  const move = $('.move', el);
-  $.on(move, 'touchstart mousedown', dragstart);
+  const move = $('.move', el)
+  $.on(move, 'touchstart mousedown', dragstart)
   for (var child of move.children) {
     if (!child.tagName) {
-      continue;
+      continue
     }
-    $.on(child, 'touchstart mousedown', e => e.stopPropagation());
+    $.on(child, 'touchstart mousedown', e => e.stopPropagation())
   }
 
-  return el;
-};
+  return el
+}
 
 var Menu = (function () {
-  let currentMenu = undefined;
-  let lastToggledButton = undefined;
+  let currentMenu = undefined
+  let lastToggledButton = undefined
   Menu = class Menu {
     static initClass() {
-      currentMenu = null;
-      lastToggledButton = null;
+      currentMenu = null
+      lastToggledButton = null
     }
 
     constructor(type) {
       // XXX AddMenuEntry event is deprecated
-      this.setPosition = this.setPosition.bind(this);
-      this.close = this.close.bind(this);
-      this.keybinds = this.keybinds.bind(this);
-      this.onFocus = this.onFocus.bind(this);
-      this.addEntry = this.addEntry.bind(this);
-      this.type = type;
+      this.setPosition = this.setPosition.bind(this)
+      this.close = this.close.bind(this)
+      this.keybinds = this.keybinds.bind(this)
+      this.onFocus = this.onFocus.bind(this)
+      this.addEntry = this.addEntry.bind(this)
+      this.type = type
       $.on(d, 'AddMenuEntry', ({ detail }) => {
         if (detail.type !== this.type) {
-          return;
+          return
         }
-        delete detail.open;
-        return this.addEntry(detail);
-      });
-      this.entries = [];
+        delete detail.open
+        return this.addEntry(detail)
+      })
+      this.entries = []
     }
 
     makeMenu() {
@@ -64,171 +64,171 @@ var Menu = (function () {
         className: 'dialog',
         id: 'menu',
         tabIndex: 0,
-      });
-      menu.dataset.type = this.type;
-      $.on(menu, 'click', e => e.stopPropagation());
-      $.on(menu, 'keydown', this.keybinds);
-      return menu;
+      })
+      menu.dataset.type = this.type
+      $.on(menu, 'click', e => e.stopPropagation())
+      $.on(menu, 'keydown', this.keybinds)
+      return menu
     }
 
     toggle(e, button, data) {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
 
       if (currentMenu) {
         // Close if it's already opened.
         // Reopen if we clicked on another button.
-        const previousButton = lastToggledButton;
-        currentMenu.close();
+        const previousButton = lastToggledButton
+        currentMenu.close()
         if (previousButton === button) {
-          return;
+          return
         }
       }
 
       if (!this.entries.length) {
-        return;
+        return
       }
-      return this.open(button, data);
+      return this.open(button, data)
     }
 
     open(button, data) {
-      let entry;
-      const menu = (this.menu = this.makeMenu());
-      currentMenu = this;
-      lastToggledButton = button;
+      let entry
+      const menu = (this.menu = this.makeMenu())
+      currentMenu = this
+      lastToggledButton = button
 
-      this.entries.sort((first, second) => first.order - second.order);
+      this.entries.sort((first, second) => first.order - second.order)
 
       for (entry of this.entries) {
-        this.insertEntry(entry, menu, data);
+        this.insertEntry(entry, menu, data)
       }
 
-      $.addClass(lastToggledButton, 'active');
+      $.addClass(lastToggledButton, 'active')
 
-      $.on(d, 'click CloseMenu', this.close);
-      $.on(d, 'scroll', this.setPosition);
-      $.on(window, 'resize', this.setPosition);
-      $.after(button, menu);
+      $.on(d, 'click CloseMenu', this.close)
+      $.on(d, 'scroll', this.setPosition)
+      $.on(window, 'resize', this.setPosition)
+      $.after(button, menu)
 
-      this.setPosition();
+      this.setPosition()
 
-      entry = $('.entry', menu);
+      entry = $('.entry', menu)
       // We've removed flexbox, so we don't use order anymore.
       // while prevEntry = @findNextEntry entry, -1
       //   entry = prevEntry
-      this.focus(entry);
+      this.focus(entry)
 
-      return menu.focus();
+      return menu.focus()
     }
 
     setPosition() {
-      const mRect = this.menu.getBoundingClientRect();
-      const bRect = lastToggledButton.getBoundingClientRect();
-      const bTop = window.scrollY + bRect.top;
-      const bLeft = window.scrollX + bRect.left;
-      const cHeight = doc.clientHeight;
-      const cWidth = doc.clientWidth;
+      const mRect = this.menu.getBoundingClientRect()
+      const bRect = lastToggledButton.getBoundingClientRect()
+      const bTop = window.scrollY + bRect.top
+      const bLeft = window.scrollX + bRect.left
+      const cHeight = doc.clientHeight
+      const cWidth = doc.clientWidth
       const [top, bottom] = Array.from(
         bRect.top + bRect.height + mRect.height < cHeight
           ? [`${bRect.bottom}px`, '']
           : ['', `${cHeight - bRect.top}px`]
-      );
+      )
       const [left, right] = Array.from(
         bRect.left + mRect.width < cWidth
           ? [`${bRect.left}px`, '']
           : ['', `${cWidth - bRect.right}px`]
-      );
-      $.extend(this.menu.style, { top, right, bottom, left });
-      return this.menu.classList.toggle('left', right);
+      )
+      $.extend(this.menu.style, { top, right, bottom, left })
+      return this.menu.classList.toggle('left', right)
     }
 
     insertEntry(entry, parent, data) {
-      let submenu;
+      let submenu
       if (typeof entry.open === 'function') {
         try {
           if (!entry.open(data)) {
-            return;
+            return
           }
         } catch (err) {
           Main.handleErrors({
             message: `Error in building the ${this.type} menu.`,
             error: err,
-          });
-          return;
+          })
+          return
         }
       }
-      $.add(parent, entry.el);
+      $.add(parent, entry.el)
 
       if (!entry.subEntries) {
-        return;
+        return
       }
       if ((submenu = $('.submenu', entry.el))) {
         // Reset sub menu, remove irrelevant entries.
-        $.rm(submenu);
+        $.rm(submenu)
       }
-      submenu = $.el('div', { className: 'dialog submenu' });
+      submenu = $.el('div', { className: 'dialog submenu' })
       for (var subEntry of entry.subEntries) {
-        this.insertEntry(subEntry, submenu, data);
+        this.insertEntry(subEntry, submenu, data)
       }
-      $.add(entry.el, submenu);
+      $.add(entry.el, submenu)
     }
 
     close() {
-      $.rm(this.menu);
-      delete this.menu;
-      $.rmClass(lastToggledButton, 'active');
-      currentMenu = null;
-      lastToggledButton = null;
-      $.off(d, 'click scroll CloseMenu', this.close);
-      $.off(d, 'scroll', this.setPosition);
-      return $.off(window, 'resize', this.setPosition);
+      $.rm(this.menu)
+      delete this.menu
+      $.rmClass(lastToggledButton, 'active')
+      currentMenu = null
+      lastToggledButton = null
+      $.off(d, 'click scroll CloseMenu', this.close)
+      $.off(d, 'scroll', this.setPosition)
+      return $.off(window, 'resize', this.setPosition)
     }
 
     findNextEntry(entry, direction) {
-      const entries = [...Array.from(entry.parentNode.children)];
-      entries.sort((first, second) => first.style.order - second.style.order);
-      return entries[entries.indexOf(entry) + direction];
+      const entries = [...Array.from(entry.parentNode.children)]
+      entries.sort((first, second) => first.style.order - second.style.order)
+      return entries[entries.indexOf(entry) + direction]
     }
 
     keybinds(e) {
-      let subEntry;
-      let next, submenu;
-      let entry = $('.focused', this.menu);
+      let subEntry
+      let next, submenu
+      let entry = $('.focused', this.menu)
       while ((subEntry = $('.focused', entry))) {
-        entry = subEntry;
+        entry = subEntry
       }
 
       switch (e.keyCode) {
         case 27: // Esc
-          lastToggledButton.focus();
-          this.close();
-          break;
+          lastToggledButton.focus()
+          this.close()
+          break
         case 13:
         case 32: // Enter, Space
-          entry.click();
-          break;
+          entry.click()
+          break
         case 38: // Up
           if ((next = this.findNextEntry(entry, -1))) {
-            this.focus(next);
+            this.focus(next)
           }
-          break;
+          break
         case 40: // Down
           if ((next = this.findNextEntry(entry, +1))) {
-            this.focus(next);
+            this.focus(next)
           }
-          break;
+          break
         case 39: // Right
           if (
             (submenu = $('.submenu', entry)) &&
             (next = submenu.firstElementChild)
           ) {
-            let nextPrev;
+            let nextPrev
             while ((nextPrev = this.findNextEntry(next, -1))) {
-              next = nextPrev;
+              next = nextPrev
             }
-            this.focus(next);
+            this.focus(next)
           }
-          break;
+          break
         case 37: // Left
           if (
             (next = $.x(
@@ -236,95 +236,95 @@ var Menu = (function () {
               entry
             ))
           ) {
-            this.focus(next);
+            this.focus(next)
           }
-          break;
+          break
         default:
-          return;
+          return
       }
 
-      e.preventDefault();
-      return e.stopPropagation();
+      e.preventDefault()
+      return e.stopPropagation()
     }
 
     onFocus(e) {
-      e.stopPropagation();
-      return this.focus(e.target);
+      e.stopPropagation()
+      return this.focus(e.target)
     }
 
     focus(entry) {
-      let focused, submenu;
+      let focused, submenu
       while (
         (focused = $.x('parent::*/child::*[contains(@class,"focused")]', entry))
       ) {
-        $.rmClass(focused, 'focused');
+        $.rmClass(focused, 'focused')
       }
       for (focused of $$('.focused', entry)) {
-        $.rmClass(focused, 'focused');
+        $.rmClass(focused, 'focused')
       }
-      $.addClass(entry, 'focused');
+      $.addClass(entry, 'focused')
 
       // Submenu positioning.
       if (!(submenu = $('.submenu', entry))) {
-        return;
+        return
       }
-      const sRect = submenu.getBoundingClientRect();
-      const eRect = entry.getBoundingClientRect();
-      const cHeight = doc.clientHeight;
-      const cWidth = doc.clientWidth;
+      const sRect = submenu.getBoundingClientRect()
+      const eRect = entry.getBoundingClientRect()
+      const cHeight = doc.clientHeight
+      const cWidth = doc.clientWidth
       const [top, bottom] = Array.from(
         eRect.top + sRect.height < cHeight ? ['0px', 'auto'] : ['auto', '0px']
-      );
+      )
       const [left, right] = Array.from(
         eRect.right + sRect.width < cWidth - 150
           ? ['100%', 'auto']
           : ['auto', '100%']
-      );
-      const { style } = submenu;
-      style.top = top;
-      style.bottom = bottom;
-      style.left = left;
-      return (style.right = right);
+      )
+      const { style } = submenu
+      style.top = top
+      style.bottom = bottom
+      style.left = left
+      return (style.right = right)
     }
 
     addEntry(entry) {
-      this.parseEntry(entry);
-      return this.entries.push(entry);
+      this.parseEntry(entry)
+      return this.entries.push(entry)
     }
 
     parseEntry(entry) {
-      const { el, subEntries } = entry;
-      $.addClass(el, 'entry');
-      $.on(el, 'focus mouseover', this.onFocus);
-      el.style.order = entry.order || 100;
+      const { el, subEntries } = entry
+      $.addClass(el, 'entry')
+      $.on(el, 'focus mouseover', this.onFocus)
+      el.style.order = entry.order || 100
       if (!subEntries) {
-        return;
+        return
       }
-      $.addClass(el, 'has-submenu');
+      $.addClass(el, 'has-submenu')
       for (var subEntry of subEntries) {
-        this.parseEntry(subEntry);
+        this.parseEntry(subEntry)
       }
     }
-  };
-  Menu.initClass();
-  return Menu;
-})();
+  }
+  Menu.initClass()
+  return Menu
+})()
 
 export var dragstart = function (e) {
-  let isTouching;
+  let isTouching
   if (e.type === 'mousedown' && e.button !== 0) {
-    return;
+    return
   } // not LMB
   // prevent text selection
-  e.preventDefault();
+  e.preventDefault()
   if ((isTouching = e.type === 'touchstart')) {
-    e = e.changedTouches[e.changedTouches.length - 1];
+    e = e.changedTouches[e.changedTouches.length - 1]
   }
   // distance from pointer to el edge is constant; calculate it here.
-  const el = $.x('ancestor::div[contains(@class,"dialog")][1]', this);
-  const rect = el.getBoundingClientRect();
-  const screenHeight = doc.clientHeight;
-  const screenWidth = doc.clientWidth;
+  const el = $.x('ancestor::div[contains(@class,"dialog")][1]', this)
+  const rect = el.getBoundingClientRect()
+  const screenHeight = doc.clientHeight
+  const screenWidth = doc.clientWidth
   const o = {
     id: el.id,
     style: el.style,
@@ -335,90 +335,90 @@ export var dragstart = function (e) {
     screenHeight,
     screenWidth,
     isTouching,
-  };
+  }
 
-  [o.topBorder, o.bottomBorder] = Array.from(
+  ;[o.topBorder, o.bottomBorder] = Array.from(
     Conf['Header auto-hide'] || !Conf['Fixed Header']
       ? [0, 0]
       : Conf['Bottom Header']
       ? [0, Header.bar.getBoundingClientRect().height]
       : [Header.bar.getBoundingClientRect().height, 0]
-  );
+  )
 
   if (isTouching) {
-    o.identifier = e.identifier;
-    o.move = touchmove.bind(o);
-    o.up = touchend.bind(o);
-    $.on(d, 'touchmove', o.move);
-    return $.on(d, 'touchend touchcancel', o.up);
+    o.identifier = e.identifier
+    o.move = touchmove.bind(o)
+    o.up = touchend.bind(o)
+    $.on(d, 'touchmove', o.move)
+    return $.on(d, 'touchend touchcancel', o.up)
   } else {
     // mousedown
-    o.move = drag.bind(o);
-    o.up = dragend.bind(o);
-    $.on(d, 'mousemove', o.move);
-    return $.on(d, 'mouseup', o.up);
+    o.move = drag.bind(o)
+    o.up = dragend.bind(o)
+    $.on(d, 'mousemove', o.move)
+    return $.on(d, 'mouseup', o.up)
   }
-};
+}
 
 export var touchmove = function (e) {
   for (var touch of e.changedTouches) {
     if (touch.identifier === this.identifier) {
-      drag.call(this, touch);
-      return;
+      drag.call(this, touch)
+      return
     }
   }
-};
+}
 
 export var drag = function (e) {
-  const { clientX, clientY } = e;
+  const { clientX, clientY } = e
 
-  let left = clientX - this.dx;
+  let left = clientX - this.dx
   left =
     left < 10
       ? 0
       : this.width - left < 10
       ? ''
-      : (left / this.screenWidth) * 100 + '%';
+      : (left / this.screenWidth) * 100 + '%'
 
-  let top = clientY - this.dy;
+  let top = clientY - this.dy
   top =
     top < 10 + this.topBorder
       ? this.topBorder + 'px'
       : this.height - top < 10 + this.bottomBorder
       ? ''
-      : (top / this.screenHeight) * 100 + '%';
+      : (top / this.screenHeight) * 100 + '%'
 
-  const right = left === '' ? 0 : '';
+  const right = left === '' ? 0 : ''
 
-  const bottom = top === '' ? this.bottomBorder + 'px' : '';
+  const bottom = top === '' ? this.bottomBorder + 'px' : ''
 
-  const { style } = this;
-  style.left = left;
-  style.right = right;
-  style.top = top;
-  return (style.bottom = bottom);
-};
+  const { style } = this
+  style.left = left
+  style.right = right
+  style.top = top
+  return (style.bottom = bottom)
+}
 
 export var touchend = function (e) {
   for (var touch of e.changedTouches) {
     if (touch.identifier === this.identifier) {
-      dragend.call(this);
-      return;
+      dragend.call(this)
+      return
     }
   }
-};
+}
 
 export var dragend = function () {
   if (this.isTouching) {
-    $.off(d, 'touchmove', this.move);
-    $.off(d, 'touchend touchcancel', this.up);
+    $.off(d, 'touchmove', this.move)
+    $.off(d, 'touchend touchcancel', this.up)
   } else {
     // mouseup
-    $.off(d, 'mousemove', this.move);
-    $.off(d, 'mouseup', this.up);
+    $.off(d, 'mousemove', this.move)
+    $.off(d, 'mouseup', this.up)
   }
-  return $.set(`${this.id}.position`, this.style.cssText);
-};
+  return $.set(`${this.id}.position`, this.style.cssText)
+}
 
 const hoverstart = function ({
   root,
@@ -430,7 +430,7 @@ const hoverstart = function ({
   cb,
   noRemove,
 }) {
-  const rect = root.getBoundingClientRect();
+  const rect = root.getBoundingClientRect()
   const o = {
     root,
     el,
@@ -446,98 +446,98 @@ const hoverstart = function ({
     noRemove,
     clientX: (rect.left + rect.right) / 2,
     clientY: (rect.top + rect.bottom) / 2,
-  };
-  o.hover = hover.bind(o);
-  o.hoverend = hoverend.bind(o);
+  }
+  o.hover = hover.bind(o)
+  o.hoverend = hoverend.bind(o)
 
-  o.hover(o.latestEvent);
+  o.hover(o.latestEvent)
   new MutationObserver(function () {
     if (el.parentNode) {
-      return o.hover(o.latestEvent);
+      return o.hover(o.latestEvent)
     }
-  }).observe(el, { childList: true });
+  }).observe(el, { childList: true })
 
-  $.on(root, endEvents, o.hoverend);
+  $.on(root, endEvents, o.hoverend)
   if ($.x('ancestor::div[contains(@class,"inline")][1]', root)) {
-    $.on(d, 'keydown', o.hoverend);
+    $.on(d, 'keydown', o.hoverend)
   }
-  $.on(root, 'mousemove', o.hover);
+  $.on(root, 'mousemove', o.hover)
 
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=674955
   o.workaround = function (e) {
     if (!root.contains(e.target)) {
-      return o.hoverend(e);
+      return o.hoverend(e)
     }
-  };
-  return $.on(doc, 'mousemove', o.workaround);
-};
+  }
+  return $.on(doc, 'mousemove', o.workaround)
+}
 
-hoverstart.padding = 25;
+hoverstart.padding = 25
 
 export var hover = function (e) {
-  this.latestEvent = e;
-  const height = (this.height || this.el.offsetHeight) + hoverstart.padding;
-  const width = this.width || this.el.offsetWidth;
-  const { clientX, clientY } = Conf['Follow Cursor'] ? e : this;
+  this.latestEvent = e
+  const height = (this.height || this.el.offsetHeight) + hoverstart.padding
+  const width = this.width || this.el.offsetWidth
+  const { clientX, clientY } = Conf['Follow Cursor'] ? e : this
 
   const top = this.isImage
     ? Math.max(0, (clientY * (this.clientHeight - height)) / this.clientHeight)
-    : Math.max(0, Math.min(this.clientHeight - height, clientY - 120));
+    : Math.max(0, Math.min(this.clientHeight - height, clientY - 120))
 
-  let threshold = this.clientWidth / 2;
+  let threshold = this.clientWidth / 2
   if (!this.isImage) {
-    threshold = Math.max(threshold, this.clientWidth - 400);
+    threshold = Math.max(threshold, this.clientWidth - 400)
   }
   let marginX =
-    (clientX <= threshold ? clientX : this.clientWidth - clientX) + 45;
+    (clientX <= threshold ? clientX : this.clientWidth - clientX) + 45
   if (this.isImage) {
-    marginX = Math.min(marginX, this.clientWidth - width);
+    marginX = Math.min(marginX, this.clientWidth - width)
   }
-  marginX += 'px';
+  marginX += 'px'
   const [left, right] = Array.from(
     clientX <= threshold ? [marginX, ''] : ['', marginX]
-  );
+  )
 
-  const { style } = this;
-  style.top = top + 'px';
-  style.left = left;
-  return (style.right = right);
-};
+  const { style } = this
+  style.top = top + 'px'
+  style.left = left
+  return (style.right = right)
+}
 
 export var hoverend = function (e) {
   if (
     (e.type === 'keydown' && e.keyCode !== 13) ||
     e.target.nodeName === 'TEXTAREA'
   ) {
-    return;
+    return
   }
   if (!this.noRemove) {
-    $.rm(this.el);
+    $.rm(this.el)
   }
-  $.off(this.root, this.endEvents, this.hoverend);
-  $.off(d, 'keydown', this.hoverend);
-  $.off(this.root, 'mousemove', this.hover);
+  $.off(this.root, this.endEvents, this.hoverend)
+  $.off(d, 'keydown', this.hoverend)
+  $.off(this.root, 'mousemove', this.hover)
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=674955
-  $.off(doc, 'mousemove', this.workaround);
+  $.off(doc, 'mousemove', this.workaround)
   if (this.cb) {
-    return this.cb.call(this);
+    return this.cb.call(this)
   }
-};
+}
 
 export const checkbox = function (name, text, checked) {
   if (checked == null) {
-    checked = Conf[name];
+    checked = Conf[name]
   }
-  const label = $.el('label');
-  const input = $.el('input', { type: 'checkbox', name, checked });
-  $.add(label, [input, $.tn(` ${text}`)]);
-  return label;
-};
+  const label = $.el('label')
+  const input = $.el('input', { type: 'checkbox', name, checked })
+  $.add(label, [input, $.tn(` ${text}`)])
+  return label
+}
 
 const UI = {
   dialog,
   Menu,
   hover: hoverstart,
   checkbox,
-};
-export default UI;
+}
+export default UI

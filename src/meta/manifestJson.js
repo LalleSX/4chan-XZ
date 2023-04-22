@@ -34,12 +34,12 @@ export default function generateManifestJson(p, version, channel) {
         id: p.meta.appidGecko,
       },
     },
-  };
-
-  if (channel !== '-noupdate') {
-    manifest.update_url = `${p.meta.downloads}updates${channel}.xml`;
-    manifest.applications.gecko.update_url = `${p.meta.downloads}updates${channel}.json`;
   }
 
-  return JSON.stringify(manifest, undefined, 2);
+  if (channel !== '-noupdate') {
+    manifest.update_url = `${p.meta.downloads}updates${channel}.xml`
+    manifest.applications.gecko.update_url = `${p.meta.downloads}updates${channel}.json`
+  }
+
+  return JSON.stringify(manifest, undefined, 2)
 }

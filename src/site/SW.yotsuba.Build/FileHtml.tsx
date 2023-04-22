@@ -1,4 +1,4 @@
-import h, { EscapedHtml, isEscaped } from '../../globals/jsx';
+import h, { EscapedHtml, isEscaped } from '../../globals/jsx'
 
 export default function generateFileHtml(
   file,
@@ -12,7 +12,7 @@ export default function generateFileHtml(
   gifIcon
 ): EscapedHtml {
   if (file) {
-    const fileContent: (EscapedHtml | string)[] = [];
+    const fileContent: (EscapedHtml | string)[] = []
     if (boardID === 'f') {
       fileContent.push(
         <div class="fileInfo" data-md5={file.MD5}>
@@ -30,7 +30,7 @@ export default function generateFileHtml(
             {file.tag ? ', ' + file.tag : ''})
           </span>
         </div>
-      );
+      )
     } else {
       fileContent.push(
         <div
@@ -66,13 +66,13 @@ export default function generateFileHtml(
             loading="lazy"
           />
         </a>
-      );
+      )
     }
     return (
       <div class="file" id={`f${ID}`}>
         {...fileContent}
       </div>
-    );
+    )
   } else if (o.fileDeleted) {
     return (
       <div class="file" id={`f${ID}`}>
@@ -84,7 +84,7 @@ export default function generateFileHtml(
           />
         </span>
       </div>
-    );
+    )
   }
-  return { innerHTML: '', [isEscaped]: true };
+  return { innerHTML: '', [isEscaped]: true }
 }

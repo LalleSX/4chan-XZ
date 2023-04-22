@@ -1,5 +1,5 @@
-import { g } from '../../globals/globals';
-import h, { EscapedHtml } from '../../globals/jsx';
+import { g } from '../../globals/globals'
+import h, { EscapedHtml } from '../../globals/jsx'
 
 export default function generatePostInfoHtml(
   ID: number,
@@ -28,13 +28,13 @@ export default function generatePostInfoHtml(
 ): EscapedHtml {
   const nameHtml: (EscapedHtml | string)[] = [
     <span class={`name${capcode ? ' ' + capcode : ''}`}>{name}</span>,
-  ];
-  if (tripcode) nameHtml.push(' ', <span class="postertrip">{tripcode}</span>);
+  ]
+  if (tripcode) nameHtml.push(' ', <span class="postertrip">{tripcode}</span>)
   if (pass)
     nameHtml.push(
       ' ',
       <span title={`Pass user since ${pass}`} class="n-pu"></span>
-    );
+    )
   if (capcode) {
     nameHtml.push(
       ' ',
@@ -44,7 +44,7 @@ export default function generatePostInfoHtml(
       >
         ## {capcode}
       </strong>
-    );
+    )
   }
 
   const nameBlockContent: (EscapedHtml | string)[] = email
@@ -54,9 +54,9 @@ export default function generatePostInfoHtml(
           {...nameHtml}
         </a>,
       ]
-    : nameHtml;
+    : nameHtml
   if (!((boardID === 'f' && !o.isReply) || capcodeDescription))
-    nameBlockContent.push(' ');
+    nameBlockContent.push(' ')
   if (capcodeDescription) {
     nameBlockContent.push(
       <img
@@ -65,7 +65,7 @@ export default function generatePostInfoHtml(
         title={`This user is ${capcodeDescription}.`}
         class="identityIcon retina"
       />
-    );
+    )
     if (uniqueID && !capcode) {
       nameBlockContent.push(
         <span class={`posteruid id_${uniqueID}`}>
@@ -75,19 +75,19 @@ export default function generatePostInfoHtml(
           </span>
           )
         </span>
-      );
+      )
     }
   }
   if (flagCode)
     nameBlockContent.push(
       ' ',
       <span title={flag} class={`flag flag-${flagCode.toLowerCase()}`} />
-    );
+    )
   if (flagCodeTroll)
     nameBlockContent.push(
       ' ',
       <span title={flag} class={`bfl bfl-${flagCodeTroll.toLowerCase()}`} />
-    );
+    )
 
   const postNumContent: (EscapedHtml | string)[] = [
     <a href={postLink} title="Link to this post">
@@ -96,11 +96,11 @@ export default function generatePostInfoHtml(
     <a href={quoteLink} title="Reply to this post">
       {ID}
     </a>,
-  ];
+  ]
 
   if (o.isSticky) {
-    const src = `${staticPath}sticky${gifIcon}`;
-    postNumContent.push(' ');
+    const src = `${staticPath}sticky${gifIcon}`
+    postNumContent.push(' ')
     if (boardID === 'f') {
       postNumContent.push(
         <img
@@ -109,16 +109,16 @@ export default function generatePostInfoHtml(
           title="Sticky"
           style="height: 18px; width: 18px;"
         />
-      );
+      )
     } else {
       postNumContent.push(
         <img src={src} alt="Sticky" title="Sticky" class="stickyIcon retina" />
-      );
+      )
     }
   }
   if (o.isClosed && !o.isArchived) {
-    postNumContent.push(' ');
-    const src = `${staticPath}closed${gifIcon}`;
+    postNumContent.push(' ')
+    const src = `${staticPath}closed${gifIcon}`
     if (boardID === 'f') {
       postNumContent.push(
         <img
@@ -127,11 +127,11 @@ export default function generatePostInfoHtml(
           title="Closed"
           style="height: 18px; width: 18px;"
         />
-      );
+      )
     } else {
       postNumContent.push(
         <img src={src} alt="Closed" title="Closed" class="closedIcon retina" />
-      );
+      )
     }
   }
   if (o.isArchived) {
@@ -143,11 +143,11 @@ export default function generatePostInfoHtml(
         title="Archived"
         class="archivedIcon retina"
       />
-    );
+    )
   }
   if (!o.isReply && g.VIEW === 'index') {
     // \u00A0 is nbsp
-    postNumContent.push(' \u00A0 ');
+    postNumContent.push(' \u00A0 ')
     postNumContent.push(
       <span>
         [
@@ -156,7 +156,7 @@ export default function generatePostInfoHtml(
         </a>
         ]
       </span>
-    );
+    )
   }
 
   return (
@@ -175,5 +175,5 @@ export default function generatePostInfoHtml(
         {...postNumContent}
       </span>
     </div>
-  );
+  )
 }

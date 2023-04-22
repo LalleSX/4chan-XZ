@@ -1,14 +1,14 @@
-import { g, Conf, d } from '../globals/globals';
-import $ from '../platform/$';
-import Menu from './Menu';
-import Post from '../classes/Post';
+import { g, Conf, d } from '../globals/globals'
+import $ from '../platform/$'
+import Menu from './Menu'
+import Post from '../classes/Post'
 
 type ReportLinkType = {
-  init: () => void;
-  report: () => void;
-  url: string;
-  dims: string;
-};
+  init: () => void
+  report: () => void
+  url: string
+  dims: string
+}
 
 const ReportLink: ReportLinkType = {
   init() {
@@ -17,15 +17,15 @@ const ReportLink: ReportLinkType = {
       !Conf['Menu'] ||
       !Conf['Report Link']
     ) {
-      return;
+      return
     }
 
     const a: HTMLAnchorElement = $.el('a', {
       className: 'report-link',
       href: 'javascript:;',
       textContent: 'Report',
-    });
-    $.on(a, 'click', ReportLink.report);
+    })
+    $.on(a, 'click', ReportLink.report)
 
     return Menu.menu.addEntry({
       el: a,
@@ -33,24 +33,24 @@ const ReportLink: ReportLinkType = {
       open(post: Post) {
         ReportLink.url = `//sys.${location.hostname.split('.')[1]}.org/${
           post.board
-        }/imgboard.php?mode=report&no=${post}`;
+        }/imgboard.php?mode=report&no=${post}`
         if (d.cookie.indexOf('pass_enabled=1') >= 0) {
-          ReportLink.dims = 'width=350,height=275';
+          ReportLink.dims = 'width=350,height=275'
         } else {
-          ReportLink.dims = 'width=400,height=550';
+          ReportLink.dims = 'width=400,height=550'
         }
-        return true;
+        return true
       },
-    });
+    })
   },
 
   report() {
-    const { url, dims } = ReportLink;
-    const id = Date.now();
-    const set = `toolbar=0,scrollbars=1,location=0,status=1,menubar=0,resizable=1,${dims}`;
-    return window.open(url, `report${id}`, set);
+    const { url, dims } = ReportLink
+    const id = Date.now()
+    const set = `toolbar=0,scrollbars=1,location=0,status=1,menubar=0,resizable=1,${dims}`
+    return window.open(url, `report${id}`, set)
   },
   url: '',
   dims: '',
-};
-export default ReportLink;
+}
+export default ReportLink

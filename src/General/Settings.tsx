@@ -1,28 +1,28 @@
-import SettingsPage from './Settings/SettingsHtml';
-import FilterGuidePage from './Settings/Filter-guide.html';
-import SaucePage from './Settings/Sauce.html';
-import AdvancedPage from './Settings/Advanced.html';
-import KeybindsPage from './Settings/Keybinds.html';
-import FilterSelectPage from './Settings/Filter-select.html';
-import Redirect from '../Archive/Redirect';
-import DataBoard from '../classes/DataBoard';
-import Notice from '../classes/Notice';
-import Config from '../config/Config';
-import ImageHost from '../Images/ImageHost';
-import CustomCSS from '../Miscellaneous/CustomCSS';
-import FileInfo from '../Miscellaneous/FileInfo';
-import Keybinds from '../Miscellaneous/Keybinds';
-import Time from '../Miscellaneous/Time';
-import Favicon from '../Monitoring/Favicon';
-import ThreadUpdater from '../Monitoring/ThreadUpdater';
-import Unread from '../Monitoring/Unread';
-import $$ from '../platform/$$';
-import $ from '../platform/$';
-import meta from '../../package.json';
-import { c, Conf, d, doc, E, g } from '../globals/globals';
-import Header from './Header';
-import h, { hFragment } from '../globals/jsx';
-import { dict, platform } from '../platform/helpers';
+import SettingsPage from './Settings/SettingsHtml'
+import FilterGuidePage from './Settings/Filter-guide.html'
+import SaucePage from './Settings/Sauce.html'
+import AdvancedPage from './Settings/Advanced.html'
+import KeybindsPage from './Settings/Keybinds.html'
+import FilterSelectPage from './Settings/Filter-select.html'
+import Redirect from '../Archive/Redirect'
+import DataBoard from '../classes/DataBoard'
+import Notice from '../classes/Notice'
+import Config from '../config/Config'
+import ImageHost from '../Images/ImageHost'
+import CustomCSS from '../Miscellaneous/CustomCSS'
+import FileInfo from '../Miscellaneous/FileInfo'
+import Keybinds from '../Miscellaneous/Keybinds'
+import Time from '../Miscellaneous/Time'
+import Favicon from '../Monitoring/Favicon'
+import ThreadUpdater from '../Monitoring/ThreadUpdater'
+import Unread from '../Monitoring/Unread'
+import $$ from '../platform/$$'
+import $ from '../platform/$'
+import meta from '../../package.json'
+import { c, Conf, d, doc, E, g } from '../globals/globals'
+import Header from './Header'
+import h, { hFragment } from '../globals/jsx'
+import { dict, platform } from '../platform/helpers'
 
 var Settings = {
   dialog: undefined as HTMLDivElement | undefined,
@@ -34,21 +34,21 @@ var Settings = {
       textContent: 'Settings',
       title: `${meta.name} Settings`,
       href: 'javascript:;',
-    });
-    $.on(link, 'click', Settings.open);
+    })
+    $.on(link, 'click', Settings.open)
 
-    Header.addShortcut('settings', link, 820);
+    Header.addShortcut('settings', link, 820)
 
-    const add = this.addSection;
+    const add = this.addSection
 
-    add('Main', this.main);
-    add('Filter', this.filter);
-    add('Sauce', this.sauce);
-    add('Advanced', this.advanced);
-    add('Keybinds', this.keybinds);
+    add('Main', this.main)
+    add('Filter', this.filter)
+    add('Sauce', this.sauce)
+    add('Advanced', this.advanced)
+    add('Keybinds', this.keybinds)
 
-    $.on(d, 'AddSettingsSection', Settings.addSection);
-    $.on(d, 'OpenSettings', e => Settings.open(e.detail));
+    $.on(d, 'AddSettingsSection', Settings.addSection)
+    $.on(d, 'OpenSettings', e => Settings.open(e.detail))
 
     if (g.SITE.software === 'yotsuba' && Conf['Disable Native Extension']) {
       if ($.hasStorage) {
@@ -57,21 +57,21 @@ var Settings = {
         return $.global(function () {
           try {
             const settings =
-              JSON.parse(localStorage.getItem('4chan-settings')) || {};
+              JSON.parse(localStorage.getItem('4chan-settings')) || {}
             if (settings.disableAll) {
-              return;
+              return
             }
-            settings.disableAll = true;
+            settings.disableAll = true
             return localStorage.setItem(
               '4chan-settings',
               JSON.stringify(settings)
-            );
+            )
           } catch (error) {
             return Object.defineProperty(window, 'Config', {
               value: { disableAll: true },
-            });
+            })
           }
-        }, Object.create(null));
+        }, Object.create(null))
       } else {
         return $.global(
           () =>
@@ -79,89 +79,89 @@ var Settings = {
               value: { disableAll: true },
             }),
           Object.create(null)
-        );
+        )
       }
     }
   },
 
   open(openSection) {
-    let dialog, sectionToOpen;
+    let dialog, sectionToOpen
     if (Settings.dialog) {
-      return;
+      return
     }
-    $.event('CloseMenu');
+    $.event('CloseMenu')
 
-    Settings.dialog = dialog = $.el('div', { id: 'overlay' }, SettingsPage);
+    Settings.dialog = dialog = $.el('div', { id: 'overlay' }, SettingsPage)
 
-    $.on($('.export', dialog), 'click', Settings.export);
-    $.on($('.import', dialog), 'click', Settings.import);
-    $.on($('.reset', dialog), 'click', Settings.reset);
-    $.on($('input', dialog), 'change', Settings.onImport);
+    $.on($('.export', dialog), 'click', Settings.export)
+    $.on($('.import', dialog), 'click', Settings.import)
+    $.on($('.reset', dialog), 'click', Settings.reset)
+    $.on($('input', dialog), 'change', Settings.onImport)
 
-    const links = [];
+    const links = []
     for (var section of Settings.sections) {
       var link = $.el('a', {
         className: `tab-${section.hyphenatedTitle}`,
         textContent: section.title,
         href: 'javascript:;',
-      });
-      $.on(link, 'click', Settings.openSection.bind(section));
-      links.push(link, $.tn(' | '));
+      })
+      $.on(link, 'click', Settings.openSection.bind(section))
+      links.push(link, $.tn(' | '))
       if (section.title === openSection) {
-        sectionToOpen = link;
+        sectionToOpen = link
       }
     }
-    links.pop();
-    $.add($('.sections-list', dialog), links);
+    links.pop()
+    $.add($('.sections-list', dialog), links)
     if (openSection !== 'none') {
-      (sectionToOpen ? sectionToOpen : links[0]).click();
+      ;(sectionToOpen ? sectionToOpen : links[0]).click()
     }
 
-    $.on($('.close', dialog), 'click', Settings.close);
-    $.on(window, 'beforeunload', Settings.close);
-    $.on(dialog, 'click', Settings.close);
-    $.on(dialog.firstElementChild, 'click', e => e.stopPropagation());
+    $.on($('.close', dialog), 'click', Settings.close)
+    $.on(window, 'beforeunload', Settings.close)
+    $.on(dialog, 'click', Settings.close)
+    $.on(dialog.firstElementChild, 'click', e => e.stopPropagation())
 
-    $.add(d.body, dialog);
+    $.add(d.body, dialog)
 
-    return $.event('OpenSettings', null, dialog);
+    return $.event('OpenSettings', null, dialog)
   },
 
   close() {
     if (!Settings.dialog) {
-      return;
+      return
     }
     // Unfocus current field to trigger change event.
-    d.activeElement?.blur();
-    $.rm(Settings.dialog);
-    return delete Settings.dialog;
+    d.activeElement?.blur()
+    $.rm(Settings.dialog)
+    return delete Settings.dialog
   },
 
   sections: [],
 
   addSection(title, open) {
     if (typeof title !== 'string') {
-      ({ title, open } = title.detail);
+      ;({ title, open } = title.detail)
     }
-    const hyphenatedTitle = title.toLowerCase().replace(/\s+/g, '-');
-    return Settings.sections.push({ title, hyphenatedTitle, open });
+    const hyphenatedTitle = title.toLowerCase().replace(/\s+/g, '-')
+    return Settings.sections.push({ title, hyphenatedTitle, open })
   },
 
   openSection() {
-    let selected;
+    let selected
     if ((selected = $('.tab-selected', Settings.dialog))) {
-      $.rmClass(selected, 'tab-selected');
+      $.rmClass(selected, 'tab-selected')
     }
     $.addClass(
       $(`.tab-${this.hyphenatedTitle}`, Settings.dialog),
       'tab-selected'
-    );
-    const section = $('section', Settings.dialog);
-    $.rmAll(section);
-    section.className = `section-${this.hyphenatedTitle}`;
-    this.open(section, g);
-    section.scrollTop = 0;
-    return $.event('OpenSettings', null, section);
+    )
+    const section = $('section', Settings.dialog)
+    $.rmAll(section)
+    section.className = `section-${this.hyphenatedTitle}`
+    this.open(section, g)
+    section.scrollTop = 0
+    return $.event('OpenSettings', null, section)
   },
 
   warnings: {
@@ -169,7 +169,7 @@ var Settings = {
       if ($.cantSync) {
         const why = $.cantSet
           ? 'save your settings'
-          : 'synchronize settings between tabs';
+          : 'synchronize settings between tabs'
         return cb(
           $.el('li', {
             textContent: `\
@@ -179,7 +179,7 @@ Enable it on boards.${
             }.org in your browser's privacy settings (may be listed as part of "local data" or "cookies").\
 `,
           })
-        );
+        )
       }
     },
     ads(cb) {
@@ -188,7 +188,7 @@ Enable it on boards.${
           const url = Redirect.to('thread', {
             boardID: 'qa',
             threadID: 362590,
-          });
+          })
           return cb(
             $.el(
               'li',
@@ -207,73 +207,72 @@ Enable it on boards.${
                 on 4chan.
               </>
             )
-          );
+          )
         })
-      );
+      )
     },
   },
 
   main(section) {
-    let key;
+    let key
     const warnings = $.el(
       'fieldset',
       { hidden: true },
       { innerHTML: '<legend>Warnings</legend><ul></ul>' }
-    );
+    )
     const addWarning = function (item) {
-      $.add($('ul', warnings), item);
-      return (warnings.hidden = false);
-    };
-    for (key in Settings.warnings) {
-      var warning = Settings.warnings[key];
-      warning(addWarning);
+      $.add($('ul', warnings), item)
+      return (warnings.hidden = false)
     }
-    $.add(section, warnings);
+    for (key in Settings.warnings) {
+      var warning = Settings.warnings[key]
+      warning(addWarning)
+    }
+    $.add(section, warnings)
 
-    const items = dict();
-    const inputs = dict();
+    const items = dict()
+    const inputs = dict()
     const addCheckboxes = function (root, obj) {
-      const containers = [root];
+      const containers = [root]
       return (() => {
-        const result = [];
+        const result = []
         for (key in obj) {
-          var arr = obj[key];
+          var arr = obj[key]
           if (arr instanceof Array) {
-            var description = arr[1];
+            var description = arr[1]
             var div = $.el('div', {
               innerHTML: `<label><input type="checkbox" name="${key}">${key}</label><span class="description">: ${description}</span>`,
-            });
-            div.dataset.name = key;
-            var input = $('input', div);
-            $.on(input, 'change', $.cb.checked);
+            })
+            div.dataset.name = key
+            var input = $('input', div)
+            $.on(input, 'change', $.cb.checked)
             $.on(input, 'change', function () {
-              return (this.parentNode.parentNode.dataset.checked =
-                this.checked);
-            });
-            items[key] = Conf[key];
-            inputs[key] = input;
-            var level = arr[2] || 0;
+              return (this.parentNode.parentNode.dataset.checked = this.checked)
+            })
+            items[key] = Conf[key]
+            inputs[key] = input
+            var level = arr[2] || 0
             if (containers.length <= level) {
-              var container = $.el('div', { className: 'suboption-list' });
+              var container = $.el('div', { className: 'suboption-list' })
               $.add(
                 containers[containers.length - 1].lastElementChild,
                 container
-              );
-              containers[level] = container;
+              )
+              containers[level] = container
             } else if (containers.length > level + 1) {
-              containers.splice(level + 1, containers.length - (level + 1));
+              containers.splice(level + 1, containers.length - (level + 1))
             }
-            result.push($.add(containers[level], div));
+            result.push($.add(containers[level], div))
           }
         }
-        return result;
-      })();
-    };
+        return result
+      })()
+    }
 
     for (var keyFS in Config.main) {
-      var obj = Config.main[keyFS];
-      var fs = $.el('fieldset', { innerHTML: `<legend>${keyFS}</legend>` });
-      addCheckboxes(fs, obj);
+      var obj = Config.main[keyFS]
+      var fs = $.el('fieldset', { innerHTML: `<legend>${keyFS}</legend>` })
+      addCheckboxes(fs, obj)
       if (keyFS === 'Posting and Captchas') {
         $.add(
           fs,
@@ -283,184 +282,181 @@ Enable it on boards.${
               meta.captchaFAQ +
               '" target="_blank">captcha FAQ</a>.',
           })
-        );
+        )
       }
-      $.add(section, fs);
+      $.add(section, fs)
     }
     addCheckboxes(
       $('div[data-name="JSON Index"] > .suboption-list', section),
       Config.Index
-    );
+    )
 
     // Unsupported options
     if ($.engine !== 'gecko') {
-      $('div[data-name="Remember QR Size"]', section).hidden = true;
+      $('div[data-name="Remember QR Size"]', section).hidden = true
     }
     if ($.perProtocolSettings || location.protocol !== 'https:') {
-      $('div[data-name="Redirect to HTTPS"]', section).hidden = true;
+      $('div[data-name="Redirect to HTTPS"]', section).hidden = true
     }
     if (platform !== 'crx') {
-      $('div[data-name="Work around CORB Bug"]', section).hidden = true;
+      $('div[data-name="Work around CORB Bug"]', section).hidden = true
     }
 
     $.get(items, function (items: string[]) {
       for (key in items) {
-        var val = items[key];
-        inputs[key].checked = val;
-        inputs[key].parentNode.parentNode.dataset.checked = val;
+        var val = items[key]
+        inputs[key].checked = val
+        inputs[key].parentNode.parentNode.dataset.checked = val
       }
-    });
+    })
 
     const div = $.el('div', {
       innerHTML:
         '<button></button><span class="description">: Clear manually-hidden threads and posts on all boards. Reload the page to apply.',
-    });
-    const button = $('button', div);
+    })
+    const button = $('button', div)
     $.get(
       { hiddenThreads: dict(), hiddenPosts: dict() },
       function ({ hiddenThreads, hiddenPosts }) {
-        let board, ID, site, thread;
-        let hiddenNum = 0;
+        let board, ID, site, thread
+        let hiddenNum = 0
         for (ID in hiddenThreads) {
-          site = hiddenThreads[ID];
+          site = hiddenThreads[ID]
           if (ID !== 'boards') {
             for (ID in site.boards) {
-              board = site.boards[ID];
-              hiddenNum += Object.keys(board).length;
+              board = site.boards[ID]
+              hiddenNum += Object.keys(board).length
             }
           }
         }
         for (ID in hiddenThreads.boards) {
-          board = hiddenThreads.boards[ID];
-          hiddenNum += Object.keys(board).length;
+          board = hiddenThreads.boards[ID]
+          hiddenNum += Object.keys(board).length
         }
         for (ID in hiddenPosts) {
-          site = hiddenPosts[ID];
+          site = hiddenPosts[ID]
           if (ID !== 'boards') {
             for (ID in site.boards) {
-              board = site.boards[ID];
+              board = site.boards[ID]
               for (ID in board) {
-                thread = board[ID];
-                hiddenNum += Object.keys(thread).length;
+                thread = board[ID]
+                hiddenNum += Object.keys(thread).length
               }
             }
           }
         }
         for (ID in hiddenPosts.boards) {
-          board = hiddenPosts.boards[ID];
+          board = hiddenPosts.boards[ID]
           for (ID in board) {
-            thread = board[ID];
-            hiddenNum += Object.keys(thread).length;
+            thread = board[ID]
+            hiddenNum += Object.keys(thread).length
           }
         }
-        return (button.textContent = `Hidden: ${hiddenNum}`);
+        return (button.textContent = `Hidden: ${hiddenNum}`)
       }
-    );
+    )
     $.on(button, 'click', function () {
-      this.textContent = 'Hidden: 0';
+      this.textContent = 'Hidden: 0'
       return $.get('hiddenThreads', dict(), function ({ hiddenThreads }) {
         if ($.hasStorage && g.SITE.software === 'yotsuba') {
-          let boardID;
+          let boardID
           for (boardID in hiddenThreads['4chan.org']?.boards) {
-            localStorage.removeItem(`4chan-hide-t-${boardID}`);
+            localStorage.removeItem(`4chan-hide-t-${boardID}`)
           }
           for (boardID in hiddenThreads.boards) {
-            localStorage.removeItem(`4chan-hide-t-${boardID}`);
+            localStorage.removeItem(`4chan-hide-t-${boardID}`)
           }
         }
-        return $.delete(['hiddenThreads', 'hiddenPosts']);
-      });
-    });
-    return $.after(
-      $('input[name="Stubs"]', section).parentNode.parentNode,
-      div
-    );
+        return $.delete(['hiddenThreads', 'hiddenPosts'])
+      })
+    })
+    return $.after($('input[name="Stubs"]', section).parentNode.parentNode, div)
   },
 
   export() {
     // Make sure to export the most recent data, but don't overwrite existing `Conf` object.
-    const Conf2 = dict();
-    $.extend(Conf2, Conf);
+    const Conf2 = dict()
+    $.extend(Conf2, Conf)
     return $.get(Conf2, function (Conf2) {
       // Don't export cached JSON data.
-      delete Conf2['boardConfig'];
+      delete Conf2['boardConfig']
       return Settings.downloadExport({
         version: g.VERSION,
         date: Date.now(),
         Conf: Conf2,
-      });
-    });
+      })
+    })
   },
 
   downloadExport(data) {
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
+    })
+    const url = URL.createObjectURL(blob)
     const a = $.el('a', {
       download: `${meta.name} v${g.VERSION}-${data.date}.json`,
       href: url,
-    });
-    const p = $('.imp-exp-result', Settings.dialog);
-    $.rmAll(p);
-    $.add(p, a);
-    return a.click();
+    })
+    const p = $('.imp-exp-result', Settings.dialog)
+    $.rmAll(p)
+    $.add(p, a)
+    return a.click()
   },
 
   import() {
-    return $('input[type=file]', this.parentNode).click();
+    return $('input[type=file]', this.parentNode).click()
   },
 
   onImport() {
-    let file;
+    let file
     if (!(file = this.files[0])) {
-      return;
+      return
     }
-    this.value = null;
-    const output = $('.imp-exp-result');
+    this.value = null
+    const output = $('.imp-exp-result')
     if (
       !confirm(
         'Your current settings will be entirely overwritten, are you sure?'
       )
     ) {
-      output.textContent = 'Import aborted.';
-      return;
+      output.textContent = 'Import aborted.'
+      return
     }
 
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = function (e) {
       try {
         return Settings.loadSettings(
           dict.json(e.target.result),
           function (err) {
             if (err) {
-              return (output.textContent = 'Import failed due to an error.');
+              return (output.textContent = 'Import failed due to an error.')
             } else if (confirm('Import successful. Reload now?')) {
-              return window.location.reload();
+              return window.location.reload()
             }
           }
-        );
+        )
       } catch (error) {
-        const err = error;
-        output.textContent = 'Import failed due to an error.';
-        return c.error(err.stack);
+        const err = error
+        output.textContent = 'Import failed due to an error.'
+        return c.error(err.stack)
       }
-    };
-    return reader.readAsText(file);
+    }
+    return reader.readAsText(file)
   },
 
   convertFrom: {
     loadletter(data) {
       const convertSettings = function (data, map) {
         for (var prevKey in map) {
-          var newKey = map[prevKey];
+          var newKey = map[prevKey]
           if (newKey) {
-            data.Conf[newKey] = data.Conf[prevKey];
+            data.Conf[newKey] = data.Conf[prevKey]
           }
-          delete data.Conf[prevKey];
+          delete data.Conf[prevKey]
         }
-        return data;
-      };
+        return data
+      }
       data = convertSettings(data, {
         // General confs
         "Disable 4chan's extension": 'Disable Native Extension',
@@ -524,29 +520,29 @@ Enable it on boards.${
         // updater
         Scrolling: 'Auto Scroll',
         Verbose: '',
-      });
+      })
       if ('Always CDN' in data.Conf) {
         data.Conf['fourchanImageHost'] = data.Conf['Always CDN']
           ? 'i.4cdn.org'
-          : '';
-        delete data.Conf['Always CDN'];
+          : ''
+        delete data.Conf['Always CDN']
       }
       data.Conf.sauces = data.Conf.sauces.replace(/\$\d/g, function (c) {
         switch (c) {
           case '$1':
-            return '%TURL';
+            return '%TURL'
           case '$2':
-            return '%URL';
+            return '%URL'
           case '$3':
-            return '%MD5';
+            return '%MD5'
           case '$4':
-            return '%board';
+            return '%board'
           default:
-            return c;
+            return c
         }
-      });
+      })
       for (var key in Config.hotkeys) {
-        var val = Config.hotkeys[key];
+        var val = Config.hotkeys[key]
         if (key in data.Conf) {
           data.Conf[key] = data.Conf[key]
             .replace(
@@ -556,64 +552,64 @@ Enable it on boards.${
             .replace(
               /(^|.+\+)[A-Z]$/g,
               s => `Shift+${s.slice(0, -1)}${s.slice(-1).toLowerCase()}`
-            );
+            )
         }
       }
       if (data.WatchedThreads) {
         data.Conf['watchedThreads'] = dict.clone({
           '4chan.org': { boards: {} },
-        });
+        })
         for (var boardID in data.WatchedThreads) {
-          var threads = data.WatchedThreads[boardID];
+          var threads = data.WatchedThreads[boardID]
           for (var threadID in threads) {
-            var threadData = threads[threadID];
-            (data.Conf['watchedThreads']['4chan.org'].boards[boardID] ||
+            var threadData = threads[threadID]
+            ;(data.Conf['watchedThreads']['4chan.org'].boards[boardID] ||
               (data.Conf['watchedThreads']['4chan.org'].boards[boardID] =
-                dict()))[threadID] = { excerpt: threadData.textContent };
+                dict()))[threadID] = { excerpt: threadData.textContent }
           }
         }
       }
-      return data;
+      return data
     },
   },
 
   upgrade(data, version) {
-    let corrupted, key, val;
-    const changes = dict();
-    const set = (key, value) => (data[key] = changes[key] = value);
+    let corrupted, key, val
+    const changes = dict()
+    const set = (key, value) => (data[key] = changes[key] = value)
     const setD = function (key, value) {
       if (data[key] == null) {
-        return set(key, value);
+        return set(key, value)
       }
-    };
+    }
     const addSauces = function (sauces) {
       if (data['sauces'] != null) {
         sauces = sauces.filter(
           s => data['sauces'].indexOf(s.match(/[^#;\s]+|$/)[0]) < 0
-        );
+        )
         if (sauces.length) {
-          return set('sauces', data['sauces'] + '\n\n' + sauces.join('\n'));
+          return set('sauces', data['sauces'] + '\n\n' + sauces.join('\n'))
         }
       }
-    };
+    }
     const addCSS = function (css) {
       if (data['usercss'] == null) {
-        set('usercss', Config['usercss']);
+        set('usercss', Config['usercss'])
       }
       if (data['usercss'].indexOf(css) < 0) {
-        return set('usercss', css + '\n\n' + data['usercss']);
+        return set('usercss', css + '\n\n' + data['usercss'])
       }
-    };
+    }
     // XXX https://github.com/greasemonkey/greasemonkey/issues/2600
     if ((corrupted = version[0] === '"')) {
       try {
-        version = JSON.parse(version);
+        version = JSON.parse(version)
       } catch (error) {}
     }
-    const compareString = version.replace(/\d+/g, x => ('0000' + x).slice(-5));
+    const compareString = version.replace(/\d+/g, x => ('0000' + x).slice(-5))
     if (compareString < '00001.00013.00014.00008') {
       for (key in data) {
-        val = data[key];
+        val = data[key]
         if (
           typeof val === 'string' &&
           typeof Conf[key] !== 'string' &&
@@ -623,31 +619,31 @@ Enable it on boards.${
             'Last Long Reply Thresholds 1',
           ].includes(key)
         ) {
-          corrupted = true;
-          break;
+          corrupted = true
+          break
         }
       }
     }
     if (corrupted) {
       for (key in data) {
-        val = data[key];
+        val = data[key]
         if (typeof val === 'string') {
           try {
-            var val2 = JSON.parse(val);
-            set(key, val2);
+            var val2 = JSON.parse(val)
+            set(key, val2)
           } catch (error1) {}
         }
       }
     }
     if (compareString < '00001.00011.00008.00000') {
       if (data['Fixed Thread Watcher'] == null) {
-        set('Fixed Thread Watcher', data['Toggleable Thread Watcher'] ?? true);
+        set('Fixed Thread Watcher', data['Toggleable Thread Watcher'] ?? true)
       }
       if (data['Exempt Archives from Encryption'] == null) {
         set(
           'Exempt Archives from Encryption',
           data['Except Archives from Encryption'] ?? false
-        );
+        )
       }
     }
     if (compareString < '00001.00011.00010.00001') {
@@ -664,28 +660,28 @@ Enable it on boards.${
           DesuStorage: 23,
           'fireden.net': 24,
           disabled: null,
-        };
+        }
         for (var boardID in data['selectedArchives']) {
-          var record = data['selectedArchives'][boardID];
+          var record = data['selectedArchives'][boardID]
           for (var type in record) {
-            var name = record[type];
+            var name = record[type]
             if ($.hasOwn(uids, name)) {
-              record[type] = uids[name];
+              record[type] = uids[name]
             }
           }
         }
-        set('selectedArchives', data['selectedArchives']);
+        set('selectedArchives', data['selectedArchives'])
       }
     }
     if (compareString < '00001.00011.00016.00000') {
-      let rice;
+      let rice
       if (
         (rice = Config['usercss'].match(
           /\/\* Board title rice \*\/(?:\n.+)*/
         )[0])
       ) {
         if (data['usercss'] != null && data['usercss'].indexOf(rice) < 0) {
-          set('usercss', rice + '\n\n' + data['usercss']);
+          set('usercss', rice + '\n\n' + data['usercss'])
         }
       }
     }
@@ -699,7 +695,7 @@ Enable it on boards.${
         'Highlight Own Posts',
       ]) {
         if (data[key] == null) {
-          set(key, key === 'Persistent QR');
+          set(key, key === 'Persistent QR')
         }
       }
     }
@@ -711,7 +707,7 @@ Enable it on boards.${
             /^(#?\s*)http:\/\/iqdb\.org\//gm,
             '$1//iqdb.org/'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00011.00019.00003' && !Settings.dialog) {
@@ -719,23 +715,23 @@ Enable it on boards.${
         Settings.warnings.ads(
           item => new Notice('warning', [...Array.from(item.childNodes)])
         )
-      );
+      )
     }
     if (compareString < '00001.00011.00020.00003') {
       const object = {
         'Inline Cross-thread Quotes Only': false,
         'Pass Link': true,
-      };
+      }
       for (key in object) {
-        var value = object[key];
+        var value = object[key]
         if (data[key] == null) {
-          set(key, value);
+          set(key, value)
         }
       }
     }
     if (compareString < '00001.00011.00021.00003') {
       if (data['Remember Your Posts'] == null) {
-        set('Remember Your Posts', data['Mark Quotes of You'] ?? true);
+        set('Remember Your Posts', data['Mark Quotes of You'] ?? true)
       }
     }
     if (compareString < '00001.00011.00022.00000') {
@@ -746,14 +742,14 @@ Enable it on boards.${
             /^(#?\s*https:\/\/www\.google\.com\/searchbyimage\?image_url=%(?:IMG|URL))%3Fs\.jpg/gm,
             '$1'
           )
-        );
+        )
         set(
           'sauces',
           data['sauces'].replace(
             /^#?\s*https:\/\/www\.google\.com\/searchbyimage\?image_url=%(?:IMG|T?URL)(?=$|;)/gm,
             '$&&safe=off'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00011.00022.00002') {
@@ -762,25 +758,25 @@ Enable it on boards.${
         data['Use Recaptcha v1'] &&
         !data['Use Recaptcha v2 in Reports']
       ) {
-        set('Use Recaptcha v1 in Reports', true);
+        set('Use Recaptcha v1 in Reports', true)
       }
     }
     if (compareString < '00001.00011.00024.00000') {
       if (data['JSON Navigation'] != null && data['JSON Index'] == null) {
-        set('JSON Index', data['JSON Navigation']);
+        set('JSON Index', data['JSON Navigation'])
       }
     }
     if (compareString < '00001.00011.00026.00000') {
       if (data['Oekaki Links'] != null && data['Edit Link'] == null) {
-        set('Edit Link', data['Oekaki Links']);
+        set('Edit Link', data['Oekaki Links'])
       }
       if (data['Inline Cross-thread Quotes Only'] == null) {
-        set('Inline Cross-thread Quotes Only', true);
+        set('Inline Cross-thread Quotes Only', true)
       }
     }
     if (compareString < '00001.00011.00030.00000') {
       if (data['Quote Threading'] && data['Thread Quotes'] == null) {
-        set('Thread Quotes', true);
+        set('Thread Quotes', true)
       }
     }
     if (compareString < '00001.00011.00032.00000') {
@@ -791,33 +787,33 @@ Enable it on boards.${
             /^(#?\s*)http:\/\/3d\.iqdb\.org\//gm,
             '$1//3d.iqdb.org/'
           )
-        );
+        )
       }
       addSauces([
         '#https://desustorage.org/_/search/image/%sMD5/',
         '#https://boards.fireden.net/_/search/image/%sMD5/',
         '#https://foolz.fireden.net/_/search/image/%sMD5/',
         '#//www.gif-explode.com/%URL;types:gif',
-      ]);
+      ])
     }
     if (compareString < '00001.00011.00035.00000') {
-      addSauces(['https://whatanime.ga/?auto&url=%IMG;text:wait']);
+      addSauces(['https://whatanime.ga/?auto&url=%IMG;text:wait'])
     }
     if (compareString < '00001.00012.00000.00000') {
       if (data['Exempt Archives from Encryption'] == null) {
-        set('Exempt Archives from Encryption', false);
+        set('Exempt Archives from Encryption', false)
       }
       if (data['Show New Thread Option in Threads'] == null) {
-        set('Show New Thread Option in Threads', false);
+        set('Show New Thread Option in Threads', false)
       }
       if (data['Show Name and Subject']) {
-        addCSS('#qr .persona .field {display: block !important;}');
+        addCSS('#qr .persona .field {display: block !important;}')
       }
       if (data['QR Shortcut'] === false) {
-        addCSS('#shortcut-qr {display: none;}');
+        addCSS('#shortcut-qr {display: none;}')
       }
       if (data['Bottom QR Link'] === false) {
-        addCSS('.qr-link-container-bottom {display: none;}');
+        addCSS('.qr-link-container-bottom {display: none;}')
       }
     }
     if (compareString < '00001.00012.00000.00006') {
@@ -828,7 +824,7 @@ Enable it on boards.${
             /^(#?\s*)https:\/\/(?:desustorage|cuckchan)\.org\//gm,
             '$1https://desuarchive.org/'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00012.00001.00000') {
@@ -836,7 +832,7 @@ Enable it on boards.${
         data['Persistent Thread Watcher'] == null &&
         data['Toggleable Thread Watcher'] != null
       ) {
-        set('Persistent Thread Watcher', !data['Toggleable Thread Watcher']);
+        set('Persistent Thread Watcher', !data['Toggleable Thread Watcher'])
       }
     }
     if (compareString < '00001.00012.00003.00000') {
@@ -845,13 +841,13 @@ Enable it on boards.${
         'Auto Watch',
         'Auto Watch Reply',
       ]) {
-        setD(key, false);
+        setD(key, false)
       }
     }
     if (compareString < '00001.00013.00001.00002') {
       addSauces([
         '#//www.bing.com/images/search?q=imgurl:%IMG&view=detailv2&iss=sbi#enterInsights',
-      ]);
+      ])
     }
     if (compareString < '00001.00013.00005.00000') {
       if (data['sauces'] != null) {
@@ -861,23 +857,23 @@ Enable it on boards.${
             /^(#?\s*)http:\/\/regex\.info\/exif\.cgi/gm,
             '$1http://exif.regex.info/exif.cgi'
           )
-        );
+        )
       }
       addSauces(
         Config['sauces']
           .match(/# Known filename formats:(?:\n.+)*|$/)[0]
           .split('\n')
-      );
+      )
     }
     if (compareString < '00001.00013.00007.00002') {
-      setD('Require OP Quote Link', true);
+      setD('Require OP Quote Link', true)
     }
     if (compareString < '00001.00013.00008.00000') {
-      setD('Download Link', true);
+      setD('Download Link', true)
     }
     if (compareString < '00001.00013.00009.00003') {
       if (data['jsWhitelist'] != null) {
-        const list = data['jsWhitelist'].split('\n');
+        const list = data['jsWhitelist'].split('\n')
         if (
           !list.includes('https://cdnjs.cloudflare.com') &&
           list.includes('https://cdn.mathjax.org')
@@ -885,13 +881,13 @@ Enable it on boards.${
           set(
             'jsWhitelist',
             data['jsWhitelist'] + '\n\nhttps://cdnjs.cloudflare.com'
-          );
+          )
         }
       }
     }
     if (compareString < '00001.00014.00000.00006') {
       if (data['siteSoftware'] != null) {
-        set('siteSoftware', data['siteSoftware'] + '\n4cdn.org yotsuba');
+        set('siteSoftware', data['siteSoftware'] + '\n4cdn.org yotsuba')
       }
     }
     if (compareString < '00001.00014.00003.00002') {
@@ -902,7 +898,7 @@ Enable it on boards.${
             /^(#?\s*)https:\/\/whatanime\.ga\//gm,
             '$1https://trace.moe/'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00004.00004') {
@@ -910,26 +906,26 @@ Enable it on boards.${
         data['siteSoftware'] != null &&
         !/^4channel\.org yotsuba$/m.test(data['siteSoftware'])
       ) {
-        set('siteSoftware', data['siteSoftware'] + '\n4channel.org yotsuba');
+        set('siteSoftware', data['siteSoftware'] + '\n4channel.org yotsuba')
       }
     }
     if (compareString < '00001.00014.00005.00000') {
       for (var db of DataBoard.keys) {
         if (data[db]?.boards) {
-          var { boards, lastChecked } = data[db];
-          data[db]['4chan.org'] = { boards, lastChecked };
-          delete data[db].boards;
-          delete data[db].lastChecked;
-          set(db, data[db]);
+          var { boards, lastChecked } = data[db]
+          data[db]['4chan.org'] = { boards, lastChecked }
+          delete data[db].boards
+          delete data[db].lastChecked
+          set(db, data[db])
         }
       }
       if (data['siteSoftware'] != null && data['siteProperties'] == null) {
-        const siteProperties = dict();
+        const siteProperties = dict()
         for (var line of data['siteSoftware'].split('\n')) {
-          var [hostname, software] = Array.from(line.split(' '));
-          siteProperties[hostname] = { software };
+          var [hostname, software] = Array.from(line.split(' '))
+          siteProperties[hostname] = { software }
         }
-        set('siteProperties', siteProperties);
+        set('siteProperties', siteProperties)
       }
     }
     if (compareString < '00001.00014.00006.00006') {
@@ -940,7 +936,7 @@ Enable it on boards.${
             /\/\/%\$1\.deviantart\.com\/gallery\/#\/d%\$2;regexp:\/\^\\w\+_by_\(\\w\+\)-d\(\[\\da-z\]\+\)\//g,
             '//www.deviantart.com/gallery/#/d%$1%$2;regexp:/^\\w+_by_\\w+[_-]d([\\da-z]{6})\\b|^d([\\da-z]{6})-[\\da-z]{8}-/'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00008.00000') {
@@ -951,7 +947,7 @@ Enable it on boards.${
             /https:\/\/www\.yandex\.com\/images\/search/g,
             'https://yandex.com/images/search'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00009.00000') {
@@ -962,14 +958,14 @@ Enable it on boards.${
             /^(#?\s*)(?:http:)?\/\/(www\.pixiv\.net|www\.deviantart\.com|imgur\.com|flickr\.com)\//gm,
             '$1https://$2/'
           )
-        );
+        )
         set(
           'sauces',
           data['sauces'].replace(
             /https:\/\/yandex\.com\/images\/search\?rpt=imageview&img_url=%IMG/g,
             'https://yandex.com/images/search?rpt=imageview&url=%IMG'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00009.00001') {
@@ -980,12 +976,12 @@ Enable it on boards.${
         set(
           'fourchanImageHost',
           data['Use Faster Image Host'] ? 'i.4cdn.org' : ''
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00010.00001') {
       if (data['Filter in Native Catalog'] == null) {
-        set('Filter in Native Catalog', false);
+        set('Filter in Native Catalog', false)
       }
     }
     if (compareString < '00001.00014.00012.00008') {
@@ -1011,7 +1007,7 @@ tv-replace
 vp-replace
 [external-text:"FAQ","${meta.faq}"]\
 `
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00016.00001') {
@@ -1022,7 +1018,7 @@ vp-replace
             'https://mayhemydg.github.io/archives.json/archives.json',
             'https://nstepien.github.io/archives.json/archives.json'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00016.00007') {
@@ -1035,7 +1031,7 @@ vp-replace
               'javascript:void(open("https://www.deviantart.com/"+%$1.replace(/_/g,"-")+"/art/"+parseInt(%$2,36)));regexp:/^\\w+_by_(\\w+)[_-]d([\\da-z]{6})\\b/'
             )
             .replace(/\/\/imgops\.com\/%URL/g, '//imgops.com/start?url=%URL')
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00017.00002') {
@@ -1044,7 +1040,7 @@ vp-replace
           'jsWhitelist',
           data['jsWhitelist'] +
             '\n\nhttps://hcaptcha.com\nhttps://*.hcaptcha.com'
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00020.00004') {
@@ -1055,7 +1051,7 @@ vp-replace
             'https://nstepien.github.io/archives.json/archives.json',
             'https://4chenz.github.io/archives.json/archives.json'
           )
-        );
+        )
       }
     }
     if (compareString < '00001.00014.00022.00003') {
@@ -1066,7 +1062,7 @@ vp-replace
             /^#?\s*https:\/\/www\.google\.com\/searchbyimage\?image_url=%(IMG|T?URL)&safe=off(?=$|;)/gm,
             'https://www.google.com/searchbyimage?sbisrc=4chanx&image_url=%$1&safe=off'
           )
-        );
+        )
         if (
           compareString === '00001.00014.00022.00002' &&
           !/\bsbisrc=/.test(data['sauces'])
@@ -1077,26 +1073,26 @@ vp-replace
               /^#?\s*https:\/\/lens\.google\.com\/uploadbyurl\?url=%(IMG|T?URL)(?=$|;)/m,
               'https://www.google.com/searchbyimage?sbisrc=4chanx&image_url=%$1&safe=off'
             )
-          );
+          )
         }
       }
     }
-    return changes;
+    return changes
   },
 
   loadSettings(data, cb) {
     if (data.version.split('.')[0] === '2') {
       // https://github.com/loadletter/4chan-x
-      data = Settings.convertFrom.loadletter(data);
+      data = Settings.convertFrom.loadletter(data)
     } else if (data.version !== g.VERSION) {
-      Settings.upgrade(data.Conf, data.version);
+      Settings.upgrade(data.Conf, data.version)
     }
     return $.clear(function (err) {
       if (err) {
-        return cb(err);
+        return cb(err)
       }
-      return $.set(data.Conf, cb);
-    });
+      return $.set(data.Conf, cb)
+    })
   },
 
   reset() {
@@ -1106,173 +1102,173 @@ vp-replace
       return $.clear(function (err) {
         if (err) {
           return ($('.imp-exp-result').textContent =
-            'Import failed due to an error.');
+            'Import failed due to an error.')
         } else if (confirm('Reset successful. Reload now?')) {
-          return window.location.reload();
+          return window.location.reload()
         }
-      });
+      })
     }
   },
 
   filter(section) {
-    $.extend(section, { innerHTML: FilterSelectPage });
-    const select = $('select', section);
-    $.on(select, 'change', Settings.selectFilter);
-    return Settings.selectFilter.call(select);
+    $.extend(section, { innerHTML: FilterSelectPage })
+    const select = $('select', section)
+    $.on(select, 'change', Settings.selectFilter)
+    return Settings.selectFilter.call(select)
   },
 
   selectFilter() {
-    let name;
-    const div = this.nextElementSibling;
+    let name
+    const div = this.nextElementSibling
     if ((name = this.value) !== 'guide') {
       if (!$.hasOwn(Config.filter, name)) {
-        return;
+        return
       }
-      $.rmAll(div);
+      $.rmAll(div)
       const ta = $.el('textarea', {
         name,
         className: 'field',
         spellcheck: false,
-      });
-      $.on(ta, 'change', $.cb.value);
+      })
+      $.on(ta, 'change', $.cb.value)
       $.get(name, Conf[name], function (item) {
-        ta.value = item[name];
-        return $.add(div, ta);
-      });
-      return;
+        ta.value = item[name]
+        return $.add(div, ta)
+      })
+      return
     }
     const filterTypes = Object.keys(Config.filter)
       .filter(x => x !== 'general')
       .map((x, i) => ({
         innerHTML: (i ? ',' : '') + `<wbr>${E(x)}`,
-      }));
-    $.extend(div, { innerHTML: FilterGuidePage });
-    return ($('.warning', div).hidden = Conf['Filter']);
+      }))
+    $.extend(div, { innerHTML: FilterGuidePage })
+    return ($('.warning', div).hidden = Conf['Filter'])
   },
 
   sauce(section) {
-    $.extend(section, { innerHTML: SaucePage });
-    $('.warning', section).hidden = Conf['Sauce'];
-    const ta = $('textarea', section);
+    $.extend(section, { innerHTML: SaucePage })
+    $('.warning', section).hidden = Conf['Sauce']
+    const ta = $('textarea', section)
     $.get('sauces', Conf['sauces'], function (item) {
-      ta.value = item['sauces'];
-      return (ta.hidden = false);
-    }); // XXX prevent Firefox from adding initialization to undo queue
-    return $.on(ta, 'change', $.cb.value);
+      ta.value = item['sauces']
+      return (ta.hidden = false)
+    }) // XXX prevent Firefox from adding initialization to undo queue
+    return $.on(ta, 'change', $.cb.value)
   },
 
   advanced(section) {
-    let input, name;
-    $.extend(section, { innerHTML: AdvancedPage });
+    let input, name
+    $.extend(section, { innerHTML: AdvancedPage })
     for (var warning of $$('.warning', section)) {
-      warning.hidden = Conf[warning.dataset.feature];
+      warning.hidden = Conf[warning.dataset.feature]
     }
 
-    const inputs = dict();
+    const inputs = dict()
     for (input of $$('[name]', section)) {
-      inputs[input.name] = input;
+      inputs[input.name] = input
     }
 
     $.on(inputs['archiveLists'], 'change', function () {
-      $.set('lastarchivecheck', 0);
-      Conf['lastarchivecheck'] = 0;
-      return ($.id('lastarchivecheck').textContent = 'never');
-    });
+      $.set('lastarchivecheck', 0)
+      Conf['lastarchivecheck'] = 0
+      return ($.id('lastarchivecheck').textContent = 'never')
+    })
 
-    const items = dict();
+    const items = dict()
     for (name in inputs) {
-      input = inputs[name];
+      input = inputs[name]
       if (!['Interval', 'Custom CSS'].includes(name)) {
-        items[name] = Conf[name];
+        items[name] = Conf[name]
         var event =
           input.nodeName === 'SELECT' ||
           ['checkbox', 'radio'].includes(input.type) ||
           (input.nodeName === 'TEXTAREA' && !(name in Settings))
             ? 'change'
-            : 'input';
+            : 'input'
         $.on(
           input,
           event,
           $.cb[input.type === 'checkbox' ? 'checked' : 'value']
-        );
+        )
         if (name in Settings) {
-          $.on(input, event, Settings[name]);
+          $.on(input, event, Settings[name])
         }
       }
     }
 
     $.get(items, function (items) {
       for (var key in items) {
-        var val = items[key];
-        input = inputs[key];
-        input[input.type === 'checkbox' ? 'checked' : 'value'] = val;
-        input.hidden = false; // XXX prevent Firefox from adding initialization to undo queue
+        var val = items[key]
+        input = inputs[key]
+        input[input.type === 'checkbox' ? 'checked' : 'value'] = val
+        input.hidden = false // XXX prevent Firefox from adding initialization to undo queue
         if (key in Settings) {
-          Settings[key].call(input);
+          Settings[key].call(input)
         }
       }
-    });
+    })
 
-    const listImageHost = $.id('list-fourchanImageHost');
+    const listImageHost = $.id('list-fourchanImageHost')
     for (var textContent of ImageHost.suggestions) {
-      $.add(listImageHost, $.el('option', { textContent }));
+      $.add(listImageHost, $.el('option', { textContent }))
     }
 
-    const interval = inputs['Interval'];
-    const customCSS = inputs['Custom CSS'];
-    const applyCSS = $('#apply-css', section);
+    const interval = inputs['Interval']
+    const customCSS = inputs['Custom CSS']
+    const applyCSS = $('#apply-css', section)
 
-    interval.value = Conf['Interval'];
-    customCSS.checked = Conf['Custom CSS'];
-    inputs['usercss'].disabled = !Conf['Custom CSS'];
-    applyCSS.disabled = !Conf['Custom CSS'];
+    interval.value = Conf['Interval']
+    customCSS.checked = Conf['Custom CSS']
+    inputs['usercss'].disabled = !Conf['Custom CSS']
+    applyCSS.disabled = !Conf['Custom CSS']
 
-    $.on(interval, 'change', ThreadUpdater.cb.interval);
-    $.on(customCSS, 'change', Settings.togglecss);
-    $.on(applyCSS, 'click', () => CustomCSS.update());
+    $.on(interval, 'change', ThreadUpdater.cb.interval)
+    $.on(customCSS, 'change', Settings.togglecss)
+    $.on(applyCSS, 'click', () => CustomCSS.update())
 
-    const itemsArchive = dict();
+    const itemsArchive = dict()
     for (name of ['archives', 'selectedArchives', 'lastarchivecheck']) {
-      itemsArchive[name] = Conf[name];
+      itemsArchive[name] = Conf[name]
     }
     $.get(itemsArchive, function (itemsArchive) {
-      $.extend(Conf, itemsArchive);
-      Redirect.selectArchives();
-      return Settings.addArchiveTable(section);
-    });
+      $.extend(Conf, itemsArchive)
+      Redirect.selectArchives()
+      return Settings.addArchiveTable(section)
+    })
 
-    const boardSelect = $('#archive-board-select', section);
-    const table = $('#archive-table', section);
-    const updateArchives = $('#update-archives', section);
+    const boardSelect = $('#archive-board-select', section)
+    const table = $('#archive-table', section)
+    const updateArchives = $('#update-archives', section)
 
     $.on(boardSelect, 'change', function () {
-      $('tbody > :not([hidden])', table).hidden = true;
-      return ($(`tbody > .${this.value}`, table).hidden = false);
-    });
+      $('tbody > :not([hidden])', table).hidden = true
+      return ($(`tbody > .${this.value}`, table).hidden = false)
+    })
 
     return $.on(updateArchives, 'click', () =>
       Redirect.update(() => Settings.addArchiveTable(section))
-    );
+    )
   },
 
   addArchiveTable(section) {
-    let boardID, o;
+    let boardID, o
     $('#lastarchivecheck', section).textContent =
       Conf['lastarchivecheck'] === 0
         ? 'never'
-        : new Date(Conf['lastarchivecheck']).toLocaleString();
+        : new Date(Conf['lastarchivecheck']).toLocaleString()
 
-    const boardSelect = $('#archive-board-select', section);
-    const table = $('#archive-table', section);
-    const tbody = $('tbody', section);
+    const boardSelect = $('#archive-board-select', section)
+    const table = $('#archive-table', section)
+    const tbody = $('tbody', section)
 
-    $.rmAll(boardSelect);
-    $.rmAll(tbody);
+    $.rmAll(boardSelect)
+    $.rmAll(tbody)
 
-    const archBoards = dict();
+    const archBoards = dict()
     for (var { uid, name, boards, files, software } of Conf['archives']) {
       if (!['fuuka', 'foolfuuka'].includes(software)) {
-        continue;
+        continue
       }
       for (boardID of boards) {
         o =
@@ -1281,24 +1277,24 @@ vp-replace
             thread: [],
             post: [],
             file: [],
-          });
-        var archive = [uid ?? name, name];
-        o.thread.push(archive);
+          })
+        var archive = [uid ?? name, name]
+        o.thread.push(archive)
         if (software === 'foolfuuka') {
-          o.post.push(archive);
+          o.post.push(archive)
         }
         if (files.includes(boardID)) {
-          o.file.push(archive);
+          o.file.push(archive)
         }
       }
     }
 
-    const rows = [];
-    const boardOptions = [];
+    const rows = []
+    const boardOptions = []
     for (boardID of Object.keys(archBoards).sort()) {
       // Alphabetical order
-      var row = $.el('tr', { className: `board-${boardID}` });
-      row.hidden = boardID !== g.BOARD.ID;
+      var row = $.el('tr', { className: `board-${boardID}` })
+      row.hidden = boardID !== g.BOARD.ID
 
       boardOptions.push(
         $.el('option', {
@@ -1306,43 +1302,43 @@ vp-replace
           value: `board-${boardID}`,
           selected: boardID === g.BOARD.ID,
         })
-      );
+      )
 
-      o = archBoards[boardID];
+      o = archBoards[boardID]
       for (var item of ['thread', 'post', 'file']) {
-        $.add(row, Settings.addArchiveCell(boardID, o, item));
+        $.add(row, Settings.addArchiveCell(boardID, o, item))
       }
-      rows.push(row);
+      rows.push(row)
     }
 
     if (rows.length === 0) {
-      boardSelect.hidden = table.hidden = true;
-      return;
+      boardSelect.hidden = table.hidden = true
+      return
     }
 
-    boardSelect.hidden = table.hidden = false;
+    boardSelect.hidden = table.hidden = false
 
     if (!(g.BOARD.ID in archBoards)) {
-      rows[0].hidden = false;
+      rows[0].hidden = false
     }
 
-    $.add(boardSelect, boardOptions);
-    $.add(tbody, rows);
+    $.add(boardSelect, boardOptions)
+    $.add(tbody, rows)
 
     for (boardID in Conf['selectedArchives']) {
-      var data = Conf['selectedArchives'][boardID];
+      var data = Conf['selectedArchives'][boardID]
       for (var type in data) {
-        var select;
-        var id = data[type];
+        var select
+        var id = data[type]
         if (
           (select = $(
             `select[data-boardid='${boardID}'][data-type='${type}']`,
             tbody
           ))
         ) {
-          select.value = JSON.stringify(id);
+          select.value = JSON.stringify(id)
           if (!select.value) {
-            select.value = select.firstChild.value;
+            select.value = select.firstChild.value
           }
         }
       }
@@ -1350,37 +1346,37 @@ vp-replace
   },
 
   addArchiveCell(boardID, data, type) {
-    const { length } = data[type];
-    const td = $.el('td', { className: 'archive-cell' });
+    const { length } = data[type]
+    const td = $.el('td', { className: 'archive-cell' })
 
     if (!length) {
-      td.textContent = '--';
-      return td;
+      td.textContent = '--'
+      return td
     }
 
-    const options = [];
-    let i = 0;
+    const options = []
+    let i = 0
     while (i < length) {
-      var archive = data[type][i++];
+      var archive = data[type][i++]
       options.push(
         $.el('option', {
           value: JSON.stringify(archive[0]),
           textContent: archive[1],
         })
-      );
+      )
     }
 
-    $.extend(td, { innerHTML: '<select></select>' });
-    const select = td.firstElementChild;
+    $.extend(td, { innerHTML: '<select></select>' })
+    const select = td.firstElementChild
     if (!(select.disabled = length === 1)) {
       // XXX GM can't into datasets
-      select.setAttribute('data-boardid', boardID);
-      select.setAttribute('data-type', type);
-      $.on(select, 'change', Settings.saveSelectedArchive);
+      select.setAttribute('data-boardid', boardID)
+      select.setAttribute('data-type', type)
+      $.on(select, 'change', Settings.saveSelectedArchive)
     }
-    $.add(select, options);
+    $.add(select, options)
 
-    return td;
+    return td
   },
 
   saveSelectedArchive() {
@@ -1388,37 +1384,37 @@ vp-replace
       'selectedArchives',
       Conf['selectedArchives'],
       ({ selectedArchives }) => {
-        (selectedArchives[this.dataset.boardid] ||
+        ;(selectedArchives[this.dataset.boardid] ||
           (selectedArchives[this.dataset.boardid] = dict()))[
           this.dataset.type
-        ] = JSON.parse(this.value);
-        $.set('selectedArchives', selectedArchives);
-        Conf['selectedArchives'] = selectedArchives;
-        return Redirect.selectArchives();
+        ] = JSON.parse(this.value)
+        $.set('selectedArchives', selectedArchives)
+        Conf['selectedArchives'] = selectedArchives
+        return Redirect.selectArchives()
       }
-    );
+    )
   },
 
   boardnav() {
-    return Header.generateBoardList(this.value);
+    return Header.generateBoardList(this.value)
   },
 
   time() {
     return (this.nextElementSibling.textContent = Time.format(
       this.value,
       new Date()
-    ));
+    ))
   },
 
   timeLocale() {
-    return Settings.time.call($('[name=time]', Settings.dialog));
+    return Settings.time.call($('[name=time]', Settings.dialog))
   },
 
   backlink() {
     return (this.nextElementSibling.textContent = this.value.replace(
       /%(?:id|%)/g,
       x => ({ '%id': '123456789', '%%': '%' }[x])
-    ));
+    ))
   },
 
   fileInfo() {
@@ -1435,17 +1431,17 @@ vp-replace
         isSpoiler: true,
         tag: 'Loop',
       },
-    };
-    return FileInfo.format(this.value, data, this.nextElementSibling);
+    }
+    return FileInfo.format(this.value, data, this.nextElementSibling)
   },
 
   favicon() {
-    Favicon.switch();
+    Favicon.switch()
     if (g.VIEW === 'thread' && Conf['Unread Favicon']) {
-      Unread.update();
+      Unread.update()
     }
-    const img = this.nextElementSibling.children;
-    const f = Favicon;
+    const img = this.nextElementSibling.children
+    const f = Favicon
     const iterable = [
       f.SFW,
       f.unreadSFW,
@@ -1456,13 +1452,13 @@ vp-replace
       f.dead,
       f.unreadDead,
       f.unreadDeadY,
-    ];
+    ]
     for (let i = 0; i < iterable.length; i++) {
-      var icon = iterable[i];
+      var icon = iterable[i]
       if (!img[i]) {
-        $.add(this.nextElementSibling, $.el('img'));
+        $.add(this.nextElementSibling, $.el('img'))
       }
-      img[i].src = icon;
+      img[i].src = icon
     }
   },
 
@@ -1474,55 +1470,55 @@ vp-replace
       ).disabled = $.id('apply-css').disabled =
         !this.checked)
     ) {
-      CustomCSS.rmStyle();
+      CustomCSS.rmStyle()
     } else {
-      CustomCSS.addStyle();
+      CustomCSS.addStyle()
     }
-    return $.cb.checked.call(this);
+    return $.cb.checked.call(this)
   },
 
   keybinds(section) {
-    let key;
-    $.extend(section, { innerHTML: KeybindsPage });
-    $('.warning', section).hidden = Conf['Keybinds'];
+    let key
+    $.extend(section, { innerHTML: KeybindsPage })
+    $('.warning', section).hidden = Conf['Keybinds']
 
-    const tbody = $('tbody', section);
-    const items = dict();
-    const inputs = dict();
+    const tbody = $('tbody', section)
+    const items = dict()
+    const inputs = dict()
     for (key in Config.hotkeys) {
-      var arr = Config.hotkeys[key];
+      var arr = Config.hotkeys[key]
       var tr = $.el('tr', {
         innerHTML: `<td>${arr[1]}</td><td><input class="field"></td>`,
-      });
-      var input = $('input', tr);
-      input.name = key;
-      input.spellcheck = false;
-      items[key] = Conf[key];
-      inputs[key] = input;
-      $.on(input, 'keydown', Settings.keybind);
-      $.add(tbody, tr);
+      })
+      var input = $('input', tr)
+      input.name = key
+      input.spellcheck = false
+      items[key] = Conf[key]
+      inputs[key] = input
+      $.on(input, 'keydown', Settings.keybind)
+      $.add(tbody, tr)
     }
 
     return $.get(items, function (items) {
       for (key in items) {
-        var val = items[key];
-        inputs[key].value = val;
+        var val = items[key]
+        inputs[key].value = val
       }
-    });
+    })
   },
 
   keybind(e) {
-    let key;
+    let key
     if (e.keyCode === 9) {
-      return;
+      return
     } // tab
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
     if ((key = Keybinds.keyCode(e)) == null) {
-      return;
+      return
     }
-    this.value = key;
-    return $.cb.value.call(this);
+    this.value = key
+    return $.cb.value.call(this)
   },
-};
-export default Settings;
+}
+export default Settings

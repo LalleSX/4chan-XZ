@@ -1,7 +1,7 @@
-import Callbacks from '../classes/Callbacks';
-import { Conf, doc } from '../globals/globals';
-import $ from '../platform/$';
-import $$ from '../platform/$$';
+import Callbacks from '../classes/Callbacks'
+import { Conf, doc } from '../globals/globals'
+import $ from '../platform/$'
+import $$ from '../platform/$$'
 
 /*
  * decaffeinate suggestions:
@@ -11,57 +11,57 @@ import $$ from '../platform/$$';
 var AntiAutoplay = {
   init() {
     if (!Conf['Disable Autoplaying Sounds']) {
-      return;
+      return
     }
-    $.addClass(doc, 'anti-autoplay');
+    $.addClass(doc, 'anti-autoplay')
     for (var audio of $$('audio[autoplay]', doc)) {
-      this.stop(audio);
+      this.stop(audio)
     }
-    window.addEventListener('loadstart', e => this.stop(e.target), true);
+    window.addEventListener('loadstart', e => this.stop(e.target), true)
     Callbacks.Post.push({
       name: 'Disable Autoplaying Sounds',
       cb: this.node,
-    });
-    return $.ready(() => this.process(doc));
+    })
+    return $.ready(() => this.process(doc))
   },
 
   stop(audio) {
     if (!audio.autoplay) {
-      return;
+      return
     }
-    audio.pause();
-    audio.autoplay = false;
+    audio.pause()
+    audio.autoplay = false
     if (audio.controls) {
-      return;
+      return
     }
-    audio.controls = true;
-    return $.addClass(audio, 'controls-added');
+    audio.controls = true
+    return $.addClass(audio, 'controls-added')
   },
 
   node() {
-    return AntiAutoplay.process(this.nodes.comment);
+    return AntiAutoplay.process(this.nodes.comment)
   },
 
   process(root) {
     for (var iframe of $$('iframe[src*="youtube"][src*="autoplay=1"]', root)) {
-      AntiAutoplay.processVideo(iframe, 'src');
+      AntiAutoplay.processVideo(iframe, 'src')
     }
     for (var object of $$(
       'object[data*="youtube"][data*="autoplay=1"]',
       root
     )) {
-      AntiAutoplay.processVideo(object, 'data');
+      AntiAutoplay.processVideo(object, 'data')
     }
   },
 
   processVideo(el, attr) {
     el[attr] = el[attr]
       .replace(/\?autoplay=1&?/, '?')
-      .replace('&autoplay=1', '');
+      .replace('&autoplay=1', '')
     if (window.getComputedStyle(el).display === 'none') {
-      el.style.display = 'block';
+      el.style.display = 'block'
     }
-    return $.addClass(el, 'autoplay-removed');
+    return $.addClass(el, 'autoplay-removed')
   },
-};
-export default AntiAutoplay;
+}
+export default AntiAutoplay

@@ -1,7 +1,7 @@
-import { g, Conf } from '../globals/globals';
-import ImageCommon from '../Images/ImageCommon';
-import $ from '../platform/$';
-import Menu from './Menu';
+import { g, Conf } from '../globals/globals'
+import ImageCommon from '../Images/ImageCommon'
+import $ from '../platform/$'
+import Menu from './Menu'
 
 const DownloadLink = {
   init(): VoidFunction {
@@ -10,29 +10,29 @@ const DownloadLink = {
       !Conf['Menu'] ||
       !Conf['Download Link']
     ) {
-      return;
+      return
     }
 
     const a: HTMLAnchorElement = $.el('a', {
       className: 'download-link',
       textContent: 'Download file',
-    });
+    })
 
     // Specifying the filename with the download attribute only works for same-origin links.
-    $.on(a, 'click', ImageCommon.download);
+    $.on(a, 'click', ImageCommon.download)
 
     return Menu.menu.addEntry({
       el: a,
       order: 100,
       open({ file }) {
         if (!file) {
-          return false;
+          return false
         }
-        a.href = file.url;
-        a.download = file.name;
-        return true;
+        a.href = file.url
+        a.download = file.name
+        return true
       },
-    }) as VoidFunction;
+    }) as VoidFunction
   },
-};
-export default DownloadLink;
+}
+export default DownloadLink

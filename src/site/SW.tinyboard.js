@@ -1,8 +1,8 @@
-import { Conf, d } from '../globals/globals';
-import Main from '../main/Main';
-import $ from '../platform/$';
-import $$ from '../platform/$$';
-import { dict } from '../platform/helpers';
+import { Conf, d } from '../globals/globals'
+import Main from '../main/Main'
+import $ from '../platform/$'
+import $$ from '../platform/$$'
+import { dict } from '../platform/helpers'
 
 /*
  * decaffeinate suggestions:
@@ -40,32 +40,32 @@ const SWTinyboard = {
 
   detect() {
     for (var script of $$('script:not([src])', d.head)) {
-      var m;
+      var m
       if ((m = script.textContent.match(/\bvar configRoot=(".*?")/))) {
-        var properties = dict();
+        var properties = dict()
         try {
-          var root = JSON.parse(m[1]);
+          var root = JSON.parse(m[1])
           if (root[0] === '/') {
-            properties.root = location.origin + root;
+            properties.root = location.origin + root
           } else if (/^https?:/.test(root)) {
-            properties.root = root;
+            properties.root = root
           }
         } catch (error) {}
-        return properties;
+        return properties
       }
     }
-    return false;
+    return false
   },
 
   awaitBoard(cb) {
-    let reactUI;
+    let reactUI
     if ((reactUI = $.id('react-ui'))) {
-      const s = (this.selectors = Object.create(this.selectors));
-      s.boardFor = { index: '.page-container' };
-      s.thread = 'div[id^="thread_"]';
-      return Main.mounted(cb);
+      const s = (this.selectors = Object.create(this.selectors))
+      s.boardFor = { index: '.page-container' }
+      s.thread = 'div[id^="thread_"]'
+      return Main.mounted(cb)
     } else {
-      return cb();
+      return cb()
     }
   },
 
@@ -73,65 +73,65 @@ const SWTinyboard = {
     thread({ siteID, boardID, threadID }, isArchived) {
       return `${
         Conf['siteProperties'][siteID]?.root || `http://${siteID}/`
-      }${boardID}/${isArchived ? 'archive/' : ''}res/${threadID}.html`;
+      }${boardID}/${isArchived ? 'archive/' : ''}res/${threadID}.html`
     },
     post({ postID }) {
-      return `#${postID}`;
+      return `#${postID}`
     },
     index({ siteID, boardID }) {
       return `${
         Conf['siteProperties'][siteID]?.root || `http://${siteID}/`
-      }${boardID}/`;
+      }${boardID}/`
     },
     catalog({ siteID, boardID }) {
       return `${
         Conf['siteProperties'][siteID]?.root || `http://${siteID}/`
-      }${boardID}/catalog.html`;
+      }${boardID}/catalog.html`
     },
     threadJSON({ siteID, boardID, threadID }, isArchived) {
-      const root = Conf['siteProperties'][siteID]?.root;
+      const root = Conf['siteProperties'][siteID]?.root
       if (root) {
         return `${root}${boardID}/${
           isArchived ? 'archive/' : ''
-        }res/${threadID}.json`;
+        }res/${threadID}.json`
       } else {
-        return '';
+        return ''
       }
     },
     archivedThreadJSON(thread) {
-      return SWTinyboard.urls.threadJSON(thread, true);
+      return SWTinyboard.urls.threadJSON(thread, true)
     },
     threadsListJSON({ siteID, boardID }) {
-      const root = Conf['siteProperties'][siteID]?.root;
+      const root = Conf['siteProperties'][siteID]?.root
       if (root) {
-        return `${root}${boardID}/threads.json`;
+        return `${root}${boardID}/threads.json`
       } else {
-        return '';
+        return ''
       }
     },
     archiveListJSON({ siteID, boardID }) {
-      const root = Conf['siteProperties'][siteID]?.root;
+      const root = Conf['siteProperties'][siteID]?.root
       if (root) {
-        return `${root}${boardID}/archive/archive.json`;
+        return `${root}${boardID}/archive/archive.json`
       } else {
-        return '';
+        return ''
       }
     },
     catalogJSON({ siteID, boardID }) {
-      const root = Conf['siteProperties'][siteID]?.root;
+      const root = Conf['siteProperties'][siteID]?.root
       if (root) {
-        return `${root}${boardID}/catalog.json`;
+        return `${root}${boardID}/catalog.json`
       } else {
-        return '';
+        return ''
       }
     },
     file({ siteID, boardID }, filename) {
       return `${
         Conf['siteProperties'][siteID]?.root || `http://${siteID}/`
-      }${boardID}/${filename}`;
+      }${boardID}/${filename}`
     },
     thumb(board, filename) {
-      return SWTinyboard.urls.file(board, filename);
+      return SWTinyboard.urls.file(board, filename)
     },
   },
 
@@ -218,119 +218,119 @@ $\
 
   Build: {
     parseJSON(data, board) {
-      const o = this.parseJSON(data, board);
+      const o = this.parseJSON(data, board)
       if (data.ext === 'deleted') {
-        delete o.file;
+        delete o.file
         $.extend(o, {
           files: [],
           fileDeleted: true,
           filesDeleted: [0],
-        });
+        })
       }
       if (data.extra_files) {
-        let file;
+        let file
         for (let i = 0; i < data.extra_files.length; i++) {
-          var extra_file = data.extra_files[i];
+          var extra_file = data.extra_files[i]
           if (extra_file.ext === 'deleted') {
-            o.filesDeleted.push(i);
+            o.filesDeleted.push(i)
           } else {
-            file = this.parseJSONFile(data, board);
-            o.files.push(file);
+            file = this.parseJSONFile(data, board)
+            o.files.push(file)
           }
         }
         if (o.files.length) {
-          o.file = o.files[0];
+          o.file = o.files[0]
         }
       }
-      return o;
+      return o
     },
 
     parseComment(html) {
-      html = html.replace(/<br\b[^<]*>/gi, '\n').replace(/<[^>]*>/g, '');
-      return $.unescape(html);
+      html = html.replace(/<br\b[^<]*>/gi, '\n').replace(/<[^>]*>/g, '')
+      return $.unescape(html)
     },
   },
 
   bgColoredEl() {
-    return $.el('div', { className: 'post reply' });
+    return $.el('div', { className: 'post reply' })
   },
 
   isFileURL(url) {
-    return /\/src\/[^\/]+/.test(url.pathname);
+    return /\/src\/[^\/]+/.test(url.pathname)
   },
 
   preParsingFixes(board) {
     // fixes effects of unclosed link in announcement
-    let broken;
+    let broken
     if ((broken = $('a > input[name="board"]', board))) {
-      return $.before(broken.parentNode, broken);
+      return $.before(broken.parentNode, broken)
     }
   },
 
   parseNodes(post, nodes) {
     // Add vichan's span.poster_id around the ID if not already present.
-    let m;
+    let m
     if (nodes.uniqueID) {
-      return;
+      return
     }
-    let text = '';
-    let node = nodes.nameBlock.nextSibling;
+    let text = ''
+    let node = nodes.nameBlock.nextSibling
     while (node && node.nodeType === 3) {
-      text += node.textContent;
-      node = node.nextSibling;
+      text += node.textContent
+      node = node.nextSibling
     }
     if ((m = text.match(/(\s*ID:\s*)(\S+)/))) {
-      let uniqueID;
-      nodes.info.normalize();
-      let { nextSibling } = nodes.nameBlock;
-      nextSibling = nextSibling.splitText(m[1].length);
-      nextSibling.splitText(m[2].length);
-      nodes.uniqueID = uniqueID = $.el('span', { className: 'poster_id' });
-      $.replace(nextSibling, uniqueID);
-      return $.add(uniqueID, nextSibling);
+      let uniqueID
+      nodes.info.normalize()
+      let { nextSibling } = nodes.nameBlock
+      nextSibling = nextSibling.splitText(m[1].length)
+      nextSibling.splitText(m[2].length)
+      nodes.uniqueID = uniqueID = $.el('span', { className: 'poster_id' })
+      $.replace(nextSibling, uniqueID)
+      return $.add(uniqueID, nextSibling)
     }
   },
 
   parseDate(node) {
-    let date = Date.parse(node.getAttribute('datetime')?.trim());
+    let date = Date.parse(node.getAttribute('datetime')?.trim())
     if (!isNaN(date)) {
-      return new Date(date);
+      return new Date(date)
     }
-    date = Date.parse(node.textContent.trim() + ' UTC'); // e.g. onesixtwo.club
+    date = Date.parse(node.textContent.trim() + ' UTC') // e.g. onesixtwo.club
     if (!isNaN(date)) {
-      return new Date(date);
+      return new Date(date)
     }
-    return undefined;
+    return undefined
   },
 
   parseFile(post, file) {
-    let info, infoNode;
-    const { text, link, thumb } = file;
+    let info, infoNode
+    const { text, link, thumb } = file
     if (
       $.x(`ancestor::${this.xpath.postContainer}[1]`, text) !== post.nodes.root
     ) {
-      return false;
+      return false
     } // file belongs to a reply
     if (
       !(infoNode = link.nextSibling?.textContent.includes('(')
         ? link.nextSibling
         : link.nextElementSibling)
     ) {
-      return false;
+      return false
     }
     if (
       !(info = infoNode.textContent.match(/\((.*,\s*)?([\d.]+ ?[KMG]?B).*\)/))
     ) {
-      return false;
+      return false
     }
-    const nameNode = $('.postfilename', text);
+    const nameNode = $('.postfilename', text)
     $.extend(file, {
       name: nameNode
         ? nameNode.title || nameNode.textContent
         : link.pathname.match(/[^/]*$/)[0],
       size: info[2],
       dimensions: info[0].match(/\d+x\d+/)?.[0],
-    });
+    })
     if (thumb) {
       $.extend(file, {
         thumbURL:
@@ -340,9 +340,9 @@ $\
         isSpoiler:
           /^Spoiler/i.test(info[1] || '') ||
           link.textContent === 'Spoiler Image',
-      });
+      })
     }
-    return true;
+    return true
   },
 
   isThumbExpanded(file) {
@@ -350,15 +350,15 @@ $\
     return (
       $.hasClass(file.thumb.parentNode, 'expanded') ||
       file.thumb.parentNode.dataset.expanded === 'true'
-    );
+    )
   },
 
   isLinkified(link) {
-    return /\bnofollow\b/.test(link.rel);
+    return /\bnofollow\b/.test(link.rel)
   },
 
   catalogPin(threadRoot) {
-    return (threadRoot.dataset.sticky = 'true');
+    return (threadRoot.dataset.sticky = 'true')
   },
-};
-export default SWTinyboard;
+}
+export default SWTinyboard

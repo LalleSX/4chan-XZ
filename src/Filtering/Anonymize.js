@@ -1,12 +1,12 @@
-import { Conf, doc } from '../globals/globals';
-import $ from '../platform/$';
+import { Conf, doc } from '../globals/globals'
+import $ from '../platform/$'
 
 const Anonymize = {
   init() {
     if (!Conf['Anonymize']) {
-      return;
+      return
     }
-    return $.addClass(doc, 'anonymize');
+    return $.addClass(doc, 'anonymize')
   },
-};
-export default Anonymize;
+}
+export default Anonymize

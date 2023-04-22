@@ -1,5 +1,5 @@
-import Callbacks from '../classes/Callbacks';
-import { Conf, g } from '../globals/globals';
+import Callbacks from '../classes/Callbacks'
+import { Conf, g } from '../globals/globals'
 
 /*
  * decaffeinate suggestions:
@@ -12,35 +12,35 @@ const RevealSpoilers = {
       !['index', 'thread', 'archive'].includes(g.VIEW) ||
       !Conf['Reveal Spoiler Thumbnails']
     ) {
-      return;
+      return
     }
 
     return Callbacks.Post.push({
       name: 'Reveal Spoiler Thumbnails',
       cb: this.node,
-    });
+    })
   },
 
   node() {
     if (this.isClone) {
-      return;
+      return
     }
     for (var file of this.files) {
       if (file.thumb && file.isSpoiler) {
-        var { thumb } = file;
+        var { thumb } = file
         // Remove old width and height.
-        thumb.removeAttribute('style');
+        thumb.removeAttribute('style')
         // Enforce thumbnail size if thumbnail is replaced.
         thumb.style.maxHeight = thumb.style.maxWidth = this.isReply
           ? '125px'
-          : '250px';
+          : '250px'
         if (thumb.src) {
-          thumb.src = file.thumbURL;
+          thumb.src = file.thumbURL
         } else {
-          thumb.dataset.src = file.thumbURL;
+          thumb.dataset.src = file.thumbURL
         }
       }
     }
   },
-};
-export default RevealSpoilers;
+}
+export default RevealSpoilers
