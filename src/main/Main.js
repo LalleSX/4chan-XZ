@@ -115,7 +115,7 @@ var Main = {
         return
       }
       w[`${meta.name} antidup`] = true
-    } catch (error) {}
+    } catch (error) { }
 
     // Don't run inside ad iframes.
     try {
@@ -125,7 +125,7 @@ var Main = {
       ) {
         return
       }
-    } catch (error1) {}
+    } catch (error1) { }
 
     // Detect multiple copies of 4chan X
     if (doc && $.hasClass(doc, 'fourchan-x')) {
@@ -154,7 +154,7 @@ var Main = {
         (() => {
           try {
             return cb()
-          } catch (error2) {}
+          } catch (error2) { }
         })(),
       )
     }
@@ -189,7 +189,7 @@ var Main = {
           }
           return fromCharCode0.apply(this, arguments)
         })
-      })
+      }, Object.create(null))
       $.asap(docSet, () => $.onExists(doc, 'iframe[srcdoc]', $.rm))
     }
 
@@ -242,7 +242,7 @@ var Main = {
       !$$('script:not([src])', d).filter((s) => /this\[/.test(s.textContent))
         .length
     ) {
-      ;($.getSync || $.get)(
+      ; ($.getSync || $.get)(
         { jsWhitelist: Conf['jsWhitelist'] },
         ({ jsWhitelist }) =>
           $.addCSP(
@@ -269,10 +269,10 @@ var Main = {
       ) {
         location.replace(
           'https://' +
-            location.host +
-            location.pathname +
-            location.search +
-            location.hash,
+          location.host +
+          location.pathname +
+          location.search +
+          location.hash,
         )
         return
       }
@@ -355,7 +355,7 @@ var Main = {
     $.global(function () {
       document.documentElement.classList.add('js-enabled')
       return (window.FCX = {})
-    })
+    }, Object.assign({}, g.SITE))
     Main.jsEnabled = $.hasClass(doc, 'js-enabled')
 
     // XXX https://bugs.chromium.org/p/chromium/issues/detail?id=920638
@@ -639,7 +639,7 @@ var Main = {
 
       try {
         g.SITE.preParsingFixes?.(board)
-      } catch (error) {}
+      } catch (error) { }
 
       Main.addThreadsObserver = new MutationObserver(Main.addThreads)
       Main.addPostsObserver = new MutationObserver(Main.addPosts)
@@ -943,9 +943,8 @@ var Main = {
     }
 
     const div = $.el('div', {
-      innerHTML: `${errors.length} errors occurred.${
-        Main.reportLink(errors).innerHTML
-      } [<a href="javascript:;">show</a>]`,
+      innerHTML: `${errors.length} errors occurred.${Main.reportLink(errors).innerHTML
+        } [<a href="javascript:;">show</a>]`,
     })
     $.on(div.lastElementChild, 'click', function () {
       let ref
@@ -972,9 +971,8 @@ var Main = {
       innerHTML: E(data.message) + (reportLink ? reportLink.innerHTML : ''),
     })
     const error = $.el('div', {
-      textContent: `${data.error.name || 'Error'}: ${
-        data.error.message || 'see console for details'
-      }`,
+      textContent: `${data.error.name || 'Error'}: ${data.error.message || 'see console for details'
+        }`,
     })
     const lines =
       data.error.stack
@@ -999,7 +997,7 @@ var Main = {
       if (
         encodeURIComponent(title + details + text + '\n').length <=
         meta.newIssueMaxLength -
-          meta.newIssue.replace(/%(title|details)/, '').length
+        meta.newIssue.replace(/%(title|details)/, '').length
       ) {
         return (details += text + '\n')
       }
@@ -1047,7 +1045,7 @@ User agent: ${navigator.userAgent}\
       Main.thisPageIsLegit = g.SITE.isThisPageLegit
         ? g.SITE.isThisPageLegit()
         : !/^[45]\d\d\b/.test(document.title) &&
-          !/\.(?:json|rss)$/.test(location.pathname)
+        !/\.(?:json|rss)$/.test(location.pathname)
     }
     return Main.thisPageIsLegit
   },
@@ -1158,7 +1156,3 @@ User agent: ${navigator.userAgent}\
 }
 export default Main
 $.ready(() => Main.init())
-
-// <% if (readJSON('/.tests_enabled')) { %>
-// Main.features.push(['Build Test', Test]);
-// <% } %>

@@ -1,11 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 import SettingsPage from './Settings/SettingsHtml'
 import FilterGuidePage from './Settings/Filter-guide.html'
 import SaucePage from './Settings/Sauce.html'
@@ -79,12 +71,12 @@ var Settings = {
               value: { disableAll: true },
             })
           }
-        })
+        }, Object.create(null))
       } else {
         return $.global(() =>
           Object.defineProperty(window, 'Config', {
             value: { disableAll: true },
-          }),
+          }), Object.create(null)
         )
       }
     }
@@ -305,7 +297,7 @@ Enable it on boards.${
       $('div[data-name="Work around CORB Bug"]', section).hidden = true
     }
 
-    $.get(items, function (items) {
+    $.get(items, function (items: string[]) {
       for (key in items) {
         var val = items[key]
         inputs[key].checked = val

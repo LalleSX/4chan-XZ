@@ -75,14 +75,13 @@ var Filter = {
       for (var line of (Conf[key] as string).split('\n')) {
         let hl: string
         let isstring: boolean
-        let regexp: RegExp | string
+        let regexp: RegExp | string | RegExpMatchArray
         let top: boolean
         let types: string[]
 
         if (line[0] === '#') {
           continue
         }
-
         if (!(regexp = line.match(/\/(.*)\/(\w*)/))) {
           continue
         }
@@ -109,17 +108,8 @@ var Filter = {
             regexp = RegExp(regexp[1], regexp[2])
           } catch (err) {
             // I warned you, bro.
-            new Notice(
-              'warning',
-              [
-                $.tn(`Invalid ${key} filter:`),
-                $.el('br'),
-                $.tn(line),
-                $.el('br'),
-                $.tn(err.message),
-              ],
-              60,
-            )
+            // Notice(type, content, timeout, onclose)
+            new Notice('error', `Invalid regular expression: ${regexp[1]}`)
             continue
           }
         }
@@ -150,14 +140,8 @@ var Filter = {
 
         // Highlight the post.
         // If not specified, the highlight class will be filter-highlight.
-        if ((hl = /(?:^|;)\s*highlight/.test(filter))) {
-          hl =
-            filter.match(/(?:^|;)\s*highlight:([\w-]+)/)?.[1] ||
-            'filter-highlight'
-          // Put highlighted OP's thread on top of the board page or not.
-          // Defaults to on top.
-          top = filter.match(/(?:^|;)\s*top:(yes|no)/)?.[1] || 'yes'
-          top = top === 'yes' // Turn it into a boolean
+        if ((hl = filter.match(/(?:^|;)\s*highlight:([^;]+)/)?.[1])) {
+          hl = hl.trim()
         }
 
         // Fields that this filter applies to (for 'general' filters)
@@ -383,8 +367,8 @@ var Filter = {
       }
     }
     g.BOARD.threads.forEach(function (thread) {
-      if (thread.catalogViewNative) {
-        return Filter.catalogNode.call(thread.catalogViewNative)
+      if (thread.catalogView) {
+        return Filter.catalogNode.call(thread.catalogView)
       }
     })
   },
@@ -544,7 +528,7 @@ var Filter = {
     }
     const filter = files.map((f) => `/${f.MD5}/`).join('\n')
     Filter.addFilter('MD5', filter)
-    const origin = post.origin || post
+    Filter.showFilters('MD5')
     if (origin.isReply) {
       PostHiding.hide(origin)
     } else if (g.VIEW === 'index') {

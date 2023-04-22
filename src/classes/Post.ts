@@ -31,6 +31,8 @@ export default class Post {
   declare files: ReturnType<Post['parseFile']>[]
 
   declare info: {
+    commentHTML: string
+    comment: string
     subject: string | undefined
     name: string | undefined
     email: string | undefined
@@ -72,7 +74,6 @@ export default class Post {
     this.root = root
     this.thread = thread
     this.board = board
-    $.extend(this, flags)
     this.ID = +root.id.match(/\d*$/)[0]
     this.postID = this.ID
     this.threadID = this.thread.ID
@@ -102,12 +103,13 @@ export default class Post {
 
     const name = this.nodes.name?.textContent
     const tripcode = this.nodes.tripcode?.textContent
-
     this.info = {
+      commentHTML: this.nodes.comment?.innerHTML || '',
+      comment: this.nodes.comment?.textContent || '',
       subject: this.nodes.subject?.textContent || undefined,
       name,
       email: this.nodes.email
-        ? decodeURIComponent(this.nodes.email.href.replace(/^mailto:/, ''))
+        ? decodeURIComponent(this.nodes.email.baseURI.split('mailto:')[1])
         : undefined,
       tripcode,
       uniqueID: this.nodes.uniqueID?.textContent,
@@ -256,7 +258,7 @@ export default class Post {
     const nodes = $.X('.//br|.//text()', bq)
     let i = 0
     while ((node = nodes.snapshotItem(i++))) {
-      text += node.data || '\n'
+      text += node.nodeName === 'BR' ? '\n' : node.textContent
     }
     return text
   }
@@ -328,6 +330,12 @@ export default class Post {
 
   parseFile(fileRoot: HTMLElement) {
     interface File {
+      isImage: boolean
+      isVideo: boolean
+      url: string
+      dimensions: string
+      name: string
+      MD5: string
       text: string
       link: HTMLAnchorElement
       thumb: HTMLElement

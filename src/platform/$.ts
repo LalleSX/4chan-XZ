@@ -6,9 +6,10 @@ import CrossOrigin from "./CrossOrigin";
 import { debounce, dict, MINUTE, platform, SECOND } from "./helpers";
 import { AjaxPageOptions, Dict, ElementProperties, SyncObject, WhenModifiedOptions } from "../types/$";
 import Callbacks from "../classes/Callbacks";
+import SimpleDict from "../classes/SimpleDict";
 // not chainable
 const $ = (selector, root = document.body) => root.querySelector(selector);
-$.id = id => d.getElementById(id);
+$.id = (id: string) => d.getElementById(id);
 $.cache = dict();
 $.ajaxPage = function (url: string, options: AjaxPageOptions = {}) {
   if (options == null) { options = {}; }
@@ -67,8 +68,8 @@ $.getOwn = function (obj: Object, key: string) { if ($.hasOwn(obj, key)) { retur
 
 $.ajax = (function () {
   let pageXHR = XMLHttpRequest;
-  if (window.wrappedJSObject && !XMLHttpRequest.wrappedJSObject) {
-    pageXHR = XPCNativeWrapper(window.wrappedJSObject.XMLHttpRequest);
+  if (unsafeWindow.wrappedJSObject && !XMLHttpRequest.wrappedJSObject) {
+    pageXHR = XPCNativeWrapper(unsafeWindow.wrappedJSObject.XMLHttpRequest);
   } else {
     pageXHR = XMLHttpRequest;
   }
@@ -80,8 +81,8 @@ $.ajax = (function () {
     url = url.replace(/^((?:https?:)?\/\/(?:\w+\.)?(?:4chan|4channel|4cdn)\.org)\/adv\//, '$1//adv/');
     if (platform === 'crx') {
       // XXX https://bugs.chromium.org/p/chromium/issues/detail?id=920638
-      if (Conf['Work around CORB Bug'] && g.SITE.software === 'yotsuba' && !options.testCORB && FormData.prototype.entries) {
-        return $.ajaxPage(url, options);
+      if (Conf['Work around CORB Bug'] && g.SITE.software === 'yotsuba' && Date.now() - Conf['Work around CORB Bug'] < 2 * MINUTE) {
+        options.responseType = 'text';
       }
     }
     const { onloadend, timeout, responseType, withCredentials, type, onprogress, form, headers } = options as AjaxPageOptions;
@@ -129,7 +130,7 @@ $.ajax = (function () {
         //@ts-ignore
         window.FCX.requests = Object.create(null);
         document.addEventListener('4chanXAjax', function (e) {
-          let fd, r;
+          let fd: FormData, r: XMLHttpRequest;
           const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail;
           //@ts-ignore
           window.FCX.requests[id] = r = new pageXHR();
@@ -180,7 +181,7 @@ $.ajax = (function () {
           return r.abort();
         }
           , false);
-      }, 0);
+      }, Object.create(null));
 
       $.on(d, '4chanXAjaxProgress', function (e: CustomEvent) {
         let req: any;
@@ -204,7 +205,7 @@ $.ajax = (function () {
       });
     };
 
-    return $.ajaxPage = function (url, options = {}) {
+    return $.ajaxPage = function (url: string, options: any = {}) {
       let req: any;
       let { onloadend, timeout, responseType, withCredentials, type, onprogress, form, headers } = options || {};
       const id = requestID++;
@@ -221,7 +222,7 @@ $.ajax = (function () {
           }
         }
       }
-      $.event('4chanXAjax', { url, timeout, responseType, withCredentials, type, onprogress: !!onprogress, form, headers, id });
+      $.event('4chanXAjax', { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id });
       return req;
     };
   }
@@ -298,6 +299,7 @@ $.whenModified = function (
     req.callbacks = [cb];
     return reqs[url] = req;
   };
+  // very sensitive errors
   return $.cleanCache = function (testf) {
     for (var url in reqs) {
       if (testf(url)) {
@@ -358,19 +360,19 @@ $.addCSP = function (policy: string) {
   return meta;
 };
 
-$.x = function (path, root) {
+$.x = function (path: string, root?: HTMLElement) {
   if (!root) { root = d.body; }
   // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
   return d.evaluate(path, root, null, 8, null).singleNodeValue;
 };
 
-$.X = function (path, root) {
+$.X = function (path: string, root?: HTMLElement) {
   if (!root) { root = d.body; }
   // XPathResult.ORDERED_NODE_SNAPSHOT_TYPE === 7
   return d.evaluate(path, root, null, 7, null);
 };
 
-$.addClass = function (el, ...classNames) {
+$.addClass = function (el: HTMLElement, ...classNames: string[]) {
   for (var className of classNames) { el.classList.add(className); }
 };
 
@@ -378,11 +380,11 @@ $.rmClass = function (el, ...classNames) {
   for (var className of classNames) { el.classList.remove(className); }
 };
 
-$.toggleClass = (el, className) => el.classList.toggle(className);
+$.toggleClass = (el: HTMLElement, className: string) => el.classList.toggle(className);
 
-$.hasClass = (el, className) => el.classList.contains(className);
+$.hasClass = (el: HTMLElement, className: string) => el.classList.contains(className);
 
-$.rm = el => el?.remove();
+$.rm = (el: Element) => el?.remove();
 
 $.rmAll = root => // https://gist.github.com/MayhemYDG/8646194
   root.textContent = null;
@@ -527,7 +529,7 @@ $.debounce = function (wait, fn) {
   };
 };
 //ok
-$.queueTask = function (fn) {
+$.queueTask = function (fn: VoidFunction) {
   if (typeof requestIdleCallback === 'function') {
     return requestIdleCallback(fn);
   } else {
@@ -535,16 +537,14 @@ $.queueTask = function (fn) {
   }
 };
 
-$.global = function (fn: Function, data: object) {
+$.global = function (fn: Function, data?: object) {
   if (doc) {
-    const script = $.el('script',
-      { textContent: `(${fn}).call(document.currentScript.dataset);` });
+    const script = $.el('script', { textContent: `(${fn}).call(document.currentScript.dataset);` });
     if (data) { $.extend(script.dataset, data); }
     $.add((d.head || doc), script);
     $.rm(script);
     return script.dataset;
   } else {
-    // XXX dwb
     try {
       fn.call(data);
     } catch (error) { }
@@ -612,17 +612,19 @@ $.item = function (key, val) {
   return item;
 };
 
-$.oneItemSugar = fn => (function (key, val, cb) {
-  if (typeof key === 'string') {
-    return fn($.item(key, val), cb);
+$.oneItemSugar = (fn: Function) => (function (key: string[], val: any, cb?: Function) {
+  if (typeof key === 'object') {
+    for (const k in key) {
+      fn(k, key[k], val);
+    }
   } else {
-    return fn(key, val);
+    fn(key, val, cb);
   }
 });
 
 $.syncing = dict();
 
-$.securityCheck = function (data) {
+$.securityCheck = function (data: object) {
   if (location.protocol !== 'https:') {
     return delete data['Redirect to HTTPS'];
   }
@@ -666,7 +668,7 @@ if (platform === 'crx') {
   };
 
 
-  $.get = $.oneItemSugar(function (data, cb) {
+  $.get = $.oneItemSugar(function (data: object, key: string, cb: Function) {
     if (!$.crxWorking()) { return; }
     const results = {};
     const get = function (area) {
@@ -676,7 +678,7 @@ if (platform === 'crx') {
         keys = null;
       }
       return chrome.storage[area].get(keys, function (result) {
-        let key;
+        let key: string;
         result = dict.clone(result);
         if (chrome.runtime.lastError) {
           c.error(chrome.runtime.lastError.message);
@@ -777,16 +779,14 @@ if (platform === 'crx') {
           c.error(chrome.runtime.lastError.message);
         }
         if (err == null) { err = chrome.runtime.lastError; }
-        if (!--count) { return cb?.(err); }
+        if (!--count) { return cb?.(); }
       };
       chrome.storage.local.clear(done);
       return chrome.storage.sync.clear(done);
     };
   })();
 } else {
-
-  // http://wiki.greasespot.net/Main_Page
-  // https://tampermonkey.net/documentation.php
+  $.syncing = {};
 
   if ((GM?.deleteValue != null) && window.BroadcastChannel && (typeof GM_addValueChangeListener === 'undefined' || GM_addValueChangeListener === null)) {
 
@@ -804,9 +804,9 @@ if (platform === 'crx') {
       return result;
     })());
 
-    $.sync = (key, cb) => $.syncing[key] = cb;
+    $.sync = (key: string, cb: () => void) => $.syncing[key] = cb;
 
-    $.forceSync = function () { };
+    $.forceSync = function (): void { };
 
     $.delete = function (keys, cb) {
       let key;
@@ -827,9 +827,9 @@ if (platform === 'crx') {
       });
     };
 
-    $.get = $.oneItemSugar(function (items, cb) {
-      const keys = Object.keys(items);
-      return Promise.all(keys.map((key) => GM.getValue(g.NAMESPACE + key))).then(function (values) {
+    $.get = $.oneItemSugar(function <T>(items: SimpleDict<T>, cb: (items: SimpleDict<T>) => void) {
+      const keys: string[] = Object.keys(items);
+      return Promise.all(keys.map((key) => GM.getValue(g.NAMESPACE + key))).then(function (values: string[]) {
         for (let i = 0; i < values.length; i++) {
           var val = values[i];
           if (val) {
@@ -840,10 +840,10 @@ if (platform === 'crx') {
       });
     });
 
-    $.set = $.oneItemSugar(function (items, cb) {
+    $.set = $.oneItemSugar(function (items: Record<string, any>, cb?: () => void) {
       $.securityCheck(items);
       return Promise.all((() => {
-        const result = [];
+        const result: Promise<void>[] = [];
         for (var key in items) {
           var val = items[key];
           result.push(GM.setValue(g.NAMESPACE + key, JSON.stringify(val)));
@@ -870,7 +870,6 @@ if (platform === 'crx') {
       $.getValue = GM_getValue;
       $.listValues = () => GM_listValues(); // error when called if missing
     } else if ($.hasStorage) {
-      $.getValue = key => localStorage.getItem(key);
       $.listValues = () => (() => {
         const result = [];
         for (var key in localStorage) {
@@ -881,23 +880,20 @@ if (platform === 'crx') {
         return result;
       })();
     } else {
-      $.getValue = function () { };
       $.listValues = () => [];
     }
 
     if (typeof GM_addValueChangeListener !== 'undefined' && GM_addValueChangeListener !== null) {
-      $.setValue = GM_setValue;
-      $.deleteValue = GM_deleteValue;
     } else if (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) {
       $.oldValue = dict();
-      $.setValue = function (key, val) {
+      $.setValue = function (key: string, val: string) {
         GM_setValue(key, val);
         if (key in $.syncing) {
           $.oldValue[key] = val;
           if ($.hasStorage) { return localStorage.setItem(key, val); } // for `storage` events
         }
       };
-      $.deleteValue = function (key) {
+      $.deleteValue = function (key: string) {
         GM_deleteValue(key);
         if (key in $.syncing) {
           delete $.oldValue[key];
@@ -922,10 +918,14 @@ if (platform === 'crx') {
     }
 
     if (typeof GM_addValueChangeListener !== 'undefined' && GM_addValueChangeListener !== null) {
-      $.sync = function (key, cb) {
+      $.sync = function (key: string, cb: (val: any, key: string) => void) {
         key = g.NAMESPACE + key;
         $.syncing[key] = cb;
+        // if GM_addValueChangeListener was removed
+        if (GM_addValueChangeListener == null) { return; }
         return GM_addValueChangeListener(key, function (name, oldVal, newVal) {
+          // if the callback was removed
+          if ($.syncing[key] == null) { return; }
           if (newVal != null) {
             if (newVal === oldVal) { return; }
             return cb(dict.json(newVal), name);
@@ -937,7 +937,7 @@ if (platform === 'crx') {
       }); };
       $.forceSync = function () { };
     } else if ((typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) || $.hasStorage) {
-      $.sync = function (key, cb) {
+      $.sync = function (key: string, cb: (val: any, key: string) => void) {
         key = g.NAMESPACE + key;
         $.syncing[key] = cb;
         return $.oldValue[key] = $.getValue(key);
@@ -945,7 +945,7 @@ if (platform === 'crx') {
 
       (function () {
         const onChange = function ({ key, newValue }) {
-          let cb;
+          let cb: (val: any, key: string) => void;
           if (!(cb = $.syncing[key])) { return; }
           if (newValue != null) {
             if (newValue === $.oldValue[key]) { return; }
@@ -959,27 +959,20 @@ if (platform === 'crx') {
         };
         $.on(window, 'storage', onChange);
 
-        return $.forceSync = function (key) {
-          // Storage events don't work across origins
-          // e.g. http://boards.4chan.org and https://boards.4chan.org
-          // so force a check for changes to avoid lost data.
-          key = g.NAMESPACE + key;
-          return onChange({ key, newValue: $.getValue(key) });
-        };
+        return $.forceSync = function () { return onChange({ key: g.NAMESPACE + 'forceSync', newValue: 1 }); };
       })();
     } else {
-      $.sync = function () { };
       $.forceSync = function () { };
     }
 
-    $.delete = function (keys, cb) {
+    $.delete = function (keys: string[], cb?: any) {
       if (keys.length === 0) { return cb?.(); }
       return Promise.all(keys.map(key => $.deleteValue(g.NAMESPACE + key))).then(cb);
     };
 
-    $.get = $.oneItemSugar((items, cb) => $.queueTask(() => $.getSync(items, cb)));
+    $.get = $.oneItemSugar((items: any, cb: Function) => $.queueTask(() => $.getSync(items, cb)));
 
-    $.getSync = function (items, cb) {
+    $.getSync = function (items: any, cb: Function) {
       for (var key in items) {
         var val2;
         if (val2 = $.getValue(g.NAMESPACE + key)) {
@@ -995,7 +988,7 @@ if (platform === 'crx') {
       return cb(items);
     };
 
-    $.set = $.oneItemSugar(function (items, cb) {
+    $.set = $.oneItemSugar(function (items: any, cb?: Function) {
       $.securityCheck(items);
       return $.queueTask(function () {
         for (var key in items) {
@@ -1006,7 +999,7 @@ if (platform === 'crx') {
       });
     });
 
-    $.clear = function (cb) {
+    $.clear = function (cb: Function) {
       // XXX https://github.com/greasemonkey/greasemonkey/issues/2033
       // Also support case where GM_listValues is not defined.
       $.delete(Object.keys(Conf), cb);
