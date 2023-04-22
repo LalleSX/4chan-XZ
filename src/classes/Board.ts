@@ -3,6 +3,7 @@ import { d, g } from '../globals/globals'
 import SimpleDict from './SimpleDict'
 import Thread from './Thread'
 import Post from './Post'
+import Site from './Site'
 
 /*
  * decaffeinate suggestions:
@@ -12,7 +13,7 @@ import Post from './Post'
 export default class Board {
   ID: string
   boardID: string
-  siteID: string
+  siteID: string | Site
   threads: SimpleDict<Thread>
   posts: SimpleDict<Post>
   config:
@@ -22,7 +23,7 @@ export default class Board {
     return this.ID
   }
 
-  constructor(ID) {
+  constructor(ID: string) {
     this.ID = ID
     this.boardID = this.ID
     this.siteID = g.SITE.ID

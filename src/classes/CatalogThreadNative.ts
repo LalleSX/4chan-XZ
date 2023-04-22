@@ -4,12 +4,12 @@ import Board from './Board'
 import Thread from './Thread'
 
 export default class CatalogThreadNative {
-  boardID: Board
+  boardID: string | Board
   nodes: { root: any; thumb: any }
   siteID: number
   threadID: number
-  ID: string
-  thread: any
+  ID: number
+  thread: Thread
   toString() {
     return this.ID
   }
@@ -18,10 +18,9 @@ export default class CatalogThreadNative {
     const thumb = $(g.SITE.selectors.catalog.thumb, root)
     this.nodes = { root, thumb }
     this.siteID = g.SITE.ID
-    this.boardID = thumb.parentNode.pathname.split(/\/+/)[1]
-    this.boardID = g.boards[g.BOARD.ID] ?? new Board(this.boardID)
+    this.boardID = g.BOARD
+    this.boardID = this.boardID || $(root).data('board')
     this.ID = this.threadID = +root.dataset.id || $(root).data('id')
-    this.threadID =
-      this.boardID.threads.get(this.ID) ?? new Thread(this.ID, g.BOARD.ID)
+    this.threadID = this.ID = this.threadID || this.ID
   }
 }

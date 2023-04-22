@@ -3,6 +3,8 @@
     "*.jst": true,
     "*.md": true,
     "*.yaml": true,
+    "*.yml": true,
+    "*.css": true,
     "package*.json": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",

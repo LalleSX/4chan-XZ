@@ -12,7 +12,7 @@
     "jsx": "react",
     "jsxFactory": "h",
     "jsxFragmentFactory": "hFragment",
-    "types": ["@violentmonkey/types", "@types/chrome", "@types/jquery"],
+    "types": ["@violentmonkey/types", "@types/chrome", "@types/jquery", "@types/node"],
     "lib": ["DOM", "ES2020"],
     // needs to be in the deepest dir used as target in the rollup build
     // https://stackoverflow.com/q/40460790, https://github.com/rollup/plugins/issues/243

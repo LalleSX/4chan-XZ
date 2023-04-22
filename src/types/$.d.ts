@@ -28,9 +28,9 @@ declare global {
     whenModified: (
       url: string,
       bucket: string,
-      cb: (this: JQueryXHR) => void,
+      cb: (this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) => void,
       options?: WhenModifiedOptions
-    ) => JQueryXHR
+    ) => void
   }
 }
 export type Dict = { [key: string]: any }

@@ -578,14 +578,14 @@ export class PostClone extends Post {
     return this
   }
 
-  cloneWithoutVideo(node) {
-    if (node.tagName === 'VIDEO' && !node.dataset.md5) {
+  cloneWithoutVideo(node: NodeListOf<ChildNode> | ChildNode) {
+    if (node instanceof HTMLVideoElement && !node.dataset.md5) {
       // (exception for WebM thumbnails)
       return []
-    } else if (node.nodeType === Node.ELEMENT_NODE && $('video', node)) {
-      const clone = node.cloneNode(false)
-      for (var child of node.childNodes) {
-        $.add(clone, this.cloneWithoutVideo(child))
+    } else if (node.nodeType === Node.ELEMENT_NODE && node.querySelector('video')) {
+      const clone = node.cloneNode(false) as Element
+      for (const child of node.childNodes) {
+        clone.appendChild(cloneWithoutVideo(child))
       }
       return clone
     } else {
