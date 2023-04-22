@@ -1,4 +1,4 @@
-import h, { hFragment, EscapedHtml } from '../../globals/jsx'
+import h, { hFragment, EscapedHtml } from '../../globals/jsx';
 
 export default function generateCatalogThreadHtml(
   thread,
@@ -9,7 +9,7 @@ export default function generateCatalogThreadHtml(
   fileCount,
   pageCount,
   staticPath,
-  gifIcon,
+  gifIcon
 ): EscapedHtml {
   return (
     <>
@@ -59,5 +59,5 @@ export default function generateCatalogThreadHtml(
         </span>
       </div>
     </>
-  )
+  );
 }

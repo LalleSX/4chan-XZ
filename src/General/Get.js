@@ -1,115 +1,115 @@
-import { Conf, g } from '../globals/globals'
-import $ from '../platform/$'
+import { Conf, g } from '../globals/globals';
+import $ from '../platform/$';
 
 var Get = {
   url(type, IDs, ...args) {
-    let f, site
+    let f, site;
     if ((site = g.sites[IDs.siteID]) && (f = $.getOwn(site.urls, type))) {
-      return f(IDs, ...Array.from(args))
+      return f(IDs, ...Array.from(args));
     } else {
-      return undefined
+      return undefined;
     }
   },
   threadExcerpt(thread) {
-    const { OP } = thread
+    const { OP } = thread;
     const excerpt =
       `/${decodeURIComponent(thread.board.ID)}/ - ` +
       (OP.info.subject?.trim() ||
         OP.commentDisplay().replace(/\n+/g, ' // ') ||
         OP.file?.name ||
-        `No.${OP}`)
+        `No.${OP}`);
     if (excerpt.length > 73) {
-      return `${excerpt.slice(0, 70)}...`
+      return `${excerpt.slice(0, 70)}...`;
     }
-    return excerpt
+    return excerpt;
   },
   threadFromRoot(root) {
     if (root == null) {
-      return null
+      return null;
     }
-    const { board } = root.dataset
+    const { board } = root.dataset;
     return g.threads.get(
       `${board ? encodeURIComponent(board) : g.BOARD.ID}.${
         root.id.match(/\d*$/)[0]
-      }`,
-    )
+      }`
+    );
   },
   threadFromNode(node) {
     return Get.threadFromRoot(
-      $.x(`ancestor-or-self::${g.SITE.xpath.thread}`, node),
-    )
+      $.x(`ancestor-or-self::${g.SITE.xpath.thread}`, node)
+    );
   },
   postFromRoot(root) {
     if (root == null) {
-      return null
+      return null;
     }
-    const post = g.posts.get(root.dataset.fullID)
-    const index = root.dataset.clone
+    const post = g.posts.get(root.dataset.fullID);
+    const index = root.dataset.clone;
     if (index) {
-      return post.clones[+index]
+      return post.clones[+index];
     } else {
-      return post
+      return post;
     }
   },
   postFromNode(root) {
     return Get.postFromRoot(
-      $.x(`ancestor-or-self::${g.SITE.xpath.postContainer}[1]`, root),
-    )
+      $.x(`ancestor-or-self::${g.SITE.xpath.postContainer}[1]`, root)
+    );
   },
   postDataFromLink(link) {
-    let boardID, postID, threadID
+    let boardID, postID, threadID;
     if (link.dataset.postID) {
       // resurrected quote
-      ;({ boardID, threadID, postID } = link.dataset)
+      ({ boardID, threadID, postID } = link.dataset);
       if (!threadID) {
-        threadID = 0
+        threadID = 0;
       }
     } else {
-      const match = link.href.match(g.SITE.regexp.quotelink)
-      ;[boardID, threadID, postID] = Array.from(match.slice(1))
+      const match = link.href.match(g.SITE.regexp.quotelink);
+      [boardID, threadID, postID] = Array.from(match.slice(1));
       if (!postID) {
-        postID = threadID
+        postID = threadID;
       }
     }
     return {
       boardID,
       threadID: +threadID,
       postID: +postID,
-    }
+    };
   },
   allQuotelinksLinkingTo(post) {
     // Get quotelinks & backlinks linking to the given post.
-    const quotelinks = []
-    const { posts } = g
-    const { fullID } = post
+    const quotelinks = [];
+    const { posts } = g;
+    const { fullID } = post;
     const handleQuotes = function (qPost, type) {
-      quotelinks.push(...Array.from(qPost.nodes[type] || []))
+      quotelinks.push(...Array.from(qPost.nodes[type] || []));
       for (var clone of qPost.clones) {
-        quotelinks.push(...Array.from(clone.nodes[type] || []))
+        quotelinks.push(...Array.from(clone.nodes[type] || []));
       }
-    }
+    };
     // First:
     posts.forEach(function (qPost) {
       if (qPost.quotes.includes(fullID)) {
-        return handleQuotes(qPost, 'quotelinks')
+        return handleQuotes(qPost, 'quotelinks');
       }
-    })
+    });
 
     // Second:
     if (Conf['Quote Backlinks']) {
       for (var quote of post.quotes) {
-        var qPost
+        var qPost;
         if ((qPost = posts.get(quote))) {
-          handleQuotes(qPost, 'backlinks')
+          handleQuotes(qPost, 'backlinks');
         }
       }
     }
 
     // Third:
     return quotelinks.filter(function (quotelink) {
-      const { boardID, postID } = Get.postDataFromLink(quotelink)
-      return boardID === post.board.ID && postID === post.ID
-    })
+      const { boardID, postID } = Get.postDataFromLink(quotelink);
+      return boardID === post.board.ID && postID === post.ID;
+    });
   },
-}
-export default Get
+};
+export default Get;

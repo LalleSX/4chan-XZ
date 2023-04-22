@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "moduleResolution": "node16",
-    "types": [
-      "@violentmonkey/types",
-      "@types/chrome",
-      "node"
-    ],
+    "types": ["@violentmonkey/types", "@types/chrome", "node"]
   },
   "extends": "../tsconfig.json"
 }
