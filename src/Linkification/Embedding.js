@@ -8,7 +8,6 @@ import $ from '../platform/$'
 import $$ from '../platform/$$'
 import CrossOrigin from '../platform/CrossOrigin'
 import { dict } from '../platform/helpers'
-import EmbeddingPage from './Embedding/Embed.html'
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
@@ -33,7 +32,7 @@ var Embedding = {
     }
 
     if (Conf['Embedding'] && g.VIEW !== 'archive') {
-      this.dialog = UI.dialog('embedding', { innerHTML: EmbeddingPage })
+      this.dialog = UI.dialog('embedding', $.loadHTML("./Embedding/Embed.html'"))
       this.media = $('#media-embed', this.dialog)
       $.one(d, '4chanXInitFinished', this.ready)
       $.on(d, 'IndexRefreshInternal', () =>

@@ -1,11 +1,11 @@
-import version from '../../version.json'
-import meta from '../../package.json'
 import type SimpleDict from '../classes/SimpleDict'
 import type Post from '../classes/Post'
 import type Thread from '../classes/Thread'
 import type SWTinyboard from '../site/SW.tinyboard'
 
 // interfaces might be incomplete
+const version = "0.0.0"
+const meta = "sw"
 export interface BoardConfig {
   forced_anon: any
   sjis_tags: any
@@ -67,8 +67,8 @@ export const g: {
   VIEW?: string
   xpath?: HTMLElement
 } = {
-  VERSION: version.version,
-  NAMESPACE: meta.name,
+  VERSION: version,
+  NAMESPACE: meta,
   sites: Object.create(null),
   boards: Object.create(null),
 }

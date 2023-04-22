@@ -1,22 +1,38 @@
 {
   "compilerOptions": {
-    "module": "ES2022",
-    "noImplicitAny": false,
-    "removeComments": false,
-    "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
     "target": "ES2020",
-    "allowJs": true,
-    "checkJs": true,
+    "useDefineForClassFields": true,
+    "module": "ES2022",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "moduleResolution": "Node",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
     "noEmit": true,
+    "allowJs": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "jsxFragmentFactory": "hFragment",
-    "types": ["@violentmonkey/types", "@types/chrome", "@types/jquery"],
-    "lib": ["DOM", "ES2020"],
-    // needs to be in the deepest dir used as target in the rollup build
-    // https://stackoverflow.com/q/40460790, https://github.com/rollup/plugins/issues/243
-    "outDir": "builds/test/crx/tsOutput"
+    "checkJs": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": false,
+    "jsxFragmentFactory": "h.fragment",
+    "skipLibCheck": true,
+    "types": [
+      "@violentmonkey/types",
+      "@types/chrome"
+    ]
   },
-  "exclude": ["builds/test/tsOutput", "src/meta/*", "./tools/*", "dist/*"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/meta*"
+  ]
 }

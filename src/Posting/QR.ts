@@ -1,4 +1,3 @@
-import QuickReplyPage from './QR/QuickReply.html'
 import $ from '../platform/$'
 import Callbacks from '../classes/Callbacks'
 import Notice from '../classes/Notice'
@@ -861,7 +860,7 @@ const QR: QRNodes = {
     let dialog, event, nodes
     let name
     QR.nodes = nodes = {
-      el: (dialog = UI.dialog('qr', { innerHTML: QuickReplyPage })),
+      el: (dialog = UI.dialog('qr', $.loadHTML("./QR/QuickReply.html"))),
     }
 
     const setNode = (name, query) => (nodes[name] = $(query, dialog))

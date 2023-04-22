@@ -5,7 +5,6 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-import galleryPage from './Gallery/Gallery.html'
 import $ from '../platform/$'
 import Callbacks from '../classes/Callbacks'
 import Notice from '../classes/Notice'
@@ -97,7 +96,7 @@ var Gallery = {
     Gallery.slideshow = false
 
     nodes.el = dialog = $.el('div', { id: 'a-gallery' })
-    $.extend(dialog, { innerHTML: galleryPage })
+    $.extend(dialog, $.loadHTML('./Gallery/Gallery.html'))
 
     const object = {
       buttons: '.gal-buttons',

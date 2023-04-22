@@ -14,6 +14,11 @@ import SimpleDict from '../classes/SimpleDict'
 const $ = (selector, root = document.body) => root.querySelector(selector)
 $.id = (id: string) => d.getElementById(id)
 $.cache = dict()
+$.loadHTML = async function (path) {
+  const response = await fetch(path);
+  const HTMLString = await response.text();
+  return HTMLString;
+}
 $.ajaxPage = function (url: string, options: AjaxPageOptions = {}) {
   if (options == null) {
     options = {}

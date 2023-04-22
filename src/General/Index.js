@@ -26,9 +26,6 @@ import { c, Conf, d, doc, g } from '../globals/globals'
 import Header from './Header'
 import UI from './UI'
 import Menu from '../Menu/Menu'
-
-import NavLinksPage from './Index/NavLinks.html'
-import PageList from './Index/PageList.html'
 import BoardConfig from './BoardConfig'
 import Get from './Get'
 import { dict, SECOND } from '../platform/helpers'
@@ -152,7 +149,7 @@ var Index = {
 
     // Navigation links at top of index
     this.navLinks = $.el('div', { className: 'navLinks json-index' })
-    $.extend(this.navLinks, { innerHTML: NavLinksPage })
+    $.extend(this.navLinks, $.loadHTML("./Index/NavLinks.html"))
     $('.cataloglink a', this.navLinks).href = CatalogLinks.catalog()
     if (!BoardConfig.isArchived(g.BOARD.ID)) {
       $('.archlistlink', this.navLinks).hidden = true
@@ -214,7 +211,7 @@ var Index = {
 
     // Page list
     this.pagelist = $.el('div', { className: 'pagelist json-index' })
-    $.extend(this.pagelist, { innerHTML: PageList })
+    $.extend(this.pagelist, $.loadHTML("./Index/PageList.html"))
     $('.cataloglink a', this.pagelist).href = CatalogLinks.catalog()
     $.on(this.pagelist, 'click', this.cb.pageNav)
 

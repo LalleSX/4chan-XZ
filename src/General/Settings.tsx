@@ -1,9 +1,4 @@
 import SettingsPage from './Settings/SettingsHtml'
-import FilterGuidePage from './Settings/Filter-guide.html'
-import SaucePage from './Settings/Sauce.html'
-import AdvancedPage from './Settings/Advanced.html'
-import KeybindsPage from './Settings/Keybinds.html'
-import FilterSelectPage from './Settings/Filter-select.html'
 import Redirect from '../Archive/Redirect'
 import DataBoard from '../classes/DataBoard'
 import Notice from '../classes/Notice'
@@ -1111,7 +1106,7 @@ vp-replace
   },
 
   filter(section) {
-    $.extend(section, { innerHTML: FilterSelectPage })
+    $.extend(section, $.loadHTML('./Settings/Filter-select.html'))
     const select = $('select', section)
     $.on(select, 'change', Settings.selectFilter)
     return Settings.selectFilter.call(select)
@@ -1142,12 +1137,12 @@ vp-replace
       .map((x, i) => ({
         innerHTML: (i ? ',' : '') + `<wbr>${E(x)}`,
       }))
-    $.extend(div, { innerHTML: FilterGuidePage })
+    $.extend(div, $.loadHTML('./Settings/Filter-guide.html'))
     return ($('.warning', div).hidden = Conf['Filter'])
   },
 
   sauce(section) {
-    $.extend(section, { innerHTML: SaucePage })
+    $.extend(section, $.loadHTML('./Settings/Sauce.html'))
     $('.warning', section).hidden = Conf['Sauce']
     const ta = $('textarea', section)
     $.get('sauces', Conf['sauces'], function (item) {
@@ -1159,7 +1154,7 @@ vp-replace
 
   advanced(section) {
     let input, name
-    $.extend(section, { innerHTML: AdvancedPage })
+    $.extend(section, $.loadHTML('./Settings/Advanced.html'))
     for (var warning of $$('.warning', section)) {
       warning.hidden = Conf[warning.dataset.feature]
     }
@@ -1479,7 +1474,7 @@ vp-replace
 
   keybinds(section) {
     let key
-    $.extend(section, { innerHTML: KeybindsPage })
+    $.extend(section, $.loadHTML('./Settings/Keybinds.html'))
     $('.warning', section).hidden = Conf['Keybinds']
 
     const tbody = $('tbody', section)

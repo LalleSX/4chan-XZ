@@ -1,6 +1,5 @@
 import Redirect from '../Archive/Redirect'
 import $ from '../platform/$'
-import ReportPage from './Report/ArchiveReport.html'
 import CSS from '../css/CSS'
 import Captcha from '../Posting/Captcha'
 import { Conf, d, g } from '../globals/globals'
@@ -69,7 +68,7 @@ var Report = {
         id: 'archive-report',
         hidden: true,
       },
-      { innerHTML: ReportPage }
+      $.loadHTML('./Report/ArchiveReport.html')
     )
     const enabled = $('#archive-report-enabled', fieldset)
     const reason = $('#archive-report-reason', fieldset)

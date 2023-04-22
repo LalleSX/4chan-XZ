@@ -1,4 +1,3 @@
-import ThreadWatcherPage from './ThreadWatcher/ThreadWatcher.html'
 import $ from '../platform/$'
 import Board from '../classes/Board'
 import Callbacks from '../classes/Callbacks'
@@ -49,7 +48,7 @@ var ThreadWatcher = {
 
     this.db = new DataBoard('watchedThreads', this.refresh, true)
     this.dbLM = new DataBoard('watcherLastModified', null, true)
-    this.dialog = UI.dialog('thread-watcher', { innerHTML: ThreadWatcherPage })
+    this.dialog = UI.dialog('thread-watcher', $.loadHTML("./ThreadWatcher/ThreadWatcher.html"))
     this.status = $('#watcher-status', this.dialog)
     this.list = this.dialog.lastElementChild
     this.refreshButton = $('.refresh', this.dialog)
