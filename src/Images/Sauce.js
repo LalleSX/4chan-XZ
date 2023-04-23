@@ -13,7 +13,7 @@ import { dict } from '../platform/helpers'
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Sauce = {
+const Sauce = {
   init() {
     let link
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Sauce']) {

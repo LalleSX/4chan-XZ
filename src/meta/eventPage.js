@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 })
 
-var handlers = {
+const handlers = {
   permission(request, cb) {
     const origins = request.origins || ['*://*/']
     return chrome.permissions.contains({ origins }, function (result) {

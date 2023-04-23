@@ -10,7 +10,7 @@ import CrossOrigin from '../platform/CrossOrigin'
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Metadata = {
+const Metadata = {
   init() {
     if (!Conf['WEBM Metadata'] || !['index', 'thread'].includes(g.VIEW)) {
       return

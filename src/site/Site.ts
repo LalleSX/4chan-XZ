@@ -9,7 +9,7 @@ import SW from './SW'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Site = {
+const Site = {
   defaultProperties: {
     '4chan.org': { software: 'yotsuba' },
     '4channel.org': { canonical: '4chan.org' },

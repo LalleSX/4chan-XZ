@@ -11,7 +11,7 @@ import QuoteYou from './QuoteYou'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var QuoteBacklink = {
+const QuoteBacklink = {
   // Backlinks appending need to work for:
   //  - previous, same, and following posts.
   //  - existing and yet-to-exist posts.

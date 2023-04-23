@@ -9,7 +9,7 @@ import $ from '../platform/$'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var QuoteOP = {
+const QuoteOP = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Mark OP Quotes']) {
       return

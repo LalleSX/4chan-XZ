@@ -13,7 +13,7 @@ import Recursive from './Recursive'
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var PostHiding = {
+const PostHiding = {
   init() {
     if (
       !['index', 'thread'].includes(g.VIEW) ||

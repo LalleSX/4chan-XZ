@@ -21,7 +21,7 @@ import ImageCommon from './ImageCommon'
 import Sauce from './Sauce'
 import Volume from './Volume'
 
-var Gallery = {
+const Gallery = {
   init() {
     if (
       !(this.enabled = Conf['Gallery'] && ['index', 'thread'].includes(g.VIEW))

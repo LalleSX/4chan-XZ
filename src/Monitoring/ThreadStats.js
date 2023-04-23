@@ -10,7 +10,7 @@ import { MINUTE, SECOND } from '../platform/helpers'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ThreadStats = {
+const ThreadStats = {
   postCount: 0,
   fileCount: 0,
   postIndex: 0,

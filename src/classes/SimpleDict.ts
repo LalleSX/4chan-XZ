@@ -15,12 +15,17 @@ export default class SimpleDict<T> {
     return (this[key] = data)
   }
 
-  rm(key: string) {
-    let i: number
-    key = `${key}`
-    if ((i = this.keys.indexOf(key)) !== -1) {
-      this.keys.splice(i, 1)
-      return delete this[key]
+  rm(key: string | Object) {
+    if (typeof key === 'string') {
+      key = `${key}`
+      if (this[key]) {
+        delete this[key]
+        this.keys.splice(this.keys.indexOf(key), 1)
+      }
+    } else {
+      for (const k of Object.keys(key)) {
+        this.rm(k)
+      }
     }
   }
 

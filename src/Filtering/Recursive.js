@@ -8,7 +8,7 @@ import { dict } from '../platform/helpers'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Recursive = {
+const Recursive = {
   recursives: dict(),
   init() {
     if (!['index', 'thread'].includes(g.VIEW)) {

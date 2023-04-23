@@ -5,7 +5,7 @@ import { Conf, d,E, g } from '../globals/globals'
 import $ from '../platform/$'
 import QuoteThreading from '../Quotelinks/QuoteThreading'
 
-var ReplyPruning = {
+const ReplyPruning = {
   init() {
     if (g.VIEW !== 'thread' || !Conf['Reply Pruning']) {
       return

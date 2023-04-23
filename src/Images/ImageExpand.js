@@ -16,7 +16,7 @@ import Volume from './Volume'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ImageExpand = {
+const ImageExpand = {
   init() {
     if (
       !(this.enabled =

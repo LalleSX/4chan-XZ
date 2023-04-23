@@ -15,7 +15,7 @@ import PostRedirect from '../Posting/PostRedirect'
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var QuoteYou = {
+const QuoteYou = {
   init() {
     if (!Conf['Remember Your Posts']) {
       return

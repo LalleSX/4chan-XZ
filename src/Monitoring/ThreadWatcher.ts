@@ -21,7 +21,7 @@ import ThreadWatcherPage from './ThreadWatcher/ThreadWatcher.html'
 import Unread from './Unread'
 import UnreadIndex from './UnreadIndex'
 
-var ThreadWatcher = {
+const ThreadWatcher = {
   db: null as DataBoard,
   dbLM: null as DataBoard,
   dialog: null as HTMLDivElement,
@@ -289,7 +289,7 @@ var ThreadWatcher = {
       } else if (Conf['Auto Watch Reply']) {
         return ThreadWatcher.add(
           g.threads.get(boardID + '.' + threadID) ||
-            new Thread(threadID + '', boardID),
+          new Thread(threadID + '', boardID),
           cb
         )
       }
@@ -417,7 +417,7 @@ var ThreadWatcher = {
     const { db } = ThreadWatcher
     const interval =
       Conf['Show Page'] ||
-      (ThreadWatcher.unreadEnabled && Conf['Show Unread Count'])
+        (ThreadWatcher.unreadEnabled && Conf['Show Unread Count'])
         ? 5 * MINUTE
         : 2 * HOUR
     const now = Date.now()
@@ -460,8 +460,8 @@ var ThreadWatcher = {
           delete ThreadWatcher.syncing
           if (
             0 >
-              (middle =
-                Date.now() - (ThreadWatcher.db.data.lastChecked || 0)) ||
+            (middle =
+              Date.now() - (ThreadWatcher.db.data.lastChecked || 0)) ||
             middle >= interval
           ) {
             // not checked in another tab
@@ -564,7 +564,7 @@ var ThreadWatcher = {
       const { threadID, data } = thread
       if (threads[threadID]) {
         var index, modified, replies
-        ;({ page, index, modified, replies } = threads[threadID])
+          ; ({ page, index, modified, replies } = threads[threadID])
         if (Conf['Show Page']) {
           const lastPage = g.sites[siteID].isPrunedByAge?.({ siteID, boardID })
             ? threadID === oldest

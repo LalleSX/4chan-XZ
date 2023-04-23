@@ -2,7 +2,7 @@ import Callbacks from '../classes/Callbacks'
 import { Conf, d, g } from '../globals/globals'
 import $ from '../platform/$'
 
-var MarkNewIPs = {
+const MarkNewIPs = {
   init() {
     if (
       g.SITE.software !== 'yotsuba' ||

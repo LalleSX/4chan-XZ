@@ -10,7 +10,7 @@ import archives from './archives.json'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var Redirect = {
+const Redirect = {
   archives,
 
   init() {

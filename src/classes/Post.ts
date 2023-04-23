@@ -1,5 +1,5 @@
 import Get from '../General/Get'
-import { Conf,g } from '../globals/globals'
+import { Conf, g } from '../globals/globals'
 import ImageExpand from '../Images/ImageExpand'
 import $ from '../platform/$'
 import $$ from '../platform/$$'
@@ -62,7 +62,7 @@ export default class Post {
     return this.ID
   }
 
-  constructor(root?: HTMLElement, thread?: Thread, board?: Board, flags = {}) {
+  constructor(root: HTMLElement, thread?: Thread, board?: Board, flags?: any) {
     // <% if (readJSON('/.tests_enabled')) { %>
     // @normalizedOriginal = Test.normalize root
     // <% } %>
@@ -180,8 +180,8 @@ export default class Post {
       archivelinks: HTMLAnchorElement[]
       embedlinks: HTMLAnchorElement[]
       backlinks: HTMLCollectionOf<HTMLAnchorElement>
-      uniqueIDRoot: any
-      uniqueID: any
+      uniqueIDRoot: string
+      uniqueID: string
     }
 
     const nodes: Node & Partial<Record<keyof Post['info'], HTMLElement>> = {
@@ -199,8 +199,8 @@ export default class Post {
       backlinks: post.getElementsByClassName(
         'backlink'
       ) as HTMLCollectionOf<HTMLAnchorElement>,
-      uniqueIDRoot: undefined as any,
-      uniqueID: undefined as any,
+      uniqueIDRoot: null,
+      uniqueID: null,
     }
     for (const key in s.info) {
       const selector = s.info[key]
@@ -332,6 +332,7 @@ export default class Post {
 
   parseFile(fileRoot: HTMLElement) {
     interface File {
+      thumbURL: string
       isImage: boolean
       isVideo: boolean
       url: string
@@ -454,7 +455,7 @@ export default class Post {
     this.board.posts.rm(this)
   }
 
-  addClone(context, contractThumb) {
+  addClone(context: HTMLElement, contractThumb: boolean): PostClone {
     // Callbacks may not have been run yet due to anti-browser-lock delay in Main.callbackNodesDB.
     Callbacks.Post.execute(this)
     return new PostClone(this, context, contractThumb)
@@ -482,7 +483,8 @@ export class PostClone extends Post {
   static suffix = 0
 
   constructor(origin: Post, context: any, contractThumb: boolean) {
-    super()
+    //super(root, thread, board)
+    super(Document, origin.thread, origin.board)
     this.isClone = true
 
     let file: any, fileRoots: HTMLAnchorElement, key: string
@@ -585,7 +587,7 @@ export class PostClone extends Post {
     } else if (node.nodeType === Node.ELEMENT_NODE && node.querySelector('video')) {
       const clone = node.cloneNode(false) as Element
       for (const child of node.childNodes) {
-        clone.appendChild(cloneWithoutVideo(child))
+        clone.appendChild(this.cloneWithoutVideo(child))
       }
       return clone
     } else {

@@ -16,7 +16,7 @@ import ThreadWatcher from './ThreadWatcher'
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var UnreadIndex = {
+const UnreadIndex = {
   lastReadPost: dict(),
   hr: dict(),
   markReadLink: dict(),

@@ -4,7 +4,7 @@ import type Post from '../classes/Post'
 import Config from '../config/Config'
 import Get from '../General/Get'
 import Settings from '../General/Settings'
-import { Conf, doc,g } from '../globals/globals'
+import { Conf, doc, g } from '../globals/globals'
 import Menu from '../Menu/Menu'
 import Unread from '../Monitoring/Unread'
 import $ from '../platform/$'
@@ -52,7 +52,7 @@ type FilterType =
   | 'filesize'
   | 'MD5'
 
-var Filter = {
+const Filter = {
   /**
    * Uses a Map for string types, with the value to filter for as the key.
    * This allows faster lookup than iterating over every filter.
@@ -183,7 +183,7 @@ var Filter = {
     if (!this.filters.size) return
 
     // conversion from array to map for string types
-    for (const type of ['MD5', 'uniqueID'] satisfies FilterType[]) {
+    for (const type of ['MD5', 'uniqueID']satisfies FilterType[]) {
       const filtersForType = this.filters.get(type)
       if (!filtersForType) continue
 
@@ -352,10 +352,9 @@ var Filter = {
     if (![200, 404].includes(this.status)) {
       new Notice(
         'warning',
-        `Failed to fetch catalog JSON data. ${
-          this.status
-            ? `Error ${this.statusText} (${this.status})`
-            : 'Connection Error'
+        `Failed to fetch catalog JSON data. ${this.status
+          ? `Error ${this.statusText} (${this.status})`
+          : 'Connection Error'
         }`,
         1
       )
@@ -659,7 +658,7 @@ var Filter = {
         ['Image dimensions', 'dimensions'],
         ['Filesize', 'filesize'],
         ['Image MD5', 'MD5'],
-      ] satisfies [string, FilterType][]) {
+      ]satisfies[string, FilterType][]) {
         // Add a sub entry for each filter type.
         entry.subEntries.push(Filter.menu.createSubEntry(type[0], type[1]))
       }

@@ -91,7 +91,7 @@ import Quotify from '../Quotelinks/Quotify'
 import Site from '../site/Site'
 import SW from '../site/SW'
 
-var Main = {
+const Main = {
   init() {
     // XXX dwb userscripts extension reloads scripts run at document-start when replaceState/pushState is called.
     // XXX Firefox reinjects WebExtension content scripts when extension is updated / reloaded.

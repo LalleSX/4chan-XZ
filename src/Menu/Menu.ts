@@ -1,10 +1,10 @@
 import Callbacks from '../classes/Callbacks'
 import Post from '../classes/Post'
 import UI from '../General/UI'
-import { Conf,g } from '../globals/globals'
+import { Conf, g } from '../globals/globals'
 import $ from '../platform/$'
 
-var Menu: any = {
+const Menu: any = {
   init(): VoidFunction {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) {
       return

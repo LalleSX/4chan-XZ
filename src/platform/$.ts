@@ -8,6 +8,7 @@ import {
   ElementProperties,
   WhenModifiedOptions,
 } from '../types/$'
+import { cloneInto } from '../types/globals'
 import CrossOrigin from './CrossOrigin'
 import { debounce, dict, MINUTE, platform, SECOND } from './helpers'
 // not chainable
@@ -197,7 +198,6 @@ $.ajax = (function () {
 
     $.ajaxPageInit = function () {
       $.global(function () {
-        //@ts-ignore
         window.FCX.requests = Object.create(null)
         document.addEventListener(
           '4chanXAjax',
@@ -214,7 +214,7 @@ $.ajax = (function () {
               headers,
               id,
             } = e.detail
-            //@ts-ignore
+
             window.FCX.requests[id] = r = new pageXHR()
             r.open(type, url, true)
             const object = headers || {}
@@ -238,7 +238,7 @@ $.ajax = (function () {
               }
             }
             r.onloadend = function () {
-              //@ts-ignore
+
               delete window.FCX.requests[id]
               const { status, statusText, response } = this
               const responseHeaderString = this.getAllResponseHeaders()
@@ -276,7 +276,7 @@ $.ajax = (function () {
           '4chanXAjaxAbort',
           function (e) {
             let r
-            //@ts-ignore
+
             if (!(r = window.FCX.requests[e.detail.id])) {
               return
             }
@@ -518,9 +518,9 @@ $.X = function (path: string, root?: HTMLElement) {
   return d.evaluate(path, root, null, 7, null)
 }
 
-$.addClass = function (el: HTMLElement, ...classNames: string[]) {
+$.addClass = function (el: HTMLElement, ...classNames: string[]): void {
   for (const className of classNames) {
-    el.classList.add(className)
+    !el.classList.contains(className) && el.classList.add(className)
   }
 }
 
@@ -598,10 +598,10 @@ $.one = function (el, events, handler) {
   return $.on(el, events, cb)
 }
 
-$.event = function (event, detail, root = d) {
+$.event = function (event: string, detail: any, root: Document = d) {
   if (!globalThis.chrome?.extension) {
     if (detail != null && typeof cloneInto === 'function') {
-      detail = cloneInto(detail, d.defaultView)
+      detail = cloneInto(detail, root.defaultView)
     }
   }
   return root.dispatchEvent(

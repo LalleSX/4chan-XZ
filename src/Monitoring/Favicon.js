@@ -46,7 +46,7 @@ import xat_unreadSFWY from './Favicon/xat-.unreadSFWY.png'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var Favicon = {
+const Favicon = {
   init() {
     return $.asap(
       () => d.head && (Favicon.el = $('link[rel="shortcut icon"]', d.head)),

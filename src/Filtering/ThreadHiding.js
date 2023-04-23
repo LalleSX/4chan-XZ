@@ -10,7 +10,7 @@ import $ from '../platform/$'
 import $$ from '../platform/$$'
 import { dict } from '../platform/helpers'
 
-var ThreadHiding = {
+const ThreadHiding = {
   init() {
     if (
       !['index', 'catalog'].includes(g.VIEW) ||

@@ -1,7 +1,7 @@
 import Redirect from '../Archive/Redirect'
 import Get from '../General/Get'
 import Index from '../General/Index'
-import { Conf, d,E, g } from '../globals/globals'
+import { Conf, d, E, g } from '../globals/globals'
 import ImageHost from '../Images/ImageHost'
 import Main from '../main/Main'
 import $ from '../platform/$'
@@ -23,7 +23,7 @@ export default class Fetcher {
     '[/moot]': { innerHTML: string }
     '[banned]': { innerHTML: string }
     '[/banned]': { innerHTML: string }
-    '[fortune]'(text: any): { innerHTML: string }
+    '[fortune]'(text: string): { innerHTML: string }
     '[/fortune]': { innerHTML: string }
     '[i]': { innerHTML: string }
     '[/i]': { innerHTML: string }
@@ -34,11 +34,11 @@ export default class Fetcher {
     '[blue]': { innerHTML: string }
     '[/blue]': { innerHTML: string }
   }
-  boardID: string | number
+  boardID: string
   threadID: string | number
-  postID: string | number
-  root: HTMLElement
-  quoter: any
+  postID: number
+  root: Document | HTMLElement
+  quoter: HTMLElement | Post
   static flagCSS: HTMLStyleElement | HTMLElement
   static initClass() {
     this.prototype.archiveTags = {
@@ -75,9 +75,9 @@ export default class Fetcher {
       '[/blue]': { innerHTML: '</span>' },
     }
   }
-  constructor(boardID, threadID, postID, root, quoter) {
-    let post, thread
-    this.boardID = boardID
+  constructor(boardID: number | string, threadID: number, postID: number, root: Document | HTMLElement, quoter: Post) {
+    let post: Post, thread: Thread
+    this.boardID = boardID as string
     this.threadID = threadID
     this.postID = postID
     this.root = root
@@ -106,22 +106,20 @@ export default class Fetcher {
 
     this.root.textContent = `Loading post No.${this.postID}...`
     if (this.threadID) {
-      const that = this
       Fetcher.fetchThread(
         this.boardID,
         this.threadID,
         function (req) {
-          that.fetchedThread(req)
+          this.fetchedThread(req)
         },
         true
       )
     } else {
-      const that = this
       Fetcher.fetchPost(
         this.boardID,
         this.postID,
         function (req, isCached) {
-          that.fetchedPost(req, isCached)
+          this.fetchedPost(req, isCached)
         },
         true
       )
@@ -161,11 +159,9 @@ export default class Fetcher {
       return
     }
     const thread = new Thread(
-      g.SITE.Build.threadFromObject(response, boardID),
-      board
-    )
+      g.SITE.Build.threadFromObject(response, boardID), board.ID)
     Main.callbackNodes('Thread', [thread])
-    const post = thread.posts.get(this.postID)
+    const post = thread.posts.get(`${boardID}.${this.postID}`)
     if (post) {
       this.insert(post)
     } else {
@@ -182,7 +178,7 @@ export default class Fetcher {
     }
     const clone = post.addClone(
       this.quoter.context,
-      $.hasClass(this.root, 'dialog')
+      $.hasClass(this.root.appendChild($.el('div')), 'backlink')
     )
     Main.callbackNodes('Post', [clone])
 
@@ -221,7 +217,7 @@ export default class Fetcher {
 
     $.rmAll(this.root)
     $.add(this.root, nodes.root)
-    return $.event('PostsInserted', null, this.root)
+    return $.event('PostsInserted', null, Document.apply(this.root))
   }
 
   fetchedPost(req: XMLHttpRequest, isCached: boolean) {
@@ -252,7 +248,7 @@ export default class Fetcher {
 
     const board = g.boards[boardID] || new Board(boardID)
     const threadKey = `${boardID}.${threadID}`
-    const thread = g.threads.get(threadKey) || new Thread(threadID, board)
+    const thread = g.threads.get(threadKey) || new Thread(threadID as string, board)
     const newPost = new Post(
       g.SITE.Build.postFromObject(foundPost, boardID),
       thread,
@@ -272,10 +268,7 @@ export default class Fetcher {
 
   handlePostNotFound(isCached: boolean, req?: XMLHttpRequest) {
     if (isCached) {
-      const api = g.SITE.urls.threadJSON({
-        boardID: this.boardID,
-        threadID: this.threadID,
-      }, true)
+      const api = g.SITE.urls.threadJSON(this.boardID as string, this.threadID as string)
       $.cleanCache((url: string) => url === api)
       $.cache(api, () => this.fetchedPost(req, false))
       return
@@ -285,7 +278,7 @@ export default class Fetcher {
       return
     }
 
-    $.addClass(this.root, 'warning')
+    $.addClass(this.root.appendChild($.el('div')), 'backlink')
     this.root.textContent = `Post No.${this.postID} was not found.`
   }
 
@@ -306,7 +299,6 @@ export default class Fetcher {
     const encryptionOK =
       /^https:\/\//.test(url) || location.protocol === 'http:'
     if (encryptionOK || Conf['Exempt Archives from Encryption']) {
-      const that = this
       CrossOrigin.cache(url, function () {
         if (!encryptionOK && this.response?.media) {
           const { media } = this.response
@@ -320,14 +312,14 @@ export default class Fetcher {
             }
           }
         }
-        return that.parseArchivedPost(this.response, url, archive)
+        return this.parseArchivedPost(this.response, url, archive)
       })
       return true
     }
     return false
   }
 
-  parseArchivedPost(data: any, url, archive: any) {
+  parseArchivedPost(data: any, url: string, archive: any) {
     // In case of multiple callbacks for the same request,
     // don't parse the same original post more than once.
     let post: Post
@@ -337,13 +329,13 @@ export default class Fetcher {
     }
 
     if (data == null) {
-      $.addClass(this.root, 'warning')
+      $.addClass(this.root.appendChild($.el('div')), 'backlink')
       this.root.textContent = `Error fetching Post No.${this.postID} from ${archive.name}.`
       return
     }
 
     if (data.error) {
-      $.addClass(this.root, 'warning')
+      $.addClass(this.root.appendChild($.el('div')), 'backlink')
       this.root.textContent = data.error
       return
     }
@@ -391,8 +383,14 @@ export default class Fetcher {
       threadID: this.threadID,
       boardID: this.boardID,
       isReply: this.postID !== this.threadID,
+      info: null,
+      file: data.media,
+      time: +data.timestamp,
+      fileDeleted: data.media_status === 'b',
+      extra: null,
     }
     o.info = {
+      uniqueID: data.poster_hash,
       subject: data.title,
       email: data.email,
       name: data.name || '',
@@ -414,7 +412,6 @@ export default class Fetcher {
             return 'Manager'
         }
       })(),
-      uniqueID: data.poster_hash,
       flagCode: data.poster_country,
       flagCodeTroll: data.troll_country_code,
       flag: data.poster_country_name || data.troll_country_name,
@@ -480,7 +477,7 @@ export default class Fetcher {
     post = new Post(g.SITE.Build.post(o), thread, board, {
       isFetchedQuote: true,
     })
-    post.kill()
+    post.kill(post.file)
     if (post.file) {
       post.file.thumbURL = o.file.thumbURL
     }

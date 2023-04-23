@@ -10,7 +10,7 @@ import Menu from './Menu'
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var DeleteLink = {
+const DeleteLink = {
   auto: [dict(), dict()],
 
   init() {

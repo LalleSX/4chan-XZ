@@ -9,17 +9,20 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
-    "strict": true,
+    "strict": false,
     "jsx": "react",
-    "jsxFactory": "jsx",
-    "jsxFragmentFactory": "h",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "hFragment",
     "types": [
       "@violentmonkey/types",
       "@types/chrome",
       "@types/jquery",
       "@types/node"
     ],
-    "lib": ["DOM", "ES2020"],
+    "lib": [
+      "DOM",
+      "ES2020"
+    ],
     "outDir": "builds/test/crx/tsOutput",
     "esModuleInterop": true
   },

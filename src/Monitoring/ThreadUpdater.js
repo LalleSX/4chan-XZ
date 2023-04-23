@@ -21,7 +21,7 @@ import Unread from './Unread'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var ThreadUpdater = {
+const ThreadUpdater = {
   init() {
     let el, name, sc
     if (g.VIEW !== 'thread' || !Conf['Thread Updater']) {
