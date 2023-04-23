@@ -25,7 +25,7 @@ export default class SimpleDict<T> {
   }
 
   forEach(fn: (data: T) => void) {
-    for (var key of [...Array.from(this.keys)]) {
+    for (const key of [...Array.from(this.keys)]) {
       fn(this[key])
     }
   }

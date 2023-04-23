@@ -2,7 +2,7 @@ import Callbacks from '../classes/Callbacks'
 import Config from '../config/Config'
 import Header from '../General/Header'
 import UI from '../General/UI'
-import { g, Conf, E } from '../globals/globals'
+import { Conf, E,g } from '../globals/globals'
 import $ from '../platform/$'
 
 /*

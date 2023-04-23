@@ -1,13 +1,10 @@
-import SettingsPage from './Settings/SettingsHtml'
-import FilterGuidePage from './Settings/Filter-guide.html'
-import SaucePage from './Settings/Sauce.html'
-import AdvancedPage from './Settings/Advanced.html'
-import KeybindsPage from './Settings/Keybinds.html'
-import FilterSelectPage from './Settings/Filter-select.html'
+import meta from '../../package.json'
 import Redirect from '../Archive/Redirect'
 import DataBoard from '../classes/DataBoard'
 import Notice from '../classes/Notice'
 import Config from '../config/Config'
+import { c, Conf, d, doc, E, g } from '../globals/globals'
+import h, { hFragment } from '../globals/jsx'
 import ImageHost from '../Images/ImageHost'
 import CustomCSS from '../Miscellaneous/CustomCSS'
 import FileInfo from '../Miscellaneous/FileInfo'
@@ -16,13 +13,16 @@ import Time from '../Miscellaneous/Time'
 import Favicon from '../Monitoring/Favicon'
 import ThreadUpdater from '../Monitoring/ThreadUpdater'
 import Unread from '../Monitoring/Unread'
-import $$ from '../platform/$$'
 import $ from '../platform/$'
-import meta from '../../package.json'
-import { c, Conf, d, doc, E, g } from '../globals/globals'
-import Header from './Header'
-import h, { hFragment } from '../globals/jsx'
+import $$ from '../platform/$$'
 import { dict, platform } from '../platform/helpers'
+import Header from './Header'
+import AdvancedPage from './Settings/Advanced.html'
+import FilterGuidePage from './Settings/Filter-guide.html'
+import FilterSelectPage from './Settings/Filter-select.html'
+import KeybindsPage from './Settings/Keybinds.html'
+import SaucePage from './Settings/Sauce.html'
+import SettingsPage from './Settings/SettingsHtml'
 
 var Settings = {
   dialog: undefined as HTMLDivElement | undefined,
@@ -99,8 +99,8 @@ var Settings = {
     $.on($('input', dialog), 'change', Settings.onImport)
 
     const links = []
-    for (var section of Settings.sections) {
-      var link = $.el('a', {
+    for (const section of Settings.sections) {
+      const link = $.el('a', {
         className: `tab-${section.hyphenatedTitle}`,
         textContent: section.title,
         href: 'javascript:;',
@@ -114,7 +114,7 @@ var Settings = {
     links.pop()
     $.add($('.sections-list', dialog), links)
     if (openSection !== 'none') {
-      ;(sectionToOpen ? sectionToOpen : links[0]).click()
+      (sectionToOpen ? sectionToOpen : links[0]).click()
     }
 
     $.on($('.close', dialog), 'click', Settings.close)
@@ -141,7 +141,7 @@ var Settings = {
 
   addSection(title, open) {
     if (typeof title !== 'string') {
-      ;({ title, open } = title.detail)
+      ({ title, open } = title.detail)
     }
     const hyphenatedTitle = title.toLowerCase().replace(/\s+/g, '-')
     return Settings.sections.push({ title, hyphenatedTitle, open })
@@ -225,7 +225,7 @@ Enable it on boards.${
       return (warnings.hidden = false)
     }
     for (key in Settings.warnings) {
-      var warning = Settings.warnings[key]
+      const warning = Settings.warnings[key]
       warning(addWarning)
     }
     $.add(section, warnings)
@@ -237,23 +237,23 @@ Enable it on boards.${
       return (() => {
         const result = []
         for (key in obj) {
-          var arr = obj[key]
+          const arr = obj[key]
           if (arr instanceof Array) {
-            var description = arr[1]
-            var div = $.el('div', {
+            const description = arr[1]
+            const div = $.el('div', {
               innerHTML: `<label><input type="checkbox" name="${key}">${key}</label><span class="description">: ${description}</span>`,
             })
             div.dataset.name = key
-            var input = $('input', div)
+            const input = $('input', div)
             $.on(input, 'change', $.cb.checked)
             $.on(input, 'change', function () {
               return (this.parentNode.parentNode.dataset.checked = this.checked)
             })
             items[key] = Conf[key]
             inputs[key] = input
-            var level = arr[2] || 0
+            const level = arr[2] || 0
             if (containers.length <= level) {
-              var container = $.el('div', { className: 'suboption-list' })
+              const container = $.el('div', { className: 'suboption-list' })
               $.add(
                 containers[containers.length - 1].lastElementChild,
                 container
@@ -269,9 +269,9 @@ Enable it on boards.${
       })()
     }
 
-    for (var keyFS in Config.main) {
-      var obj = Config.main[keyFS]
-      var fs = $.el('fieldset', { innerHTML: `<legend>${keyFS}</legend>` })
+    for (const keyFS in Config.main) {
+      const obj = Config.main[keyFS]
+      const fs = $.el('fieldset', { innerHTML: `<legend>${keyFS}</legend>` })
       addCheckboxes(fs, obj)
       if (keyFS === 'Posting and Captchas') {
         $.add(
@@ -304,7 +304,7 @@ Enable it on boards.${
 
     $.get(items, function (items: string[]) {
       for (key in items) {
-        var val = items[key]
+        const val = items[key]
         inputs[key].checked = val
         inputs[key].parentNode.parentNode.dataset.checked = val
       }
@@ -448,8 +448,8 @@ Enable it on boards.${
   convertFrom: {
     loadletter(data) {
       const convertSettings = function (data, map) {
-        for (var prevKey in map) {
-          var newKey = map[prevKey]
+        for (const prevKey in map) {
+          const newKey = map[prevKey]
           if (newKey) {
             data.Conf[newKey] = data.Conf[prevKey]
           }
@@ -541,8 +541,8 @@ Enable it on boards.${
             return c
         }
       })
-      for (var key in Config.hotkeys) {
-        var val = Config.hotkeys[key]
+      for (const key in Config.hotkeys) {
+        const val = Config.hotkeys[key]
         if (key in data.Conf) {
           data.Conf[key] = data.Conf[key]
             .replace(
@@ -559,10 +559,10 @@ Enable it on boards.${
         data.Conf['watchedThreads'] = dict.clone({
           '4chan.org': { boards: {} },
         })
-        for (var boardID in data.WatchedThreads) {
-          var threads = data.WatchedThreads[boardID]
-          for (var threadID in threads) {
-            var threadData = threads[threadID]
+        for (const boardID in data.WatchedThreads) {
+          const threads = data.WatchedThreads[boardID]
+          for (const threadID in threads) {
+            const threadData = threads[threadID]
             ;(data.Conf['watchedThreads']['4chan.org'].boards[boardID] ||
               (data.Conf['watchedThreads']['4chan.org'].boards[boardID] =
                 dict()))[threadID] = { excerpt: threadData.textContent }
@@ -629,7 +629,7 @@ Enable it on boards.${
         val = data[key]
         if (typeof val === 'string') {
           try {
-            var val2 = JSON.parse(val)
+            const val2 = JSON.parse(val)
             set(key, val2)
           } catch (error1) {}
         }
@@ -661,10 +661,10 @@ Enable it on boards.${
           'fireden.net': 24,
           disabled: null,
         }
-        for (var boardID in data['selectedArchives']) {
-          var record = data['selectedArchives'][boardID]
-          for (var type in record) {
-            var name = record[type]
+        for (const boardID in data['selectedArchives']) {
+          const record = data['selectedArchives'][boardID]
+          for (const type in record) {
+            const name = record[type]
             if ($.hasOwn(uids, name)) {
               record[type] = uids[name]
             }
@@ -723,7 +723,7 @@ Enable it on boards.${
         'Pass Link': true,
       }
       for (key in object) {
-        var value = object[key]
+        const value = object[key]
         if (data[key] == null) {
           set(key, value)
         }
@@ -910,9 +910,9 @@ Enable it on boards.${
       }
     }
     if (compareString < '00001.00014.00005.00000') {
-      for (var db of DataBoard.keys) {
+      for (const db of DataBoard.keys) {
         if (data[db]?.boards) {
-          var { boards, lastChecked } = data[db]
+          const { boards, lastChecked } = data[db]
           data[db]['4chan.org'] = { boards, lastChecked }
           delete data[db].boards
           delete data[db].lastChecked
@@ -921,8 +921,8 @@ Enable it on boards.${
       }
       if (data['siteSoftware'] != null && data['siteProperties'] == null) {
         const siteProperties = dict()
-        for (var line of data['siteSoftware'].split('\n')) {
-          var [hostname, software] = Array.from(line.split(' '))
+        for (const line of data['siteSoftware'].split('\n')) {
+          const [hostname, software] = Array.from(line.split(' '))
           siteProperties[hostname] = { software }
         }
         set('siteProperties', siteProperties)
@@ -1160,7 +1160,7 @@ vp-replace
   advanced(section) {
     let input, name
     $.extend(section, { innerHTML: AdvancedPage })
-    for (var warning of $$('.warning', section)) {
+    for (const warning of $$('.warning', section)) {
       warning.hidden = Conf[warning.dataset.feature]
     }
 
@@ -1180,7 +1180,7 @@ vp-replace
       input = inputs[name]
       if (!['Interval', 'Custom CSS'].includes(name)) {
         items[name] = Conf[name]
-        var event =
+        const event =
           input.nodeName === 'SELECT' ||
           ['checkbox', 'radio'].includes(input.type) ||
           (input.nodeName === 'TEXTAREA' && !(name in Settings))
@@ -1198,8 +1198,8 @@ vp-replace
     }
 
     $.get(items, function (items) {
-      for (var key in items) {
-        var val = items[key]
+      for (const key in items) {
+        const val = items[key]
         input = inputs[key]
         input[input.type === 'checkbox' ? 'checked' : 'value'] = val
         input.hidden = false // XXX prevent Firefox from adding initialization to undo queue
@@ -1210,7 +1210,7 @@ vp-replace
     })
 
     const listImageHost = $.id('list-fourchanImageHost')
-    for (var textContent of ImageHost.suggestions) {
+    for (const textContent of ImageHost.suggestions) {
       $.add(listImageHost, $.el('option', { textContent }))
     }
 
@@ -1266,7 +1266,7 @@ vp-replace
     $.rmAll(tbody)
 
     const archBoards = dict()
-    for (var { uid, name, boards, files, software } of Conf['archives']) {
+    for (const { uid, name, boards, files, software } of Conf['archives']) {
       if (!['fuuka', 'foolfuuka'].includes(software)) {
         continue
       }
@@ -1278,7 +1278,7 @@ vp-replace
             post: [],
             file: [],
           })
-        var archive = [uid ?? name, name]
+        const archive = [uid ?? name, name]
         o.thread.push(archive)
         if (software === 'foolfuuka') {
           o.post.push(archive)
@@ -1293,7 +1293,7 @@ vp-replace
     const boardOptions = []
     for (boardID of Object.keys(archBoards).sort()) {
       // Alphabetical order
-      var row = $.el('tr', { className: `board-${boardID}` })
+      const row = $.el('tr', { className: `board-${boardID}` })
       row.hidden = boardID !== g.BOARD.ID
 
       boardOptions.push(
@@ -1305,7 +1305,7 @@ vp-replace
       )
 
       o = archBoards[boardID]
-      for (var item of ['thread', 'post', 'file']) {
+      for (const item of ['thread', 'post', 'file']) {
         $.add(row, Settings.addArchiveCell(boardID, o, item))
       }
       rows.push(row)
@@ -1326,10 +1326,10 @@ vp-replace
     $.add(tbody, rows)
 
     for (boardID in Conf['selectedArchives']) {
-      var data = Conf['selectedArchives'][boardID]
-      for (var type in data) {
+      const data = Conf['selectedArchives'][boardID]
+      for (const type in data) {
         var select
-        var id = data[type]
+        const id = data[type]
         if (
           (select = $(
             `select[data-boardid='${boardID}'][data-type='${type}']`,
@@ -1357,7 +1357,7 @@ vp-replace
     const options = []
     let i = 0
     while (i < length) {
-      var archive = data[type][i++]
+      const archive = data[type][i++]
       options.push(
         $.el('option', {
           value: JSON.stringify(archive[0]),
@@ -1384,7 +1384,7 @@ vp-replace
       'selectedArchives',
       Conf['selectedArchives'],
       ({ selectedArchives }) => {
-        ;(selectedArchives[this.dataset.boardid] ||
+        (selectedArchives[this.dataset.boardid] ||
           (selectedArchives[this.dataset.boardid] = dict()))[
           this.dataset.type
         ] = JSON.parse(this.value)
@@ -1454,7 +1454,7 @@ vp-replace
       f.unreadDeadY,
     ]
     for (let i = 0; i < iterable.length; i++) {
-      var icon = iterable[i]
+      const icon = iterable[i]
       if (!img[i]) {
         $.add(this.nextElementSibling, $.el('img'))
       }
@@ -1486,11 +1486,11 @@ vp-replace
     const items = dict()
     const inputs = dict()
     for (key in Config.hotkeys) {
-      var arr = Config.hotkeys[key]
-      var tr = $.el('tr', {
+      const arr = Config.hotkeys[key]
+      const tr = $.el('tr', {
         innerHTML: `<td>${arr[1]}</td><td><input class="field"></td>`,
       })
-      var input = $('input', tr)
+      const input = $('input', tr)
       input.name = key
       input.spellcheck = false
       items[key] = Conf[key]
@@ -1501,7 +1501,7 @@ vp-replace
 
     return $.get(items, function (items) {
       for (key in items) {
-        var val = items[key]
+        const val = items[key]
         inputs[key].value = val
       }
     })

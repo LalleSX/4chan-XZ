@@ -25,7 +25,7 @@ class Callbacks {
     this[name as keyof Callbacks] = cb
   }
 
-  execute(node: any, keys: string[] = this.keys, force: boolean = false): void {
+  execute(node: any, keys: string[] = this.keys, force = false): void {
     let errors: any[]
     if (node.callbacksExecuted && !force) {
       return
@@ -33,7 +33,7 @@ class Callbacks {
     node.callbacksExecuted = true
     for (const name of keys) {
       try {
-        ;(this[name as keyof Callbacks] as Function)?.call(node)
+        (this[name as keyof Callbacks] as Function)?.call(node)
       } catch (err) {
         if (!errors) {
           errors = []

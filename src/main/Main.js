@@ -1,3 +1,4 @@
+import meta from '../../package.json'
 import Redirect from '../Archive/Redirect'
 import Board from '../classes/Board'
 import Callbacks from '../classes/Callbacks'
@@ -8,13 +9,19 @@ import Post from '../classes/Post'
 import SimpleDict from '../classes/SimpleDict'
 import Thread from '../classes/Thread'
 import Config from '../config/Config'
+import CSS from '../css/CSS'
 import Anonymize from '../Filtering/Anonymize'
 import Filter from '../Filtering/Filter'
 import PostHiding from '../Filtering/PostHiding'
 import Recursive from '../Filtering/Recursive'
 import ThreadHiding from '../Filtering/ThreadHiding'
+import BoardConfig from '../General/BoardConfig'
+import Get from '../General/Get'
+import Header from '../General/Header'
 import Index from '../General/Index'
+import Polyfill from '../General/Polyfill'
 import Settings from '../General/Settings'
+import { c, Conf, d, doc, docSet, E, g } from '../globals/globals'
 import FappeTyme from '../Images/FappeTyme'
 import Gallery from '../Images/Gallery'
 import ImageCommon from '../Images/ImageCommon'
@@ -31,6 +38,7 @@ import ArchiveLink from '../Menu/ArchiveLink'
 import CopyTextLink from '../Menu/CopyTextLink'
 import DeleteLink from '../Menu/DeleteLink'
 import DownloadLink from '../Menu/DownloadLink'
+import Menu from '../Menu/Menu'
 import ReportLink from '../Menu/ReportLink'
 import AntiAutoplay from '../Miscellaneous/AntiAutoplay'
 import Banner from '../Miscellaneous/Banner'
@@ -66,6 +74,8 @@ import Unread from '../Monitoring/Unread'
 import UnreadIndex from '../Monitoring/UnreadIndex'
 import $ from '../platform/$'
 import $$ from '../platform/$$'
+import { dict, platform } from '../platform/helpers'
+import CaptchaReplace from '../Posting/Captcha.replace'
 import PassLink from '../Posting/PassLink'
 import PostRedirect from '../Posting/PostRedirect'
 import QR from '../Posting/QR'
@@ -80,16 +90,6 @@ import QuoteYou from '../Quotelinks/QuoteYou'
 import Quotify from '../Quotelinks/Quotify'
 import Site from '../site/Site'
 import SW from '../site/SW'
-import CSS from '../css/CSS'
-import meta from '../../package.json'
-import Header from '../General/Header'
-import { c, Conf, d, doc, docSet, E, g } from '../globals/globals'
-import Menu from '../Menu/Menu'
-import BoardConfig from '../General/BoardConfig'
-import CaptchaReplace from '../Posting/Captcha.replace'
-import Get from '../General/Get'
-import { dict, platform } from '../platform/helpers'
-import Polyfill from '../General/Polyfill'
 
 var Main = {
   init() {
@@ -232,7 +232,7 @@ var Main = {
       !$$('script:not([src])', d).filter(s => /this\[/.test(s.textContent))
         .length
     ) {
-      ;($.getSync || $.get)(
+      ($.getSync || $.get)(
         { jsWhitelist: Conf['jsWhitelist'] },
         ({ jsWhitelist }) =>
           $.addCSP(

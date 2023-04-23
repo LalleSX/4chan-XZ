@@ -1,8 +1,8 @@
-import $ from '../platform/$'
 import Callbacks from '../classes/Callbacks'
-import ExpandComment from '../Miscellaneous/ExpandComment'
-import { Conf, g } from '../globals/globals'
 import Get from '../General/Get'
+import { Conf, g } from '../globals/globals'
+import ExpandComment from '../Miscellaneous/ExpandComment'
+import $ from '../platform/$'
 
 /*
  * decaffeinate suggestions:

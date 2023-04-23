@@ -1,6 +1,6 @@
-import $ from '../platform/$'
 import Callbacks from '../classes/Callbacks'
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
+import $ from '../platform/$'
 
 /*
  * decaffeinate suggestions:

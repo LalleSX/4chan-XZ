@@ -1,20 +1,19 @@
 import Redirect from '../Archive/Redirect'
+import CSS from '../css/CSS'
+import BoardConfig from '../General/BoardConfig'
+import { Conf, d, doc,E, g } from '../globals/globals'
+import h, { hFragment, isEscaped } from '../globals/jsx'
+import ImageHost from '../Images/ImageHost'
 import PassMessage from '../Miscellaneous/PassMessage'
 import Report from '../Miscellaneous/Report'
 import $ from '../platform/$'
 import $$ from '../platform/$$'
+import { dict, MINUTE } from '../platform/helpers'
 import Captcha from '../Posting/Captcha'
 import PostSuccessful from '../Posting/PostSuccessful'
-import ImageHost from '../Images/ImageHost'
-import { g, Conf, E, d, doc } from '../globals/globals'
-import BoardConfig from '../General/BoardConfig'
-import CSS from '../css/CSS'
-
-import generatePostInfoHtml from './SW.yotsuba.Build/PostInfoHtml'
-import generateFileHtml from './SW.yotsuba.Build/FileHtml'
 import generateCatalogThreadHtml from './SW.yotsuba.Build/CatalogThreadHtml'
-import h, { hFragment, isEscaped } from '../globals/jsx'
-import { dict, MINUTE } from '../platform/helpers'
+import generateFileHtml from './SW.yotsuba.Build/FileHtml'
+import generatePostInfoHtml from './SW.yotsuba.Build/PostInfoHtml'
 
 /*
  * decaffeinate suggestions:
@@ -273,7 +272,7 @@ $\
   },
 
   scriptData() {
-    for (var script of $$('script:not([src])', d.head)) {
+    for (const script of $$('script:not([src])', d.head)) {
       if (/\bcooldowns *=/.test(script.textContent)) {
         return script.textContent
       }
@@ -312,7 +311,7 @@ $\
     if (post.boardID === 'f') {
       return (() => {
         const result = []
-        for (var type of ['Sticky', 'Closed']) {
+        for (const type of ['Sticky', 'Closed']) {
           var icon
           if ((icon = $(`img[alt=${type}]`, nodes.info))) {
             result.push($.addClass(icon, `${type.toLowerCase()}Icon`, 'retina'))
@@ -364,7 +363,7 @@ $\
     let abbr
     if ((abbr = $('.abbr', bq))) {
       // 'Comment too long' or 'EXIF data available'
-      for (let node of $$('.abbr, .abbr-exp', abbr)) {
+      for (const node of $$('.abbr, .abbr-exp', abbr)) {
         $.replace(node, $.tn(node.textContent))
       }
       for (let i = 0; i < 2; i++) {
@@ -447,8 +446,8 @@ $\
     while ((node = items.snapshotItem(i++))) {
       switch (node.nodeName) {
         case '#text':
-          for (var chr of node.nodeValue) {
-            var span = $.el('span', { textContent: chr })
+          for (const chr of node.nodeValue) {
+            const span = $.el('span', { textContent: chr })
             if (chr === ' ') {
               span.className = 'space'
             }
@@ -572,7 +571,7 @@ $\
       }
       // Temporary JSON properties for events such as April 1 / Halloween
       o.extra = dict()
-      for (var key in data) {
+      for (const key in data) {
         if (key[0] === 'x') {
           o.extra[key] = data[key]
         }
@@ -776,8 +775,8 @@ $\
       $.extend(container, wholePost)
 
       // Fix quotelinks
-      for (var quote of container.querySelectorAll('a.quoteLink')) {
-        var href = quote.getAttribute('href')
+      for (const quote of container.querySelectorAll('a.quoteLink')) {
+        const href = quote.getAttribute('href')
         if (href[0] === '#') {
           if (!this.sameThread(boardID, threadID)) {
             quote.href = this.threadURL(boardID, threadID) + href
@@ -894,7 +893,7 @@ $\
       )
       $.before(thread.OP.nodes.info, [...Array.from(container.childNodes)])
 
-      for (var br of $$('br', thread.OP.nodes.comment)) {
+      for (const br of $$('br', thread.OP.nodes.comment)) {
         if (br.previousSibling && br.previousSibling.nodeName === 'BR') {
           $.addClass(br, 'extra-linebreak')
         }

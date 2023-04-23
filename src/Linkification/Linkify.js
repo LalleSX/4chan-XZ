@@ -1,6 +1,6 @@
 import Callbacks from '../classes/Callbacks'
 // import Test from "../General/Test";
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
 import ImageHost from '../Images/ImageHost'
 import ExpandComment from '../Miscellaneous/ExpandComment'
 import $ from '../platform/$'
@@ -119,7 +119,7 @@ var Linkify = {
               i--
               break
             } else {
-              ;({ length } = data)
+              ({ length } = data)
               word += data
             }
           }

@@ -1,9 +1,9 @@
 import BoardConfig from '../General/BoardConfig'
 import { d, g } from '../globals/globals'
-import SimpleDict from './SimpleDict'
-import Thread from './Thread'
 import Post from './Post'
+import SimpleDict from './SimpleDict'
 import Site from './Site'
+import Thread from './Thread'
 
 /*
  * decaffeinate suggestions:
@@ -50,7 +50,7 @@ export default class Board {
     }
     // Pass users have reduced cooldowns.
     if (d.cookie.indexOf('pass_enabled=1') >= 0) {
-      for (var key of ['reply', 'image']) {
+      for (const key of ['reply', 'image']) {
         c[key] = Math.ceil(c[key] / 2)
       }
     }

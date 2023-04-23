@@ -36,8 +36,8 @@ dict.clone = function (obj) {
     return arr
   } else {
     const map = Object.create(null)
-    for (var key in obj) {
-      var val = obj[key]
+    for (const key in obj) {
+      const val = obj[key]
       map[key] = dict.clone(val)
     }
     return map

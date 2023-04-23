@@ -22,7 +22,7 @@ if (platform === 'crx') {
 interface ICrossOrigin {
   binary(url: string, cb: Callback, headers?: typeof dict): void
   file(url: string, cb: Callback): void
-  Request: any
+  Request: Request
   ajax(url: string, options?: any): any
   cache(url: string, cb: Callback): void
   permission(cb: () => void, cbFail: () => void, origins?: any): void
@@ -146,9 +146,9 @@ const CrossOrigin: ICrossOrigin = {
           .match(new RegExp(`^${headerName}: (.*)`, 'im'))
         return match?.[1]
       }
-      abort() {}
+      abort() { }
 
-      onloadend() {}
+      onloadend() { }
     }
     return Request
   })(),
@@ -159,7 +159,7 @@ const CrossOrigin: ICrossOrigin = {
       responseType = 'json'
     }
     if (onloadend == null) {
-      onloadend = function () {}
+      onloadend = function () { }
     } else {
       onloadend = onloadend.bind(this)
     }
@@ -191,7 +191,7 @@ const CrossOrigin: ICrossOrigin = {
               statusText: xhr.statusText,
               responseHeaderString: xhr.responseHeaders,
             })
-          } catch (error) {}
+          } catch (error) { }
           return req.onloadend()
         },
         onerror: () => req.onloadend(),
@@ -208,7 +208,7 @@ const CrossOrigin: ICrossOrigin = {
         req.abort = function () {
           try {
             return gmReq.abort()
-          } catch (error1) {}
+          } catch (error1) { }
         }
       }
     } else {

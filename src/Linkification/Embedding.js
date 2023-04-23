@@ -1,7 +1,7 @@
 import Get from '../General/Get'
 import Header from '../General/Header'
 import UI from '../General/UI'
-import { g, Conf, d, doc, E } from '../globals/globals'
+import { Conf, d, doc, E, g } from '../globals/globals'
 import ImageHost from '../Images/ImageHost'
 import Main from '../main/Main'
 import $ from '../platform/$'
@@ -199,7 +199,7 @@ var Embedding = {
     }
     $.addClass(link, key.toLowerCase())
     if (service.batchSize) {
-      ;(service.queue || (service.queue = [])).push(data)
+      (service.queue || (service.queue = [])).push(data)
       if (service.queue.length >= service.batchSize) {
         return Embedding.flushTitles(service)
       }

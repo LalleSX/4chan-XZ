@@ -33,7 +33,7 @@ export default async function generateMetadata(packageJson, channel) {
 
   output += (function () {
     function expand(items, regex, substitutions) {
-      var results = []
+      const results = []
       items.forEach(function (item) {
         if (regex.test(item)) {
           substitutions.forEach(function (s) {
@@ -53,10 +53,10 @@ export default async function generateMetadata(packageJson, channel) {
         expandMatches(
           meta.includes_only.concat(meta.matches, meta.matches_extra)
         ).map(function (match) {
-          return '// @include      ' + match
+          return `// @include      ${match}`
         }),
         expandMatches(meta.exclude_matches).map(function (match) {
-          return '// @exclude      ' + match
+          return `// @exclude      ${match}`
         })
       )
       .join('\n')
@@ -70,7 +70,7 @@ export default async function generateMetadata(packageJson, channel) {
 `
   output += archives
     .map(function (archive) {
-      return '// @connect      ' + archive.domain
+      return `// @connect      ${archive.domain}`
     })
     .join('\n')
 
@@ -86,7 +86,7 @@ export default async function generateMetadata(packageJson, channel) {
 `
   output += meta.grants
     .map(function (grant) {
-      return '// @grant        ' + grant
+      return `// @grant        ${grant}`
     })
     .join('\n')
 

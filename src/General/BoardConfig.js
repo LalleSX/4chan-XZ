@@ -1,5 +1,5 @@
 import Notice from '../classes/Notice'
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
 import $ from '../platform/$'
 import { dict, HOUR } from '../platform/helpers'
 
@@ -41,7 +41,7 @@ var BoardConfig = {
       }
       $.set('boardConfig', { boards, lastChecked: Date.now() })
     } else {
-      ;({ boards } = Conf['boardConfig'])
+      ({ boards } = Conf['boardConfig'])
       const err = (() => {
         switch (this.status) {
           case 0:

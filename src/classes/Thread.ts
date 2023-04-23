@@ -1,7 +1,7 @@
-import SimpleDict from './SimpleDict'
-import $ from '../platform/$'
 import { g } from '../globals/globals'
+import $ from '../platform/$'
 import Post from './Post'
+import SimpleDict from './SimpleDict'
 
 /*
  * decaffeinate suggestions:

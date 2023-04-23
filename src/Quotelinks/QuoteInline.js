@@ -1,7 +1,7 @@
 import Callbacks from '../classes/Callbacks'
 import Fetcher from '../classes/Fetcher'
 import Get from '../General/Get'
-import { g, Conf, doc } from '../globals/globals'
+import { Conf, doc,g } from '../globals/globals'
 import ExpandComment from '../Miscellaneous/ExpandComment'
 import Unread from '../Monitoring/Unread'
 import $ from '../platform/$'
@@ -180,7 +180,7 @@ var QuoteInline = {
 
     // Repeat.
     while ((inlined = $('.inlined', el))) {
-      ;({ boardID, threadID, postID } = Get.postDataFromLink(inlined))
+      ({ boardID, threadID, postID } = Get.postDataFromLink(inlined))
       QuoteInline.rm(inlined, boardID, threadID, postID, context)
       $.rmClass(inlined, 'inlined')
     }

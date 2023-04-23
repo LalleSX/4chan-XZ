@@ -60,7 +60,7 @@ var Get = {
     let boardID, postID, threadID
     if (link.dataset.postID) {
       // resurrected quote
-      ;({ boardID, threadID, postID } = link.dataset)
+      ({ boardID, threadID, postID } = link.dataset)
       if (!threadID) {
         threadID = 0
       }

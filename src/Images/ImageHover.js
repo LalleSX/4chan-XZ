@@ -1,7 +1,7 @@
 import Callbacks from '../classes/Callbacks'
 import Header from '../General/Header'
 import UI from '../General/UI'
-import { g, Conf, doc } from '../globals/globals'
+import { Conf, doc,g } from '../globals/globals'
 import $ from '../platform/$'
 import { SECOND } from '../platform/helpers'
 import ImageCommon from './ImageCommon'
@@ -99,7 +99,7 @@ var ImageHover = {
         }
       }
       if (file.dimensions) {
-        ;[width, height] = Array.from(file.dimensions.split('x').map(x => +x))
+        [width, height] = Array.from(file.dimensions.split('x').map(x => +x))
         const maxWidth = doc.clientWidth
         const maxHeight = doc.clientHeight - UI.hover.padding
         const scale = Math.min(1, maxWidth / width, maxHeight / height)

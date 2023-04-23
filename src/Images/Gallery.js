@@ -5,21 +5,21 @@
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-import galleryPage from './Gallery/Gallery.html'
-import $ from '../platform/$'
 import Callbacks from '../classes/Callbacks'
 import Notice from '../classes/Notice'
+import Get from '../General/Get'
+import Header from '../General/Header'
+import UI from '../General/UI'
+import { Conf, d, doc, g } from '../globals/globals'
 import Main from '../main/Main'
 import Keybinds from '../Miscellaneous/Keybinds'
+import $ from '../platform/$'
 import $$ from '../platform/$$'
+import { debounce, dict, SECOND } from '../platform/helpers'
+import galleryPage from './Gallery/Gallery.html'
 import ImageCommon from './ImageCommon'
 import Sauce from './Sauce'
 import Volume from './Volume'
-import Header from '../General/Header'
-import { Conf, d, doc, g } from '../globals/globals'
-import UI from '../General/UI'
-import Get from '../General/Get'
-import { debounce, dict, SECOND } from '../platform/helpers'
 
 var Gallery = {
   init() {
@@ -596,7 +596,7 @@ var Gallery = {
         let containerWidth = frame.clientWidth
         let containerHeight = doc.clientHeight - 25
         if ((current.dataRotate || 0) % 180 === 90) {
-          ;[containerWidth, containerHeight] = Array.from([
+          [containerWidth, containerHeight] = Array.from([
             containerHeight,
             containerWidth,
           ])

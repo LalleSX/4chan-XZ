@@ -1,6 +1,6 @@
+import meta from '../../../package.json'
 import { g } from '../../globals/globals'
 import h from '../../globals/jsx'
-import meta from '../../../package.json'
 
 // \u00A0 is non breaking space
 const separator = '\u00A0|\u00A0'

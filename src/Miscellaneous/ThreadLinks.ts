@@ -1,5 +1,5 @@
 import Callbacks from '../classes/Callbacks'
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
 
 const ThreadLinks = {
   init(): void {

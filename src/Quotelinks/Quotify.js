@@ -1,7 +1,7 @@
 import Redirect from '../Archive/Redirect'
 import Callbacks from '../classes/Callbacks'
 import Post from '../classes/Post'
-import { g, Conf, doc } from '../globals/globals'
+import { Conf, doc,g } from '../globals/globals'
 import ExpandComment from '../Miscellaneous/ExpandComment'
 import $ from '../platform/$'
 import $$ from '../platform/$$'

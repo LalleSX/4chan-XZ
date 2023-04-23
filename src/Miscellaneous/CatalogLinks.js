@@ -1,15 +1,15 @@
+import meta from '../../package.json'
 import Callbacks from '../classes/Callbacks'
 import Filter from '../Filtering/Filter'
+import Get from '../General/Get'
+import Header from '../General/Header'
+import Index from '../General/Index'
+import UI from '../General/UI'
+import { Conf,g } from '../globals/globals'
 import $ from '../platform/$'
 import $$ from '../platform/$$'
-import meta from '../../package.json'
-import Index from '../General/Index'
-import Site from '../site/Site'
-import Header from '../General/Header'
-import { g, Conf } from '../globals/globals'
-import UI from '../General/UI'
-import Get from '../General/Get'
 import { dict } from '../platform/helpers'
+import Site from '../site/Site'
 
 /*
  * decaffeinate suggestions:

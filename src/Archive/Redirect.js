@@ -42,7 +42,7 @@ var Redirect = {
           data[key] = []
         }
       }
-      ;({ uid, name, boards, files, software } = data)
+      ({ uid, name, boards, files, software } = data)
       if (!['fuuka', 'foolfuuka'].includes(software)) {
         continue
       }

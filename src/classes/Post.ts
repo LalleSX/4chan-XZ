@@ -1,5 +1,5 @@
 import Get from '../General/Get'
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
 import ImageExpand from '../Images/ImageExpand'
 import $ from '../platform/$'
 import $$ from '../platform/$$'
@@ -89,7 +89,7 @@ export default class Post {
 
     if (!this.isReply) {
       this.thread.OP = this
-      for (var key of ['isSticky', 'isClosed', 'isArchived']) {
+      for (const key of ['isSticky', 'isClosed', 'isArchived']) {
         var selector
         if ((selector = g.SITE.selectors.icons[key])) {
           this.thread[key] = !!$(selector, this.nodes.info)
@@ -149,7 +149,7 @@ export default class Post {
     if (g.posts.get(this.fullID)) {
       this.isRebuilt = true
       this.clones = g.posts.get(this.fullID).clones
-      for (var clone of this.clones) {
+      for (const clone of this.clones) {
         clone.origin = this
       }
     }
@@ -202,8 +202,8 @@ export default class Post {
       uniqueIDRoot: undefined as any,
       uniqueID: undefined as any,
     }
-    for (var key in s.info) {
-      var selector = s.info[key]
+    for (const key in s.info) {
+      const selector = s.info[key]
       nodes[key] = $(selector, info)
     }
     g.SITE.parseNodes?.(this, nodes)
@@ -267,14 +267,14 @@ export default class Post {
 
   cleanSpoilers(bq: HTMLElement) {
     const spoilers = $$(g.SITE.selectors.spoiler, bq)
-    for (var node of spoilers) {
+    for (const node of spoilers) {
       $.replace(node, $.tn('[spoiler]'))
     }
   }
 
   parseQuotes() {
     this.quotes = []
-    for (var quotelink of $$(g.SITE.selectors.quotelink, this.nodes.comment)) {
+    for (const quotelink of $$(g.SITE.selectors.quotelink, this.nodes.comment)) {
       this.parseQuote(quotelink)
     }
   }
@@ -308,7 +308,7 @@ export default class Post {
     const fileRoots = this.fileRoots()
     let index = 0
     for (let docIndex = 0; docIndex < fileRoots.length; docIndex++) {
-      var fileRoot = fileRoots[docIndex]
+      const fileRoot = fileRoots[docIndex]
       if ((file = this.parseFile(fileRoot))) {
         file.index = index++
         file.docIndex = docIndex
@@ -348,8 +348,8 @@ export default class Post {
     }
 
     const file: Partial<File> = { isDead: false }
-    for (var key in g.SITE.selectors.file) {
-      var selector = g.SITE.selectors.file[key]
+    for (const key in g.SITE.selectors.file) {
+      const selector = g.SITE.selectors.file[key]
       file[key] = $(selector, fileRoot)
     }
     file.thumbLink = file.thumb?.parentNode as HTMLElement
@@ -402,7 +402,7 @@ export default class Post {
     if (this.isClone) {
       return
     }
-    for (var clone of this.clones) {
+    for (const clone of this.clones) {
       clone.kill(file, index)
     }
 
@@ -411,7 +411,7 @@ export default class Post {
     }
     // Get quotelinks/backlinks to this post
     // and paint them (Dead).
-    for (var quotelink of Get.allQuotelinksLinkingTo(this)) {
+    for (const quotelink of Get.allQuotelinksLinkingTo(this)) {
       if (!$.hasClass(quotelink, 'deadlink')) {
         $.add(quotelink, Post.deadMark.cloneNode(true))
         $.addClass(quotelink, 'deadlink')
@@ -436,11 +436,11 @@ export default class Post {
     if (this.isClone) {
       return
     }
-    for (var clone of this.clones) {
+    for (const clone of this.clones) {
       clone.resurrect()
     }
 
-    for (var quotelink of Get.allQuotelinksLinkingTo(this)) {
+    for (const quotelink of Get.allQuotelinksLinkingTo(this)) {
       if ($.hasClass(quotelink, 'deadlink')) {
         $.rm($('.qmark-dead', quotelink))
         $.rmClass(quotelink, 'deadlink')
@@ -462,7 +462,7 @@ export default class Post {
 
   rmClone(index) {
     this.clones.splice(index, 1)
-    for (var clone of this.clones.slice(index)) {
+    for (const clone of this.clones.slice(index)) {
       clone.nodes.root.dataset.clone = index++
     }
   }
@@ -509,16 +509,16 @@ export class PostClone extends Post {
     const root = contractThumb
       ? this.cloneWithoutVideo(nodes.root)
       : nodes.root.cloneNode(true)
-    for (var node of [root, ...$$('[id]', root)]) {
+    for (const node of [root, ...$$('[id]', root)]) {
       node.id += `_${PostClone.suffix}`
     }
     PostClone.suffix++
 
     // Remove inlined posts inside of this post.
-    for (var inline of $$('.inline', root)) {
+    for (const inline of $$('.inline', root)) {
       $.rm(inline)
     }
-    for (var inlined of $$('.inlined', root)) {
+    for (const inlined of $$('.inlined', root)) {
       $.rmClass(inlined, 'inlined')
     }
 
@@ -543,12 +543,12 @@ export class PostClone extends Post {
     if (this.origin.files.length) {
       fileRoots = this.fileRoots()
     }
-    for (var originFile of this.origin.files) {
+    for (const originFile of this.origin.files) {
       // Copy values, point to relevant elements.
       file = { ...originFile }
-      var fileRoot = fileRoots[file.docIndex]
+      const fileRoot = fileRoots[file.docIndex]
       for (key in g.SITE.selectors.file) {
-        var selector = g.SITE.selectors.file[key]
+        const selector = g.SITE.selectors.file[key]
         file[key] = $(selector, fileRoot)
       }
       file.thumbLink = file.thumb?.parentNode

@@ -15,23 +15,22 @@ import Config from '../config/Config'
 import Filter from '../Filtering/Filter'
 import PostHiding from '../Filtering/PostHiding'
 import ThreadHiding from '../Filtering/ThreadHiding'
+import { c, Conf, d, doc, g } from '../globals/globals'
 import Main from '../main/Main'
+import Menu from '../Menu/Menu'
 import CatalogLinks from '../Miscellaneous/CatalogLinks'
 import RelativeDates from '../Miscellaneous/RelativeDates'
 import ThreadWatcher from '../Monitoring/ThreadWatcher'
-import $$ from '../platform/$$'
 import $ from '../platform/$'
+import $$ from '../platform/$$'
+import { dict, SECOND } from '../platform/helpers'
 import QuotePreview from '../Quotelinks/QuotePreview'
-import { c, Conf, d, doc, g } from '../globals/globals'
-import Header from './Header'
-import UI from './UI'
-import Menu from '../Menu/Menu'
-
-import NavLinksPage from './Index/NavLinks.html'
-import PageList from './Index/PageList.html'
 import BoardConfig from './BoardConfig'
 import Get from './Get'
-import { dict, SECOND } from '../platform/helpers'
+import Header from './Header'
+import NavLinksPage from './Index/NavLinks.html'
+import PageList from './Index/PageList.html'
+import UI from './UI'
 
 var Index = {
   showHiddenThreads: false,
@@ -1399,7 +1398,7 @@ var Index = {
     const topThreads = []
     const bottomThreads = []
     for (var ID of Index.sortedThreadIDs) {
-      ;(match(Index.parsedThreads[ID]) ? topThreads : bottomThreads).push(ID)
+      (match(Index.parsedThreads[ID]) ? topThreads : bottomThreads).push(ID)
     }
     return (Index.sortedThreadIDs = topThreads.concat(bottomThreads))
   },

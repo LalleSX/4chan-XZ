@@ -1,24 +1,38 @@
 {
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
   "env": {
     "browser": true,
-    "node": true,
-    "es6": true
+    "es2021": true,
+    "node": true
   },
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module"
-  },
+  "plugins": [
+    "@typescript-eslint",
+    "simple-import-sort"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "rules": {
-    "no-console": "warn",
-    "no-debugger": "warn",
-    "sort-imports": [
+    "semi": [
+      "error",
+      "never"
+    ],
+    "@typescript-eslint/semi": [
+      "error",
+      "never"
+    ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "prettier/prettier": [
       "error",
       {
-        "ignoreCase": false,
-        "ignoreDeclarationSort": true,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "single", "multiple", "all"]
+        "semi": false
       }
     ]
   }

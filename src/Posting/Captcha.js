@@ -1,13 +1,13 @@
-import $ from '../platform/$'
-import CaptchaReplace from './Captcha.replace'
-import CaptchaT from './Captcha.t'
 import meta from '../../package.json'
+import { Conf, d } from '../globals/globals'
 import Main from '../main/Main'
 import Keybinds from '../Miscellaneous/Keybinds'
+import $ from '../platform/$'
 import $$ from '../platform/$$'
-import QR from './QR'
-import { Conf, d } from '../globals/globals'
 import { MINUTE, SECOND } from '../platform/helpers'
+import CaptchaReplace from './Captcha.replace'
+import CaptchaT from './Captcha.t'
+import QR from './QR'
 
 const Captcha = {
   Cache: {

@@ -1,9 +1,9 @@
 import Redirect from '../Archive/Redirect'
-import $ from '../platform/$'
-import ReportPage from './Report/ArchiveReport.html'
 import CSS from '../css/CSS'
-import Captcha from '../Posting/Captcha'
 import { Conf, d, g } from '../globals/globals'
+import $ from '../platform/$'
+import Captcha from '../Posting/Captcha'
+import ReportPage from './Report/ArchiveReport.html'
 
 /*
  * decaffeinate suggestions:
@@ -123,7 +123,7 @@ var Report = {
     })
     const results = []
     for (var [name, url] of urls) {
-      ;(function (name, url) {
+      (function (name, url) {
         return $.ajax(url, {
           onloadend() {
             results.push([name, this.response || { error: '' }])

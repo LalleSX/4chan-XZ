@@ -1,25 +1,25 @@
-import ThreadWatcherPage from './ThreadWatcher/ThreadWatcher.html'
-import $ from '../platform/$'
 import Board from '../classes/Board'
 import Callbacks from '../classes/Callbacks'
 import DataBoard from '../classes/DataBoard'
 import Thread from '../classes/Thread'
-import Filter from '../Filtering/Filter'
-import Main from '../main/Main'
-import $$ from '../platform/$$'
 import Config from '../config/Config'
-import CrossOrigin from '../platform/CrossOrigin'
-import PostRedirect from '../Posting/PostRedirect'
-import QuoteYou from '../Quotelinks/QuoteYou'
-import Unread from './Unread'
-import UnreadIndex from './UnreadIndex'
+import Filter from '../Filtering/Filter'
+import Get from '../General/Get'
 import Header from '../General/Header'
 import Index from '../General/Index'
-import { Conf, d, doc, g } from '../globals/globals'
-import Menu from '../Menu/Menu'
 import UI from '../General/UI'
-import Get from '../General/Get'
+import { Conf, d, doc, g } from '../globals/globals'
+import Main from '../main/Main'
+import Menu from '../Menu/Menu'
+import $ from '../platform/$'
+import $$ from '../platform/$$'
+import CrossOrigin from '../platform/CrossOrigin'
 import { dict, HOUR, MINUTE } from '../platform/helpers'
+import PostRedirect from '../Posting/PostRedirect'
+import QuoteYou from '../Quotelinks/QuoteYou'
+import ThreadWatcherPage from './ThreadWatcher/ThreadWatcher.html'
+import Unread from './Unread'
+import UnreadIndex from './UnreadIndex'
 
 var ThreadWatcher = {
   db: null as DataBoard,
@@ -220,7 +220,7 @@ var ThreadWatcher = {
       if ($.hasClass(this, 'disabled')) {
         return
       }
-      for (var a of $$('a.watcher-link', ThreadWatcher.list)) {
+      for (const a of $$('a.watcher-link', ThreadWatcher.list)) {
         $.open(a.href)
       }
       return $.event('CloseMenu')
@@ -229,7 +229,7 @@ var ThreadWatcher = {
       if ($.hasClass(this, 'disabled')) {
         return
       }
-      for (var a of $$(
+      for (const a of $$(
         '.replies-unread > a.watcher-link',
         ThreadWatcher.list
       )) {
@@ -241,7 +241,7 @@ var ThreadWatcher = {
       if ($.hasClass(this, 'disabled')) {
         return
       }
-      for (var a of $$('.dead-thread > a.watcher-link', ThreadWatcher.list)) {
+      for (const a of $$('.dead-thread > a.watcher-link', ThreadWatcher.list)) {
         $.open(a.href)
       }
       return $.event('CloseMenu')
@@ -250,7 +250,7 @@ var ThreadWatcher = {
       if ($.hasClass(this, 'disabled')) {
         return
       }
-      for (var { siteID, boardID, threadID, data } of ThreadWatcher.getAll()) {
+      for (const { siteID, boardID, threadID, data } of ThreadWatcher.getAll()) {
         if (data.isDead) {
           ThreadWatcher.db.delete({ siteID, boardID, threadID })
         }
@@ -259,7 +259,7 @@ var ThreadWatcher = {
       return $.event('CloseMenu')
     },
     dismiss() {
-      for (var { siteID, boardID, threadID, data } of ThreadWatcher.getAll()) {
+      for (const { siteID, boardID, threadID, data } of ThreadWatcher.getAll()) {
         if (data.quotingYou) {
           ThreadWatcher.update(siteID, boardID, threadID, {
             dismiss: data.quotingYou || 0,
@@ -301,7 +301,7 @@ var ThreadWatcher = {
       let nKilled = 0
       for (var threadID in db.data[siteID].boards[boardID]) {
         // Don't prune threads that have yet to appear in index.
-        var data = db.data[siteID].boards[boardID][threadID]
+        const data = db.data[siteID].boards[boardID][threadID]
         if (
           !data?.isDead &&
           !e.detail.threads.includes(`${boardID}.${threadID}`)
@@ -379,7 +379,7 @@ var ThreadWatcher = {
 
   abort() {
     delete ThreadWatcher.syncing
-    for (var req of ThreadWatcher.requests) {
+    for (const req of ThreadWatcher.requests) {
       if (!req.finished) {
         req.finished = true
         req.abort()
@@ -392,13 +392,13 @@ var ThreadWatcher = {
     const lm =
       $.lastModified['ThreadWatcher'] ||
       ($.lastModified['ThreadWatcher'] = dict())
-    for (var siteID in ThreadWatcher.dbLM.data) {
-      var boards = ThreadWatcher.dbLM.data[siteID]
-      for (var boardID in boards.boards) {
-        var data = boards.boards[boardID]
+    for (const siteID in ThreadWatcher.dbLM.data) {
+      const boards = ThreadWatcher.dbLM.data[siteID]
+      for (const boardID in boards.boards) {
+        const data = boards.boards[boardID]
         if (ThreadWatcher.db.get({ siteID, boardID })) {
-          for (var url in data) {
-            var date = data[url]
+          for (const url in data) {
+            const date = data[url]
             lm[url] = date
           }
         } else {
@@ -475,7 +475,7 @@ var ThreadWatcher = {
               middle1 <= now
             )
             const boards = ThreadWatcher.getAll(true)
-            for (var board of boards) {
+            for (const board of boards) {
               ThreadWatcher.fetchBoard(board, deep)
             }
             db.setLastChecked()
@@ -496,8 +496,8 @@ var ThreadWatcher = {
       return
     }
     let force = false
-    for (var thread of board) {
-      var { data } = thread
+    for (const thread of board) {
+      const { data } = thread
       if (!data.isDead && data.last !== -1) {
         if (Conf['Show Page'] && data.page == null) {
           force = true
@@ -542,7 +542,7 @@ var ThreadWatcher = {
       pageLength = this.response[0]?.threads.length || 0
       for (let i = 0; i < this.response.length; i++) {
         page = this.response[i]
-        for (var item of page.threads) {
+        for (const item of page.threads) {
           threads[item.no] = {
             page: i + 1,
             index: nThreads,
@@ -561,12 +561,12 @@ var ThreadWatcher = {
       }
     }
     for (thread of board) {
-      var { threadID, data } = thread
+      const { threadID, data } = thread
       if (threads[threadID]) {
         var index, modified, replies
         ;({ page, index, modified, replies } = threads[threadID])
         if (Conf['Show Page']) {
-          var lastPage = g.sites[siteID].isPrunedByAge?.({ siteID, boardID })
+          const lastPage = g.sites[siteID].isPrunedByAge?.({ siteID, boardID })
             ? threadID === oldest
             : index >= nThreads - pageLength
           ThreadWatcher.update(siteID, boardID, threadID, { page, lastPage })
@@ -576,7 +576,7 @@ var ThreadWatcher = {
             modified !== data.modified ||
             (replies != null && replies !== data.replies)
           ) {
-            ;(thread.newData || (thread.newData = {})).modified = modified
+            (thread.newData || (thread.newData = {})).modified = modified
             ThreadWatcher.fetchStatus(thread)
           }
         }
@@ -647,7 +647,7 @@ var ThreadWatcher = {
         postID: threadID,
       })
 
-      for (var postObj of this.response.posts) {
+      for (const postObj of this.response.posts) {
         if (postObj.no <= (data.last || 0) || postObj.no <= lastReadPost) {
           continue
         }
@@ -657,12 +657,12 @@ var ThreadWatcher = {
           continue
         }
 
-        var quotesYou = false
+        let quotesYou = false
         if (!Conf['Require OP Quote Link'] && youOP) {
           quotesYou = true
         } else if (QuoteYou.db && postObj.com) {
           var match
-          var regexp = site.regexp.quotelinkHTML
+          const regexp = site.regexp.quotelinkHTML
           regexp.lastIndex = 0
           while ((match = regexp.exec(postObj.com))) {
             if (
@@ -730,11 +730,11 @@ var ThreadWatcher = {
 
   getAll(groupByBoard) {
     const all = []
-    for (var siteID in ThreadWatcher.db.data) {
-      var boards = ThreadWatcher.db.data[siteID]
-      for (var boardID in boards.boards) {
+    for (const siteID in ThreadWatcher.db.data) {
+      const boards = ThreadWatcher.db.data[siteID]
+      for (const boardID in boards.boards) {
         var cont
-        var threads = boards.boards[boardID]
+        const threads = boards.boards[boardID]
         if (
           Conf['Current Board'] &&
           (siteID !== g.SITE.ID || boardID !== g.BOARD.ID)
@@ -744,10 +744,10 @@ var ThreadWatcher = {
         if (groupByBoard) {
           all.push((cont = []))
         }
-        for (var threadID in threads) {
-          var data = threads[threadID]
+        for (const threadID in threads) {
+          const data = threads[threadID]
           if (data && typeof data === 'object') {
-            ;(groupByBoard ? cont : all).push({
+            (groupByBoard ? cont : all).push({
               siteID,
               boardID,
               threadID,
@@ -847,18 +847,18 @@ var ThreadWatcher = {
 
   setPrefixes(threads) {
     const prefixes = dict()
-    for (var { siteID } of threads) {
+    for (const { siteID } of threads) {
       if (siteID in prefixes) {
         continue
       }
-      var len = 0
-      var prefix = ''
-      var conflicts = Object.keys(prefixes)
+      let len = 0
+      let prefix = ''
+      let conflicts = Object.keys(prefixes)
       while (conflicts.length > 0) {
         len++
         prefix = siteID.slice(0, len)
-        var conflicts2 = []
-        for (var siteID2 of conflicts) {
+        const conflicts2 = []
+        for (const siteID2 of conflicts) {
           if (siteID2.slice(0, len) === prefix) {
             conflicts2.push(siteID2)
           } else if (prefixes[siteID2].length < len) {
@@ -876,7 +876,7 @@ var ThreadWatcher = {
     const nodes = []
     const threads = ThreadWatcher.getAll()
     ThreadWatcher.setPrefixes(threads)
-    for (var { siteID, boardID, threadID, data } of threads) {
+    for (const { siteID, boardID, threadID, data } of threads) {
       // Add missing excerpt for threads added by Auto Watch
       var thread
       if (
@@ -906,7 +906,7 @@ var ThreadWatcher = {
     g.threads.forEach(function (thread) {
       const isWatched = ThreadWatcher.isWatched(thread)
       if (thread.OP) {
-        for (var post of [thread.OP, ...Array.from(thread.OP.clones)]) {
+        for (const post of [thread.OP, ...Array.from(thread.OP.clones)]) {
           var toggler
           if ((toggler = $('.watch-thread-link', post.nodes.info))) {
             ThreadWatcher.setToggler(toggler, isWatched)
@@ -929,7 +929,7 @@ var ThreadWatcher = {
   },
 
   refreshIcon() {
-    for (var className of ['replies-unread', 'replies-quoting-you']) {
+    for (const className of ['replies-unread', 'replies-quoting-you']) {
       ThreadWatcher.shortcut.classList.toggle(
         className,
         !!$(`.${className}`, ThreadWatcher.dialog)
@@ -1094,7 +1094,7 @@ var ThreadWatcher = {
         order: 60,
         open() {
           const [addClass, rmClass, text] = Array.from(
-            !!ThreadWatcher.db.get({
+            ThreadWatcher.db.get({
               boardID: g.BOARD.ID,
               threadID: g.THREADID,
             })
@@ -1182,8 +1182,8 @@ var ThreadWatcher = {
         },
       })
 
-      for (var { text, title, cb, open } of entries) {
-        var entry = {
+      for (const { text, title, cb, open } of entries) {
+        const entry = {
           el: $.el('a', {
             textContent: text,
             href: 'javascript:;',
@@ -1198,8 +1198,8 @@ var ThreadWatcher = {
       }
 
       // Settings checkbox entries:
-      for (var name in Config.threadWatcher) {
-        var conf = Config.threadWatcher[name]
+      for (const name in Config.threadWatcher) {
+        const conf = Config.threadWatcher[name]
         this.addCheckbox(name, conf[1])
       }
     },

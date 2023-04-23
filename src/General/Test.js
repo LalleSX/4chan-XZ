@@ -10,14 +10,14 @@ import Notice from '../classes/Notice'
 import Post from '../classes/Post'
 import Config from '../config/Config'
 import Filter from '../Filtering/Filter'
+import { c,Conf, g } from '../globals/globals'
 import ImageHost from '../Images/ImageHost'
+import Menu from '../Menu/Menu'
 import Keybinds from '../Miscellaneous/Keybinds'
 import Unread from '../Monitoring/Unread'
-import $$ from '../platform/$$'
 import $ from '../platform/$'
+import $$ from '../platform/$$'
 import Header from './Header'
-import { g, Conf, c } from '../globals/globals'
-import Menu from '../Menu/Menu'
 
 const Test = {
   init() {

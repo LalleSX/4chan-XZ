@@ -1,7 +1,7 @@
-import version from '../../version.json'
 import meta from '../../package.json'
-import type SimpleDict from '../classes/SimpleDict'
+import version from '../../version.json'
 import type Post from '../classes/Post'
+import type SimpleDict from '../classes/SimpleDict'
 import type Thread from '../classes/Thread'
 import type SWTinyboard from '../site/SW.tinyboard'
 

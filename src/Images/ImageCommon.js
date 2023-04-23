@@ -1,6 +1,6 @@
 import Redirect from '../Archive/Redirect'
 import Notice from '../classes/Notice'
-import { g, Conf, d } from '../globals/globals'
+import { Conf, d,g } from '../globals/globals'
 import $ from '../platform/$'
 import CrossOrigin from '../platform/CrossOrigin'
 import ImageHost from './ImageHost'

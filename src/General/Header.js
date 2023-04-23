@@ -1,3 +1,4 @@
+import meta from '../../package.json'
 import Redirect from '../Archive/Redirect'
 import Notice from '../classes/Notice'
 import { Conf, d, doc, g } from '../globals/globals'
@@ -10,7 +11,6 @@ import BoardConfig from './BoardConfig'
 import Get from './Get'
 import Settings from './Settings'
 import UI from './UI'
-import meta from '../../package.json'
 
 var Header = {
   init() {
@@ -593,7 +593,7 @@ var Header = {
         Conf['Header auto-hide on scroll'] &&
         Conf['Bottom header']
       ) {
-        ;({ height } = Header.bar.getBoundingClientRect())
+        ({ height } = Header.bar.getBoundingClientRect())
         if (x <= 0) {
           if (!Header.isHidden()) {
             x += height
@@ -614,7 +614,7 @@ var Header = {
         Conf['Header auto-hide on scroll'] &&
         !Conf['Bottom header']
       ) {
-        ;({ height } = Header.bar.getBoundingClientRect())
+        ({ height } = Header.bar.getBoundingClientRect())
         if (x >= 0) {
           if (!Header.isHidden()) {
             x += height

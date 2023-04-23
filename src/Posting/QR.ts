@@ -1,22 +1,22 @@
-import QuickReplyPage from './QR/QuickReply.html'
-import $ from '../platform/$'
+import meta from '../../package.json'
 import Callbacks from '../classes/Callbacks'
 import Notice from '../classes/Notice'
-import Main from '../main/Main'
-import Favicon from '../Monitoring/Favicon'
-import $$ from '../platform/$$'
-import CrossOrigin from '../platform/CrossOrigin'
-import Captcha from './Captcha'
-import meta from '../../package.json'
-import Header from '../General/Header'
-import { Conf, E, d, doc, g } from '../globals/globals'
-import Menu from '../Menu/Menu'
-import UI from '../General/UI'
-import BoardConfig from '../General/BoardConfig'
-import Get from '../General/Get'
-import { DAY, dict, SECOND } from '../platform/helpers'
 import Post from '../classes/Post'
 import SimpleDict from '../classes/SimpleDict'
+import BoardConfig from '../General/BoardConfig'
+import Get from '../General/Get'
+import Header from '../General/Header'
+import UI from '../General/UI'
+import { Conf, d, doc, E, g } from '../globals/globals'
+import Main from '../main/Main'
+import Menu from '../Menu/Menu'
+import Favicon from '../Monitoring/Favicon'
+import $ from '../platform/$'
+import $$ from '../platform/$$'
+import CrossOrigin from '../platform/CrossOrigin'
+import { DAY, dict, SECOND } from '../platform/helpers'
+import Captcha from './Captcha'
+import QuickReplyPage from './QR/QuickReply.html'
 
 interface QRNodes {
   initReady(initReady: any): unknown
@@ -25,39 +25,39 @@ interface QRNodes {
   open(): unknown
   close(): unknown
   captcha:
-    | {
-        init(): any
-        moreNeeded(): void
-        getThread(): { boardID: string; threadID: string }
-        setup(focus: any): any
-        destroy(): boolean
-        updateThread(): any
-        getOne(): {}
-        setUsed(): object
-        occupied(): boolean
-      }
-    | {
-        lifetime: number
-        init(): void
-        timeouts: {}
-        prevNeeded: number
-        noscriptURL(): string
-        moreNeeded(): number
-        toggle(): any
-        setup(focus: any, force: any): any
-        setupNoscript(): any
-        setupJS(): object
-        afterSetup(mutations: any): void
-        setupIFrame(iframe: any): void
-        fixQRPosition(): string
-        setupTextArea(textarea: any): void
-        destroy(): boolean
-        getOne(isReply: any): any
-        save(pasted: any, token: any): any
-        count(): number
-        reload(): any
-        occupied(): boolean
-      }
+  | {
+    init(): any
+    moreNeeded(): void
+    getThread(): { boardID: string; threadID: string }
+    setup(focus: any): any
+    destroy(): boolean
+    updateThread(): any
+    getOne(): {}
+    setUsed(): object
+    occupied(): boolean
+  }
+  | {
+    lifetime: number
+    init(): void
+    timeouts: {}
+    prevNeeded: number
+    noscriptURL(): string
+    moreNeeded(): number
+    toggle(): any
+    setup(focus: any, force: any): any
+    setupNoscript(): any
+    setupJS(): object
+    afterSetup(mutations: any): void
+    setupIFrame(iframe: any): void
+    fixQRPosition(): string
+    setupTextArea(textarea: any): void
+    destroy(): boolean
+    getOne(isReply: any): any
+    save(pasted: any, token: any): any
+    count(): number
+    reload(): any
+    occupied(): boolean
+  }
   min_width: number
   min_height: number
   max_width: number
@@ -88,7 +88,7 @@ interface QRNodes {
   unhide(): unknown
   dialog(): unknown
   shortcut(): unknown
-  req: any
+  req: XMLHttpRequest
   cleanNotifications(): unknown
   blur(): unknown
   post: Post
@@ -229,9 +229,8 @@ const QR: QRNodes = {
     if ((origToggle = $.id('togglePostFormLink'))) {
       const link = $.el('h1', { className: 'qr-link-container' })
       $.extend(link, {
-        innerHTML: `<a href="javascript:;" class="qr-link">${
-          g.VIEW === 'thread' ? 'Reply to Thread' : 'Start a Thread'
-        }</a>`,
+        innerHTML: `<a href="javascript:;" class="qr-link">${g.VIEW === 'thread' ? 'Reply to Thread' : 'Start a Thread'
+          }</a>`,
       })
 
       QR.link = link.firstElementChild
@@ -337,7 +336,7 @@ const QR: QRNodes = {
     $.rmClass(QR.nodes.el, 'dump')
     $.addClass(QR.shortcut, 'disabled')
     new QR.post(true)
-    for (var post of QR.posts.splice(0, QR.posts.length - 1)) {
+    for (const post of QR.posts.splice(0, QR.posts.length - 1)) {
       post.delete()
     }
     QR.cooldown.auto = false
@@ -482,7 +481,7 @@ const QR: QRNodes = {
   notifications: [],
 
   cleanNotifications() {
-    for (var notification of QR.notifications) {
+    for (const notification of QR.notifications) {
       notification.close()
     }
     return (QR.notifications = [])
@@ -506,8 +505,8 @@ const QR: QRNodes = {
     status.value = !value
       ? 'Submit'
       : QR.cooldown.auto
-      ? `Auto ${value}`
-      : value
+        ? `Auto ${value}`
+        : value
     return (status.disabled = disabled || false)
   },
 
@@ -515,7 +514,7 @@ const QR: QRNodes = {
     QR.open()
     if (QR.selected.isLocked) {
       const index = QR.posts.indexOf(QR.selected)
-      ;(QR.posts[index + 1] || new QR.post()).select()
+        ; (QR.posts[index + 1] || new QR.post()).select()
       $.addClass(QR.nodes.el, 'dump')
       return (QR.cooldown.auto = true)
     }
@@ -556,8 +555,8 @@ const QR: QRNodes = {
           continue
         }
 
-        var frag = range.cloneContents()
-        var ancestor = range.commonAncestorContainer
+        const frag = range.cloneContents()
+        const ancestor = range.commonAncestorContainer
         // Quoting the insides of a spoiler/code tag.
         if (
           $.x(
@@ -596,7 +595,7 @@ const QR: QRNodes = {
           $.rm(node)
         }
         text += `>${frag.textContent.trim()}\n`
-      } catch (error) {}
+      } catch (error) { }
     }
 
     QR.openPost()
@@ -707,10 +706,10 @@ const QR: QRNodes = {
     }
     let file = null
     let score = -1
-    for (var item of e.clipboardData.items) {
+    for (const item of e.clipboardData.items) {
       var file2
       if (item.kind === 'file' && (file2 = item.getAsFile())) {
-        var score2 =
+        const score2 =
           2 * (file2.size <= QR.max_size) + (file2.type === 'image/png')
         if (score2 > score) {
           file = file2
@@ -721,9 +720,8 @@ const QR: QRNodes = {
     if (file) {
       const { type } = file
       const blob = new Blob([file], { type })
-      blob.name = `${Conf['pastedname']}.${
-        $.getOwn(QR.extensionFromType, type) || 'jpg'
-      }`
+      blob.name = `${Conf['pastedname']}.${$.getOwn(QR.extensionFromType, type) || 'jpg'
+        }`
       QR.open()
       QR.handleFiles([blob])
       $.addClass(QR.nodes.el, 'dump')
@@ -737,20 +735,20 @@ const QR: QRNodes = {
     }
     const images = $$('img', pasteArea)
     $.rmAll(pasteArea)
-    for (var img of images) {
+    for (const img of images) {
       var m
-      var { src } = img
+      const { src } = img
       if ((m = src.match(/data:(image\/(\w+));base64,(.+)/))) {
-        var bstr = atob(m[3])
-        var arr = new Uint8Array(bstr.length)
+        const bstr = atob(m[3])
+        const arr = new Uint8Array(bstr.length)
         for (
-          var i = 0, end = bstr.length, asc = 0 <= end;
+          let i = 0, end = bstr.length, asc = 0 <= end;
           asc ? i < end : i > end;
           asc ? i++ : i--
         ) {
           arr[i] = bstr.charCodeAt(i)
         }
-        var blob = new Blob([arr], { type: m[1] })
+        const blob = new Blob([arr], { type: m[1] })
         blob.name = `${Conf['pastedname']}.${m[2]}`
         QR.handleFiles([blob])
       } else if (/^https?:\/\//.test(src)) {
@@ -792,7 +790,7 @@ const QR: QRNodes = {
       return
     }
     QR.cleanNotifications()
-    for (var file of files) {
+    for (const file of files) {
       QR.handleFile(file, files.length)
     }
     if (files.length !== 1) {
@@ -834,7 +832,7 @@ const QR: QRNodes = {
     }
     const list = QR.nodes.thread
     const options = [list.firstElementChild]
-    for (var thread of g.BOARD.threads.keys) {
+    for (const thread of g.BOARD.threads.keys) {
       options.push(
         $.el('option', {
           value: thread,
@@ -1015,8 +1013,8 @@ const QR: QRNodes = {
       $.add(select, $.el('option', { value, textContent }))
 
     addFlag('0', g.BOARD.config.country_flags ? 'Geographic Location' : 'None')
-    for (var value in g.BOARD.config.board_flags) {
-      var textContent = g.BOARD.config.board_flags[value]
+    for (const value in g.BOARD.config.board_flags) {
+      const textContent = g.BOARD.config.board_flags[value]
       addFlag(value, textContent)
     }
 
@@ -1077,7 +1075,7 @@ const QR: QRNodes = {
       threadID = null
       if (!!g.BOARD.config.require_subject && !post.sub) {
         err = 'New threads require a subject.'
-      } else if (!!!g.BOARD.config.text_only && !post.file) {
+      } else if (!g.BOARD.config.text_only && !post.file) {
         err = 'No file selected.'
       }
     } else if (g.BOARD.threads.get(threadID).isClosed) {
@@ -1176,8 +1174,8 @@ const QR: QRNodes = {
             options.form.append('g-recaptcha-response', response.response)
           }
         } else {
-          for (var key in response) {
-            var val = response[key]
+          for (const key in response) {
+            const val = response[key]
             options.form.append(key, val)
           }
         }
@@ -1283,7 +1281,7 @@ const QR: QRNodes = {
       ) {
         QR.cooldown.auto = !/have\s+been\s+muted/i.test(err.textContent)
         let seconds = 0
-        for (var mi of m) {
+        for (const mi of m) {
           seconds += (/minute/i.test(mi) ? 60 : 1) * +mi.match(/\d+/)[0]
         }
         if (/muted/i.test(err.textContent)) {
@@ -1328,7 +1326,7 @@ const QR: QRNodes = {
     QR.cooldown.auto = postsCount && isReply
 
     const lastPostToThread = !(function () {
-      for (var p of QR.posts.slice(1)) {
+      for (const p of QR.posts.slice(1)) {
         if (p.thread === post.thread) {
           return true
         }
@@ -1362,8 +1360,8 @@ const QR: QRNodes = {
         : threadID !== g.THREADID &&
           lastPostToThread &&
           Conf['Open Post in New Tab'] // replying from the index or a different thread
-        ? `${window.location.origin}/${g.BOARD}/thread/${threadID}#p${postID}`
-        : undefined
+          ? `${window.location.origin}/${g.BOARD}/thread/${threadID}#p${postID}`
+          : undefined
 
     if (URL) {
       const open =
@@ -1384,7 +1382,7 @@ const QR: QRNodes = {
 
   waitForThread(url, cb) {
     let attempts = 0
-    var check = function () {
+    const check = function () {
       return $.ajax(url, {
         onloadend() {
           attempts++
@@ -1440,8 +1438,8 @@ const QR: QRNodes = {
 
       // The longest reply cooldown, for use in pruning old reply data
       QR.cooldown.maxDelay = 0
-      for (var type in QR.cooldown.delays) {
-        var delay = QR.cooldown.delays[type]
+      for (const type in QR.cooldown.delays) {
+        const delay = QR.cooldown.delays[type]
         if (!['thread', 'thread_global'].includes(type)) {
           QR.cooldown.maxDelay = Math.max(QR.cooldown.maxDelay, delay)
         }
@@ -1458,8 +1456,8 @@ const QR: QRNodes = {
         !QR.cooldown.isSetup ||
         !!QR.cooldown.isCounting ||
         Object.keys(data[g.BOARD.ID] || {}).length +
-          Object.keys(data.global || {}).length <=
-          0
+        Object.keys(data.global || {}).length <=
+        0
       ) {
         return
       }
@@ -1514,7 +1512,7 @@ const QR: QRNodes = {
       const cooldowns =
         QR.cooldown.data[post.board.ID] ||
         (QR.cooldown.data[post.board.ID] = dict())
-      for (var id in cooldowns) {
+      for (const id in cooldowns) {
         cooldown = cooldowns[id]
         if (
           cooldown.delay == null &&
@@ -1532,14 +1530,14 @@ const QR: QRNodes = {
         return 0
       }
       const cooldowns = QR.cooldown.data[post.board.ID] || dict()
-      for (var start in cooldowns) {
-        var cooldown = cooldowns[start]
+      for (const start in cooldowns) {
+        const cooldown = cooldowns[start]
         if (
           cooldown.delay == null &&
           cooldown.threadID === post.thread.ID &&
           cooldown.postID === post.ID
         ) {
-          var seconds =
+          const seconds =
             QR.cooldown.delays.deletion -
             Math.floor((Date.now() - start) / SECOND)
           return Math.max(seconds, 0)
@@ -1553,7 +1551,7 @@ const QR: QRNodes = {
         return { type: 'thread' }
       } else {
         return {
-          type: !!post.file ? 'image' : 'reply',
+          type: post.file ? 'image' : 'reply',
           threadID: +post.thread,
         }
       }
@@ -1582,9 +1580,9 @@ const QR: QRNodes = {
         return
       }
       return $.get('cooldowns', dict(), function ({ cooldowns }) {
-        for (var scope in QR.cooldown.changes) {
-          for (var id in QR.cooldown.changes[scope]) {
-            var value = QR.cooldown.changes[scope][id]
+        for (const scope in QR.cooldown.changes) {
+          for (const id in QR.cooldown.changes[scope]) {
+            const value = QR.cooldown.changes[scope][id]
             QR.cooldown.mergeChange(cooldowns, scope, id, value)
           }
           QR.cooldown.data = cooldowns
@@ -1618,14 +1616,14 @@ const QR: QRNodes = {
       let seconds = 0
 
       if (Conf['Cooldown']) {
-        for (var scope of [g.BOARD.ID, 'global']) {
-          var cooldowns =
+        for (const scope of [g.BOARD.ID, 'global']) {
+          const cooldowns =
             QR.cooldown.data[scope] || (QR.cooldown.data[scope] = dict())
 
-          for (var start in cooldowns) {
+          for (let start in cooldowns) {
             cooldown = cooldowns[start]
             start = +start
-            var elapsed = Math.floor((now - start) / SECOND)
+            const elapsed = Math.floor((now - start) / SECOND)
             if (elapsed < 0) {
               // clock changed since then?
               QR.cooldown.set(scope, start, null)
@@ -1649,12 +1647,12 @@ const QR: QRNodes = {
             }
 
             // Clean up expired cooldowns
-            var maxDelay =
+            let maxDelay =
               cooldown.threadID !== cooldown.postID
                 ? QR.cooldown.maxDelay
                 : QR.cooldown.delays[
-                    scope === 'global' ? 'thread_global' : 'thread'
-                  ]
+                scope === 'global' ? 'thread_global' : 'thread'
+                ]
             if (QR.cooldown.customCooldown) {
               maxDelay = Math.max(
                 maxDelay,
@@ -1674,7 +1672,7 @@ const QR: QRNodes = {
               // Only cooldowns relevant to this post can set the seconds variable:
               //   reply cooldown with a reply, thread cooldown with a thread.
               // Inter-board thread cooldowns only apply on boards other than the one they were posted on.
-              var suffix = scope === 'global' ? '_global' : ''
+              const suffix = scope === 'global' ? '_global' : ''
               seconds = Math.max(
                 seconds,
                 QR.cooldown.delays[type + suffix] - elapsed
@@ -1878,7 +1876,7 @@ const QR: QRNodes = {
                 detail: { type: 'warning', content, lifetime: 20 },
               })
             )
-          var cb = function (e) {
+          const cb = function (e) {
             if (e) {
               this.removeEventListener('QRMetadata', cb, false)
             }
@@ -1959,7 +1957,7 @@ const QR: QRNodes = {
       if (!Conf['Quick Reply'] && (!Conf['Menu'] || !Conf['Delete Link'])) {
         return
       }
-      for (var item of Conf['QR.personas'].split('\n')) {
+      for (const item of Conf['QR.personas'].split('\n')) {
         QR.persona.parseItem(item.trim())
       }
     },
@@ -1974,7 +1972,7 @@ const QR: QRNodes = {
       ) {
         return
       }
-      ;[match, type, val] = Array.from(match)
+      [match, type, val] = Array.from(match)
 
       // Don't mix up item settings with val.
       item = item.replace(match, '')
@@ -2010,10 +2008,10 @@ const QR: QRNodes = {
     },
 
     load() {
-      for (var type in QR.persona.types) {
-        var arr = QR.persona.types[type]
-        var list = $(`#list-${type}`, QR.nodes.el)
-        for (var val of arr) {
+      for (const type in QR.persona.types) {
+        const arr = QR.persona.types[type]
+        const list = $(`#list-${type}`, QR.nodes.el)
+        for (const val of arr) {
           if (val) {
             $.add(list, $.el('option', { textContent: val }))
           }
@@ -2095,12 +2093,12 @@ const QR: QRNodes = {
         }
         return this.preventAutoPost()
       })
-      for (var label of $$('label', el)) {
+      for (const label of $$('label', el)) {
         $.on(label, 'click', e => e.stopPropagation())
       }
       $.add(QR.nodes.dumpList, el)
 
-      for (var event of [
+      for (const event of [
         'dragStart',
         'dragEnter',
         'dragLeave',
@@ -2122,8 +2120,8 @@ const QR: QRNodes = {
           'name' in QR.persona.always
             ? QR.persona.always.name
             : prev
-            ? prev.name
-            : persona.name
+              ? prev.name
+              : persona.name
 
         this.email = 'email' in QR.persona.always ? QR.persona.always.email : ''
 
@@ -2159,7 +2157,7 @@ const QR: QRNodes = {
         new QR.post(true)
         $.rmClass(QR.nodes.el, 'dump')
       } else if (this === QR.selected) {
-        ;(QR.posts[index - 1] || QR.posts[index + 1]).select()
+         (QR.posts[index - 1] || QR.posts[index + 1]).select()
       }
       QR.posts.splice(index, 1)
       QR.status()
@@ -2180,7 +2178,7 @@ const QR: QRNodes = {
       if (this !== QR.selected) {
         return
       }
-      for (var name of [
+      for (const name of [
         'thread',
         'name',
         'email',
@@ -2224,7 +2222,7 @@ const QR: QRNodes = {
     load() {
       // Load this post's values.
 
-      for (var name of [
+      for (const name of [
         'thread',
         'name',
         'email',
@@ -2240,7 +2238,7 @@ const QR: QRNodes = {
         node.value = this[name] || node.dataset.default || ''
       }
 
-      ;(this.thread !== 'new' ? $.addClass : $.rmClass)(
+       (this.thread !== 'new' ? $.addClass : $.rmClass)(
         QR.nodes.el,
         'reply-to-thread'
       )
@@ -2266,7 +2264,7 @@ const QR: QRNodes = {
       this[name] = input.value || input.dataset.default || null
       switch (name) {
         case 'thread':
-          ;(this.thread !== 'new' ? $.addClass : $.rmClass)(
+           (this.thread !== 'new' ? $.addClass : $.rmClass)(
             QR.nodes.el,
             'reply-to-thread'
           )
@@ -2302,7 +2300,7 @@ const QR: QRNodes = {
       }
       // Do this in case people use extensions
       // that do not trigger the `input` event.
-      for (var name of [
+      for (const name of [
         'thread',
         'name',
         'email',
@@ -2358,9 +2356,9 @@ const QR: QRNodes = {
       e.stopPropagation()
       for (let i = QR.posts.length - 1; i >= 0; i--) {
         var errors
-        var post = QR.posts[i]
+        const post = QR.posts[i]
         if ((errors = post.errors)) {
-          for (var error of errors) {
+          for (const error of errors) {
             if (doc.contains(error)) {
               post.rm()
               break
@@ -2380,7 +2378,7 @@ const QR: QRNodes = {
             : '') +
           `<br>[<a href="javascript:;">delete post</a>] [<a href="javascript:;">delete all</a>]`,
       })
-      ;(this.errors || (this.errors = [])).push(div)
+        ; (this.errors || (this.errors = [])).push(div)
       const [rm, rmAll] = Array.from($$('a', div))
       $.on(div, 'click', () => {
         if (QR.posts.includes(this)) {
@@ -2403,7 +2401,7 @@ const QR: QRNodes = {
 
     dismissErrors(test = () => true) {
       if (this.errors) {
-        for (var error of this.errors) {
+        for (const error of this.errors) {
           if (doc.contains(error) && test(error)) {
             error.parentNode.previousElementSibling.click()
           }
@@ -2415,9 +2413,8 @@ const QR: QRNodes = {
       this.file = file
       if (Conf['Randomize Filename'] && g.BOARD.ID !== 'f') {
         let ext
-        this.filename = `${
-          Date.now() * 1000 - Math.floor(Math.random() * 365 * DAY * 1000)
-        }`
+        this.filename = `${Date.now() * 1000 - Math.floor(Math.random() * 365 * DAY * 1000)
+          }`
         if ((ext = this.file.name.match(QR.validExtension))) {
           this.filename += ext[0]
         }
@@ -2468,7 +2465,7 @@ const QR: QRNodes = {
       }
 
       const event = isVideo ? 'loadeddata' : 'load'
-      var onload = () => {
+      const onload = () => {
         $.off(el, event, onload)
         $.off(el, 'error', onerror)
         this.checkDimensions(el)
@@ -2496,7 +2493,7 @@ const QR: QRNodes = {
     checkDimensions(el) {
       let height, width
       if (el.tagName === 'IMG') {
-        ;({ height, width } = el)
+         ({ height, width } = el)
         this.nodes.el.dataset.height = height
         this.nodes.el.dataset.width = width
         if (height > QR.max_height || width > QR.max_width) {
@@ -2556,7 +2553,7 @@ const QR: QRNodes = {
         height = el.videoHeight
         width = el.videoWidth
       } else {
-        ;({ height, width } = el)
+         ({ height, width } = el)
         if (height < s || width < s) {
           this.URL = el.src
           this.nodes.el.style.backgroundImage = `url(${this.URL})`
@@ -2601,7 +2598,7 @@ const QR: QRNodes = {
     }
 
     rmMetadata() {
-      for (var attr of ['type', 'height', 'width', 'duration']) {
+      for (const attr of ['type', 'height', 'width', 'duration']) {
         // XXX https://bugzilla.mozilla.org/show_bug.cgi?id=1021289
         this.nodes.el.removeAttribute(`data-${attr}`)
       }
@@ -2611,9 +2608,8 @@ const QR: QRNodes = {
       this.file.newName = (this.filename || '').replace(/[/\\]/g, '-')
       if (!QR.validExtension.test(this.filename)) {
         // 4chan will truncate the filename if it has no extension.
-        return (this.file.newName += `.${
-          $.getOwn(QR.extensionFromType, this.file.type) || 'jpg'
-        }`)
+        return (this.file.newName += `.${$.getOwn(QR.extensionFromType, this.file.type) || 'jpg'
+          }`)
       }
     }
 
@@ -2691,7 +2687,7 @@ const QR: QRNodes = {
       if (QR.posts[oldIndex].isLocked || QR.posts[newIndex].isLocked) {
         return
       }
-      ;(oldIndex < newIndex ? $.after : $.before)(this, el)
+       (oldIndex < newIndex ? $.after : $.before)(this, el)
       const post = QR.posts.splice(oldIndex, 1)[0]
       QR.posts.splice(newIndex, 0, post)
       QR.status()

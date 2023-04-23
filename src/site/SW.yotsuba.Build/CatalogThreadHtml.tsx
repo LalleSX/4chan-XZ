@@ -1,4 +1,4 @@
-import h, { hFragment, EscapedHtml } from '../../globals/jsx'
+import h, { EscapedHtml,hFragment } from '../../globals/jsx'
 
 export default function generateCatalogThreadHtml(
   thread,

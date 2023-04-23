@@ -1,7 +1,7 @@
 import Callbacks from '../classes/Callbacks'
 import Notice from '../classes/Notice'
 import Filter from '../Filtering/Filter'
-import { g, Conf, doc } from '../globals/globals'
+import { Conf, doc,g } from '../globals/globals'
 import $ from '../platform/$'
 import { dict } from '../platform/helpers'
 

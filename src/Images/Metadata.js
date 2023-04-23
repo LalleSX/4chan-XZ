@@ -1,8 +1,8 @@
-import $ from '../platform/$'
 import Callbacks from '../classes/Callbacks'
-import CrossOrigin from '../platform/CrossOrigin'
-import { Conf, d, g } from '../globals/globals'
 import Get from '../General/Get'
+import { Conf, d, g } from '../globals/globals'
+import $ from '../platform/$'
+import CrossOrigin from '../platform/CrossOrigin'
 
 /*
  * decaffeinate suggestions:

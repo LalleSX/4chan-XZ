@@ -1,7 +1,7 @@
-import { g, Conf, d } from '../globals/globals'
+import Post from '../classes/Post'
+import { Conf, d,g } from '../globals/globals'
 import $ from '../platform/$'
 import Menu from './Menu'
-import Post from '../classes/Post'
 
 type ReportLinkType = {
   init: () => void

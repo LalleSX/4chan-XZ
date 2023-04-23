@@ -18,7 +18,7 @@ const Polyfill = {
     }
   },
   toBlob(): void {
-    if (HTMLCanvasElement.prototype.toBlob) {
+    if (HTMLCanvasElement.prototype.toBlob !== undefined) {
       return
     }
     HTMLCanvasElement.prototype.toBlob = function (

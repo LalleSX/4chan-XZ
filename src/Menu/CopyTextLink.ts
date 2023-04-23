@@ -1,4 +1,4 @@
-import { g, Conf, d } from '../globals/globals'
+import { Conf, d,g } from '../globals/globals'
 import $ from '../platform/$'
 import Menu from './Menu'
 

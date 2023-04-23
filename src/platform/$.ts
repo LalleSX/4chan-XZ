@@ -1,15 +1,15 @@
 /// <reference path="../types/globals.d.ts" />
 
 import Notice from '../classes/Notice'
+import SimpleDict from '../classes/SimpleDict'
 import { c, Conf, d, doc, g } from '../globals/globals'
-import CrossOrigin from './CrossOrigin'
-import { debounce, dict, MINUTE, platform, SECOND } from './helpers'
 import {
   AjaxPageOptions,
   ElementProperties,
   WhenModifiedOptions,
 } from '../types/$'
-import SimpleDict from '../classes/SimpleDict'
+import CrossOrigin from './CrossOrigin'
+import { debounce, dict, MINUTE, platform, SECOND } from './helpers'
 // not chainable
 const $ = (selector, root = document.body) => root.querySelector(selector)
 $.id = (id: string) => d.getElementById(id)
@@ -57,7 +57,7 @@ $.ready = function (fc: () => void) {
     $.queueTask(fc)
     return
   }
-  var cb = function () {
+  const cb = function () {
     $.off(d, 'DOMContentLoaded', cb)
     return fc()
   }
@@ -69,8 +69,8 @@ $.formData = function (form: FormData | ElementProperties) {
     return new FormData(form)
   }
   const fd = new FormData()
-  for (var key in form) {
-    var val = form[key]
+  for (const key in form) {
+    const val = form[key]
     if (val) {
       if (typeof val === 'object' && 'newName' in val) {
         fd.append(key, val, val.newName)
@@ -83,8 +83,8 @@ $.formData = function (form: FormData | ElementProperties) {
 }
 
 $.extend = function (object: Object, properties: Object) {
-  for (var key in properties) {
-    var value = properties[key]
+  for (const key in properties) {
+    const value = properties[key]
     object[key] = value
   }
   return object
@@ -144,8 +144,8 @@ $.ajax = (function () {
     try {
       r.open(type, url, true)
       const object = headers || {}
-      for (var key in object) {
-        var value = object[key]
+      for (const key in object) {
+        const value = object[key]
         r.setRequestHeader(key, value)
       }
       $.extend(r, { onloadend, timeout, responseType, withCredentials })
@@ -218,8 +218,8 @@ $.ajax = (function () {
             window.FCX.requests[id] = r = new pageXHR()
             r.open(type, url, true)
             const object = headers || {}
-            for (var key in object) {
-              var value = object[key]
+            for (const key in object) {
+              const value = object[key]
               r.setRequestHeader(key, value)
             }
             r.responseType = responseType === 'document' ? 'text' : responseType
@@ -261,7 +261,7 @@ $.ajax = (function () {
             }
             if (form) {
               fd = new FormData()
-              for (var entry of form) {
+              for (const entry of form) {
                 fd.append(entry[0], entry[1])
               }
             } else {
@@ -301,7 +301,7 @@ $.ajax = (function () {
         }
         delete requests[e.detail.id]
         if (e.detail.status) {
-          for (var key of [
+          for (const key of [
             'status',
             'statusText',
             'response',
@@ -339,7 +339,7 @@ $.ajax = (function () {
       req.abort = () => $.event('4chanXAjaxAbort', { id })
       if (form) {
         form = new FormData(form)
-        for (var entry of form) {
+        for (const entry of form) {
           if (entry[0] === 'json') {
             form.delete(entry[0])
             form.append(entry[0], JSON.stringify(entry[1]))
@@ -406,66 +406,66 @@ $.whenModified = function (
   })
 }
 
-;(function () {
-  const reqs = dict()
-  $.cache = function (url, cb, options: { ajax?: typeof $.ajax } = {}) {
-    let req: any
-    const { ajax } = options
-    if ((req = reqs[url])) {
-      if (req.callbacks) {
-        req.callbacks.push(cb)
-      } else {
-        $.queueTask(() => cb.call(req, { isCached: true }))
-      }
-      return req
-    }
-    const onloadend = function () {
-      if (!this.status) {
-        delete reqs[url]
-      }
-      for (cb of this.callbacks) {
-        ;(cb => $.queueTask(() => cb.call(this, { isCached: false })))(cb)
-      }
-      return delete this.callbacks
-    }
-    req = (ajax || $.ajax)(url, { onloadend })
-    req.callbacks = [cb]
-    return (reqs[url] = req)
-  }
-  // very sensitive errors
-  return ($.cleanCache = function (testf) {
-    for (var url in reqs) {
-      if (testf(url)) {
-        delete reqs[url]
-      }
-    }
-  })
-})()
-
-;($.cb = {
-  checked() {
-    if ($.hasOwn(Conf, this.name)) {
-      $.set(this.name, this.checked, true)
-      return (Conf[this.name] = this.checked)
-    }
-  },
-  value() {
-    if ($.hasOwn(Conf, this.name)) {
-      $.set(this.name, this.value.trim(), cb => {
-        if (cb) {
-          return (this.value = cb)
+  ; (function () {
+    const reqs = dict()
+    $.cache = function (url, cb, options: { ajax?: typeof $.ajax } = {}) {
+      let req: any
+      const { ajax } = options
+      if ((req = reqs[url])) {
+        if (req.callbacks) {
+          req.callbacks.push(cb)
+        } else {
+          $.queueTask(() => cb.call(req, { isCached: true }))
         }
-      })
+        return req
+      }
+      const onloadend = function () {
+        if (!this.status) {
+          delete reqs[url]
+        }
+        for (cb of this.callbacks) {
+          (cb => $.queueTask(() => cb.call(this, { isCached: false })))(cb)
+        }
+        return delete this.callbacks
+      }
+      req = (ajax || $.ajax)(url, { onloadend })
+      req.callbacks = [cb]
+      return (reqs[url] = req)
     }
-    return (Conf[this.name] = this.value)
-  },
-}),
-  ($.asap = function (test: () => boolean, cb: () => void) {
-    if (test()) {
-      return cb()
-    }
-    return setTimeout(() => $.asap(test, cb), 0)
-  })
+    // very sensitive errors
+    return ($.cleanCache = function (testf) {
+      for (const url in reqs) {
+        if (testf(url)) {
+          delete reqs[url]
+        }
+      }
+    })
+  })()
+
+  ; ($.cb = {
+    checked() {
+      if ($.hasOwn(Conf, this.name)) {
+        $.set(this.name, this.checked, true)
+        return (Conf[this.name] = this.checked)
+      }
+    },
+    value() {
+      if ($.hasOwn(Conf, this.name)) {
+        $.set(this.name, this.value.trim(), cb => {
+          if (cb) {
+            return (this.value = cb)
+          }
+        })
+      }
+      return (Conf[this.name] = this.value)
+    },
+  }),
+    ($.asap = function (test: () => boolean, cb: () => void) {
+      if (test()) {
+        return cb()
+      }
+      return setTimeout(() => $.asap(test, cb), 0)
+    })
 
 $.onExists = function (
   root: HTMLElement,
@@ -519,13 +519,13 @@ $.X = function (path: string, root?: HTMLElement) {
 }
 
 $.addClass = function (el: HTMLElement, ...classNames: string[]) {
-  for (var className of classNames) {
+  for (const className of classNames) {
     el.classList.add(className)
   }
 }
 
 $.rmClass = function (el, ...classNames) {
-  for (var className of classNames) {
+  for (const className of classNames) {
     el.classList.remove(className)
   }
 }
@@ -551,7 +551,7 @@ $.nodes = function (nodes) {
     return nodes
   }
   const frag = $.frag()
-  for (var node of nodes) {
+  for (const node of nodes) {
     frag.appendChild(node)
   }
   return frag
@@ -579,19 +579,19 @@ $.el = function (
 }
 
 $.on = function (el, events, handler) {
-  for (var event of events.split(' ')) {
+  for (const event of events.split(' ')) {
     el.addEventListener(event, handler, false)
   }
 }
 
 $.off = function (el, events, handler) {
-  for (var event of events.split(' ')) {
+  for (const event of events.split(' ')) {
     el.removeEventListener(event, handler, false)
   }
 }
 
 $.one = function (el, events, handler) {
-  var cb = function (e) {
+  const cb = function (e) {
     $.off(el, events, cb)
     return handler.call(this, e)
   }
@@ -611,7 +611,7 @@ $.event = function (event, detail, root = d) {
 
 if (platform === 'userscript') {
   // XXX Make $.event work in Pale Moon with GM 3.x (no cloneInto function).
-  ;(function () {
+  (function () {
     if (
       !/PaleMoon\//.test(navigator.userAgent) ||
       +GM_info?.version?.split('.')[0] < 2 ||
@@ -643,7 +643,7 @@ if (platform === 'userscript') {
         WeakMap: WeakMap,
         WeakSet: WeakSet,
       }
-      var clone = function (obj) {
+      const clone = function (obj) {
         let constructor
         if (
           obj != null &&
@@ -651,8 +651,8 @@ if (platform === 'userscript') {
           (constructor = unsafeConstructors[obj.constructor.name])
         ) {
           const obj2 = new constructor()
-          for (var key in obj) {
-            var val = obj[key]
+          for (const key in obj) {
+            const val = obj[key]
             obj2[key] = clone(val)
           }
           return obj2
@@ -680,8 +680,8 @@ if (!globalThis.chrome?.extension) {
     GM?.openInTab != null
       ? GM.openInTab
       : typeof GM_openInTab !== 'undefined' && GM_openInTab !== null
-      ? GM_openInTab
-      : url => window.open(url, '_blank')
+        ? GM_openInTab
+        : url => window.open(url, '_blank')
 } else {
   $.open = url => window.open(url, '_blank')
 }
@@ -730,7 +730,7 @@ $.global = function (fn: Function, data?: object) {
   } else {
     try {
       fn.call(data)
-    } catch (error) {}
+    } catch (error) { }
     return data
   }
 }
@@ -773,14 +773,14 @@ $.unescape = function (text: string): string {
   return text.replace(/<[^>]*>/g, '').replace(
     /&(amp|#039|quot|lt|gt|#44);/g,
     c =>
-      ({
-        '&amp;': '&',
-        '&#039;': "'",
-        '&quot;': '"',
-        '&lt;': '<',
-        '&gt;': '>',
-        '&#44;': ',',
-      }[c])
+    ({
+      '&amp;': '&',
+      '&#039;': "'",
+      '&quot;': '"',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&#44;': ',',
+    }[c])
   )
 }
 
@@ -849,25 +849,25 @@ if (platform === 'crx') {
   }
 
   chrome.storage.onChanged.addListener(function (changes, area) {
-    for (var key in changes) {
-      var oldValue = $.oldValue.local[key] ?? $.oldValue.sync[key]
+    for (const key in changes) {
+      const oldValue = $.oldValue.local[key] ?? $.oldValue.sync[key]
       $.oldValue[area][key] = dict.clone(changes[key].newValue)
-      var newValue = $.oldValue.local[key] ?? $.oldValue.sync[key]
-      var cb = $.syncing[key]
+      const newValue = $.oldValue.local[key] ?? $.oldValue.sync[key]
+      const cb = $.syncing[key]
       if (cb && JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
         cb(newValue, key)
       }
     }
   })
   $.sync = (key: string, cb: () => void) => ($.syncing[key] = cb)
-  $.forceSync = function (): void {}
+  $.forceSync = function (): void { }
 
   $.crxWorking = function () {
     try {
       if (chrome.runtime.getManifest()) {
         return true
       }
-    } catch (error) {}
+    } catch (error) { }
     if (!$.crxWarningShown) {
       const msg = $.el('div', {
         innerHTML:
@@ -926,117 +926,117 @@ if (platform === 'crx') {
     return get('sync')
   })
 
-  ;(function () {
-    const items = {
-      local: dict(),
-      sync: dict(),
-    }
+    ; (function () {
+      const items = {
+        local: dict(),
+        sync: dict(),
+      }
 
-    const exceedsQuota = (
-      key,
-      value // bytes in UTF-8
-    ) =>
-      unescape(encodeURIComponent(JSON.stringify(key))).length +
+      const exceedsQuota = (
+        key,
+        value // bytes in UTF-8
+      ) =>
+        unescape(encodeURIComponent(JSON.stringify(key))).length +
         unescape(encodeURIComponent(JSON.stringify(value))).length >
-      chrome.storage.sync.QUOTA_BYTES_PER_ITEM
+        chrome.storage.sync.QUOTA_BYTES_PER_ITEM
 
-    $.delete = function (keys) {
-      if (!$.crxWorking()) {
-        return
-      }
-      if (typeof keys === 'string') {
-        keys = [keys]
-      }
-      for (var key of keys) {
-        delete items.local[key]
-        delete items.sync[key]
-      }
-      chrome.storage.local.remove(keys)
-      return chrome.storage.sync.remove(keys)
-    }
-
-    const timeout = {}
-    var setArea = function (area, cb) {
-      const data = dict()
-      $.extend(data, items[area])
-      if (!Object.keys(data).length || timeout[area] > Date.now()) {
-        return
-      }
-      return chrome.storage[area].set(data, function () {
-        let err
-        let key
-        if ((err = chrome.runtime.lastError)) {
-          c.error(err.message)
-          setTimeout(setArea, MINUTE, area)
-          timeout[area] = Date.now() + MINUTE
-          return cb?.(err)
+      $.delete = function (keys) {
+        if (!$.crxWorking()) {
+          return
         }
+        if (typeof keys === 'string') {
+          keys = [keys]
+        }
+        for (const key of keys) {
+          delete items.local[key]
+          delete items.sync[key]
+        }
+        chrome.storage.local.remove(keys)
+        return chrome.storage.sync.remove(keys)
+      }
 
-        delete timeout[area]
-        for (key in data) {
-          if (items[area][key] === data[key]) {
-            delete items[area][key]
+      const timeout = {}
+      const setArea = function (area, cb) {
+        const data = dict()
+        $.extend(data, items[area])
+        if (!Object.keys(data).length || timeout[area] > Date.now()) {
+          return
+        }
+        return chrome.storage[area].set(data, function () {
+          let err
+          let key
+          if ((err = chrome.runtime.lastError)) {
+            c.error(err.message)
+            setTimeout(setArea, MINUTE, area)
+            timeout[area] = Date.now() + MINUTE
+            return cb?.(err)
           }
-        }
-        if (area === 'local') {
+
+          delete timeout[area]
           for (key in data) {
-            var val = data[key]
-            if (!exceedsQuota(key, val)) {
-              items.sync[key] = val
+            if (items[area][key] === data[key]) {
+              delete items[area][key]
             }
           }
-          setSync()
-        } else {
-          chrome.storage.local.remove(
-            (() => {
-              const result = []
-              for (key in data) {
-                if (!(key in items.local)) {
-                  result.push(key)
-                }
+          if (area === 'local') {
+            for (key in data) {
+              const val = data[key]
+              if (!exceedsQuota(key, val)) {
+                items.sync[key] = val
               }
-              return result
-            })()
-          )
-        }
-        return cb?.()
-      })
-    }
-
-    var setSync = debounce(SECOND, () => setArea('sync', () => $.forceSync()))
-
-    $.set = $.oneItemSugar(function (data, cb) {
-      if (!$.crxWorking()) {
-        return
-      }
-      $.securityCheck(data)
-      $.extend(items.local, data)
-      return setArea('local', cb)
-    })
-
-    return ($.clear = function (cb) {
-      if (!$.crxWorking()) {
-        return
-      }
-      items.local = dict()
-      items.sync = dict()
-      let count = 2
-      let err = null
-      const done = function () {
-        if (chrome.runtime.lastError) {
-          c.error(chrome.runtime.lastError.message)
-        }
-        if (err == null) {
-          err = chrome.runtime.lastError
-        }
-        if (!--count) {
+            }
+            setSync()
+          } else {
+            chrome.storage.local.remove(
+              (() => {
+                const result = []
+                for (key in data) {
+                  if (!(key in items.local)) {
+                    result.push(key)
+                  }
+                }
+                return result
+              })()
+            )
+          }
           return cb?.()
-        }
+        })
       }
-      chrome.storage.local.clear(done)
-      return chrome.storage.sync.clear(done)
-    })
-  })()
+
+      var setSync = debounce(SECOND, () => setArea('sync', () => $.forceSync()))
+
+      $.set = $.oneItemSugar(function (data, cb) {
+        if (!$.crxWorking()) {
+          return
+        }
+        $.securityCheck(data)
+        $.extend(items.local, data)
+        return setArea('local', cb)
+      })
+
+      return ($.clear = function (cb) {
+        if (!$.crxWorking()) {
+          return
+        }
+        items.local = dict()
+        items.sync = dict()
+        let count = 2
+        let err = null
+        const done = function () {
+          if (chrome.runtime.lastError) {
+            c.error(chrome.runtime.lastError.message)
+          }
+          if (err == null) {
+            err = chrome.runtime.lastError
+          }
+          if (!--count) {
+            return cb?.()
+          }
+        }
+        chrome.storage.local.clear(done)
+        return chrome.storage.sync.clear(done)
+      })
+    })()
 } else {
   $.syncing = {}
 
@@ -1051,9 +1051,9 @@ if (platform === 'crx') {
     $.on($.syncChannel, 'message', e =>
       (() => {
         const result = []
-        for (var key in e.data) {
+        for (const key in e.data) {
           var cb
-          var val = e.data[key]
+          const val = e.data[key]
           if ((cb = $.syncing[key])) {
             result.push(cb(dict.json(JSON.stringify(val)), key))
           }
@@ -1064,7 +1064,7 @@ if (platform === 'crx') {
 
     $.sync = (key: string, cb: () => void) => ($.syncing[key] = cb)
 
-    $.forceSync = function (): void {}
+    $.forceSync = function (): void { }
 
     $.delete = function (keys, cb) {
       let key
@@ -1097,7 +1097,7 @@ if (platform === 'crx') {
       return Promise.all(keys.map(key => GM.getValue(g.NAMESPACE + key))).then(
         function (values: string[]) {
           for (let i = 0; i < values.length; i++) {
-            var val = values[i]
+            const val = values[i]
             if (val) {
               items[keys[i]] = dict.json(val)
             }
@@ -1115,8 +1115,8 @@ if (platform === 'crx') {
       return Promise.all(
         (() => {
           const result: Promise<void>[] = []
-          for (var key in items) {
-            var val = items[key]
+          for (const key in items) {
+            const val = items[key]
             result.push(GM.setValue(g.NAMESPACE + key, JSON.stringify(val)))
           }
           return result
@@ -1147,7 +1147,7 @@ if (platform === 'crx') {
       $.listValues = () =>
         (() => {
           const result = []
-          for (var key in localStorage) {
+          for (const key in localStorage) {
             if (key.slice(0, g.NAMESPACE.length) === g.NAMESPACE) {
               result.push(key)
             }
@@ -1203,8 +1203,8 @@ if (platform === 'crx') {
         return localStorage.removeItem(key)
       }
     } else {
-      $.setValue = function () {}
-      $.deleteValue = function () {}
+      $.setValue = function () { }
+      $.deleteValue = function () { }
       $.cantSync = $.cantSet = true
     }
 
@@ -1237,7 +1237,7 @@ if (platform === 'crx') {
           return GM.setValue(g.NAMESPACE + 'forceSync', val + 1)
         })
       }
-      $.forceSync = function () {}
+      $.forceSync = function () { }
     } else if (
       (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) ||
       $.hasStorage
@@ -1248,34 +1248,34 @@ if (platform === 'crx') {
         return ($.oldValue[key] = $.getValue(key))
       }
 
-      ;(function () {
-        const onChange = function ({ key, newValue }) {
-          let cb: (val: any, key: string) => void
-          if (!(cb = $.syncing[key])) {
-            return
-          }
-          if (newValue != null) {
-            if (newValue === $.oldValue[key]) {
+        ; (function () {
+          const onChange = function ({ key, newValue }) {
+            let cb: (val: any, key: string) => void
+            if (!(cb = $.syncing[key])) {
               return
             }
-            $.oldValue[key] = newValue
-            return cb(dict.json(newValue), key.slice(g.NAMESPACE.length))
-          } else {
-            if ($.oldValue[key] == null) {
-              return
+            if (newValue != null) {
+              if (newValue === $.oldValue[key]) {
+                return
+              }
+              $.oldValue[key] = newValue
+              return cb(dict.json(newValue), key.slice(g.NAMESPACE.length))
+            } else {
+              if ($.oldValue[key] == null) {
+                return
+              }
+              delete $.oldValue[key]
+              return cb(undefined, key.slice(g.NAMESPACE.length))
             }
-            delete $.oldValue[key]
-            return cb(undefined, key.slice(g.NAMESPACE.length))
           }
-        }
-        $.on(window, 'storage', onChange)
+          $.on(window, 'storage', onChange)
 
-        return ($.forceSync = function () {
-          return onChange({ key: g.NAMESPACE + 'forceSync', newValue: 1 })
-        })
-      })()
+          return ($.forceSync = function () {
+            return onChange({ key: g.NAMESPACE + 'forceSync', newValue: 1 })
+          })
+        })()
     } else {
-      $.forceSync = function () {}
+      $.forceSync = function () { }
     }
 
     $.delete = function (keys: string[], cb?: any) {
@@ -1292,7 +1292,7 @@ if (platform === 'crx') {
     )
 
     $.getSync = function (items: any, cb: Function) {
-      for (var key in items) {
+      for (const key in items) {
         var val2
         if ((val2 = $.getValue(g.NAMESPACE + key))) {
           try {
@@ -1310,8 +1310,8 @@ if (platform === 'crx') {
     $.set = $.oneItemSugar(function (items: any, cb?: Function) {
       $.securityCheck(items)
       return $.queueTask(function () {
-        for (var key in items) {
-          var value = items[key]
+        for (const key in items) {
+          const value = items[key]
           $.setValue(g.NAMESPACE + key, JSON.stringify(value))
         }
         return cb?.()
@@ -1326,7 +1326,7 @@ if (platform === 'crx') {
       try {
         //delete(keys, cb)
         $.delete($.listValues(), cb)
-      } catch (error) {}
+      } catch (error) { }
       return cb?.()
     }
   }

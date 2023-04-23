@@ -1,8 +1,8 @@
 import Callbacks from '../classes/Callbacks'
-import UI from '../General/UI'
-import { g, Conf } from '../globals/globals'
-import $ from '../platform/$'
 import Post from '../classes/Post'
+import UI from '../General/UI'
+import { Conf,g } from '../globals/globals'
+import $ from '../platform/$'
 
 var Menu: any = {
   init(): VoidFunction {

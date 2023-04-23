@@ -1,7 +1,7 @@
 import Callbacks from '../classes/Callbacks'
 import Header from '../General/Header'
 import UI from '../General/UI'
-import { g, Conf, E, doc, d } from '../globals/globals'
+import { Conf, d,doc, E, g } from '../globals/globals'
 import $ from '../platform/$'
 import { MINUTE, SECOND } from '../platform/helpers'
 

@@ -1,6 +1,6 @@
 import Get from '../General/Get'
 import Header from '../General/Header'
-import { g, Conf, d, doc } from '../globals/globals'
+import { Conf, d, doc,g } from '../globals/globals'
 import $ from '../platform/$'
 import $$ from '../platform/$$'
 

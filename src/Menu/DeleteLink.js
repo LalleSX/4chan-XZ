@@ -176,7 +176,7 @@ var DeleteLink = {
       }
       if (resDoc.title === 'Updating index...') {
         // We're 100% sure.
-        ;(post.origin || post).kill(fileOnly)
+        (post.origin || post).kill(fileOnly)
       }
       if (post.fullID === DeleteLink.post.fullID) {
         return (link.textContent = 'Deleted')

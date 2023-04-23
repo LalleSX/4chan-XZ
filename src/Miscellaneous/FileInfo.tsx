@@ -1,6 +1,6 @@
 import Callbacks from '../classes/Callbacks'
 import Filter from '../Filtering/Filter'
-import { g, Conf, E } from '../globals/globals'
+import { Conf, E,g } from '../globals/globals'
 import h, { isEscaped } from '../globals/jsx'
 import ImageCommon from '../Images/ImageCommon'
 import $ from '../platform/$'

@@ -1,7 +1,7 @@
-import $ from '../platform/$'
 import Redirect from '../Archive/Redirect'
 import Filter from '../Filtering/Filter'
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
+import $ from '../platform/$'
 import Menu from './Menu'
 
 const ArchiveLink = {

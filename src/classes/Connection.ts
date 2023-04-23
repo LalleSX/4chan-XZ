@@ -1,5 +1,5 @@
-import $ from '../platform/$'
 import { g } from '../globals/globals'
+import $ from '../platform/$'
 
 interface ConnectionCallback {
   [key: string]: (value: any) => void

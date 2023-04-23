@@ -1,4 +1,4 @@
-import { g, Conf } from '../globals/globals'
+import { Conf,g } from '../globals/globals'
 import ImageCommon from '../Images/ImageCommon'
 import $ from '../platform/$'
 import Menu from './Menu'

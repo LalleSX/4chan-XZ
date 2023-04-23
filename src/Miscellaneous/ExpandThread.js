@@ -194,7 +194,7 @@ var ExpandThread = {
         if ('file' in post) {
           filesCount++
         }
-        ;({ root } = post.nodes)
+        ({ root } = post.nodes)
         postsRoot.push(root)
         continue
       }

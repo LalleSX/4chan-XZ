@@ -147,7 +147,7 @@ var RelativeDates = {
     let abbrev, date
     const isPost = data instanceof Post
     if (isPost) {
-      ;({ date } = data.info)
+      ({ date } = data.info)
       abbrev = false
     } else {
       date = new Date(+data.dataset.utc)

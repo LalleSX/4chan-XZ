@@ -27,16 +27,16 @@ var Site = {
       cb()
     }
     return $.onExists(doc, 'body', () => {
-      for (var software in SW) {
+      for (const software in SW) {
         var changes: { [key: string]: string }
         if ((changes = SW[software].detect?.())) {
           changes.software = software
           hostname = location.hostname.replace(/^www\./, '')
-          var properties =
+          const properties =
             Conf['siteProperties'][hostname] ||
             (Conf['siteProperties'][hostname] = dict())
-          var changed = 0
-          for (var key in changes) {
+          let changed = 0
+          for (const key in changes) {
             if (properties[key] !== changes[key]) {
               properties[key] = changes[key]
               changed++
@@ -70,18 +70,18 @@ var Site = {
   },
 
   parseURL(url: Location): ReturnType<typeof Main.parseURL> {
-    var siteID = Site.resolve(url)
+    const siteID = Site.resolve(url)
     return siteID ? g.sites[siteID].parseURL(url) : null
   },
 
   set(hostname: string): typeof g.SITE {
-    for (var ID in Conf['siteProperties']) {
+    for (const ID in Conf['siteProperties']) {
       var site: typeof g.SITE
-      var properties = Conf['siteProperties'][ID]
+      const properties = Conf['siteProperties'][ID]
       if (properties.canonical) {
         continue
       }
-      var { software } = properties
+      const { software } = properties
       if (!software || !$.hasOwn(SW, software)) {
         continue
       }

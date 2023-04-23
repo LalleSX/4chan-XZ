@@ -1,17 +1,45 @@
 import Redirect from '../Archive/Redirect'
+import Get from '../General/Get'
+import Index from '../General/Index'
+import { Conf, d,E, g } from '../globals/globals'
+import ImageHost from '../Images/ImageHost'
+import Main from '../main/Main'
+import $ from '../platform/$'
+import CrossOrigin from '../platform/CrossOrigin'
+import { dict } from '../platform/helpers'
 import Board from './Board'
 import Post from './Post'
 import Thread from './Thread'
-import $ from '../platform/$'
-import Main from '../main/Main'
-import Index from '../General/Index'
-import { E, g, Conf, d } from '../globals/globals'
-import ImageHost from '../Images/ImageHost'
-import CrossOrigin from '../platform/CrossOrigin'
-import Get from '../General/Get'
-import { dict } from '../platform/helpers'
-
 export default class Fetcher {
+  archiveTags!: {
+    '\n': { innerHTML: string }
+    '[b]': { innerHTML: string }
+    '[/b]': { innerHTML: string }
+    '[spoiler]': { innerHTML: string }
+    '[/spoiler]': { innerHTML: string }
+    '[code]': { innerHTML: string }
+    '[/code]': { innerHTML: string }
+    '[moot]': { innerHTML: string }
+    '[/moot]': { innerHTML: string }
+    '[banned]': { innerHTML: string }
+    '[/banned]': { innerHTML: string }
+    '[fortune]'(text: any): { innerHTML: string }
+    '[/fortune]': { innerHTML: string }
+    '[i]': { innerHTML: string }
+    '[/i]': { innerHTML: string }
+    '[red]': { innerHTML: string }
+    '[/red]': { innerHTML: string }
+    '[green]': { innerHTML: string }
+    '[/green]': { innerHTML: string }
+    '[blue]': { innerHTML: string }
+    '[/blue]': { innerHTML: string }
+  }
+  boardID: string | number
+  threadID: string | number
+  postID: string | number
+  root: HTMLElement
+  quoter: any
+  static flagCSS: HTMLStyleElement | HTMLElement
   static initClass() {
     this.prototype.archiveTags = {
       '\n': { innerHTML: '<br>' },
@@ -82,8 +110,8 @@ export default class Fetcher {
       Fetcher.fetchThread(
         this.boardID,
         this.threadID,
-        function (req, isCached) {
-          that.fetchedThread(req, isCached)
+        function (req) {
+          that.fetchedThread(req)
         },
         true
       )
@@ -99,8 +127,24 @@ export default class Fetcher {
       )
     }
   }
+  static fetchThread(
+    boardID: string | number,
+    threadID: string | number,
+    arg2: (req: XMLHttpRequest, isCached: boolean) => void,
+    arg3: boolean
+  ) {
+    throw new Error('Method not implemented.')
+  }
+  static fetchPost(
+    boardID: string | number,
+    postID: string | number,
+    arg2: (req: XMLHttpRequest, isCached: boolean) => void,
+    arg3: boolean
+  ) {
+    throw new Error('Method not implemented.')
+  }
 
-  fetchedThread(req) {
+  fetchedThread(req: XMLHttpRequest) {
     const { status, response } = req
     const { boardID, threadID } = this
     const board = g.boards[boardID]
@@ -128,7 +172,7 @@ export default class Fetcher {
       this.root.textContent = `Post No.${this.postID} not found.`
     }
   }
-  insert(post) {
+  insert(post: Post) {
     // Stop here if the container has been removed while loading.
     if (!this.root.parentNode) {
       return
@@ -149,8 +193,8 @@ export default class Fetcher {
 
     // Indicate links to the containing post.
     const quotes = [...clone.nodes.quotelinks, ...clone.nodes.backlinks]
-    for (var quote of quotes) {
-      var { boardID, postID } = Get.postDataFromLink(quote)
+    for (const quote of quotes) {
+      const { boardID, postID } = Get.postDataFromLink(quote)
       if (postID === this.quoter.ID && boardID === this.quoter.board.ID) {
         $.addClass(quote, 'forwardlink')
       }
@@ -180,7 +224,7 @@ export default class Fetcher {
     return $.event('PostsInserted', null, this.root)
   }
 
-  fetchedPost(req, isCached) {
+  fetchedPost(req: XMLHttpRequest, isCached: boolean) {
     const { status, response } = req
     const { boardID, postID, threadID } = this
     const postKey = `${boardID}.${postID}`
@@ -192,14 +236,14 @@ export default class Fetcher {
     }
 
     if (status !== 200) {
-      this.handleNon200Status(status)
+      this.handleNon200Status(status, req)
       return
     }
 
     const { posts } = response
     g.SITE.Build.spoilerRange[boardID] = posts[0].custom_spoiler
 
-    const foundPost = posts.find(p => p.no === postID)
+    const foundPost = posts.find((p: Post) => p.ID === postID)
 
     if (!foundPost) {
       this.handlePostNotFound(isCached)
@@ -220,27 +264,20 @@ export default class Fetcher {
   }
 
   handleNon200Status(status, req) {
-    $.addClass(this.root, 'warning')
-    this.root.textContent =
-      status === 404
-        ? `Thread No.${this.threadID} 404'd.`
-        : !status
-        ? 'Connection Error'
-        : `Error ${req.statusText} (${req.status}).`
-
-    if (status && this.archivedPost()) {
+    if (status === 404) {
+      this.handlePostNotFound(false, req)
       return
     }
   }
 
-  handlePostNotFound(isCached) {
+  handlePostNotFound(isCached: boolean, req?: XMLHttpRequest) {
     if (isCached) {
       const api = g.SITE.urls.threadJSON({
         boardID: this.boardID,
         threadID: this.threadID,
-      })
-      $.cleanCache(url => url === api)
-      $.cache(api, () => this.fetchedPost(this, false))
+      }, true)
+      $.cleanCache((url: string) => url === api)
+      $.cache(api, () => this.fetchedPost(req, false))
       return
     }
 
@@ -253,7 +290,7 @@ export default class Fetcher {
   }
 
   archivedPost() {
-    let url
+    let url: string
     if (!Conf['Resurrect Quotes']) {
       return false
     }
@@ -273,7 +310,7 @@ export default class Fetcher {
       CrossOrigin.cache(url, function () {
         if (!encryptionOK && this.response?.media) {
           const { media } = this.response
-          for (var key in media) {
+          for (const key in media) {
             // Image/thumbnail URLs loaded over HTTP can be modified in transit.
             // Require them to be from an HTTP host so that no referrer is sent to them from an HTTPS page.
             if (/_link$/.test(key)) {
@@ -290,10 +327,10 @@ export default class Fetcher {
     return false
   }
 
-  parseArchivedPost(data, url, archive) {
+  parseArchivedPost(data: any, url, archive: any) {
     // In case of multiple callbacks for the same request,
     // don't parse the same original post more than once.
-    let post
+    let post: Post
     if ((post = g.posts.get(`${this.boardID}.${this.postID}`))) {
       this.insert(post)
       return
@@ -320,19 +357,19 @@ export default class Fetcher {
     comment = (() => {
       const result = []
       for (let i = 0; i < comment.length; i++) {
-        var text = comment[i]
+        let text = comment[i]
         if (i % 2 === 1) {
-          var tag = Fetcher.archiveTags[text.replace(/\ .*\]/, ']')]
+          const tag = Fetcher.archiveTags[text.replace(/\ .*\]/, ']')]
           if (typeof tag === 'function') {
             result.push(tag(text))
           } else {
             result.push(tag)
           }
         } else {
-          var greentext = text[0] === '>'
+          const greentext = text[0] === '>'
           text = text.replace(/(\[\/?[a-z]+):lit(\])/g, '$1$2')
           text = text.split(/(>>(?:>\/[a-z\d]+\/)?\d+)/g).map((text2, j) => {
-            innerHTML: j % 2
+            j % 2
               ? '<span class="deadlink">' + E(text2) + '</span>'
               : E(text2)
           })
@@ -411,20 +448,17 @@ export default class Fetcher {
         url:
           media_link ||
           (this.boardID === 'f'
-            ? `${location.protocol}//${ImageHost.flashHost()}/${
-                this.boardID
-              }/${encodeURIComponent(E(data.media.media_filename))}`
-            : `${location.protocol}//${ImageHost.host()}/${this.boardID}/${
-                data.media.media_orig
-              }`),
+            ? `${location.protocol}//${ImageHost.flashHost()}/${this.boardID
+            }/${encodeURIComponent(E(data.media.media_filename))}`
+            : `${location.protocol}//${ImageHost.host()}/${this.boardID}/${data.media.media_orig
+            }`),
         height: data.media.media_h,
         width: data.media.media_w,
         MD5: data.media.media_hash,
         size: $.bytesToString(data.media.media_size),
         thumbURL:
           thumb_link ||
-          `${location.protocol}//${ImageHost.thumbHost()}/${this.boardID}/${
-            data.media.preview_orig
+          `${location.protocol}//${ImageHost.thumbHost()}/${this.boardID}/${data.media.preview_orig
           }`,
         theight: data.media.preview_h,
         twidth: data.media.preview_w,
