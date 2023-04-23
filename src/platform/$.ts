@@ -1,14 +1,13 @@
-/// <reference path="../types/globals.d.ts" />
-
 import Notice from '../classes/Notice'
-import SimpleDict from '../classes/SimpleDict'
+import type SimpleDict from '../classes/SimpleDict'
 import { c, Conf, d, doc, g } from '../globals/globals'
-import {
+import type {
   AjaxPageOptions,
   ElementProperties,
+  GreaseMonkey,
   WhenModifiedOptions,
 } from '../types/$'
-import { cloneInto } from '../types/globals'
+import type { cloneInto } from '../types/globals'
 import CrossOrigin from './CrossOrigin'
 import { debounce, dict, MINUTE, platform, SECOND } from './helpers'
 // not chainable
@@ -83,7 +82,7 @@ $.formData = function (form: FormData | ElementProperties) {
   return fd
 }
 
-$.extend = function (object: Object, properties: Object) {
+$.extend = function (object: object, properties: object) {
   for (const key in properties) {
     const value = properties[key]
     object[key] = value
@@ -91,11 +90,11 @@ $.extend = function (object: Object, properties: Object) {
   return object
 }
 
-$.hasOwn = function (obj: Object, key: string) {
+$.hasOwn = function (obj: object, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key)
 }
 
-$.getOwn = function (obj: Object, key: string) {
+$.getOwn = function (obj: object, key: string) {
   if ($.hasOwn(obj, key)) {
     return obj[key]
   }
@@ -168,7 +167,7 @@ $.ajax = (function () {
             r.response === null
           ) {
             $.set(
-              'Work around CORB Bug',
+              ['Work around CORB Bug'],
               (Conf['Work around CORB Bug'] = Date.now()),
               cb => cb()
             )
@@ -286,8 +285,8 @@ $.ajax = (function () {
         )
       }, Object.create(null))
 
-      $.on(d, '4chanXAjaxProgress', function (e: CustomEvent) {
-        let req: any
+      $.on(d, '4chanXAjaxProgress', function (e) {
+        let req: XMLHttpRequest
         if (!(req = requests[e.detail.id])) {
           return
         }
@@ -295,7 +294,7 @@ $.ajax = (function () {
       })
 
       return $.on(d, '4chanXAjaxLoadend', function (e: CustomEvent) {
-        let req: any
+        let req: XMLHttpRequest
         if (!(req = requests[e.detail.id])) {
           return
         }
@@ -309,20 +308,18 @@ $.ajax = (function () {
           ]) {
             req[key] = e.detail[key]
           }
-          if (req.responseType === 'document') {
-            req.response = new DOMParser().parseFromString(
-              e.detail.response,
-              'text/html'
-            )
+        } else {
+          for (const key of ['status', 'statusText']) {
+            req[key] = 0
           }
         }
-        return req.onloadend()
+        return req.onloadend(this)
       })
     }
 
     return ($.ajaxPage = function (url: string, options: any = {}) {
-      let req: any
-      let {
+      let req: XMLHttpRequest
+      const {
         onloadend,
         timeout,
         responseType,
@@ -884,14 +881,17 @@ if (platform === 'crx') {
     if (!$.crxWorking()) {
       return
     }
-    const results = {}
-    const get = function (area) {
+    const results = {
+      local: dict(),
+      sync: dict(),
+    }
+    const get = function (area: string) {
       let keys = Object.keys(data)
       // XXX slow performance in Firefox
       if ($.engine === 'gecko' && area === 'sync' && keys.length > 3) {
         keys = null
       }
-      return chrome.storage[area].get(keys, function (result) {
+      return chrome.storage[area].get(keys, function (result: object) {
         let key: string
         result = dict.clone(result)
         if (chrome.runtime.lastError) {
@@ -900,7 +900,7 @@ if (platform === 'crx') {
         if (keys === null) {
           const result2 = dict()
           for (key in result) {
-            var val = result[key]
+            const val = result[key]
             if ($.hasOwn(data, key)) {
               result2[key] = val
             }
@@ -913,7 +913,7 @@ if (platform === 'crx') {
         results[area] = result
         if (results.local && results.sync) {
           for (key in results.local) {
-            var val = results.local[key]
+            const val = results.local[key]
             if (val != null) {
               results.sync[key] = val
             }
@@ -933,8 +933,8 @@ if (platform === 'crx') {
       }
 
       const exceedsQuota = (
-        key,
-        value // bytes in UTF-8
+        key: string,
+        value: string | number | boolean | object | null
       ) =>
         unescape(encodeURIComponent(JSON.stringify(key))).length +
         unescape(encodeURIComponent(JSON.stringify(value))).length >
@@ -1003,7 +1003,7 @@ if (platform === 'crx') {
         })
       }
 
-      var setSync = debounce(SECOND, () => setArea('sync', () => $.forceSync()))
+      const setSync = debounce(SECOND, () => setArea('sync', () => $.forceSync()))
 
       $.set = $.oneItemSugar(function (data, cb) {
         if (!$.crxWorking()) {
@@ -1048,48 +1048,49 @@ if (platform === 'crx') {
   ) {
     $.syncChannel = new BroadcastChannel(g.NAMESPACE + 'sync')
 
-    $.on($.syncChannel, 'message', e =>
-      (() => {
-        const result = []
-        for (const key in e.data) {
-          var cb
-          const val = e.data[key]
-          if ((cb = $.syncing[key])) {
-            result.push(cb(dict.json(JSON.stringify(val)), key))
-          }
+    $.on('sync', function (items) {
+      let key
+      for (key in items) {
+        const val = items[key]
+        if (val === undefined) {
+          delete $.syncing[key]
+        } else {
+          $.syncing[key] = val
         }
-        return result
-      })()
-    )
+      }
+      return $.forceSync()
+    }, true)
+
 
     $.sync = (key: string, cb: () => void) => ($.syncing[key] = cb)
 
-    $.forceSync = function (): void { }
+    $.forceSync = function () {
+      let key: string
+      for (key in $.syncing) {
+        const val = $.syncing[key]
+        if (typeof val === 'function') {
+          val()
+        }
+      }
+      return $.syncing = dict()
+    }
 
-    $.delete = function (keys, cb) {
-      let key
-      if (!(keys instanceof Array)) {
+    $.delete = (keys: string | string[], cb?: Callback): Promise<void> => {
+      if (!Array.isArray(keys)) {
         keys = [keys]
       }
-      return Promise.all(
-        (() => {
-          const result = []
-          for (key of keys) {
-            result.push(GM.deleteValue(g.NAMESPACE + key))
-          }
-          return result
-        })()
-      ).then(function () {
-        const items = dict()
-        for (key of keys) {
+      const promises = keys.map(key => GM.deleteValue(g.NAMESPACE + key))
+      return Promise.all(promises).then(() => {
+        const items: Items = {}
+        keys.forEach(key => {
           items[key] = undefined
-        }
+        })
         $.syncChannel.postMessage(items)
-        return cb?.()
+        cb?.()
       })
     }
 
-    $.get = $.oneItemSugar(function <T>(
+    $.get = $.oneItemSugar(async function <T>(
       items: SimpleDict<T>,
       cb: (items: SimpleDict<T>) => void
     ) {
@@ -1108,7 +1109,7 @@ if (platform === 'crx') {
     })
 
     $.set = $.oneItemSugar(function (
-      items: Record<string, any>,
+      items: Record<string, unknown>,
       cb?: () => void
     ) {
       $.securityCheck(items)
@@ -1161,8 +1162,7 @@ if (platform === 'crx') {
     if (
       typeof GM_addValueChangeListener !== 'undefined' &&
       GM_addValueChangeListener !== null
-    ) {
-    } else if (
+    ) { } else if (
       typeof GM_deleteValue !== 'undefined' &&
       GM_deleteValue !== null
     ) {
@@ -1212,23 +1212,20 @@ if (platform === 'crx') {
       typeof GM_addValueChangeListener !== 'undefined' &&
       GM_addValueChangeListener !== null
     ) {
-      $.sync = function (key: string, cb: (val: any, key: string) => void) {
+      $.sync = function (key: string, cb: VMScriptGMValueChangeCallback<string>): void {
         key = g.NAMESPACE + key
         $.syncing[key] = cb
         // if GM_addValueChangeListener was removed
         if (GM_addValueChangeListener == null) {
           return
         }
-        return GM_addValueChangeListener(key, function (name, oldVal, newVal) {
+        GM_addValueChangeListener(key, (name: string, oldVal: string, newVal: string) => {
           // if the callback was removed
           if ($.syncing[key] == null) {
             return
           }
-          if (newVal != null) {
-            if (newVal === oldVal) {
-              return
-            }
-            return cb(dict.json(newVal), name)
+          if (newVal != null && newVal !== oldVal) {
+            cb(name, oldVal, newVal, false)
           }
         })
       }
@@ -1237,7 +1234,6 @@ if (platform === 'crx') {
           return GM.setValue(g.NAMESPACE + 'forceSync', val + 1)
         })
       }
-      $.forceSync = function () { }
     } else if (
       (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) ||
       $.hasStorage

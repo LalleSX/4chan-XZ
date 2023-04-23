@@ -7,13 +7,13 @@ import type SWTinyboard from '../site/SW.tinyboard'
 
 // interfaces might be incomplete
 export interface BoardConfig {
-  forced_anon: any
-  sjis_tags: any
-  math_tags: any
-  country_flags: any
-  board_flags: any
-  require_subject: any
-  text_only: any
+  forced_anon: 1 | 0
+  sjis_tags: 1 | 0
+  math_tags: 1 | 0
+  country_flags: 1 | 0
+  board_flags: Array<string>
+  require_subject: 1 | 0
+  text_only: 1 | 0
   board: string
   bump_limit: number
   cooldowns: {
@@ -37,7 +37,7 @@ export interface BoardConfig {
 }
 
 export interface Board {
-  cooldowns(): any
+  cooldowns(): void
   ID: string
   boardID: string
   siteID: string

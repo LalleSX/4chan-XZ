@@ -11,7 +11,7 @@ import Board from './Board'
 import Post from './Post'
 import Thread from './Thread'
 export default class Fetcher {
-  archiveTags!: {
+  static archiveTags: {
     '\n': { innerHTML: string }
     '[b]': { innerHTML: string }
     '[/b]': { innerHTML: string }
@@ -34,6 +34,7 @@ export default class Fetcher {
     '[blue]': { innerHTML: string }
     '[/blue]': { innerHTML: string }
   }
+
   boardID: string
   threadID: string | number
   postID: number
@@ -41,7 +42,7 @@ export default class Fetcher {
   quoter: HTMLElement | Post
   static flagCSS: HTMLStyleElement | HTMLElement
   static initClass() {
-    this.prototype.archiveTags = {
+    this.archiveTags = {
       '\n': { innerHTML: '<br>' },
       '[b]': { innerHTML: '<b>' },
       '[/b]': { innerHTML: '</b>' },
@@ -351,7 +352,7 @@ export default class Fetcher {
       for (let i = 0; i < comment.length; i++) {
         let text = comment[i]
         if (i % 2 === 1) {
-          const tag = Fetcher.archiveTags[text.replace(/\ .*\]/, ']')]
+          const tag = Fetcher.archiveTags[text.replace(/ .*\]/, ']')]
           if (typeof tag === 'function') {
             result.push(tag(text))
           } else {

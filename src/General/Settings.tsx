@@ -24,7 +24,7 @@ import KeybindsPage from './Settings/Keybinds.html'
 import SaucePage from './Settings/Sauce.html'
 import SettingsPage from './Settings/SettingsHtml'
 
-var Settings = {
+const Settings = {
   dialog: undefined as HTMLDivElement | undefined,
 
   init() {

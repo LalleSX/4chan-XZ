@@ -42,3 +42,7 @@ export interface SyncObject {
   cantSync?: boolean
   cantSet?: boolean
 }
+export interface GreaseMonkey {
+  deleteValue: (key: string) => void;
+  listValues: () => string[];
+}

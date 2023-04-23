@@ -1,5 +1,5 @@
-import { readFile } from 'fs/promises'
 import { createFilter } from '@rollup/pluginutils'
+import { readFile } from 'fs/promises'
 
 /**
  * @param {{

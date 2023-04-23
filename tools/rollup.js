@@ -1,12 +1,13 @@
-import { rollup } from 'rollup'
 import typescript from '@rollup/plugin-typescript'
-import setupFileInliner from './rollup-plugin-inline-file.js'
-import { dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
-import generateMetadata from '../src/meta/metadata.js'
 import { copyFile, readFile, writeFile } from 'fs/promises'
-import importBase64 from './rollup-plugin-base64.js'
+import { dirname, resolve } from 'path'
+import { rollup } from 'rollup'
+import { fileURLToPath } from 'url'
+
 import generateManifestJson from '../src/meta/manifestJson.js'
+import generateMetadata from '../src/meta/metadata.js'
+import importBase64 from './rollup-plugin-base64.js'
+import setupFileInliner from './rollup-plugin-inline-file.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -20,7 +21,7 @@ if (process.argv.includes('-beta')) {
   channel = '-noupdate'
 }
 
-;(async () => {
+(async () => {
   const packageJson = JSON.parse(
     await readFile(resolve(__dirname, '../package.json'), 'utf-8')
   )

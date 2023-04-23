@@ -27,9 +27,7 @@
     "esModuleInterop": true
   },
   "exclude": [
-    "builds/test/tsOutput",
     "src/meta/*",
-    "./tools/*",
     "dist/*"
   ]
 }
