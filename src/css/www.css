@@ -4,8 +4,7 @@
 :root:not(.js-enabled) #form {
   display: block;
 }
-#bd > div[style],
-#bd > div[style] > * {
+#bd > div[style], #bd > div[style] > * {
   height: auto !important;
   margin: 0 !important;
   font-size: 0;

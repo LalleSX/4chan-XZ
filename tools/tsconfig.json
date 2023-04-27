@@ -5,7 +5,7 @@
       "@violentmonkey/types",
       "@types/chrome",
       "node"
-    ]
+    ],
   },
   "extends": "../tsconfig.json"
 }

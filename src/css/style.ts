@@ -1,8 +1,9 @@
 // == Reprocess Font Awesome CSS == //
-export const fa = (css: string, font: string) =>
+export const fa = (css: string, font: string) => (
+
   // Font Awesome CSS attribution and license
-  css.match(/\/\*\![^]*?\*\//)[0] +
-  '\n' +
+  css.match(/\/\*\![^]*?\*\//)[0] + '\n' +
+
   // Font Awesome web font
   `@font-face {
   font-family: FontAwesome;
@@ -11,23 +12,26 @@ export const fa = (css: string, font: string) =>
   font-style: normal;
 }
 ` +
+
   // fa-[icon name] classes
   css
     .match(/(\.fa-[^{]*{\s*content:[^}]*}\s*)+/)[0]
     .replace(/([,{;])\s+/g, '$1')
     .replace(/,/g, ', ')
 
+);
+
 // == Create CSS for Link Title Favicons == //
-export const icons = (data: { name: string; data: string }[]) =>
+export const icons = (data: { name: string, data: string }[]) => (
+
   '/* Link Title Favicons */\n' +
-  data
-    .map(
-      ({ name, data }) =>
-        `.linkify.${name}::before {
+  data.map(({ name, data }) =>
+    `.linkify.${name}::before {
   content: "";
   background: transparent url('data:image/png;base64,${data}') center left no-repeat!important;
   padding-left: 18px;
 }
 `
-    )
-    .join('')
+  ).join('')
+
+);

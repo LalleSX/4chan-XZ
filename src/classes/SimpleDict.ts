@@ -1,45 +1,42 @@
-import $ from '../platform/$'
+import $ from "../platform/$";
 
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
 export default class SimpleDict<T> {
   keys: string[]
 
   constructor() {
-    this.keys = []
+    this.keys = [];
   }
 
-  push(key: string, data: T) {
-    key = `${key}`
-    if (!this[key]) {
-      this.keys.push(key)
-    }
-    return (this[key] = data)
+  push(key, data: T) {
+    key = `${key}`;
+    if (!this[key]) { this.keys.push(key); }
+    return this[key] = data;
   }
 
-  rm(key: string | object) {
-    if (typeof key === 'string') {
-      key = `${key}`
-      if (this[key]) {
-        delete this[key]
-        this.keys.splice(this.keys.indexOf(key), 1)
-      }
-    } else {
-      for (const k of Object.keys(key)) {
-        this.rm(k)
-      }
+  rm(key) {
+    let i;
+    key = `${key}`;
+    if ((i = this.keys.indexOf(key)) !== -1) {
+      this.keys.splice(i, 1);
+      return delete this[key];
     }
   }
 
-  forEach(fn: (data: T) => void) {
-    for (const key of [...Array.from(this.keys)]) {
-      fn(this[key])
-    }
+  forEach(fn) { 
+    for (var key of [...Array.from(this.keys)]) { fn(this[key]); }
   }
 
-  get(key: string): T | undefined {
+  get(key): T {
     if (key === 'keys') {
-      return undefined
+      return undefined;
     } else {
-      return $.getOwn(this, key)
+      return $.getOwn(this, key);
     }
   }
 }
