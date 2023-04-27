@@ -19,7 +19,7 @@ import UI from "./UI"
  * DS104: Avoid inline assignments
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Header = {
+const Header = {
   init() {
     $.onExists(doc, 'body', () => {
       if (!Main.isThisPageLegit()) { return }
@@ -27,49 +27,49 @@ var Header = {
       $.prepend(d.body, this.bar)
       $.add(d.body, Header.hover)
       return this.setBarPosition(Conf['Bottom Header'])
-  })
+    })
 
     this.menu = new UI.Menu('header')
 
     const menuButton = $.el('span',
-      {className: 'menu-button'})
-    $.extend(menuButton, {innerHTML: "<i></i>"})
+      { className: 'menu-button' })
+    $.extend(menuButton, { innerHTML: "<i></i>" })
 
     const box = UI.checkbox
 
-    const barFixedToggler     = box('Fixed Header',               'Fixed Header')
-    const headerToggler       = box('Header auto-hide',           'Auto-hide header')
+    const barFixedToggler = box('Fixed Header', 'Fixed Header')
+    const headerToggler = box('Header auto-hide', 'Auto-hide header')
     const scrollHeaderToggler = box('Header auto-hide on scroll', 'Auto-hide header on scroll')
-    const barPositionToggler  = box('Bottom Header',              'Bottom header')
-    const linkJustifyToggler  = box('Centered links',             'Centered links')
-    const customNavToggler    = box('Custom Board Navigation',    'Custom board navigation')
-    const footerToggler       = box('Bottom Board List',          'Hide bottom board list')
-    const shortcutToggler     = box('Shortcut Icons',             'Shortcut Icons')
+    const barPositionToggler = box('Bottom Header', 'Bottom header')
+    const linkJustifyToggler = box('Centered links', 'Centered links')
+    const customNavToggler = box('Custom Board Navigation', 'Custom board navigation')
+    const footerToggler = box('Bottom Board List', 'Hide bottom board list')
+    const shortcutToggler = box('Shortcut Icons', 'Shortcut Icons')
     const editCustomNav = $.el('a', {
       textContent: 'Edit custom board navigation',
       href: 'javascript:;'
     }
     )
 
-    this.barFixedToggler     = barFixedToggler.firstElementChild
+    this.barFixedToggler = barFixedToggler.firstElementChild
     this.scrollHeaderToggler = scrollHeaderToggler.firstElementChild
-    this.barPositionToggler  = barPositionToggler.firstElementChild
-    this.linkJustifyToggler  = linkJustifyToggler.firstElementChild
-    this.headerToggler       = headerToggler.firstElementChild
-    this.footerToggler       = footerToggler.firstElementChild
-    this.shortcutToggler     = shortcutToggler.firstElementChild
-    this.customNavToggler    = customNavToggler.firstElementChild
+    this.barPositionToggler = barPositionToggler.firstElementChild
+    this.linkJustifyToggler = linkJustifyToggler.firstElementChild
+    this.headerToggler = headerToggler.firstElementChild
+    this.footerToggler = footerToggler.firstElementChild
+    this.shortcutToggler = shortcutToggler.firstElementChild
+    this.customNavToggler = customNavToggler.firstElementChild
 
-    $.on(menuButton,           'click',  this.menuToggle)
-    $.on(this.headerToggler,       'change', this.toggleBarVisibility)
-    $.on(this.barFixedToggler,     'change', this.toggleBarFixed)
-    $.on(this.barPositionToggler,  'change', this.toggleBarPosition)
+    $.on(menuButton, 'click', this.menuToggle)
+    $.on(this.headerToggler, 'change', this.toggleBarVisibility)
+    $.on(this.barFixedToggler, 'change', this.toggleBarFixed)
+    $.on(this.barPositionToggler, 'change', this.toggleBarPosition)
     $.on(this.scrollHeaderToggler, 'change', this.toggleHideBarOnScroll)
-    $.on(this.linkJustifyToggler,  'change', this.toggleLinkJustify)
-    $.on(this.footerToggler,       'change', this.toggleFooterVisibility)
-    $.on(this.shortcutToggler,     'change', this.toggleShortcutIcons)
-    $.on(this.customNavToggler,    'change', this.toggleCustomNav)
-    $.on(editCustomNav,        'click',  this.editCustomNav)
+    $.on(this.linkJustifyToggler, 'change', this.toggleLinkJustify)
+    $.on(this.footerToggler, 'change', this.toggleFooterVisibility)
+    $.on(this.shortcutToggler, 'change', this.toggleShortcutIcons)
+    $.on(this.customNavToggler, 'change', this.toggleCustomNav)
+    $.on(editCustomNav, 'click', this.editCustomNav)
 
     this.setBarFixed(Conf['Fixed Header'])
     this.setHideBarOnScroll(Conf['Header auto-hide on scroll'])
@@ -78,39 +78,40 @@ var Header = {
     this.setShortcutIcons(Conf['Shortcut Icons'])
     this.setFooterVisibility(Conf['Bottom Board List'])
 
-    $.sync('Fixed Header',               this.setBarFixed)
+    $.sync('Fixed Header', this.setBarFixed)
     $.sync('Header auto-hide on scroll', this.setHideBarOnScroll)
-    $.sync('Bottom Header',              this.setBarPosition)
-    $.sync('Shortcut Icons',             this.setShortcutIcons)
-    $.sync('Header auto-hide',           this.setBarVisibility)
-    $.sync('Centered links',             this.setLinkJustify)
-    $.sync('Bottom Board List',          this.setFooterVisibility)
+    $.sync('Bottom Header', this.setBarPosition)
+    $.sync('Shortcut Icons', this.setShortcutIcons)
+    $.sync('Header auto-hide', this.setBarVisibility)
+    $.sync('Centered links', this.setLinkJustify)
+    $.sync('Bottom Board List', this.setFooterVisibility)
 
     this.addShortcut('menu', menuButton, 900)
 
     this.menu.addEntry({
       el: $.el('span',
-        {textContent: 'Header'}),
+        { textContent: 'Header' }),
       order: 107,
       subEntries: [
-          {el: barFixedToggler}
+        { el: barFixedToggler }
         ,
-          {el: headerToggler}
+        { el: headerToggler }
         ,
-          {el: scrollHeaderToggler}
+        { el: scrollHeaderToggler }
         ,
-          {el: barPositionToggler}
+        { el: barPositionToggler }
         ,
-          {el: linkJustifyToggler}
+        { el: linkJustifyToggler }
         ,
-          {el: footerToggler}
+        { el: footerToggler }
         ,
-          {el: shortcutToggler}
+        { el: shortcutToggler }
         ,
-          {el: customNavToggler}
+        { el: customNavToggler }
         ,
-          {el: editCustomNav}
-      ]})
+        { el: editCustomNav }
+      ]
+    })
 
     $.on(window, 'load popstate', Header.hashScroll)
     $.on(d, 'CreateNotification', this.createNotification)
@@ -119,17 +120,17 @@ var Header = {
 
     $.onExists(doc, `${g.SITE.selectors.boardList} + *`, Header.generateFullBoardList)
 
-    Main.ready(function() {
+    Main.ready(function () {
       let footer
       if ((g.SITE.software === 'yotsuba') && !(footer = $.id('boardNavDesktopFoot'))) {
         let absbot
         if (!(absbot = $.id('absbot'))) { return }
         footer = $.id('boardNavDesktop').cloneNode(true)
         footer.id = 'boardNavDesktopFoot'
-        $('#navtopright',        footer).id = 'navbotright'
+        $('#navtopright', footer).id = 'navbotright'
         $('#settingsWindowLink', footer).id = 'settingsWindowLinkBot'
         $.before(absbot, footer)
-        $.global(() => window.cloneTopNav = function() {})
+        $.global(() => window.cloneTopNav = function () { })
       }
       if (Header.bottomBoardList = $(g.SITE.selectors.boardListBottom)) {
         for (const a of $$('a', Header.bottomBoardList)) {
@@ -140,7 +141,7 @@ var Header = {
     })
 
     if ((g.SITE.software === 'yotsuba') && ((g.VIEW === 'catalog') || !Conf['Disable Native Extension'])) {
-      const cs = $.el('a', {href: 'javascript:;'})
+      const cs = $.el('a', { href: 'javascript:;' })
       if (g.VIEW === 'catalog') {
         cs.title = (cs.textContent = 'Catalog Settings')
         cs.className = 'fa fa-book'
@@ -156,25 +157,25 @@ var Header = {
   },
 
   bar: $.el('div',
-    {id: 'header-bar'}),
+    { id: 'header-bar' }),
 
   noticesRoot: $.el('div',
-    {id: 'notifications'}),
+    { id: 'notifications' }),
 
   shortcuts: $.el('span',
-    {id: 'shortcuts'}),
+    { id: 'shortcuts' }),
 
   hover: $.el('div',
-    {id: 'hoverUI'}),
+    { id: 'hoverUI' }),
 
   toggle: $.el('div',
-    {id: 'scroll-marker'}),
+    { id: 'scroll-marker' }),
 
   setBoardList() {
     let boardList
     Header.boardList = (boardList = $.el('span',
-      {id: 'board-list'}))
-    $.extend(boardList, {innerHTML: "<span id=\"custom-board-list\"></span><span id=\"full-board-list\" hidden><span class=\"hide-board-list-container brackets-wrap\"><a href=\"javascript:;\" class=\"hide-board-list-button\">&nbsp;-&nbsp;</a></span> <span class=\"boardList\"></span></span>"})
+      { id: 'board-list' }))
+    $.extend(boardList, { innerHTML: "<span id=\"custom-board-list\"></span><span id=\"full-board-list\" hidden><span class=\"hide-board-list-container brackets-wrap\"><a href=\"javascript:;\" class=\"hide-board-list-button\">&nbsp;-&nbsp;</a></span> <span class=\"boardList\"></span></span>" })
 
     const btn = $('.hide-board-list-button', boardList)
     $.on(btn, 'click', Header.toggleBoardList)
@@ -221,14 +222,14 @@ var Header = {
     }
 
     let text = (url = null)
-    t = t.replace(/-text:"([^"]+)"(?:,"([^"]+)")?/g, function(m0, m1, m2) {
+    t = t.replace(/-text:"([^"]+)"(?:,"([^"]+)")?/g, function (m0, m1, m2) {
       text = m1
-      url  = m2
+      url = m2
       return ''
     })
 
     let indexOptions = []
-    t = t.replace(/-(?:mode|sort):"([^"]+)"/g, function(m0, m1) {
+    t = t.replace(/-(?:mode|sort):"([^"]+)"/g, function (m0, m1) {
       indexOptions.push(m1.toLowerCase().replace(/\ /g, '-'))
       return ''
     })
@@ -286,7 +287,7 @@ var Header = {
       }
     }
 
-    a = (function() {
+    a = (function () {
       let urlV
       if (boardID === '@') {
         return $.el('a', {
@@ -303,7 +304,7 @@ var Header = {
         title: BoardConfig.title(boardID)
       }
       )
-      if (['catalog', 'archive'].includes(g.VIEW) && (urlV = Get.url(g.VIEW, {siteID: '4chan.org', boardID}))) {
+      if (['catalog', 'archive'].includes(g.VIEW) && (urlV = Get.url(g.VIEW, { siteID: '4chan.org', boardID }))) {
         a.href = urlV
       }
       if ((a.hostname === location.hostname) && (boardID === g.BOARD.ID)) { a.className = 'current' }
@@ -312,13 +313,13 @@ var Header = {
 
     a.textContent = /-title/.test(t) || (/-replace/.test(t) && (a.hostname === location.hostname) && (boardID === g.BOARD.ID)) ?
       a.title || a.textContent
-    : /-full/.test(t) ?
-      (`/${boardID}/`) + (a.title ? ` - ${a.title}` : '')
-    :
-      text || boardID
+      : /-full/.test(t) ?
+        (`/${boardID}/`) + (a.title ? ` - ${a.title}` : '')
+        :
+        text || boardID
 
     if (m = t.match(/-(index|catalog)/)) {
-      const urlIC = CatalogLinks[m[1]]({siteID: '4chan.org', boardID})
+      const urlIC = CatalogLinks[m[1]]({ siteID: '4chan.org', boardID })
       if (urlIC) {
         a.dataset.only = m[1]
         a.href = urlIC
@@ -336,7 +337,7 @@ var Header = {
     }
 
     if (/-archive/.test(t)) {
-      if (href = Redirect.to('board', {boardID})) {
+      if (href = Redirect.to('board', { boardID })) {
         a.href = href
       } else {
         return a.firstChild // Its text node.
@@ -361,12 +362,12 @@ var Header = {
   },
 
   toggleBoardList() {
-    const {bar}  = Header
+    const { bar } = Header
     const custom = $('#custom-board-list', bar)
-    const full   = $('#full-board-list',   bar)
+    const full = $('#full-board-list', bar)
     const showBoardList = !full.hidden
     custom.hidden = !showBoardList
-    return full.hidden   =  showBoardList
+    return full.hidden = showBoardList
   },
 
   setLinkJustify(centered) {
@@ -403,7 +404,7 @@ var Header = {
     Header.setBarFixed(this.checked)
 
     Conf['Fixed Header'] = this.checked
-    return $.set('Fixed Header',  this.checked)
+    return $.set('Fixed Header', this.checked)
   },
 
   setShortcutIcons(show) {
@@ -421,7 +422,7 @@ var Header = {
     Header.setShortcutIcons(this.checked)
 
     Conf['Shortcut Icons'] = this.checked
-    return $.set('Shortcut Icons',  this.checked)
+    return $.set('Shortcut Icons', this.checked)
   },
 
   setBarVisibility(hide) {
@@ -434,7 +435,7 @@ var Header = {
   toggleBarVisibility() {
     const hide = this.nodeName === 'INPUT' ?
       this.checked
-    :
+      :
       !$.hasClass(Header.bar, 'autohide')
 
     Conf['Header auto-hide'] = hide
@@ -442,7 +443,7 @@ var Header = {
     Header.setBarVisibility(hide)
     const message = `The header bar will ${hide ?
       'automatically hide itself.'
-    :
+      :
       'remain visible.'}`
     return new Notice('info', message, 2)
   },
@@ -469,7 +470,7 @@ var Header = {
     if (offsetY > (Header.previousOffset || 0)) {
       $.addClass(Header.bar, 'autohide', 'scroll')
     } else {
-      $.rmClass(Header.bar,  'autohide', 'scroll')
+      $.rmClass(Header.bar, 'autohide', 'scroll')
     }
     return Header.previousOffset = offsetY
   },
@@ -506,13 +507,13 @@ var Header = {
     $.event('CloseMenu')
     const hide = this.nodeName === 'INPUT' ?
       this.checked
-    :
+      :
       $.hasClass(doc, 'hide-bottom-board-list')
     Header.setFooterVisibility(hide)
     $.set('Bottom Board List', hide)
     const message = hide ?
       'The bottom navigation will now be hidden.'
-    :
+      :
       'The bottom navigation will remain visible.'
     return new Notice('info', message, 2)
   },
@@ -521,11 +522,11 @@ var Header = {
     let ref
     Header.customNavToggler.checked = show
     const cust = $('#custom-board-list', Header.bar)
-    const full = $('#full-board-list',   Header.bar)
+    const full = $('#full-board-list', Header.bar)
     const btn = $('.hide-board-list-container', full)
     return [cust.hidden, full.hidden, btn.hidden] = Array.from(ref = show ?
       [false, true, false]
-    :
+      :
       [true, false, true]), ref
   },
 
@@ -563,25 +564,25 @@ var Header = {
     if (down) {
       x = Header.getBottomOf(root)
       if (Conf['Fixed Header'] && Conf['Header auto-hide on scroll'] && Conf['Bottom header']) {
-        ({height} = Header.bar.getBoundingClientRect())
+        ({ height } = Header.bar.getBoundingClientRect())
         if (x <= 0) {
           if (!Header.isHidden()) { x += height }
         } else {
-          if  (Header.isHidden()) { x -= height }
+          if (Header.isHidden()) { x -= height }
         }
       }
       if (!needed || (x < 0)) { return window.scrollBy(0, -x) }
     } else {
       x = Header.getTopOf(root)
       if (Conf['Fixed Header'] && Conf['Header auto-hide on scroll'] && !Conf['Bottom header']) {
-        ({height} = Header.bar.getBoundingClientRect())
+        ({ height } = Header.bar.getBoundingClientRect())
         if (x >= 0) {
           if (!Header.isHidden()) { x += height }
         } else {
-          if  (Header.isHidden()) { x -= height }
+          if (Header.isHidden()) { x -= height }
         }
       }
-      if (!needed || (x < 0)) { return window.scrollBy(0,  x) }
+      if (!needed || (x < 0)) { return window.scrollBy(0, x) }
     }
   },
 
@@ -590,32 +591,32 @@ var Header = {
   },
 
   getTopOf(root) {
-    let {top} = root.getBoundingClientRect()
+    let { top } = root.getBoundingClientRect()
     if (Conf['Fixed Header'] && !Conf['Bottom Header']) {
       const headRect = Header.toggle.getBoundingClientRect()
-      top     -= headRect.top + headRect.height
+      top -= headRect.top + headRect.height
     }
     return top
   },
 
   getBottomOf(root) {
-    const {clientHeight} = doc
+    const { clientHeight } = doc
     let bottom = clientHeight - root.getBoundingClientRect().bottom
     if (Conf['Fixed Header'] && Conf['Bottom Header']) {
       const headRect = Header.toggle.getBoundingClientRect()
-      bottom  -= (clientHeight - headRect.bottom) + headRect.height
+      bottom -= (clientHeight - headRect.bottom) + headRect.height
     }
     return bottom
   },
 
   isNodeVisible(node) {
     if (d.hidden || !doc.contains(node)) { return false }
-    const {height} = node.getBoundingClientRect()
+    const { height } = node.getBoundingClientRect()
     return ((Header.getTopOf(node) + height) >= 0) && ((Header.getBottomOf(node) + height) >= 0)
   },
 
   isHidden() {
-    const {top} = Header.bar.getBoundingClientRect()
+    const { top } = Header.bar.getBoundingClientRect()
     if (Conf['Bottom header']) {
       return top === doc.clientHeight
     } else {
@@ -650,7 +651,7 @@ var Header = {
 
   createNotification(e) {
     let notice
-    const {type, content, lifetime} = e.detail
+    const { type, content, lifetime } = e.detail
     return notice = new Notice(type, content, lifetime)
   },
 
@@ -671,18 +672,19 @@ var Header = {
     }
 
     const el = $.el('span',
-      {innerHTML:
-        `${meta.name} needs your permission to show desktop notifications. ` +
-        `[<a href=\"${meta.faq}#why-is-4chan-x-asking-for-permission-to-show-desktop-notifications\" target=\"_blank\">FAQ</a>]` +
-        `<br><button>Authorize</button> or <button>Disable</button>`
-    })
+      {
+        innerHTML:
+          `${meta.name} needs your permission to show desktop notifications. ` +
+          `[<a href=\"${meta.faq}#why-is-4chan-x-asking-for-permission-to-show-desktop-notifications\" target=\"_blank\">FAQ</a>]` +
+          `<br><button>Authorize</button> or <button>Disable</button>`
+      })
     const [authorize, disable] = Array.from($$('button', el))
-    $.on(authorize, 'click', () => Notification.requestPermission(function(status) {
+    $.on(authorize, 'click', () => Notification.requestPermission(function (status) {
       Header.areNotificationsEnabled = status === 'granted'
       if (status === 'default') { return }
       return notice.close()
     }))
-    $.on(disable, 'click', function() {
+    $.on(disable, 'click', function () {
       $.set('Desktop Notifications', false)
       return notice.close()
     })

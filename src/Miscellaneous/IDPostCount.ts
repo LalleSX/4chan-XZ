@@ -1,6 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 import Get from "../General/Get"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 
 /*
@@ -8,7 +8,7 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var IDPostCount = {
+const IDPostCount = {
   init() {
     if ((g.VIEW !== 'thread') || !Conf['Count Posts by ID']) { return }
     Callbacks.Thread.push({
@@ -17,7 +17,7 @@ var IDPostCount = {
     })
     return Callbacks.Post.push({
       name: 'Count Posts by ID',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -28,9 +28,9 @@ var IDPostCount = {
   },
 
   count() {
-    const {uniqueID} = Get.postFromNode(this).info
+    const { uniqueID } = Get.postFromNode(this).info
     let n = 0
-    IDPostCount.thread.posts.forEach(function(post) {
+    IDPostCount.thread.posts.forEach(function (post) {
       if (post.info.uniqueID === uniqueID) { return n++ }
     })
     return this.title = `${n} post${n === 1 ? '' : 's'} by this ID`

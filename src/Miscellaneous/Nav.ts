@@ -1,6 +1,6 @@
 import Get from "../General/Get"
 import Header from "../General/Header"
-import { Conf, d, doc,g } from "../globals/globals"
+import { Conf, d, doc, g } from "../globals/globals"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
 
@@ -9,7 +9,7 @@ import $$ from "../platform/$$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Nav = {
+const Nav = {
   init() {
     switch (g.VIEW) {
       case 'index':
@@ -23,7 +23,7 @@ var Nav = {
     }
 
     const span = $.el('span',
-      {id: 'navlinks'})
+      { id: 'navlinks' })
     const prev = $.el('a', {
       textContent: '▲',
       href: 'javascript:;'
@@ -39,7 +39,7 @@ var Nav = {
     $.on(next, 'click', this.next)
 
     $.add(span, [prev, $.tn(' '), next])
-    const append = function() {
+    const append = function () {
       $.off(d, '4chanXInitFinished', append)
       return $.add(d.body, span)
     }
@@ -81,7 +81,7 @@ var Nav = {
     if (!thread) { return }
     const axis = delta === +1 ?
       'following'
-    :
+      :
       'preceding'
     if (next = $.x(`${axis}-sibling::${g.SITE.xpath.thread}[not(@hidden)][1]`, thread)) {
       // Unless we're not at the beginning of the current thread,

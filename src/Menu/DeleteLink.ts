@@ -1,5 +1,5 @@
 import Notice from "../classes/Notice"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 import { dict } from "../platform/helpers"
 import QR from "../Posting/QR"
@@ -10,7 +10,7 @@ import Menu from "./Menu"
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var DeleteLink = {
+const DeleteLink = {
   auto: [dict(), dict()],
 
   init() {
@@ -32,7 +32,7 @@ var DeleteLink = {
     }
     )
     this.nodes = {
-      menu:  div.firstChild,
+      menu: div.firstChild,
       links: [postEl, fileEl]
     }
 
@@ -46,7 +46,7 @@ var DeleteLink = {
     }
     const fileEntry = {
       el: fileEl,
-      open({file}) {
+      open({ file }) {
         if (!file || file.isDead) { return false }
         fileEl.textContent = DeleteLink.linkText(true)
         $.on(fileEl, 'click', DeleteLink.toggle)
@@ -64,7 +64,8 @@ var DeleteLink = {
         DeleteLink.cooldown.start(post)
         return true
       },
-      subEntries: [postEntry, fileEntry]})
+      subEntries: [postEntry, fileEntry]
+    })
   },
 
   menuText() {
@@ -85,7 +86,7 @@ var DeleteLink = {
   },
 
   toggle() {
-    const {post} = DeleteLink
+    const { post } = DeleteLink
     const fileOnly = $.hasClass(this, 'delete-file')
     const auto = DeleteLink.auto[+fileOnly]
 
@@ -132,7 +133,7 @@ var DeleteLink = {
 
     link.textContent = DeleteLink.linkText(fileOnly)
     if (resDoc.title === '4chan - Banned') { // Ban/warn check
-      const el = $.el('span', {innerHTML: "You can&#039;t delete posts because you are <a href=\"//www.4chan.org/banned\" target=\"_blank\">banned</a>."})
+      const el = $.el('span', { innerHTML: "You can&#039;t delete posts because you are <a href=\"//www.4chan.org/banned\" target=\"_blank\">banned</a>." })
       return new Notice('warning', el, 20)
     } else if (msg = resDoc.getElementById('errmsg')) { // error!
       new Notice('warning', msg.textContent, 20)

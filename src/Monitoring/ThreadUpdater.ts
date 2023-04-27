@@ -5,7 +5,7 @@ import Config from '../config/Config'
 import Header from '../General/Header'
 import Settings from '../General/Settings'
 import UI from '../General/UI'
-import { Conf, d, doc,g } from '../globals/globals'
+import { Conf, d, doc, g } from '../globals/globals'
 import Main from '../main/Main'
 import $ from "../platform/$"
 import { MINUTE, SECOND } from '../platform/helpers'
@@ -21,7 +21,7 @@ import Unread from './Unread'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var ThreadUpdater = {
+const ThreadUpdater = {
   init() {
     let el, name, sc
     if ((g.VIEW !== 'thread') || !Conf['Thread Updater']) { return }
@@ -35,28 +35,28 @@ var ThreadUpdater = {
 
     if (Conf['Updater and Stats in Header']) {
       this.dialog = (sc = $.el('span',
-        {id:        'updater'}))
-      $.extend(sc, {innerHTML: '<span id="update-status" class="empty"></span><span id="update-timer" class="empty" title="Update now"></span>'})
+        { id: 'updater' }))
+      $.extend(sc, { innerHTML: '<span id="update-status" class="empty"></span><span id="update-timer" class="empty" title="Update now"></span>' })
       Header.addShortcut('updater', sc, 100)
     } else {
       this.dialog = (sc = UI.dialog('updater',
-        {innerHTML: '<div class="move"></div><span id="update-status" class="empty"></span><span id="update-timer" class="empty" title="Update now"></span>'}))
+        { innerHTML: '<div class="move"></div><span id="update-status" class="empty"></span><span id="update-timer" class="empty" title="Update now"></span>' }))
       $.addClass(doc, 'float')
       $.ready(() => $.add(d.body, sc))
     }
 
     this.checkPostCount = 0
 
-    this.timer  = $('#update-timer', sc)
+    this.timer = $('#update-timer', sc)
     this.status = $('#update-status', sc)
 
-    $.on(this.timer,  'click', this.update)
+    $.on(this.timer, 'click', this.update)
     $.on(this.status, 'click', this.update)
 
     const updateLink = $.el('span',
-      {className: 'brackets-wrap updatelink'})
-    $.extend(updateLink, {innerHTML: '<a href="javascript:;">Update</a>'})
-    Main.ready(function() {
+      { className: 'brackets-wrap updatelink' })
+    $.extend(updateLink, { innerHTML: '<a href="javascript:;">Update</a>' })
+    Main.ready(function () {
       let navLinksBot
       if (navLinksBot = $('.navLinksBot')) { return $.add(navLinksBot, [$.tn(' '), updateLink]) }
     })
@@ -75,19 +75,19 @@ var ThreadUpdater = {
       } else if (input.name === 'Auto Update') {
         $.on(input, 'change', this.setInterval)
       }
-      subEntries.push({el})
+      subEntries.push({ el })
     }
 
     this.settings = $.el('span',
-      {innerHTML: '<a href="javascript:;">Interval</a>'})
+      { innerHTML: '<a href="javascript:;">Interval</a>' })
 
     $.on(this.settings, 'click', this.intervalShortcut)
 
-    subEntries.push({el: this.settings})
+    subEntries.push({ el: this.settings })
 
     Header.menu.addEntry(this.entry = {
       el: $.el('span',
-        {textContent: 'Updater'}),
+        { textContent: 'Updater' }),
       order: 110,
       subEntries
     }
@@ -95,13 +95,13 @@ var ThreadUpdater = {
 
     return Callbacks.Thread.push({
       name: 'Thread Updater',
-      cb:   this.node
+      cb: this.node
     })
   },
 
   node() {
-    ThreadUpdater.thread       = this
-    ThreadUpdater.root         = this.nodes.root
+    ThreadUpdater.thread = this
+    ThreadUpdater.root = this.nodes.root
     ThreadUpdater.outdateCount = 0
 
     // We must keep track of our own list of live posts/files
@@ -109,15 +109,15 @@ var ThreadUpdater = {
     // as posts may be `kill`ed elsewhere.
     ThreadUpdater.postIDs = []
     ThreadUpdater.fileIDs = []
-    this.posts.forEach(function(post) {
+    this.posts.forEach(function (post) {
       ThreadUpdater.postIDs.push(post.ID)
       if (post.file) { return ThreadUpdater.fileIDs.push(post.ID) }
     })
 
-    ThreadUpdater.cb.interval.call($.el('input', {value: Conf['Interval']}))
+    ThreadUpdater.cb.interval.call($.el('input', { value: Conf['Interval'] }))
 
-    $.on(d,      'QRPostSuccessful', ThreadUpdater.cb.checkpost)
-    $.on(d,      'visibilitychange', ThreadUpdater.cb.visibility)
+    $.on(d, 'QRPostSuccessful', ThreadUpdater.cb.checkpost)
+    $.on(d, 'visibilitychange', ThreadUpdater.cb.visibility)
 
     return ThreadUpdater.setInterval()
   },
@@ -129,7 +129,7 @@ var ThreadUpdater = {
   beep: `data:audio/wav;base64,${Beep}`,
 
   playBeep() {
-    const {audio} = ThreadUpdater
+    const { audio } = ThreadUpdater
     if (!audio.src) { audio.src = ThreadUpdater.beep }
     if (audio.paused) {
       return audio.play()
@@ -159,7 +159,7 @@ var ThreadUpdater = {
     scrollBG() {
       return ThreadUpdater.scrollBG = Conf['Scroll BG'] ?
         () => true
-      :
+        :
         () => !d.hidden
     },
 
@@ -182,28 +182,29 @@ var ThreadUpdater = {
           }
         case 404:
           // XXX workaround for 4chan sending false 404s
-          return $.ajax(g.SITE.urls.catalogJSON({boardID: ThreadUpdater.thread.board.ID}), { onloadend() {
-            let confirmed
-            if (this.status === 200) {
-              confirmed = true
-              for (const page of this.response) {
-                for (const thread of page.threads) {
-                  if (thread.no === ThreadUpdater.thread.ID) {
-                    confirmed = false
-                    break
+          return $.ajax(g.SITE.urls.catalogJSON({ boardID: ThreadUpdater.thread.board.ID }), {
+            onloadend() {
+              let confirmed
+              if (this.status === 200) {
+                confirmed = true
+                for (const page of this.response) {
+                  for (const thread of page.threads) {
+                    if (thread.no === ThreadUpdater.thread.ID) {
+                      confirmed = false
+                      break
+                    }
                   }
                 }
+              } else {
+                confirmed = false
               }
-            } else {
-              confirmed = false
-            }
-            if (confirmed) {
-              return ThreadUpdater.kill()
-            } else {
-              return ThreadUpdater.error(this)
+              if (confirmed) {
+                return ThreadUpdater.kill()
+              } else {
+                return ThreadUpdater.error(this)
+              }
             }
           }
-        }
           )
         default:
           return ThreadUpdater.error(this)
@@ -254,11 +255,11 @@ var ThreadUpdater = {
       return
     }
 
-    const {interval} = ThreadUpdater
+    const { interval } = ThreadUpdater
     if (Conf['Optional Increase']) {
       // Lower the max refresh rate limit on visible tabs.
       const limit = d.hidden ? 10 : 5
-      const j     = Math.min(ThreadUpdater.outdateCount, limit)
+      const j = Math.min(ThreadUpdater.outdateCount, limit)
 
       // 1 second to 100, 30 to 300.
       const cur = (Math.floor(interval * 0.1) || 1) * j * j
@@ -309,7 +310,7 @@ var ThreadUpdater = {
       oldReq.abort()
     }
     return ThreadUpdater.req = $.whenModified(
-      g.SITE.urls.threadJSON({boardID: ThreadUpdater.thread.board.ID, threadID: ThreadUpdater.thread.ID}),
+      g.SITE.urls.threadJSON({ boardID: ThreadUpdater.thread.board.ID, threadID: ThreadUpdater.thread.ID }),
       'ThreadUpdater',
       ThreadUpdater.cb.load,
       { timeout: MINUTE }
@@ -324,12 +325,12 @@ var ThreadUpdater = {
     const change = type === 'Sticky' ?
       status ?
         'now a sticky'
-      :
+        :
         'not a sticky anymore'
-    :
+      :
       status ?
         'now closed'
-      :
+        :
         'not closed anymore'
     return new Notice('info', `The thread is ${change}.`, 30)
   },
@@ -338,12 +339,12 @@ var ThreadUpdater = {
     let ID, ipCountEl, post
     const postObjects = req.response.posts
     const OP = postObjects[0]
-    const {thread} = ThreadUpdater
-    const {board} = thread
+    const { thread } = ThreadUpdater
+    const { board } = thread
     const lastPost = ThreadUpdater.postIDs[ThreadUpdater.postIDs.length - 1]
 
     // XXX Reject updates that falsely delete the last post.
-    if ((postObjects[postObjects.length-1].no < lastPost) &&
+    if ((postObjects[postObjects.length - 1].no < lastPost) &&
       ((new Date(req.getResponseHeader('Last-Modified')) - thread.posts.get(lastPost).info.date) < (30 * SECOND))) { return }
 
     g.SITE.Build.spoilerRange[board] = OP.custom_spoiler
@@ -352,11 +353,11 @@ var ThreadUpdater = {
     ThreadUpdater.updateThreadStatus('Closed', !!OP.closed)
     thread.postLimit = !!OP.bumplimit
     thread.fileLimit = !!OP.imagelimit
-    if (OP.unique_ips != null) { thread.ipCount   = OP.unique_ips }
+    if (OP.unique_ips != null) { thread.ipCount = OP.unique_ips }
 
-    const posts    = [] // new post objects
-    const index    = [] // existing posts
-    const files    = [] // existing files
+    const posts = [] // new post objects
+    const index = [] // existing posts
+    const files = [] // existing files
     const newPosts = [] // new post fullID list for API
 
     // Build the index, create posts.
@@ -407,7 +408,7 @@ var ThreadUpdater = {
       ThreadUpdater.set('status', `+${posts.length}`, 'new')
       ThreadUpdater.outdateCount = 0
 
-      const unreadCount   = Unread.posts?.size
+      const unreadCount = Unread.posts?.size
       const unreadQYCount = Unread.postsQuotingYou?.size
 
       Main.callbackNodes('Post', posts)

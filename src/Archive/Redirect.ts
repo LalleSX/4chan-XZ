@@ -10,7 +10,7 @@ import archives from './archives.json'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var Redirect = {
+const Redirect = {
   archives,
 
   init() {
@@ -25,8 +25,8 @@ var Redirect = {
     let boardID, boards, data, files
     const o = {
       thread: dict(),
-      post:   dict(),
-      file:   dict()
+      post: dict(),
+      file: dict()
     }
 
     const archives = dict()
@@ -35,13 +35,13 @@ var Redirect = {
       for (const key of ['boards', 'files']) {
         if (!(data[key] instanceof Array)) { data[key] = [] }
       }
-      ({uid, name, boards, files, software} = data)
+      ({ uid, name, boards, files, software } = data)
       if (!['fuuka', 'foolfuuka'].includes(software)) { continue }
       archives[JSON.stringify(uid ?? name)] = data
       for (boardID of boards) {
         if (!(boardID in o.thread)) { o.thread[boardID] = data }
-        if (!(boardID in o.post)   && (software === 'foolfuuka')) { o.post[boardID]   = data }
-        if (!(boardID in o.file)   && files.includes(boardID)) { o.file[boardID]   = data }
+        if (!(boardID in o.post) && (software === 'foolfuuka')) { o.post[boardID] = data }
+        if (!(boardID in o.file) && files.includes(boardID)) { o.file[boardID] = data }
       }
     }
 
@@ -74,9 +74,9 @@ var Redirect = {
 
     const fail = (url, action, msg) => new Notice('warning', `Error ${action} archive data from\n${url}\n${msg}`, 20)
 
-    const load = i => (function() {
+    const load = i => (function () {
       if (this.status !== 200) { return fail(urls[i], 'fetching', (this.status ? `Error ${this.statusText} (${this.status})` : 'Connection Error')) }
-      let {response} = this
+      let { response } = this
       if (!(response instanceof Array)) { response = [response] }
       responses[i] = response
       nloaded++
@@ -96,10 +96,10 @@ var Redirect = {
             fail(url, 'parsing', err.message)
             continue
           }
-          load(i).call({status: 200, response})
+          load(i).call({ status: 200, response })
         } else {
           CrossOrigin.ajax(url,
-            {onloadend: load(i)})
+            { onloadend: load(i) })
         }
       }
     } else {
@@ -121,7 +121,7 @@ var Redirect = {
         }
       }
     }
-    const items = {archives, lastarchivecheck: Date.now()}
+    const items = { archives, lastarchivecheck: Date.now() }
     $.set(items)
     $.extend(Conf, items)
     Redirect.selectArchives()
@@ -144,11 +144,11 @@ var Redirect = {
     return `${protocol}//`
   },
 
-  thread(archive, {boardID, threadID, postID}) {
+  thread(archive, { boardID, threadID, postID }) {
     // Keep the post number only if the location.hash was sent f.e.
     let path = threadID ?
       `${boardID}/thread/${threadID}`
-    :
+      :
       `${boardID}/post/${postID}`
     if (archive.software === 'foolfuuka') {
       path += '/'
@@ -156,13 +156,13 @@ var Redirect = {
     if (threadID && postID) {
       path += archive.software === 'foolfuuka' ?
         `#${postID}`
-      :
+        :
         `#p${postID}`
     }
     return `${Redirect.protocol(archive)}${archive.domain}/${path}`
   },
 
-  post(archive, {boardID, postID}) {
+  post(archive, { boardID, postID }) {
     // For fuuka-based archives:
     // https://github.com/eksopl/fuuka/issues/27
     const protocol = Redirect.protocol(archive)
@@ -172,7 +172,7 @@ var Redirect = {
     return url
   },
 
-  file(archive, {boardID, filename}) {
+  file(archive, { boardID, filename }) {
     if (!filename) { return '' }
     if (boardID === 'f') {
       filename = encodeURIComponent($.unescape(decodeURIComponent(filename)))
@@ -182,40 +182,40 @@ var Redirect = {
     return `${Redirect.protocol(archive)}${archive.domain}/${boardID}/full_image/${filename}`
   },
 
-  board(archive, {boardID}) {
+  board(archive, { boardID }) {
     return `${Redirect.protocol(archive)}${archive.domain}/${boardID}/`
   },
 
-  search(archive, {boardID, type, value}) {
+  search(archive, { boardID, type, value }) {
     type = type === 'name' ?
       'username'
-    : type === 'MD5' ?
-      'image'
-    :
-      type
+      : type === 'MD5' ?
+        'image'
+        :
+        type
     if (type === 'capcode') {
       // https://github.com/pleebe/FoolFuuka/blob/bf4224eed04637a4d0bd4411c2bf5f9945dfec0b/src/Model/Search.php#L363
       value = $.getOwn({
         'Developer': 'dev',
-        'Verified':  'ver'
+        'Verified': 'ver'
       }, value) || value.toLowerCase()
     } else if (type === 'image') {
-      value = value.replace(/[+/=]/g, c => ({'+': '-', '/': '_', '=': ''})[c])
+      value = value.replace(/[+/=]/g, c => ({ '+': '-', '/': '_', '=': '' })[c])
     }
     value = encodeURIComponent(value)
-    const path  = archive.software === 'foolfuuka' ?
+    const path = archive.software === 'foolfuuka' ?
       `${boardID}/search/${type}/${value}/`
-    : type === 'image' ?
-      `${boardID}/image/${value}`
-    :
-      `${boardID}/?task=search2&search_${type}=${value}`
+      : type === 'image' ?
+        `${boardID}/image/${value}`
+        :
+        `${boardID}/?task=search2&search_${type}=${value}`
     return `${Redirect.protocol(archive)}${archive.domain}/${path}`
   },
 
   report(boardID) {
     const urls = []
     for (const archive of Conf['archives']) {
-      const {software, https, reports, boards, name, domain} = archive
+      const { software, https, reports, boards, name, domain } = archive
       if ((software === 'foolfuuka') && https && reports && boards instanceof Array && boards.includes(boardID)) {
         urls.push([name, `https://${domain}/_/api/chan/offsite_report/`])
       }
@@ -225,8 +225,8 @@ var Redirect = {
 
   securityCheck(url) {
     return /^https:\/\//.test(url) ||
-    (location.protocol === 'http:') ||
-    Conf['Exempt Archives from Encryption']
+      (location.protocol === 'http:') ||
+      Conf['Exempt Archives from Encryption']
   },
 
   navigate(dest, data, alternative) {

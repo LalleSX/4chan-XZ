@@ -46,7 +46,7 @@ import xat_unreadSFWY from './Favicon/xat-.unreadSFWY.png'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var Favicon = {
+const Favicon = {
   init() {
     return $.asap((() => d.head && (Favicon.el = $('link[rel="shortcut icon"]', d.head))), Favicon.initAsap)
   },
@@ -62,8 +62,8 @@ var Favicon = {
 
   initAsap() {
     Favicon.el.type = 'image/x-icon'
-    const {href}          = Favicon.el
-    Favicon.isSFW   = /ws\.ico$/.test(href)
+    const { href } = Favicon.el
+    Favicon.isSFW = /ws\.ico$/.test(href)
     Favicon.default = href
     Favicon.switch()
     if (Favicon.status) {
@@ -137,16 +137,16 @@ var Favicon = {
 
   update() {
     if (this.isSFW) {
-      this.unread  = this.unreadSFW
+      this.unread = this.unreadSFW
       return this.unreadY = this.unreadSFWY
     } else {
-      this.unread  = this.unreadNSFW
+      this.unread = this.unreadNSFW
       return this.unreadY = this.unreadNSFWY
     }
   },
 
-  SFW:   '//s.4cdn.org/image/favicon-ws.ico',
-  NSFW:  '//s.4cdn.org/image/favicon.ico',
+  SFW: '//s.4cdn.org/image/favicon-ws.ico',
+  NSFW: '//s.4cdn.org/image/favicon.ico',
   dead: `data:image/gif;base64,${dead}`,
   logo: `data:image/png;base64,${empty}`,
 }

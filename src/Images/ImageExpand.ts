@@ -16,13 +16,13 @@ import Volume from "./Volume"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ImageExpand = {
+const ImageExpand = {
   init() {
     if (!(this.enabled = Conf['Image Expansion'] && ['index', 'thread'].includes(g.VIEW))) { return }
 
     this.EAI = $.el('a', {
       className: 'expand-all-shortcut fa fa-expand',
-      textContent: 'EAI', 
+      textContent: 'EAI',
       title: 'Expand All Images',
       href: 'javascript:;'
     }
@@ -31,8 +31,8 @@ var ImageExpand = {
     $.on(this.EAI, 'click', this.cb.toggleAll)
     Header.addShortcut('expand-all', this.EAI, 520)
     $.on(d, 'scroll visibilitychange', this.cb.playVideos)
-    this.videoControls = $.el('span', {className: 'video-controls'})
-    $.extend(this.videoControls, {innerHTML: " <a href=\"javascript:;\" title=\"You can also contract the video by dragging it to the left.\">contract</a>"})
+    this.videoControls = $.el('span', { className: 'video-controls' })
+    $.extend(this.videoControls, { innerHTML: " <a href=\"javascript:;\" title=\"You can also contract the video by dragging it to the left.\">contract</a>" })
 
     return Callbacks.Post.push({
       name: 'Image Expansion',
@@ -44,7 +44,7 @@ var ImageExpand = {
     if (!this.file || (!this.file.isImage && !this.file.isVideo)) { return }
     $.on(this.file.thumbLink, 'click', ImageExpand.cb.toggle)
 
-    if (this.isClone) { 
+    if (this.isClone) {
       if (this.file.isExpanding) {
         // If we clone a post where the image is still loading,
         // make it loading in the clone too.
@@ -60,15 +60,15 @@ var ImageExpand = {
     } else if (ImageExpand.on && !this.isHidden && !this.isFetchedQuote &&
       (Conf['Expand spoilers'] || !this.file.isSpoiler) &&
       (Conf['Expand videos'] || !this.file.isVideo)) {
-        return ImageExpand.expand(this)
-      }
+      return ImageExpand.expand(this)
+    }
   },
 
   cb: {
     toggle(e) {
       if ($.modifiedClick(e)) { return }
       const post = Get.postFromNode(this)
-      const {file} = post
+      const { file } = post
       if (file.isExpanded && ImageCommon.onControls(e)) { return }
       e.preventDefault()
       if (!Conf['Autoplay'] && file.fullImage?.paused) {
@@ -82,38 +82,38 @@ var ImageExpand = {
       let func
       $.event('CloseMenu')
       const threadRoot = Nav.getThread()
-      const toggle = function(post) {
-        const {file} = post
+      const toggle = function (post) {
+        const { file } = post
         if (!file || (!file.isImage && !file.isVideo) || !doc.contains(post.nodes.root)) { return }
         if (ImageExpand.on &&
-          ((!Conf['Expand spoilers']  && file.isSpoiler) ||
-          (!Conf['Expand videos']     && file.isVideo) ||
-          (Conf['Expand from here']   && (Header.getTopOf(file.thumb) < 0)) ||
-          (Conf['Expand thread only'] && (g.VIEW === 'index') && !threadRoot?.contains(file.thumb)))) {
-            return
-          }
+          ((!Conf['Expand spoilers'] && file.isSpoiler) ||
+            (!Conf['Expand videos'] && file.isVideo) ||
+            (Conf['Expand from here'] && (Header.getTopOf(file.thumb) < 0)) ||
+            (Conf['Expand thread only'] && (g.VIEW === 'index') && !threadRoot?.contains(file.thumb)))) {
+          return
+        }
         return $.queueTask(func, post)
       }
 
       if (ImageExpand.on = $.hasClass(ImageExpand.EAI, 'expand-all-shortcut')) {
         ImageExpand.EAI.className = 'contract-all-shortcut fa fa-compress'
-        ImageExpand.EAI.title     = 'Contract All Images'
+        ImageExpand.EAI.title = 'Contract All Images'
         func = ImageExpand.expand
       } else {
         ImageExpand.EAI.className = 'expand-all-shortcut fa fa-expand'
-        ImageExpand.EAI.title     = 'Expand All Images'
+        ImageExpand.EAI.title = 'Expand All Images'
         func = ImageExpand.contract
       }
 
-      return g.posts.forEach(function(post) {
+      return g.posts.forEach(function (post) {
         for (post of [post, ...Array.from(post.clones)]) { toggle(post) }
       })
     },
 
     playVideos() {
-      return g.posts.forEach(function(post) {
+      return g.posts.forEach(function (post) {
         for (post of [post, ...Array.from(post.clones)]) {
-          const {file} = post
+          const { file } = post
           if (!file || !file.isVideo || !file.isExpanded) { continue }
 
           const video = file.fullImage
@@ -156,19 +156,19 @@ var ImageExpand = {
 
   contract(post) {
     let bottom, el, oldHeight, scrollY
-    const {file} = post
+    const { file } = post
 
     if (el = file.fullImage) {
       const top = Header.getTopOf(el)
       bottom = top + el.getBoundingClientRect().height
       oldHeight = d.body.clientHeight;
-      ({scrollY} = window)
+      ({ scrollY } = window)
     }
 
     $.rmClass(post.nodes.root, 'expanded-image')
-    $.rmClass(file.thumb,      'expanding')
+    $.rmClass(file.thumb, 'expanding')
     $.rm(file.videoControls)
-    file.thumbLink.href   = file.url
+    file.thumbLink.href = file.url
     file.thumbLink.target = '_blank'
     for (const x of ['isExpanding', 'isExpanded', 'videoControls', 'wasPlaying', 'scrollIntoView']) {
       delete file[x]
@@ -201,7 +201,7 @@ var ImageExpand = {
     }
     if (Conf['Restart when Opened']) { ImageCommon.rewind(file.thumb) }
     delete file.fullImage
-    return $.queueTask(function() {
+    return $.queueTask(function () {
       // XXX Work around Chrome/Chromium not firing mouseover on the thumbnail.
       if (file.isExpanding || file.isExpanded) { return }
       $.rmClass(el, 'full-image')
@@ -213,8 +213,8 @@ var ImageExpand = {
   expand(post, src) {
     // Do not expand images of hidden/filtered replies, or already expanded pictures.
     let el
-    const {file} = post
-    const {thumb, thumbLink, isVideo} = file
+    const { file } = post
+    const { thumb, thumbLink, isVideo } = file
     if (post.isHidden || file.isExpanding || file.isExpanded) { return }
 
     $.addClass(thumb, 'expanding')
@@ -263,15 +263,15 @@ var ImageExpand = {
   },
 
   completeExpand(post) {
-    const {file} = post
+    const { file } = post
     if (!file.isExpanding) { return } // contracted before the image loaded
 
     const bottom = Header.getTopOf(file.thumb) + file.thumb.getBoundingClientRect().height
     const oldHeight = d.body.clientHeight
-    const {scrollY} = window
+    const { scrollY } = window
 
     $.addClass(post.nodes.root, 'expanded-image')
-    $.rmClass(file.thumb,      'expanding')
+    $.rmClass(file.thumb, 'expanding')
     file.isExpanded = true
     delete file.isExpanding
 
@@ -295,13 +295,13 @@ var ImageExpand = {
   },
 
   setupVideo(post, playing, controls) {
-    const {fullImage} = post.file
+    const { fullImage } = post.file
     if (!playing) {
       fullImage.controls = controls
       return
     }
     fullImage.controls = false
-    $.asap((() => doc.contains(fullImage)), function() {
+    $.asap((() => doc.contains(fullImage)), function () {
       if (!d.hidden && Header.isNodeVisible(fullImage)) {
         return fullImage.play()
       } else {
@@ -313,7 +313,7 @@ var ImageExpand = {
     }
   },
 
-  videoCB: (function() {
+  videoCB: (function () {
     // dragging to the left contracts the video
     let mousedown = false
     return {
@@ -350,7 +350,7 @@ var ImageExpand = {
     if (ImageCommon.isFromArchive(this)) {
       return ImageExpand.contract(post)
     }
-    return ImageCommon.error(this, post, post.file, 10 * SECOND, function(URL) {
+    return ImageCommon.error(this, post, post.file, 10 * SECOND, function (URL) {
       if (post.file.isExpanding || post.file.isExpanded) {
         ImageExpand.contract(post)
         if (URL) { return ImageExpand.expand(post, URL) }
@@ -364,11 +364,11 @@ var ImageExpand = {
 
       const el = $.el('span', {
         textContent: 'Image Expansion',
-        className:   'image-expansion-link'
+        className: 'image-expansion-link'
       }
       )
 
-      const {createSubEntry} = ImageExpand.menu
+      const { createSubEntry } = ImageExpand.menu
       const subEntries = []
       for (const name in Config.imageExpansion) {
         const conf = Config.imageExpansion[name]
@@ -391,7 +391,7 @@ var ImageExpand = {
       }
       $.event('change', null, input)
       $.on(input, 'change', $.cb.checked)
-      return {el: label}
+      return { el: label }
     }
   }
 }

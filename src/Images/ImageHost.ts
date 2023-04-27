@@ -7,12 +7,12 @@ import $$ from "../platform/$$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ImageHost = {
+const ImageHost = {
   init() {
     if ((!(this.useFaster = /\S/.test(Conf['fourchanImageHost']))) || (g.SITE.software !== 'yotsuba') || !['index', 'thread'].includes(g.VIEW)) { return }
     return Callbacks.Post.push({
       name: 'Image Host Rewriting',
-      cb:   this.node
+      cb: this.node
     })
   },
 

@@ -1,7 +1,7 @@
 import Callbacks from "../classes/Callbacks"
 import Header from "../General/Header"
 import UI from "../General/UI"
-import { Conf, d,doc, E, g } from "../globals/globals"
+import { Conf, d, doc, E, g } from "../globals/globals"
 import $ from "../platform/$"
 import { MINUTE, SECOND } from "../platform/helpers"
 
@@ -10,7 +10,7 @@ import { MINUTE, SECOND } from "../platform/helpers"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ThreadStats = {
+const ThreadStats = {
   postCount: 0,
   fileCount: 0,
   postIndex: 0,
@@ -23,14 +23,14 @@ var ThreadStats = {
       this[g.SITE.isPrunedByAge?.(g.BOARD) ? 'showPurgePos' : 'showPage'] = true
     }
 
-    const statsHTML = {innerHTML: "<span id=\"post-count\">?</span> / <span id=\"file-count\">?</span>" + ((Conf["IP Count in Stats"] && g.SITE.hasIPCount) ? " / <span id=\"ip-count\">?</span>" : "") + ((Conf["Page Count in Stats"]) ? " / <span id=\"page-count\">?</span>" : "")}
+    const statsHTML = { innerHTML: "<span id=\"post-count\">?</span> / <span id=\"file-count\">?</span>" + ((Conf["IP Count in Stats"] && g.SITE.hasIPCount) ? " / <span id=\"ip-count\">?</span>" : "") + ((Conf["Page Count in Stats"]) ? " / <span id=\"page-count\">?</span>" : "") }
     let statsTitle = 'Posts / Files'
     if (Conf['IP Count in Stats'] && g.SITE.hasIPCount) { statsTitle += ' / IPs' }
     if (Conf['Page Count in Stats']) { statsTitle += (this.showPurgePos ? ' / Purge Position' : ' / Page') }
 
     if (Conf['Updater and Stats in Header']) {
       this.dialog = (sc = $.el('span', {
-        id:    'thread-stats',
+        id: 'thread-stats',
         title: statsTitle
       }
       ))
@@ -39,21 +39,21 @@ var ThreadStats = {
 
     } else {
       this.dialog = (sc = UI.dialog('thread-stats',
-        {innerHTML: "<div class=\"move\" title=\"" + E(statsTitle) + "\">" + (statsHTML).innerHTML + "</div>"}))
+        { innerHTML: "<div class=\"move\" title=\"" + E(statsTitle) + "\">" + (statsHTML).innerHTML + "</div>" }))
       $.addClass(doc, 'float')
       $.ready(() => $.add(d.body, sc))
     }
 
     this.postCountEl = $('#post-count', sc)
     this.fileCountEl = $('#file-count', sc)
-    this.ipCountEl   = $('#ip-count',   sc)
+    this.ipCountEl = $('#ip-count', sc)
     this.pageCountEl = $('#page-count', sc)
 
     if (this.pageCountEl) { $.on(this.pageCountEl, 'click', ThreadStats.fetchPage) }
 
     return Callbacks.Thread.push({
       name: 'Thread Stats',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -67,7 +67,7 @@ var ThreadStats = {
   },
 
   count() {
-    const {posts} = ThreadStats.thread
+    const { posts } = ThreadStats.thread
     const n = posts.keys.length
     for (let i = ThreadStats.postIndex, end = n; i < end; i++) {
       const post = posts.get(posts.keys[i])
@@ -81,8 +81,8 @@ var ThreadStats = {
 
   onUpdate(e) {
     if (e.detail[404]) { return }
-    const {postCount, fileCount} = e.detail
-    $.extend(ThreadStats, {postCount, fileCount})
+    const { postCount, fileCount } = e.detail
+    $.extend(ThreadStats, { postCount, fileCount })
     ThreadStats.postIndex = ThreadStats.thread.posts.keys.length
     ThreadStats.update()
     if (ThreadStats.showPage && (ThreadStats.pageCountEl.textContent !== '1')) {
@@ -100,11 +100,11 @@ var ThreadStats = {
   },
 
   update() {
-    const {thread, postCountEl, fileCountEl, ipCountEl} = ThreadStats
+    const { thread, postCountEl, fileCountEl, ipCountEl } = ThreadStats
     postCountEl.textContent = ThreadStats.postCount
     fileCountEl.textContent = ThreadStats.fileCount
     // TOTO check if ipCountEl exists
-    ipCountEl.textContent  = thread.ipCount ?? '?'
+    ipCountEl.textContent = thread.ipCount ?? '?'
     postCountEl.classList.toggle('warning', (thread.postLimit && !thread.isSticky))
     return fileCountEl.classList.toggle('warning', (thread.fileLimit && !thread.isSticky))
   },

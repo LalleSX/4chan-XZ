@@ -1,7 +1,7 @@
 import Callbacks from "../classes/Callbacks"
 import Post from "../classes/Post"
 import Index from "../General/Index"
-import { Conf, d, doc,g } from "../globals/globals"
+import { Conf, d, doc, g } from "../globals/globals"
 import $ from "../platform/$"
 import { DAY, HOUR, MINUTE, SECOND } from "../platform/helpers"
 
@@ -11,7 +11,7 @@ import { DAY, HOUR, MINUTE, SECOND } from "../platform/helpers"
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var RelativeDates = {
+const RelativeDates = {
   INTERVAL: 30000,
 
   init() {
@@ -26,7 +26,7 @@ var RelativeDates = {
     if (Conf['Relative Post Dates']) {
       return Callbacks.Post.push({
         name: 'Relative Post Dates',
-        cb:   this.node
+        cb: this.node
       })
     }
   },
@@ -53,16 +53,16 @@ var RelativeDates = {
     let number
     let unit = (() => {
       if ((number = (diff / DAY)) >= 1) {
-      const years  = now.getFullYear()  - date.getFullYear()
+        const years = now.getFullYear() - date.getFullYear()
         let months = now.getMonth() - date.getMonth()
-      const days   = now.getDate()  - date.getDate()
+        const days = now.getDate() - date.getDate()
         if (years > 1) {
           number = years - ((months < 0) || ((months === 0) && (days < 0)))
           return 'year'
         } else if ((years === 1) && ((months > 0) || ((months === 0) && (days >= 0)))) {
           number = years
           return 'year'
-      } else if ((months = months + (12*years)) > 1) {
+        } else if ((months = months + (12 * years)) > 1) {
           number = months - (days < 0)
           return 'month'
         } else if ((months === 1) && (days >= 0)) {
@@ -71,15 +71,15 @@ var RelativeDates = {
         } else {
           return 'day'
         }
-    } else if ((number = (diff / HOUR)) >= 1) {
-      return 'hour'
-    } else if ((number = (diff / MINUTE)) >= 1) {
-      return 'minute'
-    } else {
-      // prevent "-1 seconds ago"
-      number = Math.max(0, diff) / SECOND
-      return 'second'
-    }
+      } else if ((number = (diff / HOUR)) >= 1) {
+        return 'hour'
+      } else if ((number = (diff / MINUTE)) >= 1) {
+        return 'minute'
+      } else {
+        // prevent "-1 seconds ago"
+        number = Math.max(0, diff) / SECOND
+        return 'second'
+      }
     })()
 
     const rounded = Math.round(number)
@@ -119,7 +119,7 @@ var RelativeDates = {
     const {
       date
     } = post.info
-    const now  = new Date()
+    const now = new Date()
     const diff = now - date
     return post.nodes.date.title = RelativeDates.relative(diff, now, date)
   },
@@ -154,12 +154,12 @@ var RelativeDates = {
   setOwnTimeout(diff, data) {
     const delay = diff < MINUTE ?
       SECOND - ((diff + (SECOND / 2)) % SECOND)
-    : diff < HOUR ?
-      MINUTE - ((diff + (MINUTE / 2)) % MINUTE)
-    : diff < DAY ?
-      HOUR - ((diff + (HOUR / 2)) % HOUR)
-    :
-      DAY - ((diff + (DAY / 2)) % DAY)
+      : diff < HOUR ?
+        MINUTE - ((diff + (MINUTE / 2)) % MINUTE)
+        : diff < DAY ?
+          HOUR - ((diff + (HOUR / 2)) % HOUR)
+          :
+          DAY - ((diff + (DAY / 2)) % DAY)
     return setTimeout(RelativeDates.markStale, delay, data)
   },
 

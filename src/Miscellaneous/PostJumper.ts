@@ -1,5 +1,5 @@
 import Callbacks from "../classes/Callbacks"
-import { Conf, E,g } from "../globals/globals"
+import { Conf, E, g } from "../globals/globals"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
 
@@ -8,7 +8,7 @@ import $$ from "../platform/$$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var PostJumper = { 
+const PostJumper = {
   init() {
     if (!Conf['Unique ID and Capcode Navigation'] || !['index', 'thread'].includes(g.VIEW)) { return }
 
@@ -16,7 +16,7 @@ var PostJumper = {
 
     return Callbacks.Post.push({
       name: 'Post Jumper',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -29,19 +29,19 @@ var PostJumper = {
     }
 
     if (this.nodes.uniqueIDRoot) {
-      PostJumper.addButtons(this,'uniqueID')
+      PostJumper.addButtons(this, 'uniqueID')
     }
 
     if (this.nodes.capcode) {
-      return PostJumper.addButtons(this,'capcode')
+      return PostJumper.addButtons(this, 'capcode')
     }
   },
 
-  addButtons(post,type) {
+  addButtons(post, type) {
     const value = post.info[type]
     const buttons = PostJumper.buttons.cloneNode(true)
-    $.extend(buttons.dataset, {type, value})
-    $.after(post.nodes[type+(type === 'capcode' ? '' : 'Root')], buttons)
+    $.extend(buttons.dataset, { type, value })
+    $.after(post.nodes[type + (type === 'capcode' ? '' : 'Root')], buttons)
     return PostJumper.addListeners(buttons)
   },
 
@@ -59,7 +59,7 @@ var PostJumper = {
   },
 
   find(jumper, dir) {
-    const {type, value} = jumper.dataset
+    const { type, value } = jumper.dataset
     const xpath = `span[contains(@class,\"postJumper\") and @data-value=\"${value}\" and @data-type=\"${type}\"]`
     const axis = dir < 0 ? 'preceding' : 'following'
     let jumper2 = jumper
@@ -81,15 +81,15 @@ var PostJumper = {
     const classPrev = 'prev'
     const classNext = 'next'
     const span = $.el('span',
-      {className: 'postJumper'})
-    $.extend(span, {innerHTML: "<a href=\"javascript:;\" class=\"" + E(classPrev) + "\">" + E(charPrev) + "</a><a href=\"javascript:;\" class=\"" + E(classNext) + "\">" + E(charNext) + "</a>"})
+      { className: 'postJumper' })
+    $.extend(span, { innerHTML: "<a href=\"javascript:;\" class=\"" + E(classPrev) + "\">" + E(charPrev) + "</a><a href=\"javascript:;\" class=\"" + E(classNext) + "\">" + E(charNext) + "</a>" })
     return span
   },
 
   scroll(fromJumper, toJumper) {
     const prevPos = fromJumper.getBoundingClientRect().top
     const destPos = toJumper.getBoundingClientRect().top
-    return window.scrollBy(0, destPos-prevPos)
+    return window.scrollBy(0, destPos - prevPos)
   }
 }
 export default PostJumper

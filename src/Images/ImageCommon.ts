@@ -1,6 +1,6 @@
 import Redirect from "../Archive/Redirect"
 import Notice from "../classes/Notice"
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 import CrossOrigin from "../platform/CrossOrigin"
 import ImageHost from "./ImageHost"
@@ -14,7 +14,7 @@ import Volume from "./Volume"
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ImageCommon = {
+const ImageCommon = {
   // Pause and mute video in preparation for removing the element from the document.
   pause(video) {
     if (video.nodeName !== 'VIDEO') { return }
@@ -51,7 +51,7 @@ var ImageCommon = {
     let message
     if (file.error?.code !== MediaError.MEDIA_ERR_DECODE) { return false }
     if (!(message = $('.warning', fileObj.thumb.parentNode))) {
-      message = $.el('div', {className:   'warning'})
+      message = $.el('div', { className: 'warning' })
       $.after(fileObj.thumb, message)
     }
     message.textContent = 'Error: Corrupt or unplayable video'
@@ -68,7 +68,7 @@ var ImageCommon = {
     let url = null
     if ((g.SITE.software === 'yotsuba') && Conf['404 Redirect']) {
       url = Redirect.to('file', {
-        boardID:  post.board.ID,
+        boardID: post.board.ID,
         filename: src[src.length - 1]
       })
     }
@@ -78,7 +78,7 @@ var ImageCommon = {
 
     if (delay != null) { timeoutID = setTimeout((() => cb(url)), delay) }
     if (post.isDead || fileObj.isDead) { return }
-    const redirect = function() {
+    const redirect = function () {
       if (!ImageCommon.isFromArchive(file)) {
         if (delay != null) { clearTimeout(timeoutID) }
         return cb(url)
@@ -87,12 +87,12 @@ var ImageCommon = {
 
     const threadJSON = g.SITE.urls.threadJSON?.(post)
     if (!threadJSON) { return }
-    const parseJSON = function(isArchiveURL) {
+    const parseJSON = function (isArchiveURL) {
       let needle, postObj
       if (this.status === 404) {
         let archivedThreadJSON
         if (!isArchiveURL && (archivedThreadJSON = g.SITE.urls.archivedThreadJSON?.(post))) {
-          $.ajax(archivedThreadJSON, {onloadend() { return parseJSON.call(this, true) }})
+          $.ajax(archivedThreadJSON, { onloadend() { return parseJSON.call(this, true) } })
         } else {
           post.kill(!post.isClone, fileObj.index)
         }
@@ -111,12 +111,12 @@ var ImageCommon = {
         return url = fileObj.url
       }
     }
-    return $.ajax(threadJSON, {onloadend() { return parseJSON.call(this) }})
+    return $.ajax(threadJSON, { onloadend() { return parseJSON.call(this) } })
   },
 
   // Add controls, but not until the mouse is moved over the video.
   addControls(video) {
-    const handler = function() {
+    const handler = function () {
       $.off(video, 'mouseover', handler)
       // Hacky workaround for Firefox forever-loading bug for very short videos
       const t = new Date().getTime()
@@ -134,8 +134,8 @@ var ImageCommon = {
   download(e) {
     if (this.protocol === 'blob:') { return true }
     e.preventDefault()
-    const {href, download} = this
-    return CrossOrigin.file(href, function(blob) {
+    const { href, download } = this
+    return CrossOrigin.file(href, function (blob) {
       if (blob) {
         const a = $.el('a', {
           href: URL.createObjectURL(blob),

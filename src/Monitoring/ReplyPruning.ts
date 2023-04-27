@@ -1,7 +1,7 @@
 import Callbacks from "../classes/Callbacks"
 import Header from "../General/Header"
 import UI from "../General/UI"
-import { Conf, d,E, g } from "../globals/globals"
+import { Conf, d, E, g } from "../globals/globals"
 import $ from "../platform/$"
 import QuoteThreading from "../Quotelinks/QuoteThreading"
 
@@ -11,14 +11,14 @@ import QuoteThreading from "../Quotelinks/QuoteThreading"
  * DS104: Avoid inline assignments
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ReplyPruning = {
+const ReplyPruning = {
   init() {
     if ((g.VIEW !== 'thread') || !Conf['Reply Pruning']) { return }
 
     this.container = $.frag()
 
     this.summary = $.el('span', {
-      hidden:    true,
+      hidden: true,
       className: 'summary'
     }
     )
@@ -30,9 +30,9 @@ var ReplyPruning = {
 
     const label = UI.checkbox('Prune Replies', 'Show Last', Conf['Prune All Threads'])
     const el = $.el('span',
-      {title: 'Maximum number of replies to show.'}
-    ,
-      {innerHTML: " <input type=\"number\" name=\"Max Replies\" min=\"0\" step=\"1\" value=\"" + E(Conf["Max Replies"]) + "\" class=\"field\">"})
+      { title: 'Maximum number of replies to show.' }
+      ,
+      { innerHTML: " <input type=\"number\" name=\"Max Replies\" min=\"0\" step=\"1\" value=\"" + E(Conf["Max Replies"]) + "\" class=\"field\">" })
     $.prepend(el, label)
 
     this.inputs = {
@@ -51,7 +51,7 @@ var ReplyPruning = {
 
     return Callbacks.Thread.push({
       name: 'Reply Pruning',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -89,7 +89,7 @@ var ReplyPruning = {
       }
     }
 
-    this.posts.forEach(function(post) {
+    this.posts.forEach(function (post) {
       if (post.isReply) {
         ReplyPruning.total++
         if (post.file) { return ReplyPruning.totalFiles++ }
@@ -128,13 +128,13 @@ var ReplyPruning = {
     const hidden1 = ReplyPruning.hidden
     const hidden2 = ReplyPruning.active ?
       Math.max(ReplyPruning.total - +Conf["Max Replies"], 0)
-    :
+      :
       0
 
     // Record position from bottom of document
     const oldPos = d.body.clientHeight - window.scrollY
 
-    const {posts} = ReplyPruning.thread
+    const { posts } = ReplyPruning.thread
 
     if (ReplyPruning.hidden < hidden2) {
       while ((ReplyPruning.hidden < hidden2) && (ReplyPruning.position < posts.keys.length)) {
@@ -164,7 +164,7 @@ var ReplyPruning = {
 
     ReplyPruning.summary.textContent = ReplyPruning.active ?
       g.SITE.Build.summaryText('+', ReplyPruning.hidden, ReplyPruning.hiddenFiles)
-    :
+      :
       g.SITE.Build.summaryText('-', ReplyPruning.total, ReplyPruning.totalFiles)
     ReplyPruning.summary.hidden = (ReplyPruning.total <= +Conf["Max Replies"])
 

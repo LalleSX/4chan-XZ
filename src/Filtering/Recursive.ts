@@ -8,13 +8,13 @@ import { dict } from "../platform/helpers"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Recursive = {
+const Recursive = {
   recursives: dict(),
   init() {
     if (!['index', 'thread'].includes(g.VIEW)) { return }
     return Callbacks.Post.push({
       name: 'Recursive',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -53,8 +53,8 @@ var Recursive = {
   },
 
   apply(recursive, post, ...args) {
-    const {fullID} = post
-    return g.posts.forEach(function(post) {
+    const { fullID } = post
+    return g.posts.forEach(function (post) {
       if (post.quotes.includes(fullID)) {
         return recursive(post, ...Array.from(args))
       }

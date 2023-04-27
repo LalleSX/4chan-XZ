@@ -1,5 +1,5 @@
 import Callbacks from "../classes/Callbacks"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 import { dict } from "../platform/helpers"
 
@@ -8,7 +8,7 @@ import { dict } from "../platform/helpers"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var IDColor = {
+const IDColor = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Color User IDs']) { return }
     this.ids = dict()
@@ -16,7 +16,7 @@ var IDColor = {
 
     return Callbacks.Post.push({
       name: 'Color User IDs',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -27,7 +27,7 @@ var IDColor = {
     const rgb = IDColor.ids[uid] || IDColor.compute(uid)
 
     // Style the damn node.
-    const {style} = span
+    const { style } = span
     style.color = rgb[3]
     style.backgroundColor = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
     return $.addClass(span, 'painted')
@@ -41,14 +41,14 @@ var IDColor = {
     // Convert binary string to numerical values with bitshift and '&' truncation.
     const rgb = [
       (hash >> 16) & 0xFF,
-      (hash >> 8)  & 0xFF,
+      (hash >> 8) & 0xFF,
       hash & 0xFF
     ]
 
     // Weight color luminance values, assign a font color that should be readable. 
     rgb.push($.luma(rgb) > 125 ?
       '#000'
-    :
+      :
       '#fff'
     )
 

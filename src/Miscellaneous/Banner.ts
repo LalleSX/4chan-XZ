@@ -13,7 +13,7 @@ import { dict } from "../platform/helpers"
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Banner = {
+const Banner = {
   init() {
     if (Conf['Custom Board Titles']) {
       this.db = new DataBoard('customTitles', null, true)
@@ -29,7 +29,7 @@ var Banner = {
 
   ready() {
     const banner = $(".boardBanner")
-    const {children} = banner
+    const { children } = banner
 
     if ((g.VIEW === 'thread') && Conf['Remove Thread Excerpt']) {
       Banner.setTitle(children[1].textContent)
@@ -93,18 +93,18 @@ var Banner = {
       if (this.textContent = this.textContent.replace(/\n*$/, '')) {
         this.contentEditable = false
         return Banner.db.set({
-          boardID:  g.BOARD.ID,
+          boardID: g.BOARD.ID,
           threadID: this.className,
           val: {
             title: this.textContent,
-            orig:  Banner.original[this.className].textContent
+            orig: Banner.original[this.className].textContent
           }
         })
       } else {
         $.rmAll(this)
         $.add(this, [...Array.from(Banner.original[this.className].cloneNode(true).childNodes)])
         return Banner.db.delete({
-          boardID:  g.BOARD.ID,
+          boardID: g.BOARD.ID,
           threadID: this.className
         })
       }
@@ -115,7 +115,7 @@ var Banner = {
 
   custom(child) {
     let data
-    const {className} = child
+    const { className } = child
     child.title = `Ctrl/\u2318+click to edit board ${className.slice(5).toLowerCase()}`
     child.spellcheck = false
 
@@ -123,12 +123,12 @@ var Banner = {
       $.on(child, event, Banner.cb[event])
     }
 
-    if (data = Banner.db.get({boardID: g.BOARD.ID, threadID: className})) {
+    if (data = Banner.db.get({ boardID: g.BOARD.ID, threadID: className })) {
       if (Conf['Persistent Custom Board Titles'] || (data.orig === child.textContent)) {
         Banner.original[className] = child.cloneNode(true)
         return child.textContent = data.title
       } else {
-        return Banner.db.delete({boardID: g.BOARD.ID, threadID: className})
+        return Banner.db.delete({ boardID: g.BOARD.ID, threadID: className })
       }
     }
   }

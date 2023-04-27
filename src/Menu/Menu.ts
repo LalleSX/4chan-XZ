@@ -1,6 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 import UI from "../General/UI"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 
 /*
@@ -8,27 +8,27 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Menu = {
+const Menu = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) { return }
 
     this.button = $.el('a', {
       className: 'menu-button',
-      href:      'javascript:;'
+      href: 'javascript:;'
     }
     )
 
-    $.extend(this.button, {innerHTML: "<i class=\"fa fa-angle-down\"></i>"})
+    $.extend(this.button, { innerHTML: "<i class=\"fa fa-angle-down\"></i>" })
 
     this.menu = new UI.Menu('post')
     Callbacks.Post.push({
       name: 'Menu',
-      cb:   this.node
+      cb: this.node
     })
 
     return Callbacks.CatalogThread.push({
       name: 'Menu',
-      cb:   this.catalogNode
+      cb: this.catalogNode
     })
   },
 
@@ -49,7 +49,7 @@ var Menu = {
 
   makeButton(post, button) {
     if (!button) { button = Menu.button.cloneNode(true) }
-    $.on(button, 'click', function(e) {
+    $.on(button, 'click', function (e) {
       return Menu.menu.toggle(e, this, post)
     })
     return button

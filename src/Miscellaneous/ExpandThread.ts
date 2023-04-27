@@ -2,7 +2,7 @@ import Callbacks from "../classes/Callbacks"
 import Post from "../classes/Post"
 import Get from "../General/Get"
 import Index from "../General/Index"
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import Main from "../main/Main"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
@@ -14,7 +14,7 @@ import { dict } from "../platform/helpers"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ExpandThread = {
+const ExpandThread = {
   statuses: dict(),
   init() {
     if (!((g.VIEW === 'index') && Conf['Thread Expansion'])) { return }
@@ -35,7 +35,7 @@ var ExpandThread = {
     a.style.cursor = 'pointer'
     return $.on(a, 'click', ExpandThread.cbToggle)
   },
-  
+
   disconnect(refresh) {
     if ((g.VIEW === 'thread') || !Conf['Thread Expansion']) { return }
     for (const threadID in ExpandThread.statuses) {
@@ -67,7 +67,7 @@ var ExpandThread = {
     e.preventDefault()
     const thread = Get.threadFromNode(this)
     $.rm(this) // remove before fixing bottom of thread position
-    const {bottom} = thread.nodes.root.getBoundingClientRect()
+    const { bottom } = thread.nodes.root.getBoundingClientRect()
     ExpandThread.toggle(thread)
     return window.scrollBy(0, (thread.nodes.root.getBoundingClientRect().bottom - bottom))
   },
@@ -86,7 +86,7 @@ var ExpandThread = {
     let status
     ExpandThread.statuses[thread] = (status = {})
     a.textContent = g.SITE.Build.summaryText('...', ...Array.from(a.textContent.match(/\d+/g)))
-    status.req = $.cache(g.SITE.urls.threadJSON({boardID: thread.board.ID, threadID: thread.ID}), function() {
+    status.req = $.cache(g.SITE.urls.threadJSON({ boardID: thread.board.ID, threadID: thread.ID }), function () {
       if (this !== status.req) { return } // aborted
       delete status.req
       return ExpandThread.parse(this, thread, a)
@@ -111,8 +111,10 @@ var ExpandThread = {
     let filesCount = 0
     for (const reply of replies) {
       // rm clones
-      if (Conf['Quote Inlining']) { var inlined
-      while ((inlined = $('.inlined', reply))) { inlined.click() } }
+      if (Conf['Quote Inlining']) {
+        var inlined
+        while ((inlined = $('.inlined', reply))) { inlined.click() }
+      }
       postsCount++
       if ('file' in Get.postFromRoot(reply)) { filesCount++ }
       $.rm(reply)
@@ -133,15 +135,15 @@ var ExpandThread = {
 
     g.SITE.Build.spoilerRange[thread.board] = req.response.posts[0].custom_spoiler
 
-    const posts      = []
-    const postsRoot  = []
+    const posts = []
+    const postsRoot = []
     let filesCount = 0
     for (const postData of req.response.posts) {
       var post
       if (postData.no === thread.ID) { continue }
       if ((post = thread.posts.get(postData.no)) && !post.isFetchedQuote) {
         if ('file' in post) { filesCount++ }
-        ({root} = post.nodes)
+        ({ root } = post.nodes)
         postsRoot.push(root)
         continue
       }
@@ -155,7 +157,7 @@ var ExpandThread = {
     $.after(a, postsRoot)
     $.event('PostsInserted', null, a.parentNode)
 
-    const postsCount    = postsRoot.length
+    const postsCount = postsRoot.length
     a.textContent = g.SITE.Build.summaryText('-', postsCount, filesCount)
 
     if (root) {

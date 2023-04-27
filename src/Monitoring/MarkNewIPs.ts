@@ -1,13 +1,13 @@
 import Callbacks from "../classes/Callbacks"
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 
-var MarkNewIPs = {
+const MarkNewIPs = {
   init() {
     if ((g.SITE.software !== 'yotsuba') || (g.VIEW !== 'thread') || !Conf['Mark New IPs']) { return }
     return Callbacks.Thread.push({
       name: 'Mark New IPs',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -19,7 +19,7 @@ var MarkNewIPs = {
 
   onUpdate(e) {
     let fullID
-    const {ipCount, postCount, newPosts, deletedPosts} = e.detail
+    const { ipCount, postCount, newPosts, deletedPosts } = e.detail
     if (ipCount == null) { return }
 
     switch (ipCount - MarkNewIPs.ipCount) {
@@ -42,7 +42,7 @@ var MarkNewIPs = {
   markNew(post, ipCount) {
     const suffix = ((Math.floor(ipCount / 10)) % 10) === 1 ?
       'th'
-    :
+      :
       ['st', 'nd', 'rd'][(ipCount % 10) - 1] || 'th' // fuck switches
     const counter = $.el('span', {
       className: 'ip-counter',

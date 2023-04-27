@@ -1,6 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 import Get from "../General/Get"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import ExpandComment from "../Miscellaneous/ExpandComment"
 import $ from "../platform/$"
 
@@ -9,7 +9,7 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var QuoteOP = {
+const QuoteOP = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Mark OP Quotes']) { return }
 
@@ -20,12 +20,12 @@ var QuoteOP = {
     // \u00A0 is nbsp
     this.mark = $.el('span', {
       textContent: '\u00A0(OP)',
-      className:   'qmark-op'
+      className: 'qmark-op'
     }
     )
     return Callbacks.Post.push({
       name: 'Mark OP Quotes',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -35,7 +35,7 @@ var QuoteOP = {
     if (this.isClone && (this.thread === this.context.thread)) { return }
     // Stop there if there's no quotes in that post.
     if (!(quotes = this.quotes).length) { return }
-    const {quotelinks} = this.nodes
+    const { quotelinks } = this.nodes
 
     // rm (OP) from cross-thread quotes.
     if (this.isClone && quotes.includes(this.thread.fullID)) {
@@ -45,13 +45,13 @@ var QuoteOP = {
       }
     }
 
-    const {fullID} = this.context.thread
+    const { fullID } = this.context.thread
     // add (OP) to quotes quoting this context's OP.
 
     if (!quotes.includes(fullID)) { return }
     i = 0
     while ((quotelink = quotelinks[i++])) {
-      const {boardID, postID} = Get.postDataFromLink(quotelink)
+      const { boardID, postID } = Get.postDataFromLink(quotelink)
       if (`${boardID}.${postID}` === fullID) {
         $.add(quotelink, QuoteOP.mark.cloneNode(true))
       }

@@ -4,7 +4,7 @@ import $ from "../platform/$"
 import $$ from "../platform/$$"
 
 
-var RemoveSpoilers = {
+const RemoveSpoilers = {
   init() {
     if (Conf['Reveal Spoilers']) {
       $.addClass(doc, 'reveal-spoilers')
@@ -14,7 +14,7 @@ var RemoveSpoilers = {
 
     Callbacks.Post.push({
       name: 'Reveal Spoilers',
-      cb:   this.node
+      cb: this.node
     })
 
     if (g.VIEW === 'archive') {
@@ -29,7 +29,7 @@ var RemoveSpoilers = {
   unspoiler(el) {
     const spoilers = $$(g.SITE.selectors.spoiler, el)
     for (const spoiler of spoilers) {
-      const span = $.el('span', {className: 'removed-spoiler'})
+      const span = $.el('span', { className: 'removed-spoiler' })
       $.replace(spoiler, span)
       $.add(span, [...Array.from(spoiler.childNodes)])
     }

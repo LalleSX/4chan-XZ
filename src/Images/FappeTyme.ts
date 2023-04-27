@@ -9,14 +9,14 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var FappeTyme = {
+const FappeTyme = {
   init() {
     if ((!Conf['Fappe Tyme'] && !Conf['Werk Tyme']) || !['index', 'thread', 'archive'].includes(g.VIEW)) { return }
 
     this.nodes = {}
     this.enabled = {
       fappe: false,
-      werk:  Conf['werk']
+      werk: Conf['werk']
     }
 
     for (const type of ["Fappe", "Werk"]) {
@@ -40,7 +40,7 @@ var FappeTyme = {
           title: `${type} Tyme active`
         }
         )
-        $.on(indicator, 'click', function() {
+        $.on(indicator, 'click', function () {
           const check = $.getOwn(FappeTyme.nodes, this.parentNode.id.replace('shortcut-', ''))
           check.checked = !check.checked
           return $.event('change', null, check)
@@ -55,12 +55,12 @@ var FappeTyme = {
 
     Callbacks.Post.push({
       name: 'Fappe Tyme',
-      cb:   this.node
+      cb: this.node
     })
 
     return Callbacks.CatalogThread.push({
       name: 'Werk Tyme',
-      cb:   this.catalogNode
+      cb: this.catalogNode
     })
   },
 
@@ -73,7 +73,7 @@ var FappeTyme = {
     if (!file) { return }
     const filename = $.el('div', {
       textContent: file.name,
-      className:   'werkTyme-filename'
+      className: 'werkTyme-filename'
     }
     )
     return $.add(this.nodes.thumb.parentNode, filename)

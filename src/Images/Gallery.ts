@@ -21,7 +21,7 @@ import ImageCommon from './ImageCommon'
 import Sauce from './Sauce'
 import Volume from './Volume'
 
-var Gallery = {
+const Gallery = {
   init() {
     if (!(this.enabled = Conf['Gallery'] && ['index', 'thread'].includes(g.VIEW))) { return }
 
@@ -41,7 +41,7 @@ var Gallery = {
 
     return Callbacks.Post.push({
       name: 'Gallery',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -68,7 +68,7 @@ var Gallery = {
 
   build(image) {
     let dialog, thumb
-    const {cb} = Gallery
+    const { cb } = Gallery
 
     if (Conf['Fullscreen Gallery']) {
       $.one(d, 'fullscreenchange mozfullscreenchange webkitfullscreenchange', () => $.on(d, 'fullscreenchange mozfullscreenchange webkitfullscreenchange', cb.close))
@@ -76,24 +76,24 @@ var Gallery = {
       doc.requestFullscreen?.(Element.ALLOW_KEYBOARD_INPUT)
     }
 
-    Gallery.images  = []
+    Gallery.images = []
     const nodes = (Gallery.nodes = {})
     Gallery.fileIDs = dict()
     Gallery.slideshow = false
 
     nodes.el = (dialog = $.el('div',
-      {id: 'a-gallery'}))
-    $.extend(dialog, {innerHTML: galleryPage })
+      { id: 'a-gallery' }))
+    $.extend(dialog, { innerHTML: galleryPage })
 
     const object = {
       buttons: '.gal-buttons',
-      frame:   '.gal-image',
-      name:    '.gal-name',
-      count:   '.count',
-      total:   '.total',
-      sauce:   '.gal-sauce',
-      thumbs:  '.gal-thumbnails',
-      next:    '.gal-image a',
+      frame: '.gal-image',
+      name: '.gal-name',
+      count: '.count',
+      total: '.total',
+      sauce: '.gal-sauce',
+      thumbs: '.gal-thumbnails',
+      next: '.gal-image a',
       current: '.gal-image img'
     }
     for (const key in object) { const value = object[key]; nodes[key] = $(value, dialog) }
@@ -103,16 +103,16 @@ var Gallery = {
 
     $.on(nodes.frame, 'click', cb.blank)
     if (Conf['Mouse Wheel Volume']) { $.on(nodes.frame, 'wheel', Volume.wheel) }
-    $.on(nodes.next,  'click', cb.click)
-    $.on(nodes.name,  'click', ImageCommon.download)
+    $.on(nodes.next, 'click', cb.click)
+    $.on(nodes.name, 'click', ImageCommon.download)
 
-    $.on($('.gal-prev',  dialog), 'click', cb.prev)
-    $.on($('.gal-next',  dialog), 'click', cb.next)
+    $.on($('.gal-prev', dialog), 'click', cb.prev)
+    $.on($('.gal-next', dialog), 'click', cb.next)
     $.on($('.gal-start', dialog), 'click', cb.start)
-    $.on($('.gal-stop',  dialog), 'click', cb.stop)
+    $.on($('.gal-stop', dialog), 'click', cb.stop)
     $.on($('.gal-close', dialog), 'click', cb.close)
 
-    $.on(menuButton, 'click', function(e) {
+    $.on(menuButton, 'click', function (e) {
       return nodes.menu.toggle(e, this, g)
     })
 
@@ -150,7 +150,7 @@ var Gallery = {
     nodes.current.parentElement.scrollTop = 0
 
     if (image) { thumb = $(`[href='${image.href}']`, nodes.thumbs) }
-    if (!thumb) { thumb = Gallery.images[Gallery.images.length-1] }
+    if (!thumb) { thumb = Gallery.images[Gallery.images.length - 1] }
     if (thumb) { Gallery.open(thumb) }
 
     doc.style.overflow = 'hidden'
@@ -166,13 +166,13 @@ var Gallery = {
 
     const thumb = $.el('a', {
       className: 'gal-thumb',
-      href:      file.url,
-      target:    '_blank',
-      title:     file.name
+      href: file.url,
+      target: '_blank',
+      title: file.name
     }
     )
 
-    thumb.dataset.id   = Gallery.images.length
+    thumb.dataset.id = Gallery.images.length
     thumb.dataset.post = post.fullID
     thumb.dataset.file = file.index
 
@@ -188,7 +188,7 @@ var Gallery = {
 
   load(thumb, errorCB) {
     const ext = thumb.href.match(/\w*$/)
-    const elType = $.getOwn({'webm': 'video', 'mp4': 'video', 'ogv': 'video', 'pdf': 'iframe'}, ext) || 'img'
+    const elType = $.getOwn({ 'webm': 'video', 'mp4': 'video', 'ogv': 'video', 'pdf': 'iframe' }, ext) || 'img'
     const file = $.el(elType)
     $.extend(file.dataset, thumb.dataset)
     $.on(file, 'error', errorCB)
@@ -198,17 +198,17 @@ var Gallery = {
 
   open(thumb) {
     let el, file, post
-    const {nodes} = Gallery
+    const { nodes } = Gallery
     const oldID = +nodes.current.dataset.id
     const newID = +thumb.dataset.id
 
     // Highlight, center selected thumbnail
-    if (el = Gallery.images[oldID]) { $.rmClass(el,    'gal-highlight') }
+    if (el = Gallery.images[oldID]) { $.rmClass(el, 'gal-highlight') }
     $.addClass(thumb, 'gal-highlight')
-    nodes.thumbs.scrollTop = (thumb.offsetTop + (thumb.offsetHeight/2)) - (nodes.thumbs.clientHeight/2)
+    nodes.thumbs.scrollTop = (thumb.offsetTop + (thumb.offsetHeight / 2)) - (nodes.thumbs.clientHeight / 2)
 
     // Load image or use preloaded image
-    if (Gallery.cache?.dataset.id === (''+newID)) {
+    if (Gallery.cache?.dataset.id === ('' + newID)) {
       file = Gallery.cache
       $.off(file, 'error', Gallery.cacheError)
       $.on(file, 'error', Gallery.error)
@@ -232,9 +232,9 @@ var Gallery = {
     doc.classList.toggle('gal-pdf', file.nodeName === 'IFRAME')
     Gallery.cb.setHeight()
     nodes.count.textContent = +thumb.dataset.id + 1
-    nodes.name.download     = (nodes.name.textContent = thumb.title)
-    nodes.name.href         = thumb.href
-    nodes.frame.scrollTop   = 0
+    nodes.name.download = (nodes.name.textContent = thumb.title)
+    nodes.name.href = thumb.href
+    nodes.frame.scrollTop = 0
     nodes.next.focus()
 
     // Set sauce links
@@ -251,7 +251,7 @@ var Gallery = {
     }
 
     // Continue slideshow if moving forward, stop otherwise
-    if (Gallery.slideshow && ((newID > oldID) || ((oldID === (Gallery.images.length-1)) && (newID === 0)))) {
+    if (Gallery.slideshow && ((newID > oldID) || ((oldID === (Gallery.images.length - 1)) && (newID === 0)))) {
       Gallery.setupTimer()
     } else {
       Gallery.cb.stop()
@@ -288,7 +288,7 @@ var Gallery = {
 
   cleanupTimer() {
     clearTimeout(Gallery.timeoutID)
-    const {current} = Gallery.nodes
+    const { current } = Gallery.nodes
     $.off(current, 'canplaythrough load', Gallery.startTimer)
     return $.off(current, 'ended', Gallery.cb.next)
   },
@@ -299,7 +299,7 @@ var Gallery = {
 
   setupTimer() {
     Gallery.cleanupTimer()
-    const {current} = Gallery.nodes
+    const { current } = Gallery.nodes
     const isVideo = current.nodeName === 'VIDEO'
     if (isVideo) { current.play() }
     if ((isVideo ? current.readyState >= 4 : current.complete) || (current.nodeName === 'IFRAME')) {
@@ -310,7 +310,7 @@ var Gallery = {
   },
 
   checkTimer() {
-    const {current} = Gallery.nodes
+    const { current } = Gallery.nodes
     if ((current.nodeName === 'VIDEO') && !current.paused) {
       $.on(current, 'ended', Gallery.cb.next)
       return current.loop = false
@@ -324,26 +324,28 @@ var Gallery = {
       let key
       if (!(key = Keybinds.keyCode(e))) { return }
 
-      const cb = (() => { switch (key) {
-        case Conf['Close']: case Conf['Open Gallery']:
-          return Gallery.cb.close
-        case Conf['Next Gallery Image']:
-          return Gallery.cb.next
-        case Conf['Advance Gallery']:
-          return Gallery.cb.advance
-        case Conf['Previous Gallery Image']:
-          return Gallery.cb.prev
-        case Conf['Pause']:
-          return Gallery.cb.pause
-        case Conf['Slideshow']:
-          return Gallery.cb.toggleSlideshow
-        case Conf['Rotate image anticlockwise']:
-          return Gallery.cb.rotateLeft
-        case Conf['Rotate image clockwise']:
-          return Gallery.cb.rotateRight
-        case Conf['Download Gallery Image']:
-          return Gallery.cb.download
-      } })()
+      const cb = (() => {
+        switch (key) {
+          case Conf['Close']: case Conf['Open Gallery']:
+            return Gallery.cb.close
+          case Conf['Next Gallery Image']:
+            return Gallery.cb.next
+          case Conf['Advance Gallery']:
+            return Gallery.cb.advance
+          case Conf['Previous Gallery Image']:
+            return Gallery.cb.prev
+          case Conf['Pause']:
+            return Gallery.cb.pause
+          case Conf['Slideshow']:
+            return Gallery.cb.toggleSlideshow
+          case Conf['Rotate image anticlockwise']:
+            return Gallery.cb.rotateLeft
+          case Conf['Rotate image clockwise']:
+            return Gallery.cb.rotateRight
+          case Conf['Download Gallery Image']:
+            return Gallery.cb.download
+        }
+      })()
 
       if (!cb) { return }
       e.stopPropagation()
@@ -382,7 +384,7 @@ var Gallery = {
     advance() { if (!Conf['Autoplay'] && Gallery.nodes.current.paused) { return Gallery.nodes.current.play() } else { return Gallery.cb.next() } },
     toggle() { return (Gallery.nodes ? Gallery.cb.close : Gallery.build)() },
     blank(e) { if (e.target === this) { return Gallery.cb.close() } },
-    toggleSlideshow() {  return Gallery.cb[Gallery.slideshow ? 'stop' : 'start']() },
+    toggleSlideshow() { return Gallery.cb[Gallery.slideshow ? 'stop' : 'start']() },
 
     download() {
       const name = $('.gal-name')
@@ -391,7 +393,7 @@ var Gallery = {
 
     pause() {
       Gallery.cb.stop()
-      const {current} = Gallery.nodes
+      const { current } = Gallery.nodes
       if (current.nodeName === 'VIDEO') { return current[current.paused ? 'play' : 'pause']() }
     },
 
@@ -404,7 +406,7 @@ var Gallery = {
     stop() {
       if (!Gallery.slideshow) { return }
       Gallery.cleanupTimer()
-      const {current} = Gallery.nodes
+      const { current } = Gallery.nodes
       if (current.nodeName === 'VIDEO') { current.loop = true }
       $.rmClass(Gallery.nodes.buttons, 'gal-playing')
       return Gallery.slideshow = false
@@ -413,8 +415,8 @@ var Gallery = {
     rotateLeft() { return Gallery.cb.rotate(270) },
     rotateRight() { return Gallery.cb.rotate(90) },
 
-    rotate: debounce(100, function(delta) {
-      const {current} = Gallery.nodes
+    rotate: debounce(100, function (delta) {
+      const { current } = Gallery.nodes
       if (current.nodeName === 'IFRAME') { return }
       current.dataRotate = ((current.dataRotate || 0) + delta) % 360
       current.style.transform = `rotate(${current.dataRotate}deg)`
@@ -447,8 +449,8 @@ var Gallery = {
 
     setHeight: debounce(100, function () {
       let dim, margin, minHeight
-      const {current, frame} = Gallery.nodes
-      const {style} = current
+      const { current, frame } = Gallery.nodes
+      const { style } = current
 
       if (Conf['Stretch to Fit'] && (dim = g.posts.get(current.dataset.post)?.files[+current.dataset.file].dimensions)) {
         const [width, height] = Array.from(dim.split('x'))
@@ -465,9 +467,9 @@ var Gallery = {
       }
 
       if (((current.dataRotate || 0) % 180) === 90) {
-        style.maxWidth  = Conf['Fit Height'] ? `${doc.clientHeight - 25}px` : 'none'
-        style.maxHeight = Conf['Fit Width']  ? `${frame.clientWidth}px`     : 'none'
-        margin = (current.clientWidth - current.clientHeight)/2
+        style.maxWidth = Conf['Fit Height'] ? `${doc.clientHeight - 25}px` : 'none'
+        style.maxHeight = Conf['Fit Width'] ? `${frame.clientWidth}px` : 'none'
+        margin = (current.clientWidth - current.clientHeight) / 2
         return style.margin = `${margin}px ${-margin}px`
       } else {
         return style.maxWidth = (style.maxHeight = (style.margin = ''))
@@ -501,18 +503,18 @@ var Gallery = {
       $.event('change', null, input)
       $.on(input, 'change', $.cb.checked)
       if (['Hide Thumbnails', 'Fit Width', 'Fit Height', 'Stretch to Fit'].includes(name)) { $.on(input, 'change', Gallery.cb.setHeight) }
-      return {el: label}
+      return { el: label }
     },
 
     createSubEntries() {
       const subEntries = (['Hide Thumbnails', 'Fit Width', 'Fit Height', 'Stretch to Fit', 'Scroll to Post'].map((item) => Gallery.menu.createSubEntry(item)))
 
-      const delayLabel = $.el('label', {innerHTML: 'Slide Delay: <input type="number" name="Slide Delay" min="0" step="any" class="field">'})
+      const delayLabel = $.el('label', { innerHTML: 'Slide Delay: <input type="number" name="Slide Delay" min="0" step="any" class="field">' })
       const delayInput = delayLabel.firstElementChild
       delayInput.value = Gallery.delay
       $.on(delayInput, 'change', Gallery.cb.setDelay)
       $.on(delayInput, 'change', $.cb.value)
-      subEntries.push({el: delayLabel})
+      subEntries.push({ el: delayLabel })
 
       return subEntries
     }

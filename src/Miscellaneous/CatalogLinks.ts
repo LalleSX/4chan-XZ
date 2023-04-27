@@ -5,7 +5,7 @@ import Get from "../General/Get"
 import Header from "../General/Header"
 import Index from "../General/Index"
 import UI from "../General/UI"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
 import { dict } from "../platform/helpers"
@@ -17,15 +17,17 @@ import Site from "../site/Site"
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var CatalogLinks = {
+const CatalogLinks = {
   init() {
     if ((g.SITE.software === 'yotsuba') && (Conf['External Catalog'] || Conf['JSON Index']) && !(Conf['JSON Index'] && (g.VIEW === 'index'))) {
-      const selector = (() => { switch (g.VIEW) {
-        case 'thread': case 'archive': return '.navLinks.desktop > a'
-        case 'catalog':           return '.navLinks > :first-child > a'
-        case 'index':             return '#ctrl-top > a, .cataloglink > a'
-      } })()
-      $.ready(function() {
+      const selector = (() => {
+        switch (g.VIEW) {
+          case 'thread': case 'archive': return '.navLinks.desktop > a'
+          case 'catalog': return '.navLinks > :first-child > a'
+          case 'index': return '#ctrl-top > a, .cataloglink > a'
+        }
+      })()
+      $.ready(function () {
         for (const link of $$(selector)) {
           var catalogURL
           switch (link.pathname.replace(/\/+/g, '/')) {
@@ -51,7 +53,7 @@ var CatalogLinks = {
     if ((g.SITE.software === 'yotsuba') && Conf['JSON Index'] && Conf[`Use ${meta.name} Catalog`]) {
       Callbacks.Post.push({
         name: 'Catalog Link Rewrite',
-        cb:   this.node
+        cb: this.node
       })
     }
 
@@ -100,19 +102,19 @@ var CatalogLinks = {
     const tail = /(?:index)?(?:\.\w+)?$/
 
     for (const a of $$('a:not([data-only])', list)) {
-      let {siteID, boardID} = a.dataset
+      let { siteID, boardID } = a.dataset
       if (!siteID || !boardID) {
         var VIEW;
-        ({siteID, boardID, VIEW} = Site.parseURL(a))
+        ({ siteID, boardID, VIEW } = Site.parseURL(a))
         if (
           !siteID || !boardID ||
           !['index', 'catalog'].includes(VIEW) ||
-          (!a.dataset.indexOptions && (a.href.replace(tail, '') !== (Get.url(VIEW, {siteID, boardID}) || '').replace(tail, '')))
+          (!a.dataset.indexOptions && (a.href.replace(tail, '') !== (Get.url(VIEW, { siteID, boardID }) || '').replace(tail, '')))
         ) { continue }
-        $.extend(a.dataset, {siteID, boardID})
+        $.extend(a.dataset, { siteID, boardID })
       }
 
-      const board = {siteID, boardID}
+      const board = { siteID, boardID }
       const url = Conf['Header catalog links'] ? CatalogLinks.catalog(board) : Get.url('index', board)
       if (url) {
         a.href = url
@@ -128,7 +130,7 @@ var CatalogLinks = {
     for (const line of Conf['externalCatalogURLs'].split('\n')) {
       if (line[0] === '#') { continue }
       const url = line.split(';')[0]
-      const boards   = Filter.parseBoards(line.match(/;boards:([^;]+)/)?.[1] || '*')
+      const boards = Filter.parseBoards(line.match(/;boards:([^;]+)/)?.[1] || '*')
       const excludes = Filter.parseBoards(line.match(/;exclude:([^;]+)/)?.[1]) || dict()
       for (const board in boards) {
         if (!excludes[board] && !excludes[board.split('/')[0] + '/*']) {
@@ -138,7 +140,7 @@ var CatalogLinks = {
     }
   },
 
-  external({siteID, boardID}) {
+  external({ siteID, boardID }) {
     if (!CatalogLinks.externalList) { CatalogLinks.externalParse() }
     const external = (CatalogLinks.externalList[`${siteID}/${boardID}`] || CatalogLinks.externalList[`${siteID}/*`])
     if (external) { return external.replace(/%board/g, boardID) } else { return undefined }
@@ -152,7 +154,7 @@ var CatalogLinks = {
     }
   },
 
-  catalog(board=g.BOARD) {
+  catalog(board = g.BOARD) {
     let external, nativeCatalog
     if (Conf['External Catalog'] && (external = CatalogLinks.external(board))) {
       return external
@@ -165,7 +167,7 @@ var CatalogLinks = {
     }
   },
 
-  index(board=g.BOARD) {
+  index(board = g.BOARD) {
     if (Index.enabledOn(board)) {
       return CatalogLinks.jsonIndex(board, '#index')
     } else {

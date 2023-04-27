@@ -1,4 +1,4 @@
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 import Menu from "./Menu"
 
@@ -7,7 +7,7 @@ import Menu from "./Menu"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var CopyTextLink = {
+const CopyTextLink = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Copy Text Link']) { return }
 
@@ -39,7 +39,7 @@ var CopyTextLink = {
     el.select()
     try {
       d.execCommand('copy')
-    } catch (error) {}
+    } catch (error) { }
     return $.rm(el)
   }
 }

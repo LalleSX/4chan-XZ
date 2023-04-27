@@ -11,7 +11,7 @@ import ReportPage from './Report/ArchiveReport.html'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var Report = {
+const Report = {
   init() {
     let match
     if (!(match = location.search.match(/\bno=(\d+)/))) { return }
@@ -25,13 +25,13 @@ var Report = {
 
     if (Conf['Archive Report']) { Report.archive() }
 
-    new MutationObserver(function() {
+    new MutationObserver(function () {
       Report.fit('iframe[src^="https://www.google.com/recaptcha/api2/frame"]')
       return Report.fit('body')
     }).observe(d.body, {
-      childList:  true,
+      childList: true,
       attributes: true,
-      subtree:    true
+      subtree: true
     }
     )
     return Report.fit('body')
@@ -48,33 +48,33 @@ var Report = {
     let match, urls
     if (!(urls = Redirect.report(g.BOARD.ID)).length) { return }
 
-    const form    = $('form')
-    const types   = $.id('reportTypes')
+    const form = $('form')
+    const types = $.id('reportTypes')
     const message = $('h3')
 
     const fieldset = $.el('fieldset', {
       id: 'archive-report',
       hidden: true
     }
-    ,
+      ,
       { innerHTML: ReportPage })
     const enabled = $('#archive-report-enabled', fieldset)
-    const reason  = $('#archive-report-reason',  fieldset)
-    const submit  = $('#archive-report-submit',  fieldset)
+    const reason = $('#archive-report-reason', fieldset)
+    const submit = $('#archive-report-submit', fieldset)
 
-    $.on(enabled, 'change', function() {
+    $.on(enabled, 'change', function () {
       return reason.disabled = !this.checked
     })
 
     if (form && types) {
       fieldset.hidden = !$('[value="31"]', types).checked
-      $.on(types, 'change', function(e) {
+      $.on(types, 'change', function (e) {
         fieldset.hidden = (e.target.value !== '31')
         return Report.fit('body')
       })
       $.after(types, fieldset)
       Report.fit('body')
-      $.one(form, 'submit', function(e) {
+      $.one(form, 'submit', function (e) {
         if (!fieldset.hidden && enabled.checked) {
           e.preventDefault()
           return Report.archiveSubmit(urls, reason.value, results => {
@@ -85,7 +85,7 @@ var Report = {
       })
     } else if (message) {
       fieldset.hidden = /Report submitted!/.test(message.textContent)
-      $.on(enabled, 'change', function() {
+      $.on(enabled, 'change', function () {
         return submit.hidden = !this.checked
       })
       $.after(message, fieldset)
@@ -95,22 +95,22 @@ var Report = {
     if (match = location.hash.match(/^#archiveresults=(.*)$/)) {
       try {
         return Report.archiveResults(JSON.parse(decodeURIComponent(match[1])))
-      } catch (error) {}
+      } catch (error) { }
     }
   },
 
   archiveSubmit(urls, reason, cb) {
     const form = $.formData({
-      board:  g.BOARD.ID,
-      num:    Report.postID,
+      board: g.BOARD.ID,
+      num: Report.postID,
       reason
     })
     const results = []
     for (const [name, url] of urls) {
-      (function(name, url) {
+      (function (name, url) {
         return $.ajax(url, {
           onloadend() {
-            results.push([name, this.response || {error: ''}])
+            results.push([name, this.response || { error: '' }])
             if (results.length === urls.length) {
               return cb(results)
             }
@@ -125,7 +125,7 @@ var Report = {
     const fieldset = $.id('archive-report')
     for (const [name, response] of results) {
       const line = $.el('h3',
-        {className: 'archive-report-response'})
+        { className: 'archive-report-response' })
       if ('success' in response) {
         $.addClass(line, 'archive-report-success')
         line.textContent = `${name}: ${response.success}`

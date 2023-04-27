@@ -1,6 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 import Header from "../General/Header"
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 
 /*
@@ -9,7 +9,7 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ImageLoader = {
+const ImageLoader = {
   init() {
     if (!['index', 'thread', 'archive'].includes(g.VIEW)) { return }
     const replace = Conf['Replace JPG'] || Conf['Replace PNG'] || Conf['Replace GIF'] || Conf['Replace WEBM']
@@ -17,10 +17,10 @@ var ImageLoader = {
 
     Callbacks.Post.push({
       name: 'Image Replace',
-      cb:   this.node
+      cb: this.node
     })
 
-    $.on(d, 'PostsInserted', function() {
+    $.on(d, 'PostsInserted', function () {
       if (ImageLoader.prefetchEnabled || replace) {
         return g.posts.forEach(ImageLoader.prefetchAll)
       }
@@ -54,28 +54,28 @@ var ImageLoader = {
   },
 
   replaceVideo(post, file) {
-    const {thumb} = file
+    const { thumb } = file
     const video = $.el('video', {
-      preload:     'none',
-      loop:        true,
-      muted:       true,
-      poster:      thumb.src || thumb.dataset.src,
+      preload: 'none',
+      loop: true,
+      muted: true,
+      poster: thumb.src || thumb.dataset.src,
       textContent: thumb.alt,
-      className:   thumb.className
+      className: thumb.className
     }
     )
     video.setAttribute('muted', 'muted')
     video.dataset.md5 = thumb.dataset.md5
     for (const attr of ['height', 'width', 'maxHeight', 'maxWidth']) { video.style[attr] = thumb.style[attr] }
-    video.src         = file.url
+    video.src = file.url
     $.replace(thumb, video)
-    file.thumb      = video
+    file.thumb = video
     return file.videoThumb = true
   },
 
   prefetch(post, file) {
     let clone, type
-    const {isImage, isVideo, thumb, url} = file
+    const { isImage, isVideo, thumb, url } = file
     if (file.isPrefetched || !(isImage || isVideo) || post.isHidden || post.thread.isHidden) { return }
     if (isVideo) {
       type = 'WEBM'
@@ -93,7 +93,7 @@ var ImageLoader = {
       thumb.preload = 'auto'
       // XXX Cloned video elements with poster in Firefox cause momentary display of image loading icon.
       if ($.engine === 'gecko') {
-        $.on(thumb, 'loadeddata', function() { return this.removeAttribute('poster') })
+        $.on(thumb, 'loadeddata', function () { return this.removeAttribute('poster') })
       }
       return
     }
@@ -101,7 +101,7 @@ var ImageLoader = {
     const el = $.el(isImage ? 'img' : 'video')
     if (isVideo) { el.preload = 'auto' }
     if (replace && isImage) {
-      $.on(el, 'load', function() {
+      $.on(el, 'load', function () {
         for (clone of post.clones) { clone.file.thumb.src = url }
         return thumb.src = url
       })
@@ -126,11 +126,11 @@ var ImageLoader = {
   playVideos() {
     // Special case: Quote previews are off screen when inserted into document, but quickly moved on screen.
     const qpClone = $.id('qp')?.firstElementChild
-    return g.posts.forEach(function(post) {
+    return g.posts.forEach(function (post) {
       for (post of [post, ...Array.from(post.clones)]) {
         for (const file of post.files) {
           if (file.videoThumb) {
-            const {thumb} = file
+            const { thumb } = file
             if (Header.isNodeVisible(thumb) || (post.nodes.root === qpClone)) { thumb.play() } else { thumb.pause() }
           }
         }

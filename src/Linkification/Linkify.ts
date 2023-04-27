@@ -1,6 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 // import Test from "../General/Test";
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import ImageHost from "../Images/ImageHost"
 import ExpandComment from "../Miscellaneous/ExpandComment"
 import $ from "../platform/$"
@@ -12,7 +12,7 @@ import Embedding from "./Embedding"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Linkify = {
+const Linkify = {
   init() {
     if (!['index', 'thread', 'archive'].includes(g.VIEW) || !Conf['Linkify']) { return }
 
@@ -22,7 +22,7 @@ var Linkify = {
 
     Callbacks.Post.push({
       name: 'Linkify',
-      cb:   this.node
+      cb: this.node
     })
 
     return Embedding.init()
@@ -46,20 +46,20 @@ var Linkify = {
 
   process(node) {
     let length
-    const test     = /[^\s"]+/g
-    const space    = /[\s"]/
+    const test = /[^\s"]+/g
+    const space = /[\s"]/
     const snapshot = $.X('.//br|.//text()', node)
     let i = 0
     const links = []
     while ((node = snapshot.snapshotItem(i++))) {
       var result
-      let {data} = node
+      let { data } = node
       if (!data || (node.parentElement.nodeName === "A")) { continue }
 
       while ((result = test.exec(data))) {
-        const {index} = result
+        const { index } = result
         let endNode = node
-        let word    = result[0]
+        let word = result[0]
         // End of node, not necessarily end of space-delimited string
         if ((length = index + word.length) === data.length) {
           var saved
@@ -85,8 +85,8 @@ var Linkify = {
               break
             }
 
-            endNode  = saved;
-            ({data}   = saved)
+            endNode = saved;
+            ({ data } = saved)
 
             if (end = space.exec(data)) {
               // Set our snapshot and regex to start on this node at this position when the loop resumes
@@ -95,8 +95,8 @@ var Linkify = {
               i--
               break
             } else {
-              ({length} = data)
-              word    += data
+              ({ length } = data)
+              word += data
             }
           }
         }
@@ -140,7 +140,7 @@ aero|asia|biz|cat|com|coop|dance|info|int|jobs|mobi|moe|museum|name|net|org|post
   makeRange(startNode, endNode, startOffset, endOffset) {
     const range = document.createRange()
     range.setStart(startNode, startOffset)
-    range.setEnd(endNode,   endOffset)
+    range.setEnd(endNode, endOffset)
     return range
   },
 
@@ -180,23 +180,23 @@ aero|asia|biz|cat|com|coop|dance|info|int|jobs|mobi|moe|museum|name|net|org|post
       text = (
         /@/.test(text) ?
           'mailto:'
-        :
+          :
           'http://'
       ) + text
     }
 
     // Decode percent-encoded characters in domain so that they behave consistently across browsers.
     if (encodedDomain = text.match(/^(https?:\/\/[^/]*%[0-9a-f]{2})(.*)$/i)) {
-      text = encodedDomain[1].replace(/%([0-9a-f]{2})/ig, function(x, y) {
+      text = encodedDomain[1].replace(/%([0-9a-f]{2})/ig, function (x, y) {
         if (y === '25') { return x } else { return String.fromCharCode(parseInt(y, 16)) }
       }) + encodedDomain[2]
     }
 
     const a = $.el('a', {
       className: 'linkify',
-      rel:       'noreferrer noopener',
-      target:    '_blank',
-      href:      text
+      rel: 'noreferrer noopener',
+      target: '_blank',
+      href: text
     }
     )
 

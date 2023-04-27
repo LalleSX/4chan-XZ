@@ -7,12 +7,12 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var PSAHiding = {
+const PSAHiding = {
   init() {
     if (!Conf['Announcement Hiding'] || !g.SITE.selectors.psa) { return }
     $.addClass(doc, 'hide-announcement')
     $.onExists(doc, g.SITE.selectors.psa, this.setup)
-    return $.ready(function() {
+    return $.ready(function () {
       if (!$(g.SITE.selectors.psa)) { return $.rmClass(doc, 'hide-announcement') }
     })
   },
@@ -40,9 +40,9 @@ var PSAHiding = {
     $.on(entry.el, 'click', PSAHiding.toggle)
 
     PSAHiding.btn = (btn = $.el('a', {
-      title:     'Mark announcement as read and hide.',
+      title: 'Mark announcement as read and hide.',
       className: 'hide-announcement-button fa fa-minus-square',
-      href:      'javascript:;'
+      href: 'javascript:;'
     }
     ))
     $.on(btn, 'click', PSAHiding.toggle)
@@ -60,7 +60,7 @@ var PSAHiding = {
 
   toggle() {
     const hide = $.hasClass(this, 'hide-announcement-button')
-    const set = function(hiddenPSAList) {
+    const set = function (hiddenPSAList) {
       if (hide) {
         return hiddenPSAList[g.SITE.ID] = PSAHiding.text
       } else {
@@ -69,14 +69,14 @@ var PSAHiding = {
     }
     set(Conf['hiddenPSAList'])
     PSAHiding.sync(Conf['hiddenPSAList'])
-    return $.get('hiddenPSAList', Conf['hiddenPSAList'], function({hiddenPSAList}) {
+    return $.get('hiddenPSAList', Conf['hiddenPSAList'], function ({ hiddenPSAList }) {
       set(hiddenPSAList)
       return $.set('hiddenPSAList', hiddenPSAList)
     })
   },
 
   sync(hiddenPSAList) {
-    const {psa, content} = PSAHiding
+    const { psa, content } = PSAHiding
     psa.hidden = (hiddenPSAList[g.SITE.ID] === PSAHiding.text)
     // Remove content to prevent autoplaying sounds from hidden announcements
     if (psa.hidden) {

@@ -11,7 +11,7 @@ import ExpandComment from "./ExpandComment"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Fourchan = {
+const Fourchan = {
   init() {
     if ((g.SITE.software !== 'yotsuba') || !['index', 'thread', 'archive'].includes(g.VIEW)) { return }
     BoardConfig.ready(this.initBoard)
@@ -20,10 +20,10 @@ var Fourchan = {
 
   initBoard() {
     if (g.BOARD.config.code_tags) {
-      $.on(window, 'prettyprint:cb', function(e) {
+      $.on(window, 'prettyprint:cb', function (e) {
         let post, pre
         if (!(post = g.posts.get(e.detail.ID))) { return }
-        if (!(pre  = $$('.prettyprint', post.nodes.comment)[+e.detail.i])) { return }
+        if (!(pre = $$('.prettyprint', post.nodes.comment)[+e.detail.i])) { return }
         if (!$.hasClass(pre, 'prettyprinted')) {
           pre.innerHTML = e.detail.html
           return $.addClass(pre, 'prettyprinted')
@@ -31,17 +31,17 @@ var Fourchan = {
       })
       $.global(() => window.addEventListener('prettyprint', e => window.dispatchEvent(new CustomEvent('prettyprint:cb', {
         detail: {
-          ID:   e.detail.ID,
-          i:    e.detail.i,
+          ID: e.detail.ID,
+          i: e.detail.i,
           html: window.prettyPrintOne(e.detail.html)
         }
       }))
-      , false))
+        , false))
       Callbacks.Post.push({
         name: 'Parse [code] tags',
-        cb:   Fourchan.code
+        cb: Fourchan.code
       })
-      g.posts.forEach(function(post) {
+      g.posts.forEach(function (post) {
         if (post.callbacksExecuted) {
           return Callbacks.Post.execute(post, ['Parse [code] tags'], true)
         }
@@ -50,27 +50,27 @@ var Fourchan = {
     }
 
     if (g.BOARD.config.math_tags) {
-      $.global(() => window.addEventListener('mathjax', function(e) {
+      $.global(() => window.addEventListener('mathjax', function (e) {
         if (window.MathJax) {
           return window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, e.target])
         } else {
           if (!document.querySelector('script[src^="//cdn.mathjax.org/"]')) { // don't load MathJax if already loading
             window.loadMathJax()
-            window.loadMathJax = function() {}
+            window.loadMathJax = function () { }
           }
           // 4chan only handles post comments on MathJax load; anything else (e.g. the QR preview) must be queued explicitly.
           if (!e.target.classList.contains('postMessage')) {
             return document.querySelector('script[src^="//cdn.mathjax.org/"]').addEventListener('load', () => window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, e.target])
-            , false)
+              , false)
           }
         }
       }
-      , false))
+        , false))
       Callbacks.Post.push({
         name: 'Parse [math] tags',
-        cb:   Fourchan.math
+        cb: Fourchan.math
       })
-      g.posts.forEach(function(post) {
+      g.posts.forEach(function (post) {
         if (post.callbacksExecuted) {
           return Callbacks.Post.execute(post, ['Parse [math] tags'], true)
         }
@@ -81,7 +81,7 @@ var Fourchan = {
 
   // Disable 4chan's ID highlighting (replaced by IDHighlight) and reported post hiding.
   initReady() {
-    return $.global(function() {
+    return $.global(function () {
       window.clickable_ids = false
       for (const node of document.querySelectorAll('.posteruid, .capcode')) {
         node.removeEventListener('click', window.idClick, false)
@@ -96,7 +96,7 @@ var Fourchan = {
       for (let i = 0; i < iterable.length; i++) {
         const pre = iterable[i]
         if (!$.hasClass(pre, 'prettyprinted')) {
-          $.event('prettyprint', {ID: this.fullID, i, html: pre.innerHTML}, window)
+          $.event('prettyprint', { ID: this.fullID, i, html: pre.innerHTML }, window)
         }
       }
     })

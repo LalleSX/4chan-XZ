@@ -1,4 +1,4 @@
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 import Menu from "./Menu"
 
@@ -7,7 +7,7 @@ import Menu from "./Menu"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ReportLink = {
+const ReportLink = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Report Link']) { return }
 
@@ -35,8 +35,8 @@ var ReportLink = {
   },
 
   report() {
-    const {url, dims} = ReportLink
-    const id  = Date.now()
+    const { url, dims } = ReportLink
+    const id = Date.now()
     const set = `toolbar=0,scrollbars=1,location=0,status=1,menubar=0,resizable=1,${dims}`
     return window.open(url, id, set)
   }

@@ -13,12 +13,12 @@ import $ from "../platform/$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var QuotePreview = {
+const QuotePreview = {
   init() {
     if (!Conf['Quote Previewing']) { return }
 
     if (g.VIEW === 'archive') {
-      $.on(d, 'mouseover', function(e) {
+      $.on(d, 'mouseover', function (e) {
         if ((e.target.nodeName === 'A') && $.hasClass(e.target, 'quotelink')) {
           return QuotePreview.mouseover.call(e.target, e)
         }
@@ -33,7 +33,7 @@ var QuotePreview = {
 
     return Callbacks.Post.push({
       name: 'Quote Previewing',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -47,7 +47,7 @@ var QuotePreview = {
     let origin
     if (($.hasClass(this, 'inlined') && !$.hasClass(doc, 'catalog-mode')) || !d.contains(this)) { return }
 
-    const {boardID, threadID, postID} = Get.postDataFromLink(this)
+    const { boardID, threadID, postID } = Get.postDataFromLink(this)
 
     const qp = $.el('div', {
       id: 'qp',
@@ -84,7 +84,7 @@ var QuotePreview = {
     $.event('PostsRemoved', null, Header.hover)
 
     const clone = Get.postFromRoot(root)
-    let post  = clone.origin
+    let post = clone.origin
     post.rmClone(root.dataset.clone)
 
     if (!Conf['Quote Highlighting']) { return }
