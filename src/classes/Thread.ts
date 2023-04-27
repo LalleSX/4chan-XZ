@@ -10,7 +10,7 @@ import SimpleDict from './SimpleDict'
  */
 export default class Thread {
   board: string
-  ID: number
+  ID: number | string
   threadID: number
   boardID: string
   siteID: string

@@ -473,7 +473,7 @@ export default class Post {
     this.nodes.root.classList.toggle('opContainer', !isCatalogOP)
     this.nodes.post.classList.toggle('catalog-post', isCatalogOP)
     this.nodes.post.classList.toggle('op', !isCatalogOP)
-    this.nodes.post.style.left = this.nodes.post.style.right = null
+    this.nodes.post.style.left = this.nodes.post.style.right = ''
   }
 }
 

@@ -3,23 +3,23 @@ import Board from './Board'
 import Thread from './Thread'
 
 export default class CatalogThread {
-  ID: string
+  ID: string | number
   thread: Thread
-  board: Board
+  board: Board | string
   nodes: {
-    root: any
-    thumb: any
-    icons: any
-    postCount: any
-    fileCount: any
-    pageCount: any
-    replies: any
+    root: HTMLElement
+    thumb: HTMLElement
+    icons: HTMLElement
+    postCount: number
+    fileCount: number
+    pageCount: number
+    replies: null
   }
   toString() {
     return this.ID
   }
 
-  constructor(root, thread) {
+  constructor(root: HTMLElement, thread: Thread) {
     this.thread = thread
     this.ID = this.thread.ID
     this.board = this.thread.board

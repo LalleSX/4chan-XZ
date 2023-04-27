@@ -17,7 +17,7 @@ import Site from '../site/Site'
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var CatalogLinks = {
+const CatalogLinks = {
   init() {
     if (
       g.SITE.software === 'yotsuba' &&

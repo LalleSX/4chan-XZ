@@ -649,7 +649,7 @@ const Gallery = {
       if (['Hide Thumbnails', 'Fit Width', 'Fit Height'].includes(name)) {
         $.on(input, 'change', Gallery.cb.setFitness)
       }
-      $.event('change', null, input)
+      $.event('change')
       $.on(input, 'change', $.cb.checked)
       if (
         [

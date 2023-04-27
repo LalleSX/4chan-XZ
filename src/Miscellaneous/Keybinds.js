@@ -567,7 +567,7 @@ var Keybinds = {
     ta.setSelectionRange(range, range)
 
     // Fire the 'input' event
-    return $.event('input', null, ta)
+    return $.event('input')
   },
 
   sage() {

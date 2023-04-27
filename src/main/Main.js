@@ -492,7 +492,7 @@ const Main = {
       }
     }
 
-    style = mainStyleSheet = styleSheets = null
+    style = mainStyleSheet = styleSheets = ''
 
     const setStyle = function () {
       // Use preconfigured CSS for 4chan's default themes.
@@ -779,10 +779,10 @@ const Main = {
     }
     return Main.callbackNodesDB('Post', posts, function () {
       for (thread of threads) {
-        $.event('PostsInserted', null, thread.nodes.root)
+        $.event('PostsInserted')
       }
       for (thread of threadsRM) {
-        $.event('PostsRemoved', null, thread.nodes.root)
+        $.event('PostsRemoved')
       }
     })
   },

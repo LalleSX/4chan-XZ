@@ -218,7 +218,7 @@ export default class Fetcher {
 
     $.rmAll(this.root)
     $.add(this.root, nodes.root)
-    return $.event('PostsInserted', null, Document.apply(this.root))
+    return $.event('PostsInserted')
   }
 
   fetchedPost(req: XMLHttpRequest, isCached: boolean) {

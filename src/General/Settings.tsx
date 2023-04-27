@@ -713,7 +713,7 @@ Enable it on boards.${
     if (compareString < '00001.00011.00019.00003' && !Settings.dialog) {
       $.queueTask(() =>
         Settings.warnings.ads(
-          item => new Notice('warning', [...Array.from(item.childNodes)])
+          item => new Notice('warn',`4chan X: ${item} has been removed.`)
         )
       )
     }
@@ -1328,7 +1328,7 @@ vp-replace
     for (boardID in Conf['selectedArchives']) {
       const data = Conf['selectedArchives'][boardID]
       for (const type in data) {
-        var select
+        let select
         const id = data[type]
         if (
           (select = $(

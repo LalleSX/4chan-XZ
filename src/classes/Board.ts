@@ -2,7 +2,6 @@ import BoardConfig from '../General/BoardConfig'
 import { d, g } from '../globals/globals'
 import Post from './Post'
 import SimpleDict from './SimpleDict'
-import Site from './Site'
 import Thread from './Thread'
 
 /*
@@ -13,7 +12,7 @@ import Thread from './Thread'
 export default class Board {
   ID: string
   boardID: string
-  siteID: string | Site
+  siteID: string
   threads: SimpleDict<Thread>
   posts: SimpleDict<Post>
   config:

@@ -52,7 +52,7 @@ const FappeTyme = {
             this.parentNode.id.replace('shortcut-', '')
           )
           check.checked = !check.checked
-          return $.event('change', null, check)
+          return $.event('change')
         })
         Header.addShortcut(lc, indicator, 410)
       }

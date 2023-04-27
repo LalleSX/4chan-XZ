@@ -20,7 +20,7 @@ const ReplyPruning = {
     this.summary.style.cursor = 'pointer'
     $.on(this.summary, 'click', () => {
       this.inputs.enabled.checked = !this.inputs.enabled.checked
-      return $.event('change', null, this.inputs.enabled)
+      return $.event('change')
     })
 
     const label = UI.checkbox(
@@ -70,7 +70,7 @@ const ReplyPruning = {
     const other = QuoteThreading.input
     if (this.checked && other?.checked) {
       other.checked = false
-      $.event('change', null, other)
+      $.event('change')
     }
     return (ReplyPruning.active = this.checked)
   },
@@ -78,7 +78,7 @@ const ReplyPruning = {
   showIfHidden(id) {
     if (ReplyPruning.container && $(`#${id}`, ReplyPruning.container)) {
       ReplyPruning.inputs.enabled.checked = false
-      return $.event('change', null, ReplyPruning.inputs.enabled)
+      return $.event('change')
     }
   },
 
@@ -186,7 +186,7 @@ const ReplyPruning = {
         }
       }
       $.after(ReplyPruning.summary, frag)
-      $.event('PostsInserted', null, ReplyPruning.summary.parentNode)
+      $.event('PostsInserted')
     }
 
     ReplyPruning.summary.textContent = ReplyPruning.active

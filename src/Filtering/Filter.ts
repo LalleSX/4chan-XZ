@@ -87,7 +87,7 @@ const Filter = {
         }
 
         // Don't mix up filter flags with the regular expression.
-        var filter = line.replace(regexp[0], '')
+        const filter = line.replace(regexp[0], '')
 
         // List of the boards this filter applies to.
         const boards = this.parseBoards(

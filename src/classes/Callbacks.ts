@@ -25,38 +25,30 @@ class Callbacks {
     this[name as keyof Callbacks] = cb
   }
 
-  execute(node: any, keys: string[] = this.keys, force = false): void {
-    let errors: any[]
+  execute(node: Node, keys: (keyof Callbacks)[] = this.keys, force = false): void {
     if (node.callbacksExecuted && !force) {
       return
     }
     node.callbacksExecuted = true
-    for (const name of keys) {
+
+    const errors: { message: string; error: any; html?: string }[] = []
+
+    keys.forEach((name) => {
       try {
-        (this[name as keyof Callbacks] as Function)?.call(node)
-      } catch (err) {
-        if (!errors) {
-          errors = []
+        const callback = this[name]
+        if (typeof callback === "function") {
+          callback.call(node)
         }
+      } catch (err) {
         errors.push({
-          message: [
-            '"',
-            name,
-            '" crashed on node ',
-            this.type,
-            ' No.',
-            node.ID,
-            ' (',
-            node.board,
-            ').',
-          ].join(''),
+          message: `"${name}" crashed on node ${this.type} No. ${node.ID} (${node.board}).`,
           error: err,
           html: node.nodes?.root?.outerHTML,
         })
       }
-    }
+    })
 
-    if (errors) {
+    if (errors.length) {
       Main.handleErrors(errors)
     }
   }

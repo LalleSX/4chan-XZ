@@ -191,7 +191,7 @@ const CrossOrigin: ICrossOrigin = {
               statusText: xhr.statusText,
               responseHeaderString: xhr.responseHeaders,
             })
-          } catch (error) { }
+          } catch (error) { null }
           return req.onloadend()
         },
         onerror: () => req.onloadend(),

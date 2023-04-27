@@ -76,7 +76,7 @@ const Site = {
 
   set(hostname: string): typeof g.SITE {
     for (const ID in Conf['siteProperties']) {
-      var site: typeof g.SITE
+      let site: typeof g.SITE
       const properties = Conf['siteProperties'][ID]
       if (properties.canonical) {
         continue

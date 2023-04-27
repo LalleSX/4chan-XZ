@@ -164,7 +164,7 @@ var Fourchan = {
         return
       }
       $.off(d, 'PostsInserted', cb)
-      return $.event('mathjax', null, this.nodes.comment)
+      return $.event('mathjax')
     }
     $.on(d, 'PostsInserted', cb)
     return cb()

@@ -15,7 +15,7 @@ export default class SimpleDict<T> {
     return (this[key] = data)
   }
 
-  rm(key: string | Object) {
+  rm(key: string | object) {
     if (typeof key === 'string') {
       key = `${key}`
       if (this[key]) {

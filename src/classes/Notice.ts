@@ -10,7 +10,7 @@ export default class Notice {
   private closed = false
 
   constructor(
-    private type: string,
+    type: string,
     private content: string | Node,
     timeout?: number,
     onclose?: () => void

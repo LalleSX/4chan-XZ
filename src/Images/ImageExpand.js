@@ -516,7 +516,7 @@ const ImageExpand = {
       if (['Fit width', 'Fit height'].includes(name)) {
         $.on(input, 'change', ImageExpand.cb.setFitness)
       }
-      $.event('change', null, input)
+      $.event('change')
       $.on(input, 'change', $.cb.checked)
       return { el: label }
     },

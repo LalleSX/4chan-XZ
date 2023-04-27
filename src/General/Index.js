@@ -127,7 +127,7 @@ var Index = {
     const watchSettings = function (e) {
       if ((input = $.getOwn(inputs, e.target.name))) {
         input.checked = e.target.checked
-        return $.event('change', null, input)
+        return $.event('change')
       }
     }
     $.on(d, 'OpenSettings', () =>
@@ -249,7 +249,7 @@ var Index = {
         const board = $('.board')
         $.replace(board, Index.root)
         if (Index.loaded) {
-          $.event('PostsInserted', null, Index.root)
+          $.event('PostsInserted')
         }
         // Hacks:
         // - When removing an element from the document during page load,
@@ -413,7 +413,7 @@ var Index = {
       }
     }
     types[(i + 1) % types.length].selected = true
-    return $.event('change', null, Index.selectSort)
+    return $.event('change')
   },
 
   cb: {
@@ -1082,9 +1082,7 @@ var Index = {
         return thread.collect()
       }
     })
-    $.event('IndexUpdate', {
-      threads: Index.liveThreadIDs.map(ID => `${g.BOARD}.${ID}`),
-    })
+    $.event('IndexUpdate')
   },
 
   isHidden(threadID) {
@@ -1193,11 +1191,7 @@ var Index = {
     Main.callbackNodes('Thread', newThreads)
     Main.callbackNodes('Post', newPosts)
     Index.updateHideLabel()
-    $.event('IndexRefreshInternal', {
-      threadIDs: threads.map(t => t.fullID),
-      isCatalog,
-    })
-
+    $.event('IndexRefreshInternal')
     return threads
   },
 
@@ -1424,7 +1418,7 @@ var Index = {
     $.rmAll(Index.root)
     $.rmAll(Header.hover)
     if (Index.loaded && Index.root.parentNode) {
-      $.event('PostsRemoved', null, Index.root)
+      $.event('PostsRemoved')
     }
     if (Conf['Index Mode'] === 'catalog') {
       Index.buildCatalog(threadIDs)
@@ -1447,7 +1441,7 @@ var Index = {
     }
     $.add(Index.root, nodes)
     if (Index.root.parentNode) {
-      $.event('PostsInserted', null, Index.root)
+      $.event('PostsInserted')
     }
     Index.loaded = true
   },
@@ -1467,7 +1461,7 @@ var Index = {
         return $.queueTask(fn)
       } else {
         if (Index.root.parentNode) {
-          $.event('PostsInserted', null, Index.root)
+          $.event('PostsInserted')
         }
         return (Index.loaded = true)
       }

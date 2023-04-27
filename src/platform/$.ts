@@ -595,15 +595,8 @@ $.one = function (el, events, handler) {
   return $.on(el, events, cb)
 }
 
-$.event = function (event: string, detail: any, root: Document = d) {
-  if (!globalThis.chrome?.extension) {
-    if (detail != null && typeof cloneInto === 'function') {
-      detail = cloneInto(detail, root.defaultView)
-    }
-  }
-  return root.dispatchEvent(
-    new CustomEvent(event, { bubbles: true, cancelable: true, detail })
-  )
+$.event = function (type) {
+  return new CustomEvent(type)
 }
 
 if (platform === 'userscript') {
@@ -1314,7 +1307,7 @@ if (platform === 'crx') {
       })
     })
 
-    $.clear = function (cb: Function) {
+    $.clear = function (cb: VoidFunction) {
       // XXX https://github.com/greasemonkey/greasemonkey/issues/2033
       // Also support case where GM_listValues is not defined.
       $.delete(Object.keys(Conf), cb)
@@ -1322,7 +1315,7 @@ if (platform === 'crx') {
       try {
         //delete(keys, cb)
         $.delete($.listValues(), cb)
-      } catch (error) { }
+      } catch (error) { null }
       return cb?.()
     }
   }

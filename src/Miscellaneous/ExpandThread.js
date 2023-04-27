@@ -164,7 +164,7 @@ var ExpandThread = {
     }
     if (Index.enabled) {
       // otherwise handled by Main.addPosts
-      $.event('PostsRemoved', null, a.parentNode)
+      $.event('PostsRemoved')
     }
     a.textContent = g.SITE.Build.summaryText('+', postsCount, filesCount)
     return $.rm($('.summary-bottom', threadRoot))
@@ -208,7 +208,7 @@ var ExpandThread = {
     }
     Main.callbackNodes('Post', posts)
     $.after(a, postsRoot)
-    $.event('PostsInserted', null, a.parentNode)
+    $.event('PostsInserted')
 
     const postsCount = postsRoot.length
     a.textContent = g.SITE.Build.summaryText('-', postsCount, filesCount)

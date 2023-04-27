@@ -55,7 +55,6 @@ const ImageHover = {
   mouseover(post, file) {
     return function (e) {
       let el, height, width
-      // @ts-ignore
       if (!doc.contains(this)) {
         return
       }
@@ -92,7 +91,6 @@ const ImageHover = {
         Volume.setup(el)
         if (Conf['Autoplay']) {
           el.play()
-          // @ts-ignore
           if (this.nodeName === 'VIDEO') {
             this.currentTime = el.currentTime
           }
@@ -144,7 +142,7 @@ const ImageHover = {
           this.src = file
           return
         }
-        return $.rm(this)
+        return $.rm(this.src)
       })
     }
   },

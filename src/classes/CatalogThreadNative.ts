@@ -4,7 +4,7 @@ import Board from './Board'
 import Thread from './Thread'
 
 export default class CatalogThreadNative {
-  boardID: string | Board
+  boardID: Board
   nodes: { root: any; thumb: any }
   siteID: number
   threadID: number
