@@ -1,5 +1,6 @@
 clean:
 	rm -rf dist/*
 
-install:
+sneed: clean
 	npm run build
+	cat ./dist/4chan-XT.user.js | xclip -selection clipboard

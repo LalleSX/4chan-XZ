@@ -17,7 +17,7 @@ export default function generateManifestJson(p, version, channel) {
       "run_at": "document_start"
     }],
     "background": {
-      "scripts": ["eventPage.js"],
+      "scripts": ["eventPage.ts"],
       "persistent": false
     },
     "homepage_url": p.meta.page,

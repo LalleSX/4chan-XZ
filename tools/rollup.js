@@ -33,7 +33,7 @@ if (process.argv.includes('-beta')) {
   const inlineFile = await setupFileInliner(packageJson);
 
   const bundle = await rollup({
-    input: resolve(__dirname, '../src/main/Main.js'),
+    input: resolve(__dirname, '../src/main/Main.ts'),
     plugins: [
       typescript(),
       inlineFile({
@@ -86,7 +86,7 @@ if (process.argv.includes('-beta')) {
     file: resolve(crxDir, 'script.js'),
   });
 
-  await copyFile(resolve(__dirname, '../src/meta/eventPage.js'), resolve(crxDir, 'eventPage.js'));
+  await copyFile(resolve(__dirname, '../src/meta/eventPage.ts'), resolve(crxDir, 'eventPage.ts'));
 
   writeFile(resolve(crxDir, 'manifest.json'), generateManifestJson(packageJson, version, channel));
 
