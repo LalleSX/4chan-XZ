@@ -111,12 +111,12 @@ const Main = {
       if (platform === 'crx') { w = (w.wrappedJSObject || w) }
       if (`${meta.name} antidup` in w) { return }
       w[`${meta.name} antidup`] = true
-    } catch (error) { }
+    } catch (error) { /* empty */ }
 
     // Don't run inside ad iframes.
     try {
       if (window.frameElement && ['', 'about:blank'].includes(window.frameElement.src)) { return }
-    } catch (error1) { }
+    } catch (error1) { /* empty */ }
 
     // Detect multiple copies of 4chan X
     if (doc && $.hasClass(doc, 'fourchan-x')) { return }

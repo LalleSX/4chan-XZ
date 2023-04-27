@@ -5,14 +5,9 @@ import $$ from "../platform/$$"
 import Header from "./Header"
 
 /*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+Very sensitive, changing var to const
  */
-const dialog = function(id, properties) {
+const dialog = function (id, properties) {
   const el = $.el('div', {
     className: 'dialog',
     id
@@ -30,13 +25,13 @@ const dialog = function(id, properties) {
 
   return el
 }
-
-var Menu = (function() {
+//eslint-disable-next-line
+var Menu = (function () {
   let currentMenu = undefined
   let lastToggledButton = undefined
   Menu = class Menu {
     static initClass() {
-      currentMenu       = null
+      currentMenu = null
       lastToggledButton = null
     }
 
@@ -48,7 +43,7 @@ var Menu = (function() {
       this.onFocus = this.onFocus.bind(this)
       this.addEntry = this.addEntry.bind(this)
       this.type = type
-      $.on(d, 'AddMenuEntry', ({detail}) => {
+      $.on(d, 'AddMenuEntry', ({ detail }) => {
         if (detail.type !== this.type) { return }
         delete detail.open
         return this.addEntry(detail)
@@ -59,8 +54,8 @@ var Menu = (function() {
     makeMenu() {
       const menu = $.el('div', {
         className: 'dialog',
-        id:        'menu',
-        tabIndex:  0
+        id: 'menu',
+        tabIndex: 0
       }
       )
       menu.dataset.type = this.type
@@ -88,7 +83,7 @@ var Menu = (function() {
     open(button, data) {
       let entry
       const menu = (this.menu = this.makeMenu())
-      currentMenu       = this
+      currentMenu = this
       lastToggledButton = button
 
       this.entries.sort((first, second) => first.order - second.order)
@@ -116,21 +111,21 @@ var Menu = (function() {
     }
 
     setPosition() {
-      const mRect   = this.menu.getBoundingClientRect()
-      const bRect   = lastToggledButton.getBoundingClientRect()
-      const bTop    = window.scrollY + bRect.top
-      const bLeft   = window.scrollX + bRect.left
+      const mRect = this.menu.getBoundingClientRect()
+      const bRect = lastToggledButton.getBoundingClientRect()
+      const bTop = window.scrollY + bRect.top
+      const bLeft = window.scrollX + bRect.left
       const cHeight = doc.clientHeight
-      const cWidth  = doc.clientWidth
+      const cWidth = doc.clientWidth
       const [top, bottom] = Array.from((bRect.top + bRect.height + mRect.height) < cHeight ?
         [`${bRect.bottom}px`, '']
-      :
+        :
         ['', `${cHeight - bRect.top}px`])
       const [left, right] = Array.from((bRect.left + mRect.width) < cWidth ?
         [`${bRect.left}px`, '']
-      :
+        :
         ['', `${cWidth - bRect.right}px`])
-      $.extend(this.menu.style, {top, right, bottom, left})
+      $.extend(this.menu.style, { top, right, bottom, left })
       return this.menu.classList.toggle('left', right)
     }
 
@@ -155,7 +150,7 @@ var Menu = (function() {
         $.rm(submenu)
       }
       submenu = $.el('div',
-        {className: 'dialog submenu'})
+        { className: 'dialog submenu' })
       for (const subEntry of entry.subEntries) {
         this.insertEntry(subEntry, submenu, data)
       }
@@ -166,7 +161,7 @@ var Menu = (function() {
       $.rm(this.menu)
       delete this.menu
       $.rmClass(lastToggledButton, 'active')
-      currentMenu       = null
+      currentMenu = null
       lastToggledButton = null
       $.off(d, 'click scroll CloseMenu', this.close)
       $.off(d, 'scroll', this.setPosition)
@@ -244,23 +239,23 @@ var Menu = (function() {
 
       // Submenu positioning.
       if (!(submenu = $('.submenu', entry))) { return }
-      const sRect   = submenu.getBoundingClientRect()
-      const eRect   = entry.getBoundingClientRect()
+      const sRect = submenu.getBoundingClientRect()
+      const eRect = entry.getBoundingClientRect()
       const cHeight = doc.clientHeight
-      const cWidth  = doc.clientWidth
+      const cWidth = doc.clientWidth
       const [top, bottom] = Array.from((eRect.top + sRect.height) < cHeight ?
         ['0px', 'auto']
-      :
+        :
         ['auto', '0px'])
       const [left, right] = Array.from((eRect.right + sRect.width) < (cWidth - 150) ?
         ['100%', 'auto']
-      :
+        :
         ['auto', '100%'])
-      const {style} = submenu
-      style.top    = top
+      const { style } = submenu
+      style.top = top
       style.bottom = bottom
-      style.left   = left
-      return style.right  = right
+      style.left = left
+      return style.right = right
     }
 
     addEntry(entry) {
@@ -269,7 +264,7 @@ var Menu = (function() {
     }
 
     parseEntry(entry) {
-      const {el, subEntries} = entry
+      const { el, subEntries } = entry
       $.addClass(el, 'entry')
       $.on(el, 'focus mouseover', this.onFocus)
       el.style.order = entry.order || 100
@@ -284,7 +279,7 @@ var Menu = (function() {
   return Menu
 })()
 
-export var dragstart = function (e) {
+export const dragstart = function (e) {
   let isTouching
   if ((e.type === 'mousedown') && (e.button !== 0)) { return } // not LMB
   // prevent text selection
@@ -296,14 +291,14 @@ export var dragstart = function (e) {
   const el = $.x('ancestor::div[contains(@class,"dialog")][1]', this)
   const rect = el.getBoundingClientRect()
   const screenHeight = doc.clientHeight
-  const screenWidth  = doc.clientWidth
+  const screenWidth = doc.clientWidth
   const o = {
-    id:     el.id,
-    style:  el.style,
-    dx:     e.clientX - rect.left,
-    dy:     e.clientY - rect.top,
+    id: el.id,
+    style: el.style,
+    dx: e.clientX - rect.left,
+    dy: e.clientY - rect.top,
     height: screenHeight - rect.height,
-    width:  screenWidth  - rect.width,
+    width: screenWidth - rect.width,
     screenHeight,
     screenWidth,
     isTouching
@@ -311,26 +306,26 @@ export var dragstart = function (e) {
 
   [o.topBorder, o.bottomBorder] = Array.from(Conf['Header auto-hide'] || !Conf['Fixed Header'] ?
     [0, 0]
-  : Conf['Bottom Header'] ?
-    [0, Header.bar.getBoundingClientRect().height]
-  :
-    [Header.bar.getBoundingClientRect().height, 0])
+    : Conf['Bottom Header'] ?
+      [0, Header.bar.getBoundingClientRect().height]
+      :
+      [Header.bar.getBoundingClientRect().height, 0])
 
   if (isTouching) {
     o.identifier = e.identifier
     o.move = touchmove.bind(o)
-    o.up   = touchend.bind(o)
+    o.up = touchend.bind(o)
     $.on(d, 'touchmove', o.move)
     return $.on(d, 'touchend touchcancel', o.up)
   } else { // mousedown
     o.move = drag.bind(o)
-    o.up   = dragend.bind(o)
+    o.up = dragend.bind(o)
     $.on(d, 'mousemove', o.move)
-    return $.on(d, 'mouseup',   o.up)
+    return $.on(d, 'mouseup', o.up)
   }
 }
 
-export var touchmove = function (e) {
+export const touchmove = function (e) {
   for (const touch of e.changedTouches) {
     if (touch.identifier === this.identifier) {
       drag.call(this, touch)
@@ -339,43 +334,43 @@ export var touchmove = function (e) {
   }
 }
 
-export var drag = function (e) {
-  const {clientX, clientY} = e
+export const drag = function (e) {
+  const { clientX, clientY } = e
 
   let left = clientX - this.dx
   left = left < 10 ?
     0
-  : (this.width - left) < 10 ?
-    ''
-  :
-    ((left / this.screenWidth) * 100) + '%'
+    : (this.width - left) < 10 ?
+      ''
+      :
+      ((left / this.screenWidth) * 100) + '%'
 
   let top = clientY - this.dy
   top = top < (10 + this.topBorder) ?
     this.topBorder + 'px'
-  : (this.height - top) < (10 + this.bottomBorder) ?
-    ''
-  :
-    ((top / this.screenHeight) * 100) + '%'
+    : (this.height - top) < (10 + this.bottomBorder) ?
+      ''
+      :
+      ((top / this.screenHeight) * 100) + '%'
 
   const right = left === '' ?
     0
-  :
+    :
     ''
 
   const bottom = top === '' ?
     this.bottomBorder + 'px'
-  :
+    :
     ''
 
-  const {style} = this
-  style.left   = left
-  style.right  = right
-  style.top    = top
+  const { style } = this
+  style.left = left
+  style.right = right
+  style.top = top
   return style.bottom = bottom
 }
 
-export var touchend = function (e) {
+export const touchend = function (e) {
   for (const touch of e.changedTouches) {
     if (touch.identifier === this.identifier) {
       dragend.call(this)
@@ -384,13 +379,13 @@ export var touchend = function (e) {
   }
 }
 
-export var dragend = function () {
+export const dragend = function () {
   if (this.isTouching) {
     $.off(d, 'touchmove', this.move)
     $.off(d, 'touchend touchcancel', this.up)
   } else { // mouseup
     $.off(d, 'mousemove', this.move)
-    $.off(d, 'mouseup',   this.up)
+    $.off(d, 'mouseup', this.up)
   }
   return $.set(`${this.id}.position`, this.style.cssText)
 }
@@ -406,43 +401,43 @@ const hoverstart = function ({ root, el, latestEvent, endEvents, height, width, 
     endEvents,
     latestEvent,
     clientHeight: doc.clientHeight,
-    clientWidth:  doc.clientWidth,
+    clientWidth: doc.clientWidth,
     height,
     width,
     noRemove,
     clientX: (rect.left + rect.right) / 2,
     clientY: (rect.top + rect.bottom) / 2
   }
-  o.hover    = hover.bind(o)
+  o.hover = hover.bind(o)
   o.hoverend = hoverend.bind(o)
 
   o.hover(o.latestEvent)
-  new MutationObserver(function() {
+  new MutationObserver(function () {
     if (el.parentNode) { return o.hover(o.latestEvent) }
-  }).observe(el, {childList: true})
+  }).observe(el, { childList: true })
 
-  $.on(root, endEvents,   o.hoverend)
+  $.on(root, endEvents, o.hoverend)
   if ($.x('ancestor::div[contains(@class,"inline")][1]', root)) {
-    $.on(d,    'keydown',   o.hoverend)
+    $.on(d, 'keydown', o.hoverend)
   }
   $.on(root, 'mousemove', o.hover)
 
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=674955
-  o.workaround = function(e) { if (!root.contains(e.target)) { return o.hoverend(e) } }
-  return $.on(doc,  'mousemove', o.workaround)
+  o.workaround = function (e) { if (!root.contains(e.target)) { return o.hoverend(e) } }
+  return $.on(doc, 'mousemove', o.workaround)
 }
 
 hoverstart.padding = 25
 
-export var hover = function (e) {
+export const hover = function (e) {
   this.latestEvent = e
   const height = (this.height || this.el.offsetHeight) + hoverstart.padding
-  const width  = (this.width  || this.el.offsetWidth)
-  const {clientX, clientY} = Conf['Follow Cursor'] ? e : this
+  const width = (this.width || this.el.offsetWidth)
+  const { clientX, clientY } = Conf['Follow Cursor'] ? e : this
 
   const top = this.isImage ?
     Math.max(0, (clientY * (this.clientHeight - height)) / this.clientHeight)
-  :
+    :
     Math.max(0, Math.min(this.clientHeight - height, clientY - 120))
 
   let threshold = this.clientWidth / 2
@@ -452,27 +447,27 @@ export var hover = function (e) {
   marginX += 'px'
   const [left, right] = Array.from(clientX <= threshold ? [marginX, ''] : ['', marginX])
 
-  const {style} = this
-  style.top   = top + 'px'
-  style.left  = left
+  const { style } = this
+  style.top = top + 'px'
+  style.left = left
   return style.right = right
 }
 
-export var hoverend = function (e) {
+export const hoverend = function (e) {
   if (((e.type === 'keydown') && (e.keyCode !== 13)) || (e.target.nodeName === "TEXTAREA")) { return }
   if (!this.noRemove) { $.rm(this.el) }
-  $.off(this.root, this.endEvents,  this.hoverend)
-  $.off(d,     'keydown',   this.hoverend)
+  $.off(this.root, this.endEvents, this.hoverend)
+  $.off(d, 'keydown', this.hoverend)
   $.off(this.root, 'mousemove', this.hover)
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=674955
-  $.off(doc,   'mousemove', this.workaround)
+  $.off(doc, 'mousemove', this.workaround)
   if (this.cb) { return this.cb.call(this) }
 }
 
 export const checkbox = function (name, text, checked) {
   if (checked == null) { checked = Conf[name] }
   const label = $.el('label')
-  const input = $.el('input', {type: 'checkbox', name, checked})
+  const input = $.el('input', { type: 'checkbox', name, checked })
   $.add(label, [input, $.tn(` ${text}`)])
   return label
 }
@@ -480,7 +475,7 @@ export const checkbox = function (name, text, checked) {
 const UI = {
   dialog,
   Menu,
-  hover:    hoverstart,
+  hover: hoverstart,
   checkbox
 }
 export default UI

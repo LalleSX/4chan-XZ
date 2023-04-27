@@ -16,19 +16,19 @@ import { dict } from "../platform/helpers"
   <3 aeosynth
 */
 
-var QuoteThreading = {
+const QuoteThreading = {
   init() {
     if (!Conf['Quote Threading'] || (g.VIEW !== 'thread')) { return }
 
     this.controls = $.el('label',
-      {innerHTML: "<input id=\"threadingControl\" name=\"Thread Quotes\" type=\"checkbox\"> Threading"})
+      { innerHTML: "<input id=\"threadingControl\" name=\"Thread Quotes\" type=\"checkbox\"> Threading" })
 
     this.threadNewLink = $.el('span', {
       className: 'brackets-wrap threadnewlink',
       hidden: true
     }
     )
-    $.extend(this.threadNewLink, {innerHTML: "<a href=\"javascript:;\">Thread New Posts</a>"})
+    $.extend(this.threadNewLink, { innerHTML: "<a href=\"javascript:;\">Thread New Posts</a>" })
 
     this.input = $('input', this.controls)
     this.input.checked = Conf['Thread Quotes']
@@ -39,23 +39,23 @@ var QuoteThreading = {
     $.on(d, '4chanXInitFinished', () => { return this.ready = true })
 
     Header.menu.addEntry(this.entry = {
-      el:    this.controls,
+      el: this.controls,
       order: 99
     }
     )
 
     Callbacks.Thread.push({
       name: 'Quote Threading',
-      cb:   this.setThread
+      cb: this.setThread
     })
 
     return Callbacks.Post.push({
       name: 'Quote Threading',
-      cb:   this.node
+      cb: this.node
     })
   },
 
-  parent:   dict(),
+  parent: dict(),
   children: dict(),
   inserted: dict(),
 
@@ -83,7 +83,7 @@ var QuoteThreading = {
 
   setThread() {
     QuoteThreading.thread = this
-    return $.asap((() => !Conf['Thread Updater'] || $('.navLinksBot > .updatelink')), function() {
+    return $.asap((() => !Conf['Thread Updater'] || $('.navLinksBot > .updatelink')), function () {
       let navLinksBot
       if (navLinksBot = $('.navLinksBot')) { return $.add(navLinksBot, [$.tn(' '), QuoteThreading.threadNewLink]) }
     })
@@ -137,15 +137,15 @@ var QuoteThreading = {
 
     const descendants = QuoteThreading.descendants(post)
     if (!Unread.posts.has(parent.ID)) {
-      if ((function() { for (const x of descendants) { if (Unread.posts.has(x.ID)) { return true } } })()) {
+      if ((function () { for (const x of descendants) { if (Unread.posts.has(x.ID)) { return true } } })()) {
         QuoteThreading.threadNewLink.hidden = false
         return false
       }
     }
 
-    const {order} = Unread
+    const { order } = Unread
     const children = (QuoteThreading.children[parent.fullID] || (QuoteThreading.children[parent.fullID] = []))
-    const threadContainer = parent.nodes.threadContainer || $.el('div', {className: 'threadContainer'})
+    const threadContainer = parent.nodes.threadContainer || $.el('div', { className: 'threadContainer' })
     const nodes = [post.nodes.root]
     if (post.nodes.threadContainer) { nodes.push(post.nodes.threadContainer) }
 
@@ -160,7 +160,7 @@ var QuoteThreading = {
       let prev2
       let prev = parent
       while ((prev2 = QuoteThreading.children[prev.fullID]) && prev2.length) {
-        prev = prev2[prev2.length-1]
+        prev = prev2[prev2.length - 1]
       }
       for (let k = descendants.length - 1; k >= 0; k--) { x = descendants[k]; order.after(order[prev.ID], order[x.ID]) }
       children.push(post)
@@ -180,8 +180,8 @@ var QuoteThreading = {
 
   rethread() {
     if (!QuoteThreading.ready) { return }
-    const {thread} = QuoteThreading
-    const {posts} = thread
+    const { thread } = QuoteThreading
+    const { posts } = thread
 
     QuoteThreading.threadNewLink.hidden = true
 
@@ -191,7 +191,7 @@ var QuoteThreading = {
       const nodes = []
       Unread.order = new RandomAccessList()
       QuoteThreading.inserted = dict()
-      posts.forEach(function(post) {
+      posts.forEach(function (post) {
         if (post.isFetchedQuote) { return }
         Unread.order.push(post)
         if (post.isReply) { nodes.push(post.nodes.root) }

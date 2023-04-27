@@ -25,18 +25,18 @@ import QuickReplyPage from './QR/QuickReply.html'
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var QR = {
+const QR = {
   mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/vnd.adobe.flash.movie', 'application/x-shockwave-flash', 'video/webm'],
 
   validExtension: /\.(jpe?g|png|gif|pdf|swf|webm)$/i,
 
   typeFromExtension: {
-    'jpg':  'image/jpeg',
+    'jpg': 'image/jpeg',
     'jpeg': 'image/jpeg',
-    'png':  'image/png',
-    'gif':  'image/gif',
-    'pdf':  'application/pdf',
-    'swf':  'application/vnd.adobe.flash.movie',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'pdf': 'application/pdf',
+    'swf': 'application/vnd.adobe.flash.movie',
     'webm': 'video/webm'
   },
 
@@ -60,7 +60,7 @@ var QR = {
 
     Callbacks.Post.push({
       name: 'Quick Reply',
-      cb:   this.node
+      cb: this.node
     })
 
     this.shortcut = (sc = $.el('a', {
@@ -70,7 +70,7 @@ var QR = {
       href: 'javascript:;'
     }
     ))
-    $.on(sc, 'click', function() {
+    $.on(sc, 'click', function () {
       if (!QR.postingIsEnabled) { return }
       if (Conf['Persistent QR'] || !QR.nodes || QR.nodes.el.hidden) {
         QR.open()
@@ -89,33 +89,33 @@ var QR = {
     QR.captcha = Captcha[captchaVersion]
     QR.postingIsEnabled = true
 
-    const {config} = g.BOARD
+    const { config } = g.BOARD
     const prop = (key, def) => +(config[key] ?? def)
 
-    QR.min_width  = prop('min_image_width',  1)
+    QR.min_width = prop('min_image_width', 1)
     QR.min_height = prop('min_image_height', 1)
-    QR.max_width  = (QR.max_height = 10000)
+    QR.max_width = (QR.max_height = 10000)
 
-    QR.max_size       = prop('max_filesize',      4194304)
+    QR.max_size = prop('max_filesize', 4194304)
     QR.max_size_video = prop('max_webm_filesize', QR.max_size)
-    QR.max_comment    = prop('max_comment_chars', 2000)
+    QR.max_comment = prop('max_comment_chars', 2000)
 
     QR.max_width_video = (QR.max_height_video = 2048)
     QR.max_duration_video = prop('max_webm_duration', 120)
 
     QR.forcedAnon = !!config.forced_anon
-    QR.spoiler    = !!config.spoilers
+    QR.spoiler = !!config.spoilers
 
     if (origToggle = $.id('togglePostFormLink')) {
       const link = $.el('h1',
-        {className: "qr-link-container"})
+        { className: "qr-link-container" })
       $.extend(link, {
         innerHTML:
           `<a href="javascript:;" class="qr-link">${g.VIEW === "thread" ? "Reply to Thread" : "Start a Thread"}</a>`
       })
 
       QR.link = link.firstElementChild
-      $.on(link.firstChild, 'click', function() {
+      $.on(link.firstChild, 'click', function () {
         QR.open()
         return QR.nodes.com.focus()
       })
@@ -127,10 +127,10 @@ var QR = {
     if (g.VIEW === 'thread') {
       let navLinksBot
       const linkBot = $.el('div',
-        {className: "brackets-wrap qr-link-container-bottom"})
-      $.extend(linkBot, {innerHTML: '<a href="javascript:;" class="qr-link-bottom">Reply to Thread</a>'})
+        { className: "brackets-wrap qr-link-container-bottom" })
+      $.extend(linkBot, { innerHTML: '<a href="javascript:;" class="qr-link-bottom">Reply to Thread</a>' })
 
-      $.on(linkBot.firstElementChild, 'click', function() {
+      $.on(linkBot.firstElementChild, 'click', function () {
         QR.open()
         return QR.nodes.com.focus()
       })
@@ -138,14 +138,14 @@ var QR = {
       if (navLinksBot = $('.navLinksBot')) { $.prepend(navLinksBot, linkBot) }
     }
 
-    $.on(d, 'QRGetFile',          QR.getFile)
-    $.on(d, 'QRDrawFile',         QR.drawFile)
-    $.on(d, 'QRSetFile',          QR.setFile)
+    $.on(d, 'QRGetFile', QR.getFile)
+    $.on(d, 'QRDrawFile', QR.drawFile)
+    $.on(d, 'QRSetFile', QR.setFile)
 
-    $.on(d, 'paste',              QR.paste)
-    $.on(d, 'dragover',           QR.dragOver)
-    $.on(d, 'drop',               QR.dropFile)
-    $.on(d, 'dragstart dragend',  QR.drag)
+    $.on(d, 'paste', QR.paste)
+    $.on(d, 'dragover', QR.dragOver)
+    $.on(d, 'drop', QR.dropFile)
+    $.on(d, 'dragstart dragend', QR.drag)
 
     $.on(d, 'IndexRefreshInternal', QR.generatePostableThreadsList)
     $.on(d, 'ThreadUpdate', QR.statusCheck)
@@ -157,7 +157,7 @@ var QR = {
 
   statusCheck() {
     if (!QR.nodes) { return }
-    const {thread} = QR.posts[0]
+    const { thread } = QR.posts[0]
     if ((thread !== 'new') && g.threads.get(`${g.BOARD}.${thread}`).isDead) {
       return QR.abort()
     } else {
@@ -210,7 +210,7 @@ var QR = {
   },
 
   focus() {
-    return $.queueTask(function() {
+    return $.queueTask(function () {
       if (!QR.inBubble()) {
         QR.hasFocus = d.activeElement && QR.nodes.el.contains(d.activeElement)
         return QR.nodes.el.classList.toggle('focus', QR.hasFocus)
@@ -310,20 +310,21 @@ var QR = {
         // Firefox automatically closes notifications
         // so we can't control the onclose properly.
         notif.onclose = () => notice.close()
-        return notif.onshow  = () => setTimeout(function() {
+        return notif.onshow = () => setTimeout(function () {
           notif.onclose = null
           return notif.close()
         }
-        , 7 * SECOND)
+          , 7 * SECOND)
       }
     }
   },
 
   connectionError() {
     return $.el('span',
-      { innerHTML:
-        'Connection error while posting. ' +
-        '[<a href="' + meta.faq + '#connection-errors" target="_blank">More info</a>]'
+      {
+        innerHTML:
+          'Connection error while posting. ' +
+          '[<a href="' + meta.faq + '#connection-errors" target="_blank">More info</a>]'
       }
     )
   },
@@ -340,25 +341,25 @@ var QR = {
   status() {
     let disabled, value
     if (!QR.nodes) { return }
-    const {thread} = QR.posts[0]
+    const { thread } = QR.posts[0]
     if ((thread !== 'new') && g.threads.get(`${g.BOARD}.${thread}`).isDead) {
-      value    = 'Dead'
+      value = 'Dead'
       disabled = true
       QR.cooldown.auto = false
     }
 
     value = QR.req ?
       QR.req.progress
-    :
+      :
       QR.cooldown.seconds || value
 
-    const {status} = QR.nodes
+    const { status } = QR.nodes
     status.value = !value ?
       'Submit'
-    : QR.cooldown.auto ?
-      `Auto ${value}`
-    :
-      value
+      : QR.cooldown.auto ?
+        `Auto ${value}`
+        :
+        value
     return status.disabled = disabled || false
   },
 
@@ -366,7 +367,7 @@ var QR = {
     QR.open()
     if (QR.selected.isLocked) {
       const index = QR.posts.indexOf(QR.selected);
-      (QR.posts[index+1] || new QR.post()).select()
+      (QR.posts[index + 1] || new QR.post()).select()
       $.addClass(QR.nodes.el, 'dump')
       return QR.cooldown.auto = true
     }
@@ -376,9 +377,9 @@ var QR = {
     let range
     e?.preventDefault()
     if (!QR.postingIsEnabled) { return }
-    const sel  = d.getSelection()
+    const sel = d.getSelection()
     const post = Get.postFromNode(this)
-    const {root} = post.nodes
+    const { root } = post.nodes
     const postRange = new Range()
     postRange.selectNode(root)
     let text = post.board.ID === g.BOARD.ID ? `>>${post}\n` : `>>>/${post.board}/${post}\n`
@@ -396,7 +397,7 @@ var QR = {
 
         if (!range.toString().trim()) { continue }
 
-        const frag  = range.cloneContents()
+        const frag = range.cloneContents()
         const ancestor = range.commonAncestorContainer
         // Quoting the insides of a spoiler/code tag.
         if ($.x('ancestor-or-self::*[self::s or contains(@class,"removed-spoiler")]', ancestor)) {
@@ -426,7 +427,7 @@ var QR = {
     }
 
     QR.openPost()
-    const {com, thread} = QR.nodes
+    const { com, thread } = QR.nodes
     if (!com.value) { thread.value = Get.threadFromNode(this) }
 
     const wasOnlyQuotes = QR.selected.isOnlyQuotes()
@@ -448,9 +449,9 @@ var QR = {
 
   characterCount() {
     const counter = QR.nodes.charCount
-    const count   = QR.nodes.com.value.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '_').length
+    const count = QR.nodes.com.value.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '_').length
     counter.textContent = count
-    counter.hidden      = count < (QR.max_comment/2)
+    counter.hidden = count < (QR.max_comment / 2)
     return (count > QR.max_comment ? $.addClass : $.rmClass)(counter, 'warning')
   },
 
@@ -464,7 +465,7 @@ var QR = {
     const isVideo = /^video\//.test(file)
     const el = $.el((isVideo ? 'video' : 'img'))
     $.on(el, 'error', () => QR.openError())
-    $.on(el, (isVideo ? 'loadeddata' : 'load'), function() {
+    $.on(el, (isVideo ? 'loadeddata' : 'load'), function () {
       e.target.getContext('2d').drawImage(el, 0, 0)
       URL.revokeObjectURL(el.src)
       return $.event('QRImageDrawn', null, e.target)
@@ -482,8 +483,8 @@ var QR = {
   },
 
   setFile(e) {
-    const {file, name, source} = e.detail
-    if (name != null) { file.name   = name }
+    const { file, name, source } = e.detail
+    if (name != null) { file.name = name }
     if (source != null) { file.source = source }
     QR.open()
     return QR.handleFiles([file])
@@ -493,7 +494,7 @@ var QR = {
     // Let it drag anything from the page.
     const toggle = e.type === 'dragstart' ? $.off : $.on
     toggle(d, 'dragover', QR.dragOver)
-    return toggle(d, 'drop',     QR.dropFile)
+    return toggle(d, 'drop', QR.dropFile)
   },
 
   dragOver(e) {
@@ -516,7 +517,7 @@ var QR = {
     for (const item of e.clipboardData.items) {
       var file2
       if ((item.kind === 'file') && (file2 = item.getAsFile())) {
-        const score2 = (2*(file2.size <= QR.max_size)) + (file2.type === 'image/png')
+        const score2 = (2 * (file2.size <= QR.max_size)) + (file2.type === 'image/png')
         if (score2 > score) {
           file = file2
           score = score2
@@ -524,8 +525,8 @@ var QR = {
       }
     }
     if (file) {
-      const {type} = file
-      const blob = new Blob([file], {type})
+      const { type } = file
+      const blob = new Blob([file], { type })
       blob.name = `${Conf['pastedname']}.${$.getOwn(QR.extensionFromType, type) || 'jpg'}`
       QR.open()
       QR.handleFiles([blob])
@@ -534,20 +535,20 @@ var QR = {
   },
 
   pasteFF() {
-    const {pasteArea} = QR.nodes
+    const { pasteArea } = QR.nodes
     if (!pasteArea.childNodes.length) { return }
     const images = $$('img', pasteArea)
     $.rmAll(pasteArea)
     for (const img of images) {
       var m
-      const {src} = img
+      const { src } = img
       if (m = src.match(/data:(image\/(\w+));base64,(.+)/)) {
         const bstr = atob(m[3])
         const arr = new Uint8Array(bstr.length)
         for (let i = 0, end = bstr.length, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
           arr[i] = bstr.charCodeAt(i)
         }
-        const blob = new Blob([arr], {type: m[1]})
+        const blob = new Blob([arr], { type: m[1] })
         blob.name = `${Conf['pastedname']}.${m[2]}`
         QR.handleFiles([blob])
       } else if (/^https?:\/\//.test(src)) {
@@ -559,11 +560,11 @@ var QR = {
   handleUrl(urlDefault) {
     QR.open()
     QR.selected.preventAutoPost()
-    return CrossOrigin.permission(function() {
+    return CrossOrigin.permission(function () {
       const url = prompt('Enter a URL:', urlDefault)
       if (url === null) { return }
       QR.nodes.fileButton.focus()
-      return CrossOrigin.file(url, function(blob) {
+      return CrossOrigin.file(url, function (blob) {
         if (blob && !/^text\//.test(blob.type)) {
           return QR.handleFiles([blob])
         } else {
@@ -575,7 +576,7 @@ var QR = {
 
   handleFiles(files) {
     if (this !== QR) { // file input
-      files  = [...Array.from(this.files)]
+      files = [...Array.from(this.files)]
       this.value = null
     }
     if (!files.length) { return }
@@ -611,7 +612,7 @@ var QR = {
 
   generatePostableThreadsList() {
     if (!QR.nodes) { return }
-    const list    = QR.nodes.thread
+    const list = QR.nodes.thread
     const options = [list.firstElementChild]
     for (const thread of g.BOARD.threads.keys) {
       options.push($.el('option', {
@@ -629,7 +630,7 @@ var QR = {
     // Fix the value if the option disappeared.
     list.value = g.VIEW === 'thread' ?
       g.THREADID
-    :
+      :
       'new'
     return (g.VIEW === 'thread' ? $.addClass : $.rmClass)(QR.nodes.el, 'reply-to-thread')
   },
@@ -644,50 +645,50 @@ var QR = {
 
     const setNode = (name, query) => nodes[name] = $(query, dialog)
 
-    setNode('move',           '.move')
-    setNode('autohide',       '#autohide')
-    setNode('close',          '.close')
-    setNode('thread',         'select')
-    setNode('form',           'form')
-    setNode('sjisToggle',     '#sjis-toggle')
-    setNode('texButton',      '#tex-preview-button')
-    setNode('name',           '[data-name=name]')
-    setNode('email',          '[data-name=email]')
-    setNode('sub',            '[data-name=sub]')
-    setNode('com',            '[data-name=com]')
-    setNode('charCount',      '#char-count')
-    setNode('texPreview',     '#tex-preview')
-    setNode('dumpList',       '#dump-list')
-    setNode('addPost',        '#add-post')
-    setNode('oekaki',         '.oekaki')
-    setNode('drawButton',     '#qr-draw-button')
-    setNode('fileSubmit',     '#file-n-submit')
-    setNode('fileButton',     '#qr-file-button')
-    setNode('noFile',         '#qr-no-file')
-    setNode('filename',       '#qr-filename')
-    setNode('spoiler',        '#qr-file-spoiler')
-    setNode('oekakiButton',   '#qr-oekaki-button')
-    setNode('fileRM',         '#qr-filerm')
-    setNode('urlButton',      '#url-button')
-    setNode('pasteArea',      '#paste-area')
+    setNode('move', '.move')
+    setNode('autohide', '#autohide')
+    setNode('close', '.close')
+    setNode('thread', 'select')
+    setNode('form', 'form')
+    setNode('sjisToggle', '#sjis-toggle')
+    setNode('texButton', '#tex-preview-button')
+    setNode('name', '[data-name=name]')
+    setNode('email', '[data-name=email]')
+    setNode('sub', '[data-name=sub]')
+    setNode('com', '[data-name=com]')
+    setNode('charCount', '#char-count')
+    setNode('texPreview', '#tex-preview')
+    setNode('dumpList', '#dump-list')
+    setNode('addPost', '#add-post')
+    setNode('oekaki', '.oekaki')
+    setNode('drawButton', '#qr-draw-button')
+    setNode('fileSubmit', '#file-n-submit')
+    setNode('fileButton', '#qr-file-button')
+    setNode('noFile', '#qr-no-file')
+    setNode('filename', '#qr-filename')
+    setNode('spoiler', '#qr-file-spoiler')
+    setNode('oekakiButton', '#qr-oekaki-button')
+    setNode('fileRM', '#qr-filerm')
+    setNode('urlButton', '#url-button')
+    setNode('pasteArea', '#paste-area')
     setNode('customCooldown', '#custom-cooldown-button')
-    setNode('dumpButton',     '#dump-button')
-    setNode('status',         '[type=submit]')
-    setNode('flashTag',       '[name=filetag]')
-    setNode('fileInput',      '[type=file]')
+    setNode('dumpButton', '#dump-button')
+    setNode('status', '[type=submit]')
+    setNode('flashTag', '[name=filetag]')
+    setNode('fileInput', '[type=file]')
 
-    const {config} = g.BOARD
-    const {classList} = QR.nodes.el
-    classList.toggle('forced-anon',  QR.forcedAnon)
-    classList.toggle('has-spoiler',  QR.spoiler)
-    classList.toggle('has-sjis',     !!config.sjis_tags)
-    classList.toggle('has-math',     !!config.math_tags)
+    const { config } = g.BOARD
+    const { classList } = QR.nodes.el
+    classList.toggle('forced-anon', QR.forcedAnon)
+    classList.toggle('has-spoiler', QR.spoiler)
+    classList.toggle('has-sjis', !!config.sjis_tags)
+    classList.toggle('has-math', !!config.math_tags)
     classList.toggle('sjis-preview', !!config.sjis_tags && Conf['sjisPreview'])
     classList.toggle('show-new-thread-option', Conf['Show New Thread Option in Threads'])
 
     if (parseInt(Conf['customCooldown'], 10) > 0) {
       $.addClass(QR.nodes.fileSubmit, 'custom-cooldown')
-      $.get('customCooldownEnabled', Conf['customCooldownEnabled'], function({customCooldownEnabled}) {
+      $.get('customCooldownEnabled', Conf['customCooldownEnabled'], function ({ customCooldownEnabled }) {
         QR.setCustomCooldown(customCooldownEnabled)
         return $.sync('customCooldownEnabled', QR.setCustomCooldown)
       })
@@ -695,29 +696,29 @@ var QR = {
 
     QR.flagsInput()
 
-    $.on(nodes.autohide,       'change',    QR.toggleHide)
-    $.on(nodes.close,          'click',     QR.close)
-    $.on(nodes.status,         'click',     QR.submit)
-    $.on(nodes.form,           'submit',    QR.submit)
-    $.on(nodes.sjisToggle,     'click',     QR.toggleSJIS)
-    $.on(nodes.texButton,      'mousedown', QR.texPreviewShow)
-    $.on(nodes.texButton,      'mouseup',   QR.texPreviewHide)
-    $.on(nodes.addPost,        'click',     () => new QR.post(true))
-    $.on(nodes.drawButton,     'click',     QR.oekaki.draw)
-    $.on(nodes.fileButton,     'click',     QR.openFileInput)
-    $.on(nodes.noFile,         'click',     QR.openFileInput)
-    $.on(nodes.filename,       'focus',     function() { return $.addClass(this.parentNode, 'focus') })
-    $.on(nodes.filename,       'blur',      function() { return $.rmClass(this.parentNode, 'focus') })
-    $.on(nodes.spoiler,        'change',    () => QR.selected.nodes.spoiler.click())
-    $.on(nodes.oekakiButton,   'click',     QR.oekaki.button)
-    $.on(nodes.fileRM,         'click',     () => QR.selected.rmFile())
-    $.on(nodes.urlButton,      'click',     () => QR.handleUrl(''))
-    $.on(nodes.customCooldown, 'click',     QR.toggleCustomCooldown)
-    $.on(nodes.dumpButton,     'click',     () => nodes.el.classList.toggle('dump'))
-    $.on(nodes.fileInput,      'change',    QR.handleFiles)
+    $.on(nodes.autohide, 'change', QR.toggleHide)
+    $.on(nodes.close, 'click', QR.close)
+    $.on(nodes.status, 'click', QR.submit)
+    $.on(nodes.form, 'submit', QR.submit)
+    $.on(nodes.sjisToggle, 'click', QR.toggleSJIS)
+    $.on(nodes.texButton, 'mousedown', QR.texPreviewShow)
+    $.on(nodes.texButton, 'mouseup', QR.texPreviewHide)
+    $.on(nodes.addPost, 'click', () => new QR.post(true))
+    $.on(nodes.drawButton, 'click', QR.oekaki.draw)
+    $.on(nodes.fileButton, 'click', QR.openFileInput)
+    $.on(nodes.noFile, 'click', QR.openFileInput)
+    $.on(nodes.filename, 'focus', function () { return $.addClass(this.parentNode, 'focus') })
+    $.on(nodes.filename, 'blur', function () { return $.rmClass(this.parentNode, 'focus') })
+    $.on(nodes.spoiler, 'change', () => QR.selected.nodes.spoiler.click())
+    $.on(nodes.oekakiButton, 'click', QR.oekaki.button)
+    $.on(nodes.fileRM, 'click', () => QR.selected.rmFile())
+    $.on(nodes.urlButton, 'click', () => QR.handleUrl(''))
+    $.on(nodes.customCooldown, 'click', QR.toggleCustomCooldown)
+    $.on(nodes.dumpButton, 'click', () => nodes.el.classList.toggle('dump'))
+    $.on(nodes.fileInput, 'change', QR.handleFiles)
 
     window.addEventListener('focus', QR.focus, true)
-    window.addEventListener('blur',  QR.focus, true)
+    window.addEventListener('blur', QR.focus, true)
     // We don't receive blur events from captcha iframe.
     $.on(d, 'click', QR.focus)
 
@@ -726,12 +727,12 @@ var QR = {
     if (($.engine === 'gecko') && !window.DataTransferItemList) {
       nodes.pasteArea.hidden = false
     }
-    new MutationObserver(QR.pasteFF).observe(nodes.pasteArea, {childList: true})
+    new MutationObserver(QR.pasteFF).observe(nodes.pasteArea, { childList: true })
 
     // save selected post's data
     const items = ['thread', 'name', 'email', 'sub', 'com', 'filename', 'flag']
     let i = 0
-    const save = function() { return QR.selected.save(this) }
+    const save = function () { return QR.selected.save(this) }
     while ((name = items[i++])) {
       var node
       if (!(node = nodes[name])) { continue }
@@ -742,7 +743,7 @@ var QR = {
     // XXX Blink and WebKit treat width and height of <textarea>s as min-width and min-height
     if (($.engine === 'gecko') && Conf['Remember QR Size']) {
       $.get('QR Size', '', item => nodes.com.style.cssText = item['QR Size'])
-      $.on(nodes.com, 'mouseup', function(e) {
+      $.on(nodes.com, 'mouseup', function (e) {
         if (e.button !== 0) { return }
         return $.set('QR Size', this.style.cssText)
       })
@@ -766,12 +767,12 @@ var QR = {
 
   flags() {
     const select = $.el('select', {
-      name:      'flag',
+      name: 'flag',
       className: 'flagSelector'
     }
     )
 
-    const addFlag = (value, textContent) => $.add(select, $.el('option', {value, textContent}))
+    const addFlag = (value, textContent) => $.add(select, $.el('option', { value, textContent }))
 
     addFlag('0', (g.BOARD.config.country_flags ? 'Geographic Location' : 'None'))
     for (const value in g.BOARD.config.board_flags) {
@@ -783,7 +784,7 @@ var QR = {
   },
 
   flagsInput() {
-    const {nodes} = QR
+    const { nodes } = QR
     if (!nodes) { return }
     if (nodes.flag) {
       $.rm(nodes.flag)
@@ -792,7 +793,7 @@ var QR = {
 
     if (g.BOARD.config.board_flags) {
       const flag = QR.flags()
-      flag.dataset.name    = 'flag'
+      flag.dataset.name = 'flag'
       flag.dataset.default = '0'
       nodes.flag = flag
       return $.add(nodes.form, flag)
@@ -876,17 +877,17 @@ var QR = {
 
     const formData = {
       MAX_FILE_SIZE: QR.max_size,
-      mode:     'regist',
-      pwd:      QR.persona.getPassword(),
-      resto:    threadID,
-      name:     (!QR.forcedAnon ? post.name : undefined),
-      email:    post.email,
-      sub:      (!QR.forcedAnon && !threadID ? post.sub : undefined),
-      com:      post.com,
-      upfile:   post.file,
+      mode: 'regist',
+      pwd: QR.persona.getPassword(),
+      resto: threadID,
+      name: (!QR.forcedAnon ? post.name : undefined),
+      email: post.email,
+      sub: (!QR.forcedAnon && !threadID ? post.sub : undefined),
+      com: post.com,
+      upfile: post.file,
       filetag,
-      spoiler:  post.spoiler,
-      flag:     post.flag,
+      spoiler: post.spoiler,
+      flag: post.flag,
     }
 
     const options = {
@@ -896,7 +897,7 @@ var QR = {
       form: $.formData(formData)
     }
     if (Conf['Show Upload Progress']) {
-      options.onprogress = function(e) {
+      options.onprogress = function (e) {
         if (this !== QR.req?.upload) { return } // aborted
         if (e.loaded < e.total) {
           // Uploading...
@@ -910,7 +911,7 @@ var QR = {
       }
     }
 
-    let cb = function(response) {
+    let cb = function (response) {
       if (response != null) {
         QR.currentCaptcha = response
         if (QR.captcha === Captcha.v2) {
@@ -942,7 +943,7 @@ var QR = {
           return cb = null
         }
       }
-      captcha(function(response) {
+      captcha(function (response) {
         if ((QR.captcha === Captcha.v2) && Captcha.cache.haveCookie()) {
           cb?.()
           if (response) { return Captcha.cache.save(response) }
@@ -1032,9 +1033,9 @@ var QR = {
     const h1 = $('h1', this.response)
 
     let [_, threadID, postID] = Array.from(h1.nextSibling.textContent.match(/thread:(\d+),no:(\d+)/))
-    postID   = +postID
+    postID = +postID
     threadID = +threadID || postID
-    const isReply  = threadID !== postID
+    const isReply = threadID !== postID
 
     // Post/upload confirmed as successful.
     $.event('QRPostSuccessful', {
@@ -1043,13 +1044,13 @@ var QR = {
       postID
     })
     // XXX deprecated
-    $.event('QRPostSuccessful_', {boardID: g.BOARD.ID, threadID, postID})
+    $.event('QRPostSuccessful_', { boardID: g.BOARD.ID, threadID, postID })
 
     // Enable auto-posting if we have stuff left to post, disable it otherwise.
     const postsCount = QR.posts.length - 1
     QR.cooldown.auto = postsCount && isReply
 
-    const lastPostToThread = !((function() { for (const p of QR.posts.slice(1)) { if (p.thread === post.thread) { return true } } })())
+    const lastPostToThread = !((function () { for (const p of QR.posts.slice(1)) { if (p.thread === post.thread) { return true } } })())
 
     if (postsCount) {
       post.rm()
@@ -1081,7 +1082,7 @@ var QR = {
     if (URL) {
       const open = Conf['Open Post in New Tab'] || postsCount ?
         () => $.open(URL)
-      :
+        :
         () => location.href = URL
 
       if (threadID === postID) {
@@ -1097,7 +1098,7 @@ var QR = {
 
   waitForThread(url, cb) {
     let attempts = 0
-    const check = function() {
+    const check = function () {
       return $.ajax(url, {
         onloadend() {
           attempts++

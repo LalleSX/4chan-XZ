@@ -15,18 +15,18 @@ import PostRedirect from "../Posting/PostRedirect"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var QuoteYou = {
+const QuoteYou = {
   init() {
     if (!Conf['Remember Your Posts']) { return }
 
     this.db = new DataBoard('yourPosts')
     $.sync('Remember Your Posts', enabled => Conf['Remember Your Posts'] = enabled)
-    $.on(d, 'QRPostSuccessful', function(e) {
+    $.on(d, 'QRPostSuccessful', function (e) {
       const cb = PostRedirect.delay()
-      return $.get('Remember Your Posts', Conf['Remember Your Posts'], function(items) {
+      return $.get('Remember Your Posts', Conf['Remember Your Posts'], function (items) {
         if (!items['Remember Your Posts']) { return }
-        const {boardID, threadID, postID} = e.detail
-        return QuoteYou.db.set({boardID, threadID, postID, val: true}, cb)
+        const { boardID, threadID, postID } = e.detail
+        return QuoteYou.db.set({ boardID, threadID, postID, val: true }, cb)
       })
     })
 
@@ -47,12 +47,12 @@ var QuoteYou = {
     // \u00A0 is nbsp
     this.mark = $.el('span', {
       textContent: '\u00A0(You)',
-      className:   'qmark-you'
+      className: 'qmark-you'
     }
     )
     Callbacks.Post.push({
       name: 'Mark Quotes of You',
-      cb:   this.node
+      cb: this.node
     })
 
     return QuoteYou.menu.init()
@@ -60,9 +60,9 @@ var QuoteYou = {
 
   isYou(post) {
     return !!QuoteYou.db?.get({
-      boardID:  post.boardID,
+      boardID: post.boardID,
       threadID: post.threadID,
-      postID:   post.ID
+      postID: post.ID
     })
   },
 
@@ -88,9 +88,9 @@ var QuoteYou = {
   menu: {
     init() {
       const label = $.el('label',
-        {className: 'toggle-you'}
-      ,
-        {innerHTML: '<input type="checkbox"> You'})
+        { className: 'toggle-you' }
+        ,
+        { innerHTML: '<input type="checkbox"> You' })
       const input = $('input', label)
       $.on(input, 'change', QuoteYou.menu.toggle)
       return Menu.menu?.addEntry({
@@ -105,8 +105,8 @@ var QuoteYou = {
     },
 
     toggle() {
-      const {post} = QuoteYou.menu
-      const data = {boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID, val: true}
+      const { post } = QuoteYou.menu
+      const data = { boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID, val: true }
       if (this.checked) {
         QuoteYou.db.set(data)
       } else {
@@ -134,7 +134,7 @@ var QuoteYou = {
     seek(type) {
       let highlighted, post
       let result
-      const {highlight} = g.SITE.classes
+      const { highlight } = g.SITE.classes
       if (highlighted = $(`.${highlight}`)) { $.rmClass(highlighted, highlight) }
 
       if (!QuoteYou.lastRead || !doc.contains(QuoteYou.lastRead) || !$.hasClass(QuoteYou.lastRead, 'quotesYou')) {
