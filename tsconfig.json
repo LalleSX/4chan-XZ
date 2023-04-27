@@ -24,6 +24,9 @@
     "outDir": "builds/test/crx/tsOutput",
   },
   "exclude": [
+    "node_modules",
+    "tools/*",
+    "dist/*",
     "src/meta/*",
     "builds/test/tsOutput"
   ]

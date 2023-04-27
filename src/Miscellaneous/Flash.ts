@@ -1,5 +1,5 @@
-import { g, Conf } from "../globals/globals";
-import $ from "../platform/$";
+import { Conf,g } from "../globals/globals"
+import $ from "../platform/$"
 
 /*
  * decaffeinate suggestions:
@@ -9,19 +9,19 @@ import $ from "../platform/$";
 var Flash = {
   init() {
     if ((g.BOARD.ID === 'f') && Conf['Enable Native Flash Embedding']) {
-      return $.ready(Flash.initReady);
+      return $.ready(Flash.initReady)
     }
   },
 
   initReady() {
     if ($.hasStorage) {
-      return $.global(function() { if (JSON.parse(localStorage['4chan-settings'] || '{}').disableAll) { return window.SWFEmbed.init(); } });
+      return $.global(function() { if (JSON.parse(localStorage['4chan-settings'] || '{}').disableAll) { return window.SWFEmbed.init() } })
     } else {
       if (g.VIEW === 'thread') {
-        $.global(() => window.Main.tid = location.pathname.split(/\/+/)[3]);
+        $.global(() => window.Main.tid = location.pathname.split(/\/+/)[3])
       }
-      return $.global(() => window.SWFEmbed.init());
+      return $.global(() => window.SWFEmbed.init())
     }
   }
-};
-export default Flash;
+}
+export default Flash

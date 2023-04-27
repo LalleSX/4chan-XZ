@@ -1,7 +1,7 @@
-import Callbacks from "../classes/Callbacks";
-import Get from "../General/Get";
-import { g, Conf } from "../globals/globals";
-import $ from "../platform/$";
+import Callbacks from "../classes/Callbacks"
+import Get from "../General/Get"
+import { Conf,g } from "../globals/globals"
+import $ from "../platform/$"
 
 /*
  * decaffeinate suggestions:
@@ -10,30 +10,30 @@ import $ from "../platform/$";
  */
 var IDPostCount = {
   init() {
-    if ((g.VIEW !== 'thread') || !Conf['Count Posts by ID']) { return; }
+    if ((g.VIEW !== 'thread') || !Conf['Count Posts by ID']) { return }
     Callbacks.Thread.push({
       name: 'Count Posts by ID',
-      cb() { return IDPostCount.thread = this; }
-    });
+      cb() { return IDPostCount.thread = this }
+    })
     return Callbacks.Post.push({
       name: 'Count Posts by ID',
       cb:   this.node
-    });
+    })
   },
 
   node() {
     if (this.nodes.uniqueID && (this.thread === IDPostCount.thread)) {
-      return $.on(this.nodes.uniqueID, 'mouseover', IDPostCount.count);
+      return $.on(this.nodes.uniqueID, 'mouseover', IDPostCount.count)
     }
   },
 
   count() {
-    const {uniqueID} = Get.postFromNode(this).info;
-    let n = 0;
+    const {uniqueID} = Get.postFromNode(this).info
+    let n = 0
     IDPostCount.thread.posts.forEach(function(post) {
-      if (post.info.uniqueID === uniqueID) { return n++; }
-    });
-    return this.title = `${n} post${n === 1 ? '' : 's'} by this ID`;
+      if (post.info.uniqueID === uniqueID) { return n++ }
+    })
+    return this.title = `${n} post${n === 1 ? '' : 's'} by this ID`
   }
-};
-export default IDPostCount;
+}
+export default IDPostCount

@@ -11,6 +11,7 @@
     "node": true
   },
   "plugins": [
+    "import",
     "@typescript-eslint",
     "simple-import-sort"
   ],
@@ -19,6 +20,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "import/no-cycle": "error",
     "semi": [
       "error",
       "never"

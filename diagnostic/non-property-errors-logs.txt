@@ -1,0 +1,622 @@
+src/Archive/Redirect.ts(125,7): error TS2554: Expected 3 arguments, but got 1.
+src/Filtering/Filter.ts(67,15): error TS2322: Type 'RegExpMatchArray' is not assignable to type 'string | RegExp'.
+src/Filtering/Filter.ts(89,35): error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'string | Node'.
+src/Filtering/Filter.ts(91,17): error TS2554: Expected 3 arguments, but got 1.
+src/Filtering/Filter.ts(93,17): error TS2554: Expected 3 arguments, but got 1.
+src/Filtering/Filter.ts(124,13): error TS2322: Type 'boolean' is not assignable to type 'string'.
+src/Filtering/Filter.ts(128,11): error TS2322: Type 'string' is not assignable to type 'boolean'.
+src/Filtering/Filter.ts(129,17): error TS2367: This comparison appears to be unintentional because the types 'boolean' and 'string' have no overlap.
+src/Filtering/Filter.ts(440,21): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/Filter.ts(502,21): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/Filter.ts(538,20): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(24,15): error TS2554: Expected 3 arguments, but got 1.
+src/Filtering/PostHiding.ts(65,19): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(71,21): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(103,15): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(109,17): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(118,30): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(180,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Filtering/PostHiding.ts(200,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Filtering/PostHiding.ts(210,9): error TS2554: Expected 2-3 arguments, but got 1.
+src/Filtering/PostHiding.ts(215,20): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(220,17): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(251,23): error TS2554: Expected 5 arguments, but got 2.
+src/Filtering/PostHiding.ts(274,25): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/PostHiding.ts(278,35): error TS2554: Expected 2 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(17,15): error TS2554: Expected 3 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(103,19): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(109,23): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(116,27): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(130,15): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(150,30): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(174,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(180,20): error TS2554: Expected 2 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(181,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(189,9): error TS2554: Expected 2-3 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(194,17): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(212,21): error TS2554: Expected 3 arguments, but got 2.
+src/Filtering/ThreadHiding.ts(215,35): error TS2554: Expected 2 arguments, but got 1.
+src/Filtering/ThreadHiding.ts(251,25): error TS2554: Expected 2 arguments, but got 1.
+src/General/BoardConfig.ts(36,9): error TS2554: Expected 3 arguments, but got 2.
+src/General/BoardConfig.ts(56,19): error TS2554: Expected 0 arguments, but got 1.
+src/General/Header.ts(34,26): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(40,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(41,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(42,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(43,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(44,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(45,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(46,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(47,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(48,29): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(92,13): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(132,11): error TS2554: Expected 2 arguments, but got 1.
+src/General/Header.ts(143,20): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(158,10): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(161,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(164,16): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(167,12): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(170,13): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(175,39): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(235,5): error TS2322: Type 'string' is not assignable to type 'any[]'.
+src/General/Header.ts(238,13): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(249,13): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(267,15): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(292,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(300,13): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(382,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Header.ts(386,14): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(401,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Header.ts(406,14): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(419,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Header.ts(424,14): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(429,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Header.ts(441,7): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(479,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Header.ts(506,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Header.ts(512,7): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(555,28): error TS2554: Expected 0 arguments, but got 1.
+src/General/Header.ts(555,41): error TS2554: Expected 3 arguments, but got 1.
+src/General/Header.ts(627,24): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(673,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Header.ts(686,9): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(84,21): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(91,44): error TS2554: Expected 1 arguments, but got 0.
+src/General/Index.ts(100,24): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(127,13): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(134,23): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(180,19): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(186,23): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(205,11): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Index.ts(227,29): error TS2554: Expected 3 arguments, but got 1.
+src/General/Index.ts(230,54): error TS2554: Expected 2 arguments, but got 1.
+src/General/Index.ts(283,15): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Index.ts(314,25): error TS2554: Expected 2 arguments, but got 1.
+src/General/Index.ts(331,26): error TS2554: Expected 0 arguments, but got 1.
+src/General/Index.ts(343,25): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Index.ts(438,24): error TS2554: Expected 1 arguments, but got 0.
+src/General/Index.ts(466,20): error TS2554: Expected 1 arguments, but got 0.
+src/General/Index.ts(491,19): error TS2554: Expected 2 arguments, but got 1.
+src/General/Index.ts(501,20): error TS2554: Expected 1 arguments, but got 0.
+src/General/Index.ts(587,9): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(590,11): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(614,14): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(638,24): error TS2554: Expected 1 arguments, but got 0.
+src/General/Index.ts(647,14): error TS2554: Expected 1 arguments, but got 0.
+src/General/Index.ts(676,19): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(709,18): error TS2554: Expected 3 arguments, but got 1.
+src/General/Index.ts(828,26): error TS2554: Expected 2 arguments, but got 1.
+src/General/Index.ts(923,41): error TS2345: Argument of type 'import("/home/victor/proj/4chan-XZ/src/globals/globals").Board' is not assignable to parameter of type 'import("/home/victor/proj/4chan-XZ/src/classes/Board").default'.
+src/General/Index.ts(1023,21): error TS2554: Expected 2 arguments, but got 1.
+src/General/Index.ts(1028,23): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(1066,80): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/General/Index.ts(1066,84): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/General/Index.ts(1131,39): error TS2554: Expected 3 arguments, but got 1.
+src/General/Index.ts(1150,28): error TS2554: Expected 0 arguments, but got 1.
+src/General/Index.ts(1162,27): error TS2554: Expected 3 arguments, but got 2.
+src/General/Index.ts(1226,5): error TS2322: Type 'string' is not assignable to type 'any[]'.
+src/General/Polyfill.ts(11,7): error TS2554: Expected 2 arguments, but got 1.
+src/General/Settings.tsx(40,20): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(66,18): error TS2554: Expected 2 arguments, but got 1.
+src/General/Settings.tsx(76,18): error TS2554: Expected 2 arguments, but got 1.
+src/General/Settings.tsx(84,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/General/Settings.tsx(97,20): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(157,21): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(170,21): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(207,25): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(217,33): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(232,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(236,21): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(255,7): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(263,19): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(266,7): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(315,19): error TS2554: Expected 2 arguments, but got 1.
+src/General/Settings.tsx(325,14): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(335,17): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(363,48): error TS2345: Argument of type 'string | ArrayBuffer' is not assignable to parameter of type 'string'.
+  Type 'ArrayBuffer' is not assignable to type 'string'.
+src/General/Settings.tsx(582,19): error TS2554: Expected 0 arguments, but got 1.
+src/General/Settings.tsx(582,77): error TS2345: Argument of type 'unknown[]' is not assignable to parameter of type 'string | Node'.
+src/General/Settings.tsx(711,26): error TS2538: Type 'unknown' cannot be used as an index type.
+src/General/Settings.tsx(820,16): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(849,20): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(891,9): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(911,7): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(925,30): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(943,7): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(994,19): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(998,27): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(1038,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(1050,22): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(1072,9): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(1120,55): error TS2554: Expected 3 arguments, but got 1.
+src/General/Settings.tsx(1126,38): error TS2345: Argument of type 'Node' is not assignable to parameter of type 'HTMLElement'.
+  Type 'Node' is missing the following properties from type 'HTMLElement': accessKey, accessKeyLabel, autocapitalize, dir, and 233 more.
+src/General/Settings.tsx(1144,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Settings.tsx(1155,14): error TS2554: Expected 3 arguments, but got 2.
+src/General/Test.ts(27,19): error TS2554: Expected 3 arguments, but got 2.
+src/General/Test.ts(39,18): error TS2554: Expected 3 arguments, but got 2.
+src/General/Test.ts(46,31): error TS2554: Expected 3 arguments, but got 2.
+src/General/Test.ts(53,17): error TS2304: Cannot find name 'd'.
+src/General/Test.ts(83,7): error TS2740: Type 'any[]' is missing the following properties from type 'XPathResult': booleanValue, invalidIteratorState, numberValue, resultType, and 15 more.
+src/General/Test.ts(128,32): error TS2554: Expected 2 arguments, but got 1.
+src/General/Test.ts(155,18): error TS2367: This comparison appears to be unintentional because the types 'boolean' and 'string' have no overlap.
+src/General/UI.ts(16,16): error TS2554: Expected 3 arguments, but got 2.
+src/General/UI.ts(60,22): error TS2554: Expected 3 arguments, but got 2.
+src/General/UI.ts(157,19): error TS2554: Expected 3 arguments, but got 2.
+src/General/UI.ts(346,3): error TS2322: Type 'string | 0' is not assignable to type 'number'.
+  Type 'string' is not assignable to type 'number'.
+src/General/UI.ts(354,3): error TS2322: Type 'string' is not assignable to type 'number'.
+src/General/UI.ts(361,17): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+src/General/UI.ts(366,18): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+src/General/UI.ts(395,12): error TS2554: Expected 3 arguments, but got 2.
+src/General/UI.ts(474,19): error TS2554: Expected 3 arguments, but got 1.
+src/General/UI.ts(475,19): error TS2554: Expected 3 arguments, but got 2.
+src/Images/FappeTyme.ts(37,27): error TS2554: Expected 3 arguments, but got 2.
+src/Images/FappeTyme.ts(74,24): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Gallery.ts(30,18): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Gallery.ts(84,28): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Gallery.ts(167,21): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Gallery.ts(192,20): error TS2554: Expected 3 arguments, but got 1.
+src/Images/Gallery.ts(262,14): error TS2554: Expected 3 arguments, but got 1.
+src/Images/Gallery.ts(383,23): error TS2554: Expected 1 arguments, but got 0.
+src/Images/Gallery.ts(413,45): error TS2554: Expected 0 arguments, but got 1.
+src/Images/Gallery.ts(414,46): error TS2554: Expected 0 arguments, but got 1.
+src/Images/Gallery.ts(460,48): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Images/Gallery.ts(460,57): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Images/Gallery.ts(462,28): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Images/Gallery.ts(462,36): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Images/Gallery.ts(484,20): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Gallery.ts(498,24): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Gallery.ts(510,28): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageCommon.ts(30,26): error TS2554: Expected 0 arguments, but got 1.
+src/Images/ImageCommon.ts(54,19): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageCommon.ts(88,36): error TS2554: Expected 2 arguments, but got 1.
+src/Images/ImageCommon.ts(140,21): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageExpand.ts(23,18): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageExpand.ts(34,28): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageExpand.ts(52,28): error TS2554: Expected 2 arguments, but got 1.
+src/Images/ImageExpand.ts(63,28): error TS2554: Expected 2 arguments, but got 1.
+src/Images/ImageExpand.ts(83,9): error TS2554: Expected 2-3 arguments, but got 1.
+src/Images/ImageExpand.ts(95,28): error TS2554: Expected 0 arguments, but got 2.
+src/Images/ImageExpand.ts(140,19): error TS2554: Expected 2 arguments, but got 1.
+src/Images/ImageExpand.ts(152,23): error TS2554: Expected 3 arguments, but got 1.
+src/Images/ImageExpand.ts(185,16): error TS2554: Expected 2 arguments, but got 1.
+src/Images/ImageExpand.ts(204,24): error TS2554: Expected 0 arguments, but got 1.
+src/Images/ImageExpand.ts(231,32): error TS2554: Expected 3 arguments, but got 1.
+src/Images/ImageExpand.ts(365,20): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageExpand.ts(386,24): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageHover.ts(61,14): error TS2554: Expected 3 arguments, but got 1.
+src/Images/ImageLoader.ts(35,18): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageLoader.ts(58,21): error TS2554: Expected 3 arguments, but got 2.
+src/Images/ImageLoader.ts(88,20): error TS2304: Cannot find name 'doc'.
+src/Images/ImageLoader.ts(89,59): error TS2304: Cannot find name 'doc'.
+src/Images/ImageLoader.ts(101,18): error TS2554: Expected 3 arguments, but got 1.
+src/Images/Metadata.ts(31,18): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Metadata.ts(51,26): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Sauce.ts(32,20): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Sauce.ts(69,31): error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'string | Node'.
+src/Images/Sauce.ts(71,13): error TS2554: Expected 3 arguments, but got 1.
+src/Images/Sauce.ts(73,13): error TS2554: Expected 3 arguments, but got 1.
+src/Images/Volume.ts(44,28): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Volume.ts(47,27): error TS2554: Expected 3 arguments, but got 2.
+src/Images/Volume.ts(82,7): error TS2554: Expected 3 arguments, but got 1.
+src/Linkification/Embedding.ts(133,62): error TS2554: Expected 3 arguments, but got 1.
+src/Linkification/Embedding.ts(141,52): error TS2554: Expected 3 arguments, but got 1.
+src/Linkification/Embedding.ts(196,20): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(241,27): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(308,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(322,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(330,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(353,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(363,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(374,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(388,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(406,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(419,24): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(445,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(453,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(464,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(471,23): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(512,27): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(524,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(535,24): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(544,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(557,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(565,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(591,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(602,22): error TS2554: Expected 3 arguments, but got 1.
+src/Linkification/Embedding.ts(617,24): error TS2554: Expected 3 arguments, but got 1.
+src/Linkification/Embedding.ts(630,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(640,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(655,18): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Embedding.ts(664,22): error TS2554: Expected 3 arguments, but got 1.
+src/Linkification/Embedding.ts(682,22): error TS2554: Expected 3 arguments, but got 2.
+src/Linkification/Linkify.ts(195,17): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/ArchiveLink.ts(16,19): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/ArchiveLink.ts(46,18): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/CopyTextLink.ts(14,17): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/CopyTextLink.ts(33,18): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/DeleteLink.ts(19,19): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/DeleteLink.ts(24,22): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/DeleteLink.ts(29,22): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/DeleteLink.ts(64,29): error TS2554: Expected 2 arguments, but got 1.
+src/Menu/DeleteLink.ts(135,20): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/DownloadLink.ts(15,17): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/Menu.ts(15,21): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/Menu.ts(43,40): error TS2554: Expected 2 arguments, but got 1.
+src/Menu/Menu.ts(47,43): error TS2554: Expected 2 arguments, but got 1.
+src/Menu/ReportLink.ts(14,17): error TS2554: Expected 3 arguments, but got 2.
+src/Menu/ReportLink.ts(41,29): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/Miscellaneous/AntiAutoplay.ts(21,39): error TS2304: Cannot find name 'd'.
+src/Miscellaneous/Banner.ts(26,43): error TS2554: Expected 0 arguments, but got 1.
+src/Miscellaneous/Banner.ts(50,21): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/CatalogLinks.ts(60,34): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/CatalogLinks.ts(82,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/Miscellaneous/CatalogLinks.ts(83,7): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/CatalogLinks.ts(116,69): error TS2345: Argument of type '{ siteID: any; boardID: any; }' is not assignable to parameter of type 'Board'.
+  Type '{ siteID: any; boardID: any; }' is missing the following properties from type 'Board': ID, config, posts, threads
+src/Miscellaneous/ExpandComment.ts(45,32): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/ExpandThread.ts(89,38): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/FileInfo.tsx(38,23): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/FileInfo.tsx(42,20): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/FileInfo.tsx(74,72): error TS2554: Expected 1 arguments, but got 2.
+src/Miscellaneous/Flash.ts(18,16): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Flash.ts(21,11): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Flash.ts(23,16): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Fourchan.ts(32,9): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Fourchan.ts(53,9): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Fourchan.ts(84,14): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Fourchan.ts(86,24): error TS2488: Type 'NodeListOf<Element>' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/Miscellaneous/Fourchan.ts(99,77): error TS2345: Argument of type 'Window & typeof globalThis' is not assignable to parameter of type 'Document'.
+  Type 'Window & typeof globalThis' is missing the following properties from type 'Document': alinkColor, all, anchors, applets, and 150 more.
+src/Miscellaneous/IDColor.ts(49,14): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+  Type 'string' is not assignable to type 'number'.
+src/Miscellaneous/Keybinds.ts(79,18): error TS2554: Expected 1 arguments, but got 0.
+src/Miscellaneous/Keybinds.ts(86,18): error TS2554: Expected 1 arguments, but got 0.
+src/Miscellaneous/Keybinds.ts(145,32): error TS2554: Expected 1 arguments, but got 0.
+src/Miscellaneous/Keybinds.ts(156,19): error TS2554: Expected 1 arguments, but got 0.
+src/Miscellaneous/Keybinds.ts(242,16): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Keybinds.ts(278,16): error TS2554: Expected 3 arguments, but got 1.
+src/Miscellaneous/Keybinds.ts(282,18): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/Keybinds.ts(303,16): error TS2554: Expected 3 arguments, but got 1.
+src/Miscellaneous/ModContact.ts(22,21): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/ModContact.ts(26,26): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/Nav.ts(25,20): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/Nav.ts(27,20): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/Nav.ts(32,20): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/Nav.ts(97,12): error TS2554: Expected 3 arguments, but got 1.
+src/Miscellaneous/PSA.ts(16,14): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/PSA.ts(21,18): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/PSAHiding.ts(27,27): error TS2554: Expected 3 arguments, but got 1.
+src/Miscellaneous/PSAHiding.ts(30,13): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/PSAHiding.ts(42,30): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/PSAHiding.ts(74,16): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/PassMessage.ts(17,16): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/PostJumper.ts(69,21): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/PostJumper.ts(83,20): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/RelativeDates.ts(48,26): error TS2554: Expected 2 arguments, but got 1.
+src/Miscellaneous/RelativeDates.ts(60,28): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Miscellaneous/RelativeDates.ts(66,29): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Miscellaneous/RelativeDates.ts(123,18): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Miscellaneous/RelativeDates.ts(124,50): error TS2554: Expected 4 arguments, but got 3.
+src/Miscellaneous/RemoveSpoilers.ts(32,20): error TS2554: Expected 3 arguments, but got 2.
+src/Miscellaneous/Report.ts(24,7): error TS2554: Expected 2-3 arguments, but got 1.
+src/Miscellaneous/Report.ts(127,20): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/Favicon.ts(134,104): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(iterable: ArrayLike<any> | Iterable<any>): any[]', gave the following error.
+    Argument of type '{ ferongr: string[]; 'xat-': string[]; Mayhem: string[]; '4chanJS': string[]; Original: string[]; Metro: string[]; }' is not assignable to parameter of type 'ArrayLike<any> | Iterable<any>'.
+  Overload 2 of 4, '(arrayLike: ArrayLike<any>): any[]', gave the following error.
+    Argument of type '{ ferongr: string[]; 'xat-': string[]; Mayhem: string[]; '4chanJS': string[]; Original: string[]; Metro: string[]; }' is not assignable to parameter of type 'ArrayLike<any>'.
+src/Monitoring/MarkNewIPs.ts(47,23): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ReplyPruning.ts(20,22): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadStats.ts(32,29): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadStats.ts(65,48): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/ThreadUpdater.ts(33,20): error TS2554: Expected 3 arguments, but got 1.
+src/Monitoring/ThreadUpdater.ts(37,29): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(56,26): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(68,15): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(81,23): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(89,13): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(117,38): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(185,49): error TS2345: Argument of type '{ boardID: any; }' is not assignable to parameter of type '{ siteID: any; boardID: any; }'.
+src/Monitoring/ThreadUpdater.ts(226,21): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(241,21): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(253,21): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(294,21): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(312,19): error TS2554: Expected 2 arguments, but got 1.
+src/Monitoring/ThreadUpdater.ts(347,9): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Monitoring/ThreadUpdater.ts(405,21): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadUpdater.ts(440,35): error TS2554: Expected 3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(38,29): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(54,52): error TS2554: Expected 3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(86,62): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(104,15): error TS2554: Expected 2-3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(144,19): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(159,26): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(191,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(198,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(205,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(209,67): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/ThreadWatcher.ts(215,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(218,67): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/ThreadWatcher.ts(223,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(232,28): error TS2554: Expected 4 arguments, but got 3.
+src/Monitoring/ThreadWatcher.ts(254,48): error TS2365: Operator '>' cannot be applied to types 'number' and 'string'.
+src/Monitoring/ThreadWatcher.ts(269,28): error TS2554: Expected 2 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(472,39): error TS2554: Expected 2 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(489,23): error TS2554: Expected 4 arguments, but got 3.
+src/Monitoring/ThreadWatcher.ts(574,17): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(585,20): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(593,16): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(602,23): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(610,21): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(617,19): error TS2554: Expected 3 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(663,35): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/ThreadWatcher.ts(711,21): error TS2554: Expected 4 arguments, but got 3.
+src/Monitoring/ThreadWatcher.ts(753,28): error TS2554: Expected 4 arguments, but got 3.
+src/Monitoring/ThreadWatcher.ts(755,28): error TS2554: Expected 2 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(784,28): error TS2554: Expected 2 arguments, but got 1.
+src/Monitoring/ThreadWatcher.ts(807,25): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(882,17): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/ThreadWatcher.ts(905,16): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/Unread.ts(32,17): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/Unread.ts(35,17): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/Unread.ts(42,18): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/Unread.ts(68,25): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/Unread.ts(117,20): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/Unread.ts(123,17): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/Unread.ts(133,12): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/Unread.ts(159,12): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/Unread.ts(198,24): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/Unread.ts(199,14): error TS2554: Expected 1 arguments, but got 0.
+src/Monitoring/Unread.ts(249,17): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/Unread.ts(316,17): error TS2554: Expected 0 arguments, but got 1.
+src/Monitoring/UnreadIndex.ts(28,15): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/UnreadIndex.ts(107,49): error TS2554: Expected 3 arguments, but got 2.
+src/Monitoring/UnreadIndex.ts(125,59): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.replace.ts(27,20): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.t.ts(15,20): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.t.ts(40,32): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.t.ts(62,7): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/Captcha.t.ts(73,23): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/Captcha.t.ts(94,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/Captcha.ts(38,36): error TS2554: Expected 2-3 arguments, but got 1.
+src/Posting/Captcha.ts(44,26): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/Captcha.ts(48,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/Posting/Captcha.ts(95,11): error TS2554: Expected 2-3 arguments, but got 1.
+src/Posting/Captcha.ts(115,14): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/Captcha.ts(176,22): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.ts(197,28): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/Captcha.ts(215,26): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/Captcha.ts(248,21): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/Captcha.ts(258,32): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.ts(274,24): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/Captcha.ts(280,21): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/Captcha.ts(281,26): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/Captcha.ts(287,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/Captcha.ts(329,12): error TS2304: Cannot find name 'doc'.
+src/Posting/Captcha.ts(342,56): error TS2304: Cannot find name 'doc'.
+src/Posting/Captcha.ts(357,11): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/Captcha.ts(395,80): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/Captcha.ts(410,18): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/PassLink.ts(15,24): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/PostRedirect.ts(15,26): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/PostSuccessful.ts(24,16): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/PostSuccessful.ts(25,15): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(66,29): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(110,22): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(129,25): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(213,24): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/QR.ts(252,7): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(286,14): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(323,14): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(369,29): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/QR.ts(465,18): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/QR.ts(476,19): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/QR.ts(481,15): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(519,22): error TS2365: Operator '+' cannot be applied to types 'number' and 'boolean'.
+src/Posting/QR.ts(519,25): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Posting/QR.ts(562,24): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/QR.ts(570,21): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(600,16): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/QR.ts(617,22): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(747,18): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(768,22): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(774,61): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(812,17): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/QR.ts(868,10): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(947,11): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/QR.ts(1026,10): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1226,80): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Posting/QR.ts(1278,26): error TS2554: Expected 0 arguments, but got 2.
+src/Posting/QR.ts(1297,13): error TS2322: Type 'number' is not assignable to type 'string'.
+src/Posting/QR.ts(1298,45): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/Posting/QR.ts(1371,83): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/QR.ts(1380,21): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1406,23): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1408,29): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/QR.ts(1411,34): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1437,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1457,25): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1462,26): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1475,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1502,37): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1545,18): error TS2554: Expected 1 arguments, but got 0.
+src/Posting/QR.ts(1606,27): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1635,18): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1643,20): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1879,21): error TS2554: Expected 3 arguments, but got 2.
+src/Posting/QR.ts(1904,43): error TS2554: Expected 0 arguments, but got 1.
+src/Posting/QR.ts(1935,14): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1946,21): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1952,20): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/QR.ts(1985,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1988,23): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(1998,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(2001,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(2004,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(2006,16): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(2009,23): error TS2554: Expected 2 arguments, but got 1.
+src/Posting/QR.ts(2044,20): error TS2554: Expected 3 arguments, but got 1.
+src/Posting/QR.ts(2067,26): error TS2345: Argument of type '(error: any) => any' is not assignable to parameter of type '() => boolean'.
+src/Quotelinks/QuoteBacklink.ts(48,17): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteBacklink.ts(99,32): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteCT.ts(21,19): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteInline.ts(47,14): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteInline.ts(85,22): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteInline.ts(124,35): error TS2345: Argument of type 'ParentNode' is not assignable to parameter of type 'Document'.
+  Type 'ParentNode' is missing the following properties from type 'Document': URL, alinkColor, all, anchors, and 191 more.
+src/Quotelinks/QuoteInline.ts(126,23): error TS2345: Argument of type 'Node' is not assignable to parameter of type 'HTMLElement'.
+src/Quotelinks/QuoteOP.ts(21,19): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuotePreview.ts(48,53): error TS2304: Cannot find name 'doc'.
+src/Quotelinks/QuotePreview.ts(52,18): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuotePreview.ts(61,14): error TS2345: Argument of type '{ root: any; el: any; latestEvent: any; endEvents: string; cb: () => void; }' is not assignable to parameter of type '{ root: any; el: any; latestEvent: any; endEvents: any; height: any; width: any; cb: any; noRemove: any; }'.
+  Type '{ root: any; el: any; latestEvent: any; endEvents: string; cb: () => void; }' is missing the following properties from type '{ root: any; el: any; latestEvent: any; endEvents: any; height: any; width: any; cb: any; noRemove: any; }': height, width, noRemove
+src/Quotelinks/QuoteThreading.ts(23,23): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteThreading.ts(26,28): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteThreading.ts(74,9): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteThreading.ts(148,63): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteThreading.ts(192,22): error TS2554: Expected 1 arguments, but got 0.
+src/Quotelinks/QuoteYou.ts(22,15): error TS2554: Expected 3 arguments, but got 1.
+src/Quotelinks/QuoteYou.ts(48,19): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/QuoteYou.ts(167,16): error TS2554: Expected 3 arguments, but got 1.
+src/Quotelinks/Quotify.ts(87,15): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/Quotify.ts(95,15): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/Quotify.ts(110,15): error TS2554: Expected 3 arguments, but got 2.
+src/Quotelinks/Quotify.ts(141,23): error TS2554: Expected 3 arguments, but got 2.
+src/classes/Board.ts(21,5): error TS2536: Type 'this' cannot be used to index type 'Board[]'.
+src/classes/DataBoard.ts(90,35): error TS2345: Argument of type '{ siteID: any; boardID: any; }' is not assignable to parameter of type '{ siteID: any; boardID: any; threadID: any; }'.
+src/classes/DataBoard.ts(103,35): error TS2345: Argument of type '{ siteID: any; boardID: any; }' is not assignable to parameter of type '{ siteID: any; boardID: any; threadID: any; }'.
+src/classes/DataBoard.ts(147,17): error TS2554: Expected 2 arguments, but got 1.
+src/classes/DataBoard.ts(184,26): error TS2345: Argument of type '{ siteID: any; boardID: any; }' is not assignable to parameter of type '{ siteID: any; boardID: any; threadID: any; }'.
+src/classes/DataBoard.ts(203,39): error TS2554: Expected 3 arguments, but got 2.
+src/classes/DataBoard.ts(231,24): error TS2345: Argument of type '{ siteID: any; boardID: any; }' is not assignable to parameter of type '{ siteID: any; boardID: any; threadID: any; }'.
+src/classes/DataBoard.ts(232,14): error TS2554: Expected 3 arguments, but got 2.
+src/classes/Fetcher.ts(65,80): error TS2345: Argument of type 'import("/home/victor/proj/4chan-XZ/src/globals/globals").Board' is not assignable to parameter of type 'import("/home/victor/proj/4chan-XZ/src/classes/Board").default'.
+src/classes/Fetcher.ts(74,27): error TS2554: Expected 2 arguments, but got 1.
+src/classes/Fetcher.ts(106,27): error TS2554: Expected 3 arguments, but got 2.
+src/classes/Fetcher.ts(153,33): error TS2554: Expected 2 arguments, but got 1.
+src/classes/Fetcher.ts(174,78): error TS2345: Argument of type 'Board | Board' is not assignable to parameter of type 'Board'.
+  Type 'import("/home/victor/proj/4chan-XZ/src/globals/globals").Board' is not assignable to type 'import("/home/victor/proj/4chan-XZ/src/classes/Board").default'.
+src/classes/Fetcher.ts(314,51): error TS2345: Argument of type 'Board | Board' is not assignable to parameter of type 'Board'.
+  Type 'import("/home/victor/proj/4chan-XZ/src/globals/globals").Board' is not assignable to type 'import("/home/victor/proj/4chan-XZ/src/classes/Board").default'.
+src/classes/Post.ts(343,18): error TS2554: Expected 3 arguments, but got 2.
+src/classes/ShimSet.ts(8,21): error TS2592: Cannot find name '$'. Do you need to install type definitions for jQuery? Try `npm i --save-dev @types/jquery` and then add 'jquery' to the types field in your tsconfig.
+src/classes/Thread.ts(46,16): error TS2554: Expected 3 arguments, but got 2.
+src/classes/Thread.ts(82,14): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(164,9): error TS2554: Expected 2 arguments, but got 1.
+src/main/Main.ts(211,32): error TS2345: Argument of type 'Document' is not assignable to parameter of type 'HTMLElement'.
+  Type 'Document' is missing the following properties from type 'HTMLElement': accessKey, accessKeyLabel, autocapitalize, draggable, and 125 more.
+src/main/Main.ts(213,7): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(220,12): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(235,15): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(236,29): error TS2554: Expected 1 arguments, but got 0.
+src/main/Main.ts(259,14): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(261,22): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(298,7): error TS2554: Expected 2 arguments, but got 1.
+src/main/Main.ts(307,22): error TS2740: Type 'Board' is missing the following properties from type 'Board': ID, boardID, siteID, config, and 2 more.
+src/main/Main.ts(319,27): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(379,11): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(384,27): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(448,63): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/main/Main.ts(501,21): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(518,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/main/Main.ts(553,18): error TS2554: Expected 2-3 arguments, but got 1.
+src/main/Main.ts(558,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/main/Main.ts(681,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/main/Main.ts(767,25): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(780,27): error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'string | Node'.
+src/main/Main.ts(784,19): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(797,18): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(800,24): error TS2554: Expected 2 arguments, but got 1.
+src/main/Main.ts(803,32): error TS2345: Argument of type 'any[]' is not assignable to parameter of type 'string | Node'.
+src/main/Main.ts(808,23): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(810,21): error TS2554: Expected 3 arguments, but got 2.
+src/main/Main.ts(813,23): error TS2554: Expected 3 arguments, but got 2.
+src/meta/metadata.js(3,26): error TS2792: Cannot find module 'fs/promises'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+src/meta/metadata.js(4,34): error TS2792: Cannot find module 'path'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+src/meta/metadata.js(5,31): error TS2792: Cannot find module 'url'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+src/meta/metadata.js(16,16): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/platform/$.ts(41,17): error TS2554: Expected 0 arguments, but got 1.
+src/platform/$.ts(119,15): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(128,19): error TS2554: Expected 0 arguments, but got 4.
+src/platform/$.ts(129,19): error TS2554: Expected 0 arguments, but got 4.
+src/platform/$.ts(142,9): error TS2554: Expected 2 arguments, but got 1.
+src/platform/$.ts(270,21): error TS2554: Expected 0 arguments, but got 1.
+src/platform/$.ts(279,28): error TS2554: Expected 0 arguments, but got 1.
+src/platform/$.ts(299,9): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(305,9): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(334,19): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(342,18): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(351,38): error TS2554: Expected 3 arguments, but got 1.
+src/platform/$.ts(477,7): error TS2300: Duplicate identifier 'open'.
+src/platform/$.ts(485,7): error TS2300: Duplicate identifier 'open'.
+src/platform/$.ts(537,22): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(657,21): error TS2554: Expected 3 arguments, but got 2.
+src/platform/$.ts(758,42): error TS2554: Expected 2 arguments, but got 1.
+src/platform/$.ts(767,12): error TS2322: Type '(cb: any) => void' is not assignable to type '(cb: any) => Promise<any>'.
+  Type 'void' is not assignable to type 'Promise<any>'.
+src/platform/$.ts(833,40): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/platform/$.ts(863,9): error TS2300: Duplicate identifier 'getValue'.
+src/platform/$.ts(866,9): error TS2300: Duplicate identifier 'getValue'.
+src/platform/$.ts(866,27): error TS2322: Type 'string' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'string'.
+src/platform/$.ts(877,7): error TS2322: Type '() => void' is not assignable to type '<T>(name: string, defaultValue?: T) => T'.
+  Type 'void' is not assignable to type 'T'.
+    'T' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/platform/$.ts(877,9): error TS2300: Duplicate identifier 'getValue'.
+src/platform/$.ts(882,9): error TS2300: Duplicate identifier 'setValue'.
+src/platform/$.ts(883,9): error TS2300: Duplicate identifier 'deleteValue'.
+src/platform/$.ts(886,9): error TS2300: Duplicate identifier 'setValue'.
+src/platform/$.ts(893,9): error TS2300: Duplicate identifier 'deleteValue'.
+src/platform/$.ts(903,9): error TS2300: Duplicate identifier 'setValue'.
+src/platform/$.ts(907,9): error TS2300: Duplicate identifier 'deleteValue'.
+src/platform/$.ts(912,9): error TS2300: Duplicate identifier 'setValue'.
+src/platform/$.ts(913,9): error TS2300: Duplicate identifier 'deleteValue'.
+src/platform/$.ts(920,62): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/platform/$.ts(948,16): error TS2322: Type '(key: any) => any' is not assignable to type '() => void'.
+src/platform/$.ts(961,5): error TS2322: Type '(keys: any) => void' is not assignable to type '(keys: any, cb: any) => Promise<any>'.
+  Type 'void' is not assignable to type 'Promise<any>'.
+src/platform/$.ts(970,55): error TS2554: Expected 0 arguments, but got 3.
+src/platform/$.ts(991,26): error TS2554: Expected 0 arguments, but got 1.
+src/platform/$.ts(1003,9): error TS2554: Expected 2 arguments, but got 1.
+src/platform/$.ts(1004,9): error TS2554: Expected 2 arguments, but got 1.
+src/platform/$.ts(1006,11): error TS2554: Expected 2 arguments, but got 1.
+src/platform/CrossOrigin.ts(79,58): error TS2345: Argument of type '{ method: string; url: any; headers: any; responseType: string; overrideMimeType: string; onload(xhr: any): any; onerror(): any; onabort(): any; }' is not assignable to parameter of type 'VMScriptGMXHRDetails<unknown>'.
+  Types of property 'responseType' are incompatible.
+    Type 'string' is not assignable to type 'VMScriptResponseType'.
+src/site/SW.tinyboard.ts(225,14): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.tinyboard.ts(256,38): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(148,14): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(186,43): error TS2554: Expected 2-3 arguments, but got 1.
+src/site/SW.yotsuba.tsx(199,33): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(339,14): error TS2554: Expected 2 arguments, but got 1.
+src/site/SW.yotsuba.tsx(347,28): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(354,26): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(575,27): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(608,16): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(621,39): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(671,27): error TS2554: Expected 3 arguments, but got 2.
+src/site/SW.yotsuba.tsx(683,22): error TS2554: Expected 3 arguments, but got 2.
+src/site/Site.ts(44,15): error TS2554: Expected 3 arguments, but got 2.

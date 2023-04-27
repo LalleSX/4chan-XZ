@@ -19,7 +19,7 @@ export const fa = (css: string, font: string) => (
     .replace(/([,{;])\s+/g, '$1')
     .replace(/,/g, ', ')
 
-);
+)
 
 // == Create CSS for Link Title Favicons == //
 export const icons = (data: { name: string, data: string }[]) => (
@@ -34,4 +34,4 @@ export const icons = (data: { name: string, data: string }[]) => (
 `
   ).join('')
 
-);
+)

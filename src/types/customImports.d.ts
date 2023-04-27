@@ -1,10 +1,10 @@
-declare module '*.css' { const css: string; export default css; }
-declare module '*.woff' { const woff: string; export default woff; }
-declare module '*.woff2' { const woff2: string; export default woff2; }
-declare module '*.html' { const html: string; export default html; }
-declare module '*.gif' { const gif: string; export default gif; }
-declare module '*.png' { const png: string; export default png; }
-declare module '*.wav' { const wav: string; export default wav; }
+declare module '*.css' { const css: string; export default css }
+declare module '*.woff' { const woff: string; export default woff }
+declare module '*.woff2' { const woff2: string; export default woff2 }
+declare module '*.html' { const html: string; export default html }
+declare module '*.gif' { const gif: string; export default gif }
+declare module '*.png' { const png: string; export default png }
+declare module '*.wav' { const wav: string; export default wav }
 declare module '*/package.json' {
   const meta: {
     "name": string,
@@ -39,7 +39,7 @@ declare module '*/package.json' {
       "greasemonkey": string
     }
   }
-  export default meta;
+  export default meta
 }
 declare module '*/version.json' {
   const versionInfo: {
@@ -47,7 +47,7 @@ declare module '*/version.json' {
     /** ISO */
     date: string,
   }
-  export default versionInfo;
+  export default versionInfo
 }
 declare module '*/archives.json' {
   const archives: {
@@ -61,10 +61,10 @@ declare module '*/archives.json' {
     files: string[],
     search?: string[],
     reports?: boolean,
-  }[];
-  export default archives;
+  }[]
+  export default archives
 }
 declare module '*/banners.json' {
-  const banners: string[];
-  export default banners;
+  const banners: string[]
+  export default banners
 }

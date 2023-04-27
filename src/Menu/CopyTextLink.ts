@@ -1,6 +1,6 @@
-import { g, Conf, d } from "../globals/globals";
-import $ from "../platform/$";
-import Menu from "./Menu";
+import { Conf, d,g } from "../globals/globals"
+import $ from "../platform/$"
+import Menu from "./Menu"
 
 /*
  * decaffeinate suggestions:
@@ -9,24 +9,24 @@ import Menu from "./Menu";
  */
 var CopyTextLink = {
   init() {
-    if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Copy Text Link']) { return; }
+    if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Copy Text Link']) { return }
 
     const a = $.el('a', {
       className: 'copy-text-link',
       href: 'javascript:;',
       textContent: 'Copy Text'
     }
-    );
-    $.on(a, 'click', CopyTextLink.copy);
+    )
+    $.on(a, 'click', CopyTextLink.copy)
 
     return Menu.menu.addEntry({
       el: a,
       order: 12,
       open(post) {
-        CopyTextLink.text = (post.origin || post).commentOrig();
-        return true;
+        CopyTextLink.text = (post.origin || post).commentOrig()
+        return true
       }
-    });
+    })
   },
 
   copy() {
@@ -34,13 +34,13 @@ var CopyTextLink = {
       className: 'copy-text-element',
       value: CopyTextLink.text
     }
-    );
-    $.add(d.body, el);
-    el.select();
+    )
+    $.add(d.body, el)
+    el.select()
     try {
-      d.execCommand('copy');
+      d.execCommand('copy')
     } catch (error) {}
-    return $.rm(el);
+    return $.rm(el)
   }
-};
-export default CopyTextLink;
+}
+export default CopyTextLink
