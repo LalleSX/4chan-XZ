@@ -5,57 +5,63 @@ import type SimpleDict from "../classes/SimpleDict"
 import type Thread from "../classes/Thread"
 import type SWTinyboard from "../site/SW.tinyboard"
 
+declare global {
+  interface Window {
+    Tegaki: any
+    FCX: any
+  }
+}
 // interfaces might be incomplete
 export interface BoardConfig {
-  board:      string
+  board: string
   bump_limit: number
   cooldowns: {
     threads: number,
     replies: number,
-    images:  number,
+    images: number,
   }
-  custom_spoilers:   1 | 0,
-  image_limit:       number,
-  is_archived:       1 | 0,
+  custom_spoilers: 1 | 0,
+  image_limit: number,
+  is_archived: 1 | 0,
   max_comment_chars: number
-  max_filesize:      number
+  max_filesize: number
   max_webm_duration: number
   max_webm_filesize: number
-  meta_description:  string,
-  pages:             number,
-  per_page:          number,
-  spoilers:          number,
-  title:             string
-  ws_board:           1 | 0
+  meta_description: string,
+  pages: number,
+  per_page: number,
+  spoilers: number,
+  title: string
+  ws_board: 1 | 0
 }
 
 export interface Board {
-  ID:      string,
+  ID: string,
   boardID: string,
-  siteID:  string,
-  config:  BoardConfig,
-  posts:   SimpleDict<Post>,
+  siteID: string,
+  config: BoardConfig,
+  posts: SimpleDict<Post>,
   threads: SimpleDict<Thread>,
 }
 
 export const Conf = Object.create(null)
 
 export const g: {
-  VERSION:   string,
+  VERSION: string,
   NAMESPACE: string,
-  sites:     (typeof SWTinyboard)[],
-  boards:    Board[],
-  posts?:    SimpleDict<Post>,
-  threads?:  SimpleDict<Thread>
+  sites: (typeof SWTinyboard)[],
+  boards: Board[],
+  posts?: SimpleDict<Post>,
+  threads?: SimpleDict<Thread>
   THREADID?: number,
-  SITE?:     typeof SWTinyboard,
-  BOARD?:    Board,
-  VIEW?:     string,
+  SITE?: typeof SWTinyboard,
+  BOARD?: Board,
+  VIEW?: string,
 } = {
-  VERSION:   version.version,
+  VERSION: version.version,
   NAMESPACE: meta.name,
-  sites:     Object.create(null),
-  boards:    Object.create(null)
+  sites: Object.create(null),
+  boards: Object.create(null)
 }
 
 export const E = (function () {
