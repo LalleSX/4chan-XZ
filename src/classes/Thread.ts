@@ -6,7 +6,7 @@ import SimpleDict from "./SimpleDict"
 
 
 export default class Thread {
-  ID: number
+  ID: number | string
   OP: Post
   isArchived: boolean
   isClosed: boolean

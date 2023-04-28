@@ -4,9 +4,9 @@ import Post from "./Post"
 import Thread from "./Thread"
 
 export default class CatalogThread {
-  ID: any
+  ID: string | number
   thread: Thread
-  board: any
+  board: Board
   nodes: { root: Post; thumb: HTMLElement; icons: any; postCount: number; fileCount: number; pageCount: number; replies: any }
   toString() { return this.ID }
 

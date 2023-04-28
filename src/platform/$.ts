@@ -8,7 +8,6 @@
 // loosely follows the jquery api:
 // http://api.jquery.com/
 
-import Callbacks from "../classes/Callbacks"
 import Notice from "../classes/Notice"
 import { c, Conf, d, doc, g } from "../globals/globals"
 import CrossOrigin from "./CrossOrigin"
@@ -18,33 +17,48 @@ import { debounce, dict, MINUTE, platform, SECOND } from "./helpers"
 const $ = (selector, root = document.body) => root.querySelector(selector)
 
 $.id = id => d.getElementById(id)
-$.cache = (function () {
-  const cache = {}
-  return function (key, value) {
-    if (value != null) {
-      return (cache[key] = value)
-    } else {
-      return cache[key]
+
+type AjaxPageOptions = {
+  responseType?: string;
+  type?: string;
+  form?: Document | null;
+  headers?: { [key: string]: string };
+  onloadend?: () => void;
+  timeout?: number;
+  withCredentials?: boolean;
+  onprogress?: (event: ProgressEvent) => void;
+}
+
+$.ajaxPage = function (url: string, options: AjaxPageOptions) {
+  const {
+    responseType = 'json',
+    type = options.form ? 'post' : 'get',
+    onloadend,
+    timeout,
+    withCredentials,
+    onprogress,
+    form,
+    headers = {},
+  } = options
+
+  const xhr = new XMLHttpRequest()
+  xhr.open(type, url, true)
+
+  for (const key in headers) {
+    xhr.setRequestHeader(key, headers[key])
+  }
+
+  Object.assign(xhr, { onloadend, timeout, responseType, withCredentials })
+  Object.assign(xhr.upload, { onprogress })
+
+  xhr.addEventListener('error', () => {
+    if (!xhr.status) {
+      console.warn(`4chan X failed to load: ${url}`)
     }
-  }
-})()
-$.ajaxPage = function (url, options) {
-  if (options.responseType == null) { options.responseType = 'json' }
-  if (!options.type) { options.type = (options.form && 'post') || 'get' }
-  const { onloadend, timeout, responseType, withCredentials, type, onprogress, form, headers } = options
-  const r = new XMLHttpRequest()
-  r.open(type, url, true)
-  const object = headers || {}
-  for (const key in object) {
-    const value = object[key]
-    r.setRequestHeader(key, value)
-  }
-  $.extend(r, { onloadend, timeout, responseType, withCredentials })
-  $.extend(r.upload, { onprogress })
-  // connection error or content blocker
-  $.on(r, 'error', function () { if (!r.status) { return c.warn(`4chan X failed to load: ${url}`) } })
-  r.send(form)
-  return r
+  })
+
+  xhr.send(form)
+  return xhr
 }
 $.ready = function (fc) {
   if (d.readyState !== 'loading') {
@@ -98,7 +112,7 @@ $.ajax = (function () {
     pageXHR = XMLHttpRequest
   }
 
-  const r = (function (url: string, options) {
+  const r = (function (url, options = {}) {
     if (options.responseType == null) { options.responseType = 'json' }
     if (!options.type) { options.type = (options.form && 'post') || 'get' }
     // XXX https://forums.lanik.us/viewtopic.php?f=64&t=24173&p=78310
@@ -201,7 +215,7 @@ $.ajax = (function () {
           return r.abort()
         }
           , false)
-      })
+      }, '4chanXAjax')
 
       $.on(d, '4chanXAjaxProgress', function (e) {
         let req
@@ -518,15 +532,31 @@ $.debounce = function (wait, fn) {
   }
 }
 
-$.queueTask = function (fn) {
-  if (typeof requestIdleCallback === 'function') {
-    return requestIdleCallback(fn)
-  } else {
-    return setTimeout(fn, 0)
+$.queueTask = (function () {
+  // inspired by https://www.w3.org/Bugs/Public/show_bug.cgi?id=15007
+  const taskQueue = []
+  const execTask = function () {
+    const task = taskQueue.shift()
+    const func = task[0]
+    const args = Array.prototype.slice.call(task, 1)
+    return func.apply(func, args)
   }
-}
+  if (window.MessageChannel) {
+    const taskChannel = new MessageChannel()
+    taskChannel.port1.onmessage = execTask
+    return function () {
+      taskQueue.push(arguments)
+      return taskChannel.port2.postMessage(null)
+    }
+  } else { // XXX Firefox
+    return function () {
+      taskQueue.push(arguments)
+      return setTimeout(execTask, 0)
+    }
+  }
+})()
 
-$.global = function (fn, data?) {
+$.global = function (fn, data) {
   if (doc) {
     const script = $.el('script',
       { textContent: `(${fn}).call(document.currentScript.dataset);` })
@@ -639,13 +669,8 @@ if (platform === 'crx') {
     }
   })
   $.sync = (key, cb) => $.syncing[key] = cb
-  $.forceSync = function (key, cb) {
-    chrome.storage.sync.get(key, function (data) {
-      if (data[key] != null) {
-        cb(data[key], key)
-      }
-    })
-  }
+  $.forceSync = function () { }
+
   $.crxWorking = function () {
     try {
       if (chrome.runtime.getManifest()) {
@@ -997,15 +1022,15 @@ if (platform === 'crx') {
       })
     })
 
-    $.clear = function (cb: Callbacks) {
+    $.clear = function (cb) {
       // XXX https://github.com/greasemonkey/greasemonkey/issues/2033
       // Also support case where GM_listValues is not defined.
-      $.delete(Object.keys(Conf), cb)
-      $.delete(['previousversion', 'QR Size', 'QR.persona'], cb)
+      $.delete(Object.keys(Conf))
+      $.delete(['previousversion', 'QR Size', 'QR.persona'])
       try {
-        $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')), cb)
+        $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')))
       } catch (error) { }
-      return cb
+      return cb?.()
     }
   }
 }

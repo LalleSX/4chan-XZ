@@ -54,6 +54,7 @@ export default class Post {
     return el
   })()
   normalizedOriginal: any
+  indexRefreshSeen: any
 
   toString() { return this.ID }
 

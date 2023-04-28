@@ -15,7 +15,7 @@ import Config from '../config/Config'
 import Filter from '../Filtering/Filter'
 import PostHiding from '../Filtering/PostHiding'
 import ThreadHiding from '../Filtering/ThreadHiding'
-import { c, Conf, d, doc, g } from '../globals/globals'
+import { Board, c, Conf, d, doc, g } from '../globals/globals'
 import Main from '../main/Main'
 import Menu from '../Menu/Menu'
 import CatalogLinks from '../Miscellaneous/CatalogLinks'
@@ -31,8 +31,85 @@ import Header from './Header'
 import NavLinksPage from './Index/NavLinks.html'
 import PageList from './Index/PageList.html'
 import UI from './UI'
-
-const Index = {
+interface Index {
+  req: boolean
+  liveThreadData: any
+  pageNum: any
+  currentPage: any
+  pagesNum: number
+  changed: any
+  showHiddenThreads: boolean
+  threadPosition: any
+  threadsNumPerPage: any
+  selectSort: any
+  initFinishedFired: boolean
+  cb: any
+  loaded: any
+  lastLongThresholds: any
+  inputs: any
+  selectRev: any
+  hashCommands: any
+  search: any
+  liveThreadDict: any
+  parsedThreads: any
+  replyData: any
+  selectMode: any
+  lastLongOptions: any
+  sortedThreadIDs: any
+  hideLabel: any
+  liveThreadIDs: any
+  notice: any
+  nTimeout: any
+  searchInput: any
+  update(): unknown
+  currentSort(currentSort: any): any
+  root(board: any, root: any): unknown
+  navLinks(topNavPos: Element, navLinks: any): unknown
+  pagelist(pagelist: any, pagelist1: any): unknown
+  endNotice(): unknown
+  threadsOnPage(pageNum: number): unknown
+  buildStructure(threadIDs: any): unknown
+  enabledOn(BOARD: Board): unknown
+  toggleHide(thread: any): unknown
+  sort(): unknown
+  buildIndex(): unknown
+  pushState(arg0: { mode: any }): unknown
+  pageLoad(arg0: boolean): unknown
+  saveSort(): unknown
+  saveLastLongThresholds(i: number): unknown
+  getCurrentPage(): unknown
+  setState(arg0: { search: any; mode: any; sort: any; page: any; hash: string }): unknown
+  processHash(): unknown
+  userPageNav(arg0: number): unknown
+  buildCatalogReplies(arg0: any): unknown
+  savePerBoard(arg0: string, currentSort: any): unknown
+  buildPagelist(): unknown
+  setupSearch(): unknown
+  setupMode(): unknown
+  setupSort(): unknown
+  setPage(): unknown
+  scrollToIndex(): unknown
+  getPagesNum(): number
+  getMaxPageNum(): unknown
+  isHidden(threadID: any): unknown
+  load(arg0: string, arg1: string, load: any): any
+  button(button: any, arg1: string): unknown
+  parse(response: any): unknown
+  parseThreadList(pages: any): unknown
+  buildReplies(threads: any[]): any
+  updateHideLabel(): unknown
+  isHiddenReply(ID: any, data: any): unknown
+  querySearch(search: any): any
+  sortOnTop(arg0: (obj: any) => any): unknown
+  buildCatalog(threadIDs: any): unknown
+  buildThreads(threadIDs: any, arg1: boolean, arg2: any): unknown
+  buildCatalogPart(arg0: any): unknown
+  buildCatalogViews(threads: any): unknown
+  sizeCatalogViews(threads: any): unknown
+  onSearchInput(): unknown
+  searchMatch(arg0: any, keywords: any): unknown
+}
+const Index: Index = {
   showHiddenThreads: false,
   changed: {},
 

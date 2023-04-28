@@ -663,12 +663,10 @@ const Header = {
       case 'granted':
         Header.areNotificationsEnabled = true
         return
-        break
       case 'denied':
         // requestPermission doesn't work if status is 'denied',
         // but it'll still work if status is 'default'.
         return
-        break
     }
 
     const el = $.el('span',
