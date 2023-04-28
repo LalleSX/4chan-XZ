@@ -8,6 +8,7 @@
 // loosely follows the jquery api:
 // http://api.jquery.com/
 
+import Callbacks from "../classes/Callbacks"
 import Notice from "../classes/Notice"
 import { c, Conf, d, doc, g } from "../globals/globals"
 import CrossOrigin from "./CrossOrigin"
@@ -17,7 +18,16 @@ import { debounce, dict, MINUTE, platform, SECOND } from "./helpers"
 const $ = (selector, root = document.body) => root.querySelector(selector)
 
 $.id = id => d.getElementById(id)
-
+$.cache = (function () {
+  const cache = {}
+  return function (key, value) {
+    if (value != null) {
+      return (cache[key] = value)
+    } else {
+      return cache[key]
+    }
+  }
+})()
 $.ajaxPage = function (url, options) {
   if (options.responseType == null) { options.responseType = 'json' }
   if (!options.type) { options.type = (options.form && 'post') || 'get' }
@@ -88,7 +98,7 @@ $.ajax = (function () {
     pageXHR = XMLHttpRequest
   }
 
-  const r = (function (url, options = {}) {
+  const r = (function (url: string, options) {
     if (options.responseType == null) { options.responseType = 'json' }
     if (!options.type) { options.type = (options.form && 'post') || 'get' }
     // XXX https://forums.lanik.us/viewtopic.php?f=64&t=24173&p=78310
@@ -321,7 +331,7 @@ $.onExists = function (root, selector, cb) {
   if (el = $(selector, root)) {
     return cb(el)
   }
-  var observer = new MutationObserver(function () {
+  const observer = new MutationObserver(function () {
     if (el = $(selector, root)) {
       observer.disconnect()
       return cb(el)
@@ -508,31 +518,15 @@ $.debounce = function (wait, fn) {
   }
 }
 
-$.queueTask = (function () {
-  // inspired by https://www.w3.org/Bugs/Public/show_bug.cgi?id=15007
-  const taskQueue = []
-  const execTask = function () {
-    const task = taskQueue.shift()
-    const func = task[0]
-    const args = Array.prototype.slice.call(task, 1)
-    return func.apply(func, args)
+$.queueTask = function (fn) {
+  if (typeof requestIdleCallback === 'function') {
+    return requestIdleCallback(fn)
+  } else {
+    return setTimeout(fn, 0)
   }
-  if (window.MessageChannel) {
-    const taskChannel = new MessageChannel()
-    taskChannel.port1.onmessage = execTask
-    return function () {
-      taskQueue.push(arguments)
-      return taskChannel.port2.postMessage(null)
-    }
-  } else { // XXX Firefox
-    return function () {
-      taskQueue.push(arguments)
-      return setTimeout(execTask, 0)
-    }
-  }
-})()
+}
 
-$.global = function (fn, data) {
+$.global = function (fn, data?) {
   if (doc) {
     const script = $.el('script',
       { textContent: `(${fn}).call(document.currentScript.dataset);` })
@@ -645,8 +639,13 @@ if (platform === 'crx') {
     }
   })
   $.sync = (key, cb) => $.syncing[key] = cb
-  $.forceSync = function () { }
-
+  $.forceSync = function (key, cb) {
+    chrome.storage.sync.get(key, function (data) {
+      if (data[key] != null) {
+        cb(data[key], key)
+      }
+    })
+  }
   $.crxWorking = function () {
     try {
       if (chrome.runtime.getManifest()) {
@@ -998,15 +997,15 @@ if (platform === 'crx') {
       })
     })
 
-    $.clear = function (cb) {
+    $.clear = function (cb: Callbacks) {
       // XXX https://github.com/greasemonkey/greasemonkey/issues/2033
       // Also support case where GM_listValues is not defined.
-      $.delete(Object.keys(Conf))
-      $.delete(['previousversion', 'QR Size', 'QR.persona'])
+      $.delete(Object.keys(Conf), cb)
+      $.delete(['previousversion', 'QR Size', 'QR.persona'], cb)
       try {
-        $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')))
+        $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')), cb)
       } catch (error) { }
-      return cb?.()
+      return cb
     }
   }
 }

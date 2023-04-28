@@ -11,7 +11,7 @@ export default class Post {
   declare root: HTMLElement
   declare thread: Thread
   declare board: Board
-  declare ID: number
+  declare ID: number | string
   declare postID: number
   declare threadID: number
   declare boardID: number | string
@@ -22,7 +22,7 @@ export default class Post {
   declare nodes: ReturnType<Post['parseNodes']>
   declare isDead: boolean
   declare isHidden: boolean
-  declare clones: any[]
+  declare clones: unknown[]
   declare isRebuilt?: boolean
   declare isFetchedQuote: boolean
   declare isClone: boolean
@@ -31,17 +31,17 @@ export default class Post {
   declare files: ReturnType<Post['parseFile']>[]
 
   declare info: {
-    subject: string | undefined,
-    name: string | undefined,
-    email: string | undefined,
-    tripcode: string | undefined,
-    uniqueID: string | undefined,
-    capcode: string | undefined,
-    pass: string | undefined,
-    flagCode: string | undefined,
-    flagCodeTroll: string | undefined,
-    flag: string | undefined,
-    date: Date | undefined,
+    subject: string,
+    name: string,
+    email: string,
+    tripcode: string,
+    uniqueID: string,
+    capcode: string,
+    pass: string,
+    flagCode: string,
+    flagCodeTroll: string,
+    flag: string,
+    date: Date,
     nameBlock: string,
   }
 
@@ -85,7 +85,7 @@ export default class Post {
     if (!this.isReply) {
       this.thread.OP = this
       for (const key of ['isSticky', 'isClosed', 'isArchived']) {
-        var selector
+        var selector: any
         if (selector = g.SITE.selectors.icons[key]) {
           this.thread[key] = !!$(selector, this.nodes.info)
         }
@@ -135,8 +135,8 @@ export default class Post {
     }
 
     if (!this.isFetchedQuote && (this.ID > this.thread.lastPost)) { this.thread.lastPost = this.ID }
-    this.board.posts.push(this.ID, this)
-    this.thread.posts.push(this.ID, this)
+    this.board.posts.push(this.ID.toString(), this)
+    this.thread.posts.push(this.ID.toString(), this)
     g.posts.push(this.fullID, this)
 
     this.isFetchedQuote = false
@@ -187,7 +187,7 @@ export default class Post {
 
   parseComment() {
     // Merge text nodes and remove empty ones.
-    let bq
+    let bq: Node
     this.nodes.comment.normalize()
 
     // Get the comment's text.
@@ -221,8 +221,8 @@ export default class Post {
     return this.nodesToText(bq)
   }
 
-  nodesToText(bq) {
-    let node
+  nodesToText(bq: any) {
+    let node: Node
     let text = ""
     const nodes = $.X('.//br|.//text()', bq)
     let i = 0
@@ -232,7 +232,7 @@ export default class Post {
     return text
   }
 
-  cleanSpoilers(bq) {
+  cleanSpoilers(bq: HTMLElement) {
     const spoilers = $$(g.SITE.selectors.spoiler, bq)
     for (const node of spoilers) {
       $.replace(node, $.tn('[spoiler]'))
@@ -246,7 +246,7 @@ export default class Post {
     }
   }
 
-  parseQuote(quotelink) {
+  parseQuote(quotelink: HTMLAnchorElement) {
     // Only add quotes that link to posts on an imageboard.
     // Don't add:
     //  - board links. (>>>/b/)
@@ -326,8 +326,8 @@ export default class Post {
     return file as File
   }
 
-  kill(file, index = 0) {
-    let strong
+  kill(file: any, index = 0) {
+    let strong: { textContent: string }
     if (file) {
       if (this.isDead || this.files[index].isDead) { return }
       this.files[index].isDead = true
@@ -395,20 +395,20 @@ export default class Post {
     this.board.posts.rm(this)
   }
 
-  addClone(context, contractThumb) {
+  addClone(context: any, contractThumb: any) {
     // Callbacks may not have been run yet due to anti-browser-lock delay in Main.callbackNodesDB.
     Callbacks.Post.execute(this)
     return new PostClone(this, context, contractThumb)
   }
 
-  rmClone(index) {
+  rmClone(index: number) {
     this.clones.splice(index, 1)
     for (const clone of this.clones.slice(index)) {
       clone.nodes.root.dataset.clone = index++
     }
   }
 
-  setCatalogOP(isCatalogOP) {
+  setCatalogOP(isCatalogOP: boolean) {
     this.nodes.root.classList.toggle('catalog-container', isCatalogOP)
     this.nodes.root.classList.toggle('opContainer', !isCatalogOP)
     this.nodes.post.classList.toggle('catalog-post', isCatalogOP)
@@ -422,11 +422,11 @@ export class PostClone extends Post {
 
   static suffix = 0
 
-  constructor(origin, context, contractThumb) {
+  constructor(origin: Post, context: Post, contractThumb: any) {
     super()
     this.isClone = true
 
-    let file, fileRoots, key
+    let file, fileRoots: any[], key: string | number
     this.origin = origin
     this.context = context
     for (key of ['ID', 'postID', 'threadID', 'boardID', 'siteID', 'fullID', 'board', 'thread', 'info', 'quotes', 'isReply']) {
@@ -458,9 +458,9 @@ export class PostClone extends Post {
     // Remove catalog stuff.
     if (!this.isReply) {
       this.setCatalogOP(false)
-      $.rm($('.catalog-link', this.nodes.post))
-      $.rm($('.catalog-stats', this.nodes.post))
-      $.rm($('.catalog-replies', this.nodes.post))
+      $.rm($('.catalog-link')),
+        $.rm($('.catalog-stats')),
+        $.rm($('.catalog-subject'))
     }
 
     this.parseQuotes()
@@ -495,7 +495,7 @@ export class PostClone extends Post {
     return this
   }
 
-  cloneWithoutVideo(node) {
+  cloneWithoutVideo(node: HTMLElement) {
     if ((node.tagName === 'VIDEO') && !node.dataset.md5) { // (exception for WebM thumbnails)
       return []
     } else if ((node.nodeType === Node.ELEMENT_NODE) && $('video', node)) {
