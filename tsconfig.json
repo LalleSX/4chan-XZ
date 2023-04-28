@@ -13,7 +13,8 @@
     "jsxFragmentFactory": "hFragment",
     "types": [
       "@violentmonkey/types",
-      "@types/chrome"
+      "@types/chrome",
+      "@types/firefox-webext-browser"
     ],
     "lib": [
       "DOM",

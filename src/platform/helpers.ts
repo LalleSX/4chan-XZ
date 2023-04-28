@@ -4,15 +4,11 @@
 export const debounce = (wait: number, fn: Function) => {
   let lastCall = 0
   let timeout = null
-  let that = null
-  let args = null
   const exec = function () {
     lastCall = Date.now()
-    return fn.apply(that, args)
+    return fn.apply(this, arguments)
   }
   return function () {
-    args = arguments
-    that = this
     if (lastCall < (Date.now() - wait)) {
       return exec()
     }

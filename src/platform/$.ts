@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
@@ -8,6 +9,8 @@
 // loosely follows the jquery api:
 // http://api.jquery.com/
 
+import Callbacks from "../classes/Callbacks"
+import DataBoard from "../classes/DataBoard"
 import Notice from "../classes/Notice"
 import { c, Conf, d, doc, g } from "../globals/globals"
 import CrossOrigin from "./CrossOrigin"
@@ -27,6 +30,36 @@ type AjaxPageOptions = {
   timeout?: number;
   withCredentials?: boolean;
   onprogress?: (event: ProgressEvent) => void;
+}
+
+$.deleteValue = function (key: string, cb) {
+  if (platform === 'crx') {
+    return chrome.storage.local.remove(key, cb)
+  } else {
+    return GM_deleteValue(key)
+  }
+}
+
+$.getValue = function (key: string, cb) {
+  if (platform === 'crx') {
+    return chrome.storage.local.get(key, function (result) {
+      if (result[key] != null) {
+        return cb(result[key])
+      } else {
+        return cb(null)
+      }
+    })
+  } else {
+    return GM_getValue(key, cb)
+  }
+}
+
+$.setValue = function (key: string, value: string, cb) {
+  if (platform === 'crx') {
+    return chrome.storage.local.set({ [key]: value }, cb)
+  } else {
+    return GM_setValue(key, value)
+  }
 }
 
 $.ajaxPage = function (url: string, options: AjaxPageOptions) {
@@ -60,7 +93,9 @@ $.ajaxPage = function (url: string, options: AjaxPageOptions) {
   xhr.send(form)
   return xhr
 }
-$.ready = function (fc) {
+$.cache = dict()
+
+$.ready = function (fc: () => void) {
   if (d.readyState !== 'loading') {
     $.queueTask(fc)
     return
@@ -90,29 +125,28 @@ $.formData = function (form) {
   return fd
 }
 
-$.extend = function (object, properties) {
+$.extend = function (object: object, properties: object) {
   for (const key in properties) {
     const val = properties[key]
     object[key] = val
   }
 }
 
-$.hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key)
+$.hasOwn = (obj: object, key: string) => Object.prototype.hasOwnProperty.call(obj, key)
 
 $.getOwn = function (obj, key) {
   if (Object.prototype.hasOwnProperty.call(obj, key)) { return obj[key] } else { return undefined }
 }
 
 $.ajax = (function () {
-  let pageXHR
-  // @ts-ignore
+  let pageXHR: typeof XMLHttpRequest
   if (window.wrappedJSObject && !XMLHttpRequest.wrappedJSObject) {
     pageXHR = XPCNativeWrapper(window.wrappedJSObject.XMLHttpRequest)
   } else {
     pageXHR = XMLHttpRequest
   }
 
-  const r = (function (url, options = {}) {
+  const r = (function (url: string, options = dict(), cb: Callbacks) {
     if (options.responseType == null) { options.responseType = 'json' }
     if (!options.type) { options.type = (options.form && 'post') || 'get' }
     // XXX https://forums.lanik.us/viewtopic.php?f=64&t=24173&p=78310
@@ -140,7 +174,7 @@ $.ajax = (function () {
         // https://bugs.chromium.org/p/chromium/issues/detail?id=920638
         $.on(r, 'load', () => {
           if (!Conf['Work around CORB Bug'] && r.readyState === 4 && r.status === 200 && r.statusText === '' && r.response === null) {
-            $.set('Work around CORB Bug', (Conf['Work around CORB Bug'] = Date.now()))
+            $.set('Work around CORB Bug', (Conf['Work around CORB Bug'] = Date.now().toString()), cb)
           }
         })
       }
@@ -240,8 +274,9 @@ $.ajax = (function () {
     }
 
     return $.ajaxPage = function (url, options = {}) {
-      let req
-      let { onloadend, timeout, responseType, withCredentials, type, onprogress, form, headers } = options
+      let req: XMLHttpRequest
+      const { onloadend, timeout, responseType, withCredentials, type, onprogress, headers } = options
+      let { form } = options
       const id = requestID++
       requests[id] = (req = new CrossOrigin.Request())
       $.extend(req, { responseType, onloadend })
@@ -258,8 +293,8 @@ $.ajax = (function () {
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
 $.lastModified = dict()
-$.whenModified = function (url, bucket, cb, options = {}) {
-  let t
+$.whenModified = function (url, bucket, cb, options) {
+  let t: string
   const { timeout, ajax } = options
   const params = []
   // XXX https://bugs.chromium.org/p/chromium/issues/detail?id=643659
@@ -284,7 +319,7 @@ $.whenModified = function (url, bucket, cb, options = {}) {
 
 (function () {
   const reqs = dict()
-  $.cache = function (url, cb, options = {}) {
+  $.cache = function (url, cb, options) {
     let req
     const { ajax } = options
     if (req = reqs[url]) {
@@ -320,19 +355,19 @@ $.whenModified = function (url, bucket, cb, options = {}) {
 $.cb = {
   checked() {
     if ($.hasOwn(Conf, this.name)) {
-      $.set(this.name, this.checked)
+      $.set(this.name, this.checked, this.type)
       return Conf[this.name] = this.checked
     }
   },
   value() {
     if ($.hasOwn(Conf, this.name)) {
-      $.set(this.name, this.value.trim())
+      $.set(this.name, this.value.trim(), this.type)
       return Conf[this.name] = this.value
     }
   }
 }
 
-$.asap = function (test, cb) {
+$.asap = function (test: () => boolean, cb: VoidCallback) {
   if (test()) {
     return cb()
   } else {
@@ -340,8 +375,8 @@ $.asap = function (test, cb) {
   }
 }
 
-$.onExists = function (root, selector, cb) {
-  let el
+$.onExists = function (root: HTMLElement, selector: string, cb: (el: Element) => void) {
+  let el: Element
   if (el = $(selector, root)) {
     return cb(el)
   }
@@ -372,7 +407,7 @@ $.addCSP = function (policy) {
     $.add(d.head, meta)
     return $.rm(meta)
   } else {
-    const head = $.add((doc || d), $.el('head'))
+    const head = $.add((doc || d), $.el('head', meta))
     $.add(head, meta)
     return $.rm(head)
   }
@@ -532,26 +567,27 @@ $.debounce = function (wait, fn) {
   }
 }
 
-$.queueTask = (function () {
-  // inspired by https://www.w3.org/Bugs/Public/show_bug.cgi?id=15007
-  const taskQueue = []
-  const execTask = function () {
-    const task = taskQueue.shift()
-    const func = task[0]
-    const args = Array.prototype.slice.call(task, 1)
-    return func.apply(func, args)
-  }
-  if (window.MessageChannel) {
-    const taskChannel = new MessageChannel()
-    taskChannel.port1.onmessage = execTask
-    return function () {
-      taskQueue.push(arguments)
-      return taskChannel.port2.postMessage(null)
+$.queueTask = (() => {
+  const taskQueue: any[] = []
+  const messageChannel = window.MessageChannel
+
+  if (messageChannel) {
+    const taskChannel = new messageChannel()
+    taskChannel.port1.onmessage = () => {
+      taskQueue.shift()?.()
+      if (taskQueue.length > 0) taskChannel.port2.postMessage(null)
     }
-  } else { // XXX Firefox
-    return function () {
-      taskQueue.push(arguments)
-      return setTimeout(execTask, 0)
+    return function (fn: Function, ...args: any[]) {
+      taskQueue.push(() => fn(...args))
+      if (taskQueue.length === 1) taskChannel.port2.postMessage(null)
+    }
+  } else { // Firefox
+    return function (fn: Function, ...args: any[]) {
+      taskQueue.push(() => fn(...args))
+      setTimeout(() => {
+        taskQueue.shift()?.()
+        if (taskQueue.length > 0) execTask()
+      }, 0)
     }
   }
 })()
@@ -573,22 +609,16 @@ $.global = function (fn, data) {
   }
 }
 
-$.bytesToString = function (size) {
-  let unit = 0 // Bytes
-  while (size >= 1024) {
-    size /= 1024
-    unit++
+$.bytesToString = function (size: number) {
+  if (size < 1024) {
+    return `${size} B`
+  } else if (size < (1024 * 1024)) {
+    return `${(size / 1024).toFixed(2)} KB`
+  } else if (size < (1024 * 1024 * 1024)) {
+    return `${(size / (1024 * 1024)).toFixed(2)} MB`
+  } else {
+    return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`
   }
-  // Remove trailing 0s.
-  size =
-    unit > 1 ?
-      // Keep the size as a float if the size is greater than 2^20 B.
-      // Round to hundredth.
-      Math.round(size * 100) / 100
-      :
-      // Round to an integer otherwise.
-      Math.round(size)
-  return `${size} ${['B', 'KB', 'MB', 'GB'][unit]}`
 }
 
 $.minmax = (value, min, max) => value < min ?
@@ -599,17 +629,19 @@ $.minmax = (value, min, max) => value < min ?
     :
     value
 
-$.hasAudio = video => video.mozHasAudio || !!video.webkitAudioDecodedByteCount
+$.hasAudio = (video: HTMLVideoElement) => video.mozHasAudio || !!video.webkitAudioDecodedByteCount
 
-$.luma = rgb => (rgb[0] * 0.299) + (rgb[1] * 0.587) + (rgb[2] * 0.114)
-
+$.luma = rgb => {
+  if (rgb.length < 3) { return 0 }
+  return (rgb[0] * 0.299) + (rgb[1] * 0.587) + (rgb[2] * 0.114)
+}
 $.unescape = function (text) {
   if (text == null) { return text }
   return text.replace(/<[^>]*>/g, '').replace(/&(amp|#039|quot|lt|gt|#44);/g, c => ({ '&amp;': '&', '&#039;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>', '&#44;': ',' })[c])
 }
 
-$.isImage = url => /\.(jpe?g|jfif|png|gif|bmp|webp|avif|jxl)$/i.test(url)
-$.isVideo = url => /\.(webm|mp4|ogv)$/i.test(url)
+$.isImage = url => /\.(jpe?g|png|gif|webp|bmp|ico|svg|tiff?)$/i.test(url)
+$.isVideo = url => /\.(webm|mp4|ogv|flv|mov|mpe?g|3gp)$/i.test(url)
 
 $.engine = (function () {
   if (/Edge\//.test(navigator.userAgent)) { return 'edge' }
@@ -628,13 +660,13 @@ $.hasStorage = (function () {
   }
 })()
 
-$.item = function (key, val) {
+$.item = function (key: string, val: string | JSON) {
   const item = dict()
   item[key] = val
   return item
 }
 
-$.oneItemSugar = fn => (function (key, val, cb) {
+$.oneItemSugar = (fn: Function) => (function (key: string, val: JSON | string, cb) {
   if (typeof key === 'string') {
     return fn($.item(key, val), cb)
   } else {
@@ -644,7 +676,7 @@ $.oneItemSugar = fn => (function (key, val, cb) {
 
 $.syncing = dict()
 
-$.securityCheck = function (data) {
+$.securityCheck = function (data: DataBoard) {
   if (location.protocol !== 'https:') {
     return delete data['Redirect to HTTPS']
   }
@@ -668,8 +700,8 @@ if (platform === 'crx') {
       }
     }
   })
-  $.sync = (key, cb) => $.syncing[key] = cb
-  $.forceSync = function () { }
+  $.sync = (key: string, cb) => $.syncing[key] = cb
+  $.forceSync = function () {/* emptey */ }
 
   $.crxWorking = function () {
     try {
@@ -779,7 +811,7 @@ if (platform === 'crx') {
       })
     }
 
-    var setSync = debounce(SECOND, () => setArea('sync'))
+    const setSync = debounce(SECOND, () => setArea('sync', cb))
 
     $.set = $.oneItemSugar(function (data, cb) {
       if (!$.crxWorking()) { return }
@@ -826,7 +858,7 @@ if (platform === 'crx') {
       return result
     })())
 
-    $.sync = (key, cb) => $.syncing[key] = cb
+    $.sync = (key: string, cb: Callbacks) => $.syncing[key] = cb
 
     $.forceSync = function () { }
 
@@ -885,7 +917,6 @@ if (platform === 'crx') {
     }
 
     if (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) {
-      $.getValue = GM_getValue
       $.listValues = () => GM_listValues() // error when called if missing
     } else if ($.hasStorage) {
       $.getValue = key => localStorage.getItem(key)
@@ -903,10 +934,7 @@ if (platform === 'crx') {
       $.listValues = () => []
     }
 
-    if (typeof GM_addValueChangeListener !== 'undefined' && GM_addValueChangeListener !== null) {
-      $.setValue = GM_setValue
-      $.deleteValue = GM_deleteValue
-    } else if (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) {
+    if (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) {
       $.oldValue = dict()
       $.setValue = function (key, val) {
         GM_setValue(key, val)
@@ -934,8 +962,6 @@ if (platform === 'crx') {
         return localStorage.removeItem(key)
       }
     } else {
-      $.setValue = function () { }
-      $.deleteValue = function () { }
       $.cantSync = ($.cantSet = true)
     }
 
@@ -951,7 +977,7 @@ if (platform === 'crx') {
       $.sync = function (key, cb) {
         key = g.NAMESPACE + key
         $.syncing[key] = cb
-        return $.oldValue[key] = $.getValue(key)
+        return $.oldValue[key] = $.getValue(key, cb)
       };
 
       (function () {
@@ -970,12 +996,12 @@ if (platform === 'crx') {
         }
         $.on(window, 'storage', onChange)
 
-        return $.forceSync = function (key) {
+        return $.forceSync = function (key, cb) {
           // Storage events don't work across origins
           // e.g. http://boards.4chan.org and https://boards.4chan.org
           // so force a check for changes to avoid lost data.
           key = g.NAMESPACE + key
-          return onChange({ key, newValue: $.getValue(key) })
+          return onChange({ key, newValue: $.getValue(key, cb) })
         }
       })()
     } else {
@@ -996,7 +1022,7 @@ if (platform === 'crx') {
 
     $.getSync = function (items, cb) {
       for (const key in items) {
-        var val2
+        let val2
         if (val2 = $.getValue(g.NAMESPACE + key)) {
           try {
             items[key] = dict.json(val2)
@@ -1016,7 +1042,7 @@ if (platform === 'crx') {
       return $.queueTask(function () {
         for (const key in items) {
           const value = items[key]
-          $.setValue(g.NAMESPACE + key, JSON.stringify(value))
+          $.setValue(g.NAMESPACE + key, JSON.stringify(value), cb)
         }
         return cb?.()
       })
@@ -1025,10 +1051,10 @@ if (platform === 'crx') {
     $.clear = function (cb) {
       // XXX https://github.com/greasemonkey/greasemonkey/issues/2033
       // Also support case where GM_listValues is not defined.
-      $.delete(Object.keys(Conf))
-      $.delete(['previousversion', 'QR Size', 'QR.persona'])
+      $.delete(Object.keys(Conf), cb)
+      $.delete(['previousversion', 'QR Size', 'QR.persona'], cb)
       try {
-        $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')))
+        $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')), cb)
       } catch (error) { }
       return cb?.()
     }
