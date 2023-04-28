@@ -50,7 +50,7 @@ const SWTinyboard = {
           } else if (/^https?:/.test(root)) {
             properties.root = root
           }
-        } catch (error) {}
+        } catch (error) { }
         return properties
       }
     }
@@ -61,7 +61,7 @@ const SWTinyboard = {
     let reactUI
     if (reactUI = $.id('react-ui')) {
       const s = (this.selectors = Object.create(this.selectors))
-      s.boardFor = {index: '.page-container'}
+      s.boardFor = { index: '.page-container' }
       s.thread = 'div[id^="thread_"]'
       return Main.mounted(cb)
     } else {
@@ -70,32 +70,32 @@ const SWTinyboard = {
   },
 
   urls: {
-    thread({siteID, boardID, threadID}, isArchived) {
+    thread({ siteID, boardID, threadID }, isArchived) {
       return `${Conf['siteProperties'][siteID]?.root || `http://${siteID}/`}${boardID}/${isArchived ? 'archive/' : ''}res/${threadID}.html`
     },
-    post({postID})                   { return `#${postID}` },
-    index({siteID, boardID})          { return `${Conf['siteProperties'][siteID]?.root || `http://${siteID}/`}${boardID}/` },
-    catalog({siteID, boardID})          { return `${Conf['siteProperties'][siteID]?.root || `http://${siteID}/`}${boardID}/catalog.html` },
-    threadJSON({siteID, boardID, threadID}, isArchived) {
+    post({ postID }) { return `#${postID}` },
+    index({ siteID, boardID }) { return `${Conf['siteProperties'][siteID]?.root || `http://${siteID}/`}${boardID}/` },
+    catalog({ siteID, boardID }) { return `${Conf['siteProperties'][siteID]?.root || `http://${siteID}/`}${boardID}/catalog.html` },
+    threadJSON({ siteID, boardID, threadID }, isArchived) {
       const root = Conf['siteProperties'][siteID]?.root
       if (root) { return `${root}${boardID}/${isArchived ? 'archive/' : ''}res/${threadID}.json` } else { return '' }
     },
     archivedThreadJSON(thread) {
       return SWTinyboard.urls.threadJSON(thread, true)
     },
-    threadsListJSON({siteID, boardID}) {
+    threadsListJSON({ siteID, boardID }) {
       const root = Conf['siteProperties'][siteID]?.root
       if (root) { return `${root}${boardID}/threads.json` } else { return '' }
     },
-    archiveListJSON({siteID, boardID}) {
+    archiveListJSON({ siteID, boardID }) {
       const root = Conf['siteProperties'][siteID]?.root
       if (root) { return `${root}${boardID}/archive/archive.json` } else { return '' }
     },
-    catalogJSON({siteID, boardID}) {
+    catalogJSON({ siteID, boardID }) {
       const root = Conf['siteProperties'][siteID]?.root
       if (root) { return `${root}${boardID}/catalog.json` } else { return '' }
     },
-    file({siteID, boardID}, filename) {
+    file({ siteID, boardID }, filename) {
       return `${Conf['siteProperties'][siteID]?.root || `http://${siteID}/`}${boardID}/${filename}`
     },
     thumb(board, filename) {
@@ -104,55 +104,55 @@ const SWTinyboard = {
   },
 
   selectors: {
-    board:         'form[name="postcontrols"]',
-    thread:        'input[name="board"] ~ div[id^="thread_"]',
+    board: 'form[name="postcontrols"]',
+    thread: 'input[name="board"] ~ div[id^="thread_"]',
     threadDivider: 'div[id^="thread_"] > hr:last-child',
-    summary:       '.omitted',
+    summary: '.omitted',
     postContainer: 'div[id^="reply_"]:not(.hidden)', // postContainer is thread for OP
-    opBottom:      '.op',
+    opBottom: '.op',
     replyOriginal: 'div[id^="reply_"]:not(.hidden)',
-    infoRoot:      '.intro',
+    infoRoot: '.intro',
     info: {
-      subject:   '.subject',
-      name:      '.name',
-      email:     '.email',
-      tripcode:  '.trip',
-      uniqueID:  '.poster_id',
-      capcode:   '.capcode',
-      flag:      '.flag',
-      date:      'time',
+      subject: '.subject',
+      name: '.name',
+      email: '.email',
+      tripcode: '.trip',
+      uniqueID: '.poster_id',
+      capcode: '.capcode',
+      flag: '.flag',
+      date: 'time',
       nameBlock: 'label',
-      quote:     'a[href*="#q"]',
-      reply:     'a[href*="/res/"]:not([href*="#"])'
+      quote: 'a[href*="#q"]',
+      reply: 'a[href*="/res/"]:not([href*="#"])'
     },
     icons: {
-      isSticky:   '.fa-thumb-tack',
-      isClosed:   '.fa-lock'
+      isSticky: '.fa-thumb-tack',
+      isClosed: '.fa-lock'
     },
     file: {
-      text:  '.fileinfo',
-      link:  '.fileinfo > a',
+      text: '.fileinfo',
+      link: '.fileinfo > a',
       thumb: 'a > .post-image'
     },
     thumbLink: '.file > a',
     multifile: '.files > .file',
     highlightable: {
-      op:      ' > .op',
-      reply:   '.reply',
+      op: ' > .op',
+      reply: '.reply',
       catalog: ' > .thread'
     },
-    comment:   '.body',
-    spoiler:   '.spoiler',
+    comment: '.body',
+    spoiler: '.spoiler',
     quotelink: 'a[onclick*="highlightReply("]',
     catalog: {
-      board:  '#Grid',
+      board: '#Grid',
       thread: '.mix',
-      thumb:  '.thread-image'
+      thumb: '.thread-image'
     },
     boardList: '.boardlist',
     boardListBottom: '.boardlist.bottom',
     styleSheet: '#stylesheet',
-    psa:       '.blotter',
+    psa: '.blotter',
     nav: {
       prev: '.pages > form > [value=Previous]',
       next: '.pages > form > [value=Next]'
@@ -164,8 +164,8 @@ const SWTinyboard = {
   },
 
   xpath: {
-    thread:         'div[starts-with(@id,"thread_")]',
-    postContainer:  'div[starts-with(@id,"reply_") or starts-with(@id,"thread_")]',
+    thread: 'div[starts-with(@id,"thread_")]',
+    postContainer: 'div[starts-with(@id,"reply_") or starts-with(@id,"thread_")]',
     replyContainer: 'div[starts-with(@id,"reply_")]'
   },
 
@@ -222,7 +222,7 @@ $\
   },
 
   bgColoredEl() {
-    return $.el('div', {className: 'post reply'})
+    return $.el('div', { className: 'post reply' })
   },
 
   isFileURL(url) {
@@ -250,10 +250,10 @@ $\
     if (m = text.match(/(\s*ID:\s*)(\S+)/)) {
       let uniqueID
       nodes.info.normalize()
-      let {nextSibling} = nodes.nameBlock
+      let { nextSibling } = nodes.nameBlock
       nextSibling = nextSibling.splitText(m[1].length)
       nextSibling.splitText(m[2].length)
-      nodes.uniqueID = (uniqueID = $.el('span', {className: 'poster_id'}))
+      nodes.uniqueID = (uniqueID = $.el('span', { className: 'poster_id' }))
       $.replace(nextSibling, uniqueID)
       return $.add(uniqueID, nextSibling)
     }
@@ -269,19 +269,19 @@ $\
 
   parseFile(post, file) {
     let info, infoNode
-    const {text, link, thumb} = file
+    const { text, link, thumb } = file
     if ($.x(`ancestor::${this.xpath.postContainer}[1]`, text) !== post.nodes.root) { return false } // file belongs to a reply
     if (!(infoNode = link.nextSibling?.textContent.includes('(') ? link.nextSibling : link.nextElementSibling)) { return false }
     if (!(info = infoNode.textContent.match(/\((.*,\s*)?([\d.]+ ?[KMG]?B).*\)/))) { return false }
     const nameNode = $('.postfilename', text)
     $.extend(file, {
-      name:       nameNode ? (nameNode.title || nameNode.textContent) : link.pathname.match(/[^/]*$/)[0],
-      size:       info[2],
+      name: nameNode ? (nameNode.title || nameNode.textContent) : link.pathname.match(/[^/]*$/)[0],
+      size: info[2],
       dimensions: info[0].match(/\d+x\d+/)?.[0]
     })
     if (thumb) {
       $.extend(file, {
-        thumbURL:  /\/static\//.test(thumb.src) && $.isImage(link.href) ? link.href : thumb.src,
+        thumbURL: /\/static\//.test(thumb.src) && $.isImage(link.href) ? link.href : thumb.src,
         isSpoiler: /^Spoiler/i.test(info[1] || '') || (link.textContent === 'Spoiler Image')
       }
       )

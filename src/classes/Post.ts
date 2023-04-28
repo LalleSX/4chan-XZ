@@ -1,5 +1,5 @@
 import Get from "../General/Get"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import ImageExpand from "../Images/ImageExpand"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
@@ -8,41 +8,41 @@ import Callbacks from "./Callbacks"
 import type Thread from "./Thread"
 
 export default class Post {
-  declare root:           HTMLElement
-  declare thread:         Thread
-  declare board:          Board
-  declare ID:             number
-  declare postID:         number
-  declare threadID:       number
-  declare boardID:        number | string
-  declare siteID:         number | string
-  declare fullID:         string
-  declare context:        Post
-  declare isReply:        boolean
-  declare nodes:          ReturnType<Post['parseNodes']>
-  declare isDead:         boolean
-  declare isHidden:       boolean
-  declare clones:         any[]
-  declare isRebuilt?:     boolean
+  declare root: HTMLElement
+  declare thread: Thread
+  declare board: Board
+  declare ID: number
+  declare postID: number
+  declare threadID: number
+  declare boardID: number | string
+  declare siteID: number | string
+  declare fullID: string
+  declare context: Post
+  declare isReply: boolean
+  declare nodes: ReturnType<Post['parseNodes']>
+  declare isDead: boolean
+  declare isHidden: boolean
+  declare clones: any[]
+  declare isRebuilt?: boolean
   declare isFetchedQuote: boolean
-  declare isClone:        boolean
-  declare quotes:         string[]
-  declare file:           ReturnType<Post['parseFile']>
-  declare files:          ReturnType<Post['parseFile']>[]
+  declare isClone: boolean
+  declare quotes: string[]
+  declare file: ReturnType<Post['parseFile']>
+  declare files: ReturnType<Post['parseFile']>[]
 
   declare info: {
-    subject:       string | undefined,
-    name:          string | undefined,
-    email:         string | undefined,
-    tripcode:      string | undefined,
-    uniqueID:      string | undefined,
-    capcode:       string | undefined,
-    pass:          string | undefined,
-    flagCode:      string | undefined,
+    subject: string | undefined,
+    name: string | undefined,
+    email: string | undefined,
+    tripcode: string | undefined,
+    uniqueID: string | undefined,
+    capcode: string | undefined,
+    pass: string | undefined,
+    flagCode: string | undefined,
     flagCodeTroll: string | undefined,
-    flag:          string | undefined,
-    date:          Date | undefined,
-    nameBlock:     string,
+    flag: string | undefined,
+    date: Date | undefined,
+    nameBlock: string,
   }
 
   // because of a circular dependency $ might not be initialized, so we can't use $.el
@@ -57,7 +57,7 @@ export default class Post {
 
   toString() { return this.ID }
 
-  constructor(root?: HTMLElement, thread?: Thread, board?: Board, flags={}) {
+  constructor(root?: HTMLElement, thread?: Thread, board?: Board, flags = {}) {
     // <% if (readJSON('/.tests_enabled')) { %>
     // @normalizedOriginal = Test.normalize root
     // <% } %>
@@ -69,14 +69,14 @@ export default class Post {
     this.thread = thread
     this.board = board
     $.extend(this, flags)
-    this.ID       = +root.id.match(/\d*$/)[0]
-    this.postID   = this.ID
+    this.ID = +root.id.match(/\d*$/)[0]
+    this.postID = this.ID
     this.threadID = this.thread.ID
-    this.boardID  = this.board.ID
-    this.siteID   = g.SITE.ID
-    this.fullID   = `${this.board}.${this.ID}`
-    this.context  = this
-    this.isReply  = (this.ID !== this.threadID)
+    this.boardID = this.board.ID
+    this.siteID = g.SITE.ID
+    this.fullID = `${this.board}.${this.ID}`
+    this.context = this
+    this.isReply = (this.ID !== this.threadID)
 
     root.dataset.fullID = this.fullID
 
@@ -100,17 +100,17 @@ export default class Post {
     const tripcode = this.nodes.tripcode?.textContent
 
     this.info = {
-      subject:   this.nodes.subject?.textContent || undefined,
+      subject: this.nodes.subject?.textContent || undefined,
       name,
-      email:     this.nodes.email ? decodeURIComponent(this.nodes.email.href.replace(/^mailto:/, '')) : undefined,
+      email: this.nodes.email ? decodeURIComponent(this.nodes.email.href.replace(/^mailto:/, '')) : undefined,
       tripcode,
-      uniqueID:  this.nodes.uniqueID?.textContent,
-      capcode:   this.nodes.capcode?.textContent.replace('## ', ''),
-      pass:      this.nodes.pass?.title.match(/\d*$/)[0],
-      flagCode:  this.nodes.flag?.className.match(/flag-(\w+)/)?.[1].toUpperCase(),
+      uniqueID: this.nodes.uniqueID?.textContent,
+      capcode: this.nodes.capcode?.textContent.replace('## ', ''),
+      pass: this.nodes.pass?.title.match(/\d*$/)[0],
+      flagCode: this.nodes.flag?.className.match(/flag-(\w+)/)?.[1].toUpperCase(),
       flagCodeTroll: this.nodes.flag?.className.match(/bfl-(\w+)/)?.[1].toUpperCase(),
-      flag:      this.nodes.flag?.title,
-      date:      this.nodes.date ? g.SITE.parseDate(this.nodes.date) : undefined,
+      flag: this.nodes.flag?.title,
+      date: this.nodes.date ? g.SITE.parseDate(this.nodes.date) : undefined,
       nameBlock: Conf['Anonymize'] ? 'Anonymous' : `${name || ''} ${tripcode || ''}`.trim(),
     }
 
@@ -121,7 +121,7 @@ export default class Post {
     this.parseQuotes()
     this.parseFiles()
 
-    this.isDead   = false
+    this.isDead = false
     this.isHidden = false
 
     this.clones = []
@@ -149,31 +149,31 @@ export default class Post {
     const info: HTMLElement = $(s.infoRoot, post)
 
     interface Node {
-      root:         HTMLElement,
-      bottom:       false | HTMLElement,
-      post:         HTMLElement,
-      info:         HTMLElement,
-      comment:      HTMLElement;
-      quotelinks:   HTMLAnchorElement[],
+      root: HTMLElement,
+      bottom: false | HTMLElement,
+      post: HTMLElement,
+      info: HTMLElement,
+      comment: HTMLElement;
+      quotelinks: HTMLAnchorElement[],
       archivelinks: HTMLAnchorElement[],
-      embedlinks:   HTMLAnchorElement[],
-      backlinks:    HTMLCollectionOf<HTMLAnchorElement>;
+      embedlinks: HTMLAnchorElement[],
+      backlinks: HTMLCollectionOf<HTMLAnchorElement>;
       uniqueIDRoot: any,
-      uniqueID:     any,
+      uniqueID: any,
     }
 
     const nodes: Node & Partial<Record<keyof Post['info'], HTMLElement>> = {
       root,
-      bottom:     this.isReply || !g.SITE.isOPContainerThread ? root : $(s.opBottom, root),
+      bottom: this.isReply || !g.SITE.isOPContainerThread ? root : $(s.opBottom, root),
       post,
       info,
-      comment:    $(s.comment, post),
+      comment: $(s.comment, post),
       quotelinks: [],
       archivelinks: [],
-      embedlinks:   [],
-      backlinks:    post.getElementsByClassName('backlink') as HTMLCollectionOf<HTMLAnchorElement>,
+      embedlinks: [],
+      backlinks: post.getElementsByClassName('backlink') as HTMLCollectionOf<HTMLAnchorElement>,
       uniqueIDRoot: undefined as any,
-      uniqueID:     undefined as any,
+      uniqueID: undefined as any,
     }
     for (const key in s.info) {
       const selector = s.info[key]
@@ -293,13 +293,13 @@ export default class Post {
 
   parseFile(fileRoot: HTMLElement) {
     interface File {
-      text:        string,
-      link:        HTMLAnchorElement,
-      thumb:       HTMLElement,
-      thumbLink:   HTMLElement,
-      size:        string,
+      text: string,
+      link: HTMLAnchorElement,
+      thumb: HTMLElement,
+      thumbLink: HTMLElement,
+      size: string,
       sizeInBytes: number,
-      isDead:      boolean,
+      isDead: boolean,
     }
 
     const file: Partial<File> = { isDead: false }
@@ -313,20 +313,20 @@ export default class Post {
     if (!g.SITE.parseFile(this, file)) { return }
 
     $.extend(file, {
-      url:     file.link.href,
+      url: file.link.href,
       isImage: $.isImage(file.link.href),
       isVideo: $.isVideo(file.link.href)
     }
     )
-    let size  = +file.size.match(/[\d.]+/)[0]
-    let unit  = ['B', 'KB', 'MB', 'GB'].indexOf(file.size.match(/\w+$/)[0])
+    let size = +file.size.match(/[\d.]+/)[0]
+    let unit = ['B', 'KB', 'MB', 'GB'].indexOf(file.size.match(/\w+$/)[0])
     while (unit-- > 0) { size *= 1024 }
     file.sizeInBytes = size
 
     return file as File
   }
 
-  kill(file, index=0) {
+  kill(file, index = 0) {
     let strong
     if (file) {
       if (this.isDead || this.files[index].isDead) { return }
@@ -341,7 +341,7 @@ export default class Post {
 
     if (!(strong = $('strong.warning', this.nodes.info))) {
       strong = $.el('strong',
-        {className: 'warning'})
+        { className: 'warning' })
       $.after($('input', this.nodes.info), strong)
     }
     strong.textContent = file ? '[File deleted]' : '[Deleted]'

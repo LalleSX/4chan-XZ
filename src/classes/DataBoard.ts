@@ -11,6 +11,11 @@ import { dict, HOUR } from "../platform/helpers"
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 export default class DataBoard {
+  static keys: string[]
+  static changes: string[]
+  key: string
+  sync: VoidFunction
+  data: any
   static initClass() {
     this.keys = ['hiddenThreads', 'hiddenPosts', 'lastReadPosts', 'yourPosts', 'watchedThreads', 'watcherLastModified', 'customTitles']
 
@@ -38,8 +43,8 @@ export default class DataBoard {
     this.data = data
     if (this.data.boards) {
       let lastChecked;
-      ({boards, lastChecked} = this.data)
-      this.data['4chan.org'] = {boards, lastChecked}
+      ({ boards, lastChecked } = this.data)
+      this.data['4chan.org'] = { boards, lastChecked }
       delete this.data.boards
       delete this.data.lastChecked
     }
@@ -76,31 +81,31 @@ export default class DataBoard {
     })
   }
 
-  delete({siteID, boardID, threadID, postID}, cb) {
+  delete({ siteID, boardID, threadID, postID }, cb) {
     if (!siteID) { siteID = g.SITE.ID }
     if (!this.data[siteID]) { return }
     return this.save(() => {
       if (postID) {
         if (!this.data[siteID].boards[boardID]?.[threadID]) { return }
         delete this.data[siteID].boards[boardID][threadID][postID]
-        return this.deleteIfEmpty({siteID, boardID, threadID})
+        return this.deleteIfEmpty({ siteID, boardID, threadID })
       } else if (threadID) {
         if (!this.data[siteID].boards[boardID]) { return }
         delete this.data[siteID].boards[boardID][threadID]
-        return this.deleteIfEmpty({siteID, boardID})
+        return this.deleteIfEmpty({ siteID, boardID })
       } else {
         return delete this.data[siteID].boards[boardID]
       }
     }
-    , cb)
+      , cb)
   }
 
-  deleteIfEmpty({siteID, boardID, threadID}) {
+  deleteIfEmpty({ siteID, boardID, threadID }) {
     if (!this.data[siteID]) { return }
     if (threadID) {
       if (!Object.keys(this.data[siteID].boards[boardID][threadID]).length) {
         delete this.data[siteID].boards[boardID][threadID]
-        return this.deleteIfEmpty({siteID, boardID})
+        return this.deleteIfEmpty({ siteID, boardID })
       }
     } else if (!Object.keys(this.data[siteID].boards[boardID]).length) {
       return delete this.data[siteID].boards[boardID]
@@ -111,10 +116,10 @@ export default class DataBoard {
     return this.save(() => {
       return this.setUnsafe(data)
     }
-    , cb)
+      , cb)
   }
 
-  setUnsafe({siteID, boardID, threadID, postID, val}) {
+  setUnsafe({ siteID, boardID, threadID, postID, val }) {
     if (!siteID) { siteID = g.SITE.ID }
     if (!this.data[siteID]) { this.data[siteID] = { boards: dict() } }
     if (postID !== undefined) {
@@ -127,7 +132,7 @@ export default class DataBoard {
     }
   }
 
-  extend({siteID, boardID, threadID, postID, val}, cb) {
+  extend({ siteID, boardID, threadID, postID, val }, cb) {
     return this.save(() => {
       const oldVal = this.get({ siteID, boardID, threadID, postID, defaultValue: dict() })
       for (const key in val) {
@@ -138,18 +143,18 @@ export default class DataBoard {
           oldVal[key] = subVal
         }
       }
-      return this.setUnsafe({siteID, boardID, threadID, postID, val: oldVal})
+      return this.setUnsafe({ siteID, boardID, threadID, postID, val: oldVal })
     }
-    , cb)
+      , cb)
   }
 
-  setLastChecked(key='lastChecked') {
+  setLastChecked(key = 'lastChecked') {
     return this.save(() => {
       return this.data[key] = Date.now()
     })
   }
 
-  get({siteID, boardID, threadID, postID, defaultValue}) {
+  get({ siteID, boardID, threadID, postID, defaultValue }) {
     let board, val
     if (!siteID) { siteID = g.SITE.ID }
     if (board = this.data[siteID]?.boards[boardID]) {
@@ -169,7 +174,7 @@ export default class DataBoard {
       } else if (thread = board[threadID]) {
         val = (postID != null) ?
           thread[postID]
-        :
+          :
           thread
       }
     }
@@ -181,7 +186,7 @@ export default class DataBoard {
     const siteID = g.SITE.ID
     for (boardID in this.data[siteID].boards) {
       const val = this.data[siteID].boards[boardID]
-      this.deleteIfEmpty({siteID, boardID})
+      this.deleteIfEmpty({ siteID, boardID })
     }
     const now = Date.now()
     if (now - (2 * HOUR) >= ((middle = this.data[siteID].lastChecked || 0)) || middle > now) {
@@ -195,14 +200,14 @@ export default class DataBoard {
   ajaxClean(boardID) {
     const that = this
     const siteID = g.SITE.ID
-    const threadsList = g.SITE.urls.threadsListJSON?.({siteID, boardID})
+    const threadsList = g.SITE.urls.threadsListJSON?.({ siteID, boardID })
     if (!threadsList) { return }
-    return $.cache(threadsList, function() {
+    return $.cache(threadsList, function () {
       if (this.status !== 200) { return }
-      const archiveList = g.SITE.urls.archiveListJSON?.({siteID, boardID})
+      const archiveList = g.SITE.urls.archiveListJSON?.({ siteID, boardID })
       if (!archiveList) { return that.ajaxCleanParse(boardID, this.response) }
       const response1 = this.response
-      return $.cache(archiveList, function() {
+      return $.cache(archiveList, function () {
         if ((this.status !== 200) && (!!g.SITE.archivedBoardsKnown || (this.status !== 404))) { return }
         return that.ajaxCleanParse(boardID, response1, this.response)
       })
@@ -228,7 +233,7 @@ export default class DataBoard {
       }
     }
     this.data[siteID].boards[boardID] = threads
-    this.deleteIfEmpty({siteID, boardID})
+    this.deleteIfEmpty({ siteID, boardID })
     return $.set(this.key, this.data)
   }
 

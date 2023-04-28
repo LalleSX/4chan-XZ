@@ -1,13 +1,13 @@
 import { g } from "../globals/globals"
 import $ from "../platform/$"
+import Callbacks from "./Callbacks"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 export default class Connection {
-  constructor(target, origin, cb={}) {
+  target: any
+  origin: any
+  cb: Callbacks
+  constructor(target: Window, origin: string, cb: Callbacks) {
     this.send = this.send.bind(this)
     this.onMessage = this.onMessage.bind(this)
     this.target = target
@@ -28,7 +28,7 @@ export default class Connection {
     return this.targetWindow().postMessage(`${g.NAMESPACE}${JSON.stringify(data)}`, this.origin)
   }
 
-  onMessage(e) {
+  onMessage(e: MessageEvent) {
     if ((e.source !== this.targetWindow()) ||
       (e.origin !== this.origin) ||
       (typeof e.data !== 'string') ||

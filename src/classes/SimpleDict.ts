@@ -1,11 +1,5 @@
 import $ from "../platform/$"
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 export default class SimpleDict<T> {
   keys: string[]
 
@@ -13,14 +7,14 @@ export default class SimpleDict<T> {
     this.keys = []
   }
 
-  push(key, data: T) {
+  push(key: string, data: T): T {
     key = `${key}`
     if (!this[key]) { this.keys.push(key) }
     return this[key] = data
   }
 
-  rm(key) {
-    let i
+  rm(key: string) {
+    let i: number
     key = `${key}`
     if ((i = this.keys.indexOf(key)) !== -1) {
       this.keys.splice(i, 1)
@@ -28,11 +22,11 @@ export default class SimpleDict<T> {
     }
   }
 
-  forEach(fn) { 
+  forEach(fn: (value: T) => void): void {
     for (const key of [...Array.from(this.keys)]) { fn(this[key]) }
   }
 
-  get(key): T {
+  get(key: string): T {
     if (key === 'keys') {
       return undefined
     } else {

@@ -1,7 +1,7 @@
 import Redirect from "../Archive/Redirect"
 import Get from "../General/Get"
 import Index from "../General/Index"
-import { Conf, d,E, g } from "../globals/globals"
+import { Conf, d, E, g } from "../globals/globals"
 import ImageHost from "../Images/ImageHost"
 import Main from "../main/Main"
 import $ from "../platform/$"
@@ -21,30 +21,37 @@ import Thread from "./Thread"
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 export default class Fetcher {
+  archiveTags: { '\n': { innerHTML: string }; '[b]': { innerHTML: string }; '[/b]': { innerHTML: string }; '[spoiler]': { innerHTML: string }; '[/spoiler]': { innerHTML: string }; '[code]': { innerHTML: string }; '[/code]': { innerHTML: string }; '[moot]': { innerHTML: string }; '[/moot]': { innerHTML: string }; '[banned]': { innerHTML: string }; '[/banned]': { innerHTML: string }; '[fortune]'(text: string): { innerHTML: string }; '[/fortune]': { innerHTML: string }; '[i]': { innerHTML: string }; '[/i]': { innerHTML: string }; '[red]': { innerHTML: string }; '[/red]': { innerHTML: string }; '[green]': { innerHTML: string }; '[/green]': { innerHTML: string }; '[blue]': { innerHTML: string }; '[/blue]': { innerHTML: string } }
+  boardID: string
+  threadID: number
+  postID: number
+  root: HTMLElement
+  quoter: any
+  static flagCSS: any
   static initClass() {
-  
+
     this.prototype.archiveTags = {
-      '\n':         {innerHTML: "<br>"},
-      '[b]':        {innerHTML: "<b>"},
-      '[/b]':       {innerHTML: "</b>"},
-      '[spoiler]':  {innerHTML: "<s>"},
-      '[/spoiler]': {innerHTML: "</s>"},
-      '[code]':     {innerHTML: "<pre class=\"prettyprint\">"},
-      '[/code]':    {innerHTML: "</pre>"},
-      '[moot]':     {innerHTML: "<div style=\"padding:5px;margin-left:.5em;border-color:#faa;border:2px dashed rgba(255,0,0,.1);border-radius:2px\">"},
-      '[/moot]':    {innerHTML: "</div>"},
-      '[banned]':   {innerHTML: "<strong style=\"color: red;\">"},
-      '[/banned]':  {innerHTML: "</strong>"},
-      '[fortune]'(text) { return {innerHTML: "<span class=\"fortune\" style=\"color:" + E(text.match(/#\w+|$/)[0]) + "\"><b>"} },
-      '[/fortune]': {innerHTML: "</b></span>"},
-      '[i]':        {innerHTML: "<span class=\"mu-i\">"},
-      '[/i]':       {innerHTML: "</span>"},
-      '[red]':      {innerHTML: "<span class=\"mu-r\">"},
-      '[/red]':     {innerHTML: "</span>"},
-      '[green]':    {innerHTML: "<span class=\"mu-g\">"},
-      '[/green]':   {innerHTML: "</span>"},
-      '[blue]':     {innerHTML: "<span class=\"mu-b\">"},
-      '[/blue]':    {innerHTML: "</span>"}
+      '\n': { innerHTML: "<br>" },
+      '[b]': { innerHTML: "<b>" },
+      '[/b]': { innerHTML: "</b>" },
+      '[spoiler]': { innerHTML: "<s>" },
+      '[/spoiler]': { innerHTML: "</s>" },
+      '[code]': { innerHTML: "<pre class=\"prettyprint\">" },
+      '[/code]': { innerHTML: "</pre>" },
+      '[moot]': { innerHTML: "<div style=\"padding:5px;margin-left:.5em;border-color:#faa;border:2px dashed rgba(255,0,0,.1);border-radius:2px\">" },
+      '[/moot]': { innerHTML: "</div>" },
+      '[banned]': { innerHTML: "<strong style=\"color: red;\">" },
+      '[/banned]': { innerHTML: "</strong>" },
+      '[fortune]'(text) { return { innerHTML: "<span class=\"fortune\" style=\"color:" + E(text.match(/#\w+|$/)[0]) + "\"><b>" } },
+      '[/fortune]': { innerHTML: "</b></span>" },
+      '[i]': { innerHTML: "<span class=\"mu-i\">" },
+      '[/i]': { innerHTML: "</span>" },
+      '[red]': { innerHTML: "<span class=\"mu-r\">" },
+      '[/red]': { innerHTML: "</span>" },
+      '[green]': { innerHTML: "<span class=\"mu-g\">" },
+      '[/green]': { innerHTML: "</span>" },
+      '[blue]': { innerHTML: "<span class=\"mu-b\">" },
+      '[/blue]': { innerHTML: "</span>" }
     }
   }
   constructor(boardID, threadID, postID, root, quoter) {
@@ -61,8 +68,8 @@ export default class Fetcher {
 
     // 4chan X catalog data
     if ((post = Index.replyData?.[`${this.boardID}.${this.postID}`]) && (thread = g.threads.get(`${this.boardID}.${this.threadID}`))) {
-      const board  = g.boards[this.boardID]
-      post = new Post(g.SITE.Build.postFromObject(post, this.boardID), thread, board, {isFetchedQuote: true})
+      const board = g.boards[this.boardID]
+      post = new Post(g.SITE.Build.postFromObject(post, this.boardID), thread, board, { isFetchedQuote: true })
       Main.callbackNodes('Post', [post])
       this.insert(post)
       return
@@ -71,7 +78,7 @@ export default class Fetcher {
     this.root.textContent = `Loading post No.${this.postID}...`
     if (this.threadID) {
       const that = this
-      $.cache(g.SITE.urls.threadJSON({boardID: this.boardID, threadID: this.threadID}), function({isCached}) {
+      $.cache(g.SITE.urls.threadJSON({ boardID: this.boardID, threadID: this.threadID }), function ({ isCached }) {
         return that.fetchedPost(this, isCached)
       })
     } else {
@@ -87,14 +94,14 @@ export default class Fetcher {
     Main.callbackNodes('Post', [clone])
 
     // Get rid of the side arrows/stubs.
-    const {nodes} = clone
+    const { nodes } = clone
     $.rmAll(nodes.root)
     $.add(nodes.root, nodes.post)
 
     // Indicate links to the containing post.
     const quotes = [...clone.nodes.quotelinks, ...clone.nodes.backlinks]
     for (const quote of quotes) {
-      const {boardID, postID} = Get.postDataFromLink(quote)
+      const { boardID, postID } = Get.postDataFromLink(quote)
       if ((postID === this.quoter.ID) && (boardID === this.quoter.board.ID)) {
         $.addClass(quote, 'forwardlink')
       }
@@ -125,7 +132,7 @@ export default class Fetcher {
       return
     }
 
-    const {status} = req
+    const { status } = req
     if (status !== 200) {
       // The thread can die by the time we check a quote.
       if (status && this.archivedPost()) { return }
@@ -134,14 +141,14 @@ export default class Fetcher {
       this.root.textContent =
         status === 404 ?
           `Thread No.${this.threadID} 404'd.`
-        : !status ?
-          'Connection Error'
-        :
-          `Error ${req.statusText} (${req.status}).`
+          : !status ?
+            'Connection Error'
+            :
+            `Error ${req.statusText} (${req.status}).`
       return
     }
 
-    const {posts} = req.response
+    const { posts } = req.response
     g.SITE.Build.spoilerRange[this.boardID] = posts[0].custom_spoiler
     for (post of posts) {
       if (post.no === this.postID) { break }
@@ -150,10 +157,10 @@ export default class Fetcher {
     if (post.no !== this.postID) {
       // Cached requests can be stale and must be rechecked.
       if (isCached) {
-        const api = g.SITE.urls.threadJSON({boardID: this.boardID, threadID: this.threadID})
+        const api = g.SITE.urls.threadJSON({ boardID: this.boardID, threadID: this.threadID })
         $.cleanCache(url => url === api)
         const that = this
-        $.cache(api, function() {
+        $.cache(api, function () {
           return that.fetchedPost(this, false)
         })
         return
@@ -171,7 +178,7 @@ export default class Fetcher {
       new Board(this.boardID)
     const thread = g.threads.get(`${this.boardID}.${this.threadID}`) ||
       new Thread(this.threadID, board)
-    post = new Post(g.SITE.Build.postFromObject(post, this.boardID), thread, board, {isFetchedQuote: true})
+    post = new Post(g.SITE.Build.postFromObject(post, this.boardID), thread, board, { isFetchedQuote: true })
     Main.callbackNodes('Post', [post])
     return this.insert(post)
   }
@@ -179,14 +186,14 @@ export default class Fetcher {
   archivedPost() {
     let url
     if (!Conf['Resurrect Quotes']) { return false }
-    if (!(url = Redirect.to('post', {boardID: this.boardID, postID: this.postID}))) { return false }
+    if (!(url = Redirect.to('post', { boardID: this.boardID, postID: this.postID }))) { return false }
     const archive = Redirect.data.post[this.boardID]
     const encryptionOK = /^https:\/\//.test(url) || (location.protocol === 'http:')
     if (encryptionOK || Conf['Exempt Archives from Encryption']) {
       const that = this
-      CrossOrigin.cache(url, function() {
+      CrossOrigin.cache(url, function () {
         if (!encryptionOK && this.response?.media) {
-          const {media} = this.response
+          const { media } = this.response
           for (const key in media) {
             // Image/thumbnail URLs loaded over HTTP can be modified in transit.
             // Require them to be from an HTTP host so that no referrer is sent to them from an HTTPS page.
@@ -237,42 +244,43 @@ export default class Fetcher {
         } else {
           const greentext = text[0] === '>'
           text = text.replace(/(\[\/?[a-z]+):lit(\])/g, '$1$2')
-          text = text.split(/(>>(?:>\/[a-z\d]+\/)?\d+)/g).map((text2, j) =>
-            {((j % 2) ? "<span class=\"deadlink\">" + E(text2) + "</span>" : E(text2))})
-          text = {innerHTML: ((greentext) ? "<span class=\"quote\">" + E.cat(text) + "</span>" : E.cat(text))}
+          text = text.split(/(>>(?:>\/[a-z\d]+\/)?\d+)/g).map((text2, j) => { ((j % 2) ? "<span class=\"deadlink\">" + E(text2) + "</span>" : E(text2)) })
+          text = { innerHTML: ((greentext) ? "<span class=\"quote\">" + E.cat(text) + "</span>" : E.cat(text)) }
           result.push(text)
         }
       }
       return result
     })()
-    comment = {innerHTML: E.cat(comment)}
+    comment = { innerHTML: E.cat(comment) }
 
     this.threadID = +data.thread_num
     const o = {
-      ID:       this.postID,
+      ID: this.postID,
       threadID: this.threadID,
-      boardID:  this.boardID,
-      isReply:  this.postID !== this.threadID
+      boardID: this.boardID,
+      isReply: this.postID !== this.threadID
     }
     o.info = {
-      subject:  data.title,
-      email:    data.email,
-      name:     data.name || '',
+      subject: data.title,
+      email: data.email,
+      name: data.name || '',
       tripcode: data.trip,
-      capcode:  (() => { switch (data.capcode) {
-        // https://github.com/pleebe/FoolFuuka/blob/bf4224eed04637a4d0bd4411c2bf5f9945dfec0b/assets/themes/foolz/foolfuuka-theme-fuuka/src/Partial/Board.php#L77
-        case 'M': return 'Mod'
-        case 'A': return 'Admin'
-        case 'D': return 'Developer'
-        case 'V': return 'Verified'
-        case 'F': return 'Founder'
-        case 'G': return 'Manager'
-      } })(),
+      capcode: (() => {
+        switch (data.capcode) {
+          // https://github.com/pleebe/FoolFuuka/blob/bf4224eed04637a4d0bd4411c2bf5f9945dfec0b/assets/themes/foolz/foolfuuka-theme-fuuka/src/Partial/Board.php#L77
+          case 'M': return 'Mod'
+          case 'A': return 'Admin'
+          case 'D': return 'Developer'
+          case 'V': return 'Verified'
+          case 'F': return 'Founder'
+          case 'G': return 'Manager'
+        }
+      })(),
       uniqueID: data.poster_hash,
       flagCode: data.poster_country,
       flagCodeTroll: data.troll_country_code,
-      flag:     data.poster_country_name || data.troll_country_name,
-      dateUTC:  data.timestamp,
+      flag: data.poster_country_name || data.troll_country_name,
+      dateUTC: data.timestamp,
       dateText: data.fourchan_date,
       commentHTML: comment
     }
@@ -280,26 +288,26 @@ export default class Fetcher {
     if (data.media && !!+data.media.banned) {
       o.fileDeleted = true
     } else if (data.media?.media_filename) {
-      let {thumb_link} = data.media
+      let { thumb_link } = data.media
       // Fix URLs missing origin
       if (thumb_link?.[0] === '/') { thumb_link = url.split('/', 3).join('/') + thumb_link }
       if (!Redirect.securityCheck(thumb_link)) { thumb_link = '' }
-      let media_link = Redirect.to('file', {boardID: this.boardID, filename: data.media.media_orig})
+      let media_link = Redirect.to('file', { boardID: this.boardID, filename: data.media.media_orig })
       if (!Redirect.securityCheck(media_link)) { media_link = '' }
       o.file = {
-        name:      data.media.media_filename,
-        url:       media_link ||
-                     (this.boardID === 'f' ?
-                       `${location.protocol}//${ImageHost.flashHost()}/${this.boardID}/${encodeURIComponent(E(data.media.media_filename))}`
-                     :
-                       `${location.protocol}//${ImageHost.host()}/${this.boardID}/${data.media.media_orig}`),
-        height:    data.media.media_h,
-        width:     data.media.media_w,
-        MD5:       data.media.media_hash,
-        size:      $.bytesToString(data.media.media_size),
-        thumbURL:  thumb_link || `${location.protocol}//${ImageHost.thumbHost()}/${this.boardID}/${data.media.preview_orig}`,
-        theight:   data.media.preview_h,
-        twidth:    data.media.preview_w,
+        name: data.media.media_filename,
+        url: media_link ||
+          (this.boardID === 'f' ?
+            `${location.protocol}//${ImageHost.flashHost()}/${this.boardID}/${encodeURIComponent(E(data.media.media_filename))}`
+            :
+            `${location.protocol}//${ImageHost.host()}/${this.boardID}/${data.media.media_orig}`),
+        height: data.media.media_h,
+        width: data.media.media_w,
+        MD5: data.media.media_hash,
+        size: $.bytesToString(data.media.media_size),
+        thumbURL: thumb_link || `${location.protocol}//${ImageHost.thumbHost()}/${this.boardID}/${data.media.preview_orig}`,
+        theight: data.media.preview_h,
+        twidth: data.media.preview_w,
         isSpoiler: data.media.spoiler === '1'
       }
       if (!/\.pdf$/.test(o.file.url)) { o.file.dimensions = `${o.file.width}x${o.file.height}` }
@@ -311,7 +319,7 @@ export default class Fetcher {
       new Board(this.boardID)
     const thread = g.threads.get(`${this.boardID}.${this.threadID}`) ||
       new Thread(this.threadID, board)
-    post = new Post(g.SITE.Build.post(o), thread, board, {isFetchedQuote: true})
+    post = new Post(g.SITE.Build.post(o), thread, board, { isFetchedQuote: true })
     post.kill()
     if (post.file) { post.file.thumbURL = o.file.thumbURL }
     Main.callbackNodes('Post', [post])
