@@ -3,7 +3,7 @@ import DataBoard from "../classes/DataBoard"
 import Get from "../General/Get"
 import Header from "../General/Header"
 import Index from "../General/Index"
-import { Conf, d,g } from "../globals/globals"
+import { Conf, d, g } from "../globals/globals"
 import ExpandThread from "../Miscellaneous/ExpandThread"
 import $ from "../platform/$"
 import { dict } from "../platform/helpers"
@@ -16,9 +16,9 @@ import ThreadWatcher from "./ThreadWatcher"
  * DS205: Consider reworking code to avoid use of IIFEs
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var UnreadIndex = {
+const UnreadIndex = {
   lastReadPost: dict(),
-  hr:           dict(),
+  hr: dict(),
   markReadLink: dict(),
 
   init() {
@@ -29,7 +29,7 @@ var UnreadIndex = {
 
     Callbacks.Thread.push({
       name: 'Unread Line in Index',
-      cb:   this.node
+      cb: this.node
     })
 
     $.on(d, 'IndexRefreshInternal', this.onIndexRefresh)
@@ -70,7 +70,7 @@ var UnreadIndex = {
   },
 
   sync() {
-    return g.threads.forEach(function(thread) {
+    return g.threads.forEach(function (thread) {
       const lastReadPost = UnreadIndex.db.get({
         boardID: thread.board.ID,
         threadID: thread.ID
@@ -90,7 +90,7 @@ var UnreadIndex = {
     let repliesShown = 0
     let repliesRead = 0
     let firstUnread = null
-    thread.posts.forEach(function(post) {
+    thread.posts.forEach(function (post) {
       if (post.isReply && thread.nodes.root.contains(post.nodes.root)) {
         repliesShown++
         if (post.ID <= lastReadPost) {
@@ -105,7 +105,7 @@ var UnreadIndex = {
     if (firstUnread && (repliesRead || ((lastReadPost === thread.OP.ID) && (!$(g.SITE.selectors.summary, thread.nodes.root) || thread.ID in ExpandThread.statuses)))) {
       if (!hr) {
         hr = (UnreadIndex.hr[thread.fullID] = $.el('hr',
-          {className: 'unread-line'}))
+          { className: 'unread-line' }))
       }
       $.before(firstUnread.nodes.root, hr)
     } else {
@@ -114,10 +114,10 @@ var UnreadIndex = {
 
     const hasUnread = repliesShown ?
       firstUnread || !repliesRead
-    : Index.enabled ?
-      thread.lastPost > lastReadPost
-    :
-      thread.OP.ID > lastReadPost
+      : Index.enabled ?
+        thread.lastPost > lastReadPost
+        :
+        thread.OP.ID > lastReadPost
     thread.nodes.root.classList.toggle('unread-thread', hasUnread)
 
     let link = UnreadIndex.markReadLink[thread.fullID]
@@ -141,9 +141,9 @@ var UnreadIndex = {
     const thread = Get.threadFromNode(this)
     UnreadIndex.lastReadPost[thread.fullID] = thread.lastPost
     UnreadIndex.db.set({
-      boardID:  thread.board.ID,
+      boardID: thread.board.ID,
       threadID: thread.ID,
-      val:      thread.lastPost
+      val: thread.lastPost
     })
     $.rm(UnreadIndex.hr[thread.fullID])
     thread.nodes.root.classList.remove('unread-thread')
