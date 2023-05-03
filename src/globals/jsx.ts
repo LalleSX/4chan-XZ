@@ -13,10 +13,7 @@
 
 import { E } from "./globals"
 
-/**
- * The symbol indicating that a string is safely escaped.
- * This is a symbol so it can't be faked by a json blob from the internet.
- */
+
 export const isEscaped = Symbol('isEscaped')
 
 export interface EscapedHtml {

@@ -11,15 +11,7 @@ import Board from "./Board"
 import Post from "./Post"
 import Thread from "./Thread"
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 export default class Fetcher {
   archiveTags: { '\n': { innerHTML: string }; '[b]': { innerHTML: string }; '[/b]': { innerHTML: string }; '[spoiler]': { innerHTML: string }; '[/spoiler]': { innerHTML: string }; '[code]': { innerHTML: string }; '[/code]': { innerHTML: string }; '[moot]': { innerHTML: string }; '[/moot]': { innerHTML: string }; '[banned]': { innerHTML: string }; '[/banned]': { innerHTML: string }; '[fortune]'(text: string): { innerHTML: string }; '[/fortune]': { innerHTML: string }; '[i]': { innerHTML: string }; '[/i]': { innerHTML: string }; '[red]': { innerHTML: string }; '[/red]': { innerHTML: string }; '[green]': { innerHTML: string }; '[/green]': { innerHTML: string }; '[blue]': { innerHTML: string }; '[/blue]': { innerHTML: string } }
   boardID: string

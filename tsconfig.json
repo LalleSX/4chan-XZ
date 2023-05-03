@@ -14,6 +14,7 @@
     "types": [
       "@violentmonkey/types",
       "@types/chrome",
+      "ts-node",
       "@types/firefox-webext-browser"
     ],
     "lib": [
