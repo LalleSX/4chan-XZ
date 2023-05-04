@@ -3,6 +3,8 @@ import { d } from "../globals/globals"
 import $ from "../platform/$"
 import { SECOND } from "../platform/helpers"
 
+type NoticeType = "success" | "warning" | "error"
+
 export default class Notice {
   private el: HTMLDivElement
   private timeout?: number
@@ -10,7 +12,7 @@ export default class Notice {
   private closed = false
 
   constructor(
-    private type: string,
+    private type: NoticeType,
     private content: string | Node,
     timeout?: number,
     onclose?: () => void
@@ -36,7 +38,7 @@ export default class Notice {
     this.onclose = onclose
   }
 
-  private setType(type: string) {
+  private setType(type: NoticeType) {
     this.el.className = `notification ${type}`
   }
 

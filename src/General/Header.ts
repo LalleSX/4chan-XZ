@@ -12,13 +12,7 @@ import Get from "./Get"
 import Settings from "./Settings"
 import UI from "./UI"
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const Header = {
   init() {
     $.onExists(doc, 'body', () => {
@@ -404,7 +398,7 @@ const Header = {
     Header.setBarFixed(this.checked)
 
     Conf['Fixed Header'] = this.checked
-    return $.set('Fixed Header', this.checked)
+    return $.set('Fixed Header', this.checked, true)
   },
 
   setShortcutIcons(show) {

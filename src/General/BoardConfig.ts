@@ -3,13 +3,7 @@ import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 import { dict, HOUR } from "../platform/helpers"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const BoardConfig = {
   cbs: [],
 
@@ -19,7 +13,7 @@ const BoardConfig = {
     const now = Date.now()
     if (now - (2 * HOUR) >= ((middle = Conf['boardConfig'].lastChecked || 0)) || middle > now) {
       return $.ajax(`${location.protocol}//a.4cdn.org/boards.json`,
-        { onloadend: this.load })
+        { onloadend: this.load }, dict())
     } else {
       const { boards } = Conf['boardConfig']
       return this.set(boards)

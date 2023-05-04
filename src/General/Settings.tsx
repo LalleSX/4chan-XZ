@@ -71,9 +71,9 @@ const Settings = {
             return localStorage.setItem('4chan-settings', JSON.stringify(settings))
           } catch (error) {
             return Object.defineProperty(window, 'Config', {value: {disableAll: true}})
-          }})
+          }}, true)
       } else {
-        return $.global(() => Object.defineProperty(window, 'Config', {value: {disableAll: true}}))
+        return $.global(() => Object.defineProperty(window, 'Config', {value: {disableAll: true}}), true)
       }
     }
   },
@@ -81,7 +81,7 @@ const Settings = {
   open(openSection) {
     let dialog, sectionToOpen
     if (Settings.dialog) { return }
-    $.event('CloseMenu')
+    $.event('CloseMenu', null)
 
     Settings.dialog = (dialog = $.el('div',
       { id: 'overlay' }
@@ -258,7 +258,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
         inputs[key].checked = val
         inputs[key].parentNode.parentNode.dataset.checked = val
       }
-    })
+    }, 'Settings')
 
     const div = $.el('div',
       {innerHTML: '<button></button><span class="description">: Clear manually-hidden threads and posts on all boards. Reload the page to apply.'})
@@ -299,6 +299,8 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
         }
       }
       return button.textContent = `Hidden: ${hiddenNum}`
+    }, function() {
+      return button.textContent = 'Hidden: 0'
     })
     $.on(button, 'click', function() {
       this.textContent = 'Hidden: 0'
@@ -312,7 +314,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
             localStorage.removeItem(`4chan-hide-t-${boardID}`)
           }
         }
-        return ($.delete(['hiddenThreads', 'hiddenPosts']))
+        return ($.delete(['hiddenThreads', 'hiddenPosts'], dict())
       })
     })
     return $.after($('input[name="Stubs"]', section).parentNode.parentNode, div)
@@ -326,7 +328,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
       // Don't export cached JSON data.
       delete Conf2['boardConfig']
       return (Settings.downloadExport({version: g.VERSION, date: Date.now(), Conf: Conf2}))
-    })
+    }, 'Settings')
   },
 
   downloadExport(data) {
@@ -918,6 +920,9 @@ vp-replace
           Settings[key].call(input)
         }
       }
+    }, function(err) {
+      if (err) { return }
+      return $.id('lastarchivecheck').textContent = new Date(Conf['lastarchivecheck']).toLocaleString()
     })
 
     const listImageHost = $.id('list-fourchanImageHost')
@@ -944,6 +949,9 @@ vp-replace
       $.extend(Conf, itemsArchive)
       Redirect.selectArchives()
       return Settings.addArchiveTable(section)
+    }, function(err) {
+      if (err) { return }
+      return $.id('lastarchivecheck').textContent = new Date(Conf['lastarchivecheck']).toLocaleString()
     })
 
     const boardSelect    = $('#archive-board-select', section)
@@ -1069,7 +1077,7 @@ vp-replace
   saveSelectedArchive() {
     return $.get('selectedArchives', Conf['selectedArchives'], ({selectedArchives}) => {
       (selectedArchives[this.dataset.boardid] || (selectedArchives[this.dataset.boardid] = dict()))[this.dataset.type] = JSON.parse(this.value)
-      $.set('selectedArchives', selectedArchives)
+      $.set('selectedArchives', selectedArchives, () => Conf['selectedArchives'] = selectedArchives)
       Conf['selectedArchives'] = selectedArchives
       return Redirect.selectArchives()
     })
@@ -1157,7 +1165,7 @@ vp-replace
         const val = items[key]
         inputs[key].value = val
       }
-    })
+    }, true)
   },
 
   keybind(e) {

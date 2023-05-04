@@ -4,7 +4,6 @@ import Board from "./Board"
 import Post from "./Post"
 import SimpleDict from "./SimpleDict"
 
-
 export default class Thread {
   ID: number | string
   OP: Post
@@ -26,7 +25,6 @@ export default class Thread {
   json: JSON
   catalogView: Node
   nodes: { root: Post }
-  toString() { return this.ID }
 
   constructor(ID: number | string, board: Board) {
     this.board = board
@@ -50,8 +48,7 @@ export default class Thread {
     this.OP = null
     this.catalogView = null
 
-    this.nodes =
-      { root: null }
+    this.nodes = { root: null }
 
     this.board.threads.push(this.ID, this)
     g.threads.push(this.fullID, this)
@@ -66,14 +63,18 @@ export default class Thread {
     }
     icon.title = `This thread is on page ${pageNum} in the original index.`
     icon.textContent = `[${pageNum}]`
-    if (this.catalogView) { return this.catalogView.nodes.pageCount.textContent = pageNum }
+    if (this.catalogView) { this.catalogView.nodes.pageCount.textContent = pageNum }
   }
 
   setCount(type: string, count: number, reachedLimit: boolean) {
     if (!this.catalogView) { return }
     const el = this.catalogView.nodes[`${type}Count`]
     el.textContent = count
-    return (reachedLimit ? $.addClass : $.rmClass)(el, 'warning')
+    if (reachedLimit) {
+      $.addClass(el, 'warning')
+    } else {
+      $.rmClass(el, 'warning')
+    }
   }
 
   setStatus(type: string, status: boolean) {
@@ -83,7 +84,7 @@ export default class Thread {
     if (!this.OP) { return }
     this.setIcon('Sticky', this.isSticky)
     this.setIcon('Closed', this.isClosed && !this.isArchived)
-    return this.setIcon('Archived', this.isArchived)
+    this.setIcon('Archived', this.isArchived)
   }
 
   setIcon(type: string, status: boolean) {
@@ -118,21 +119,25 @@ export default class Thread {
   }
 
   kill() {
-    return this.isDead = true
+    this.isDead = true
   }
 
   collect() {
     let n = 0
-    this.posts.forEach(function (post) {
+    this.posts.forEach(post => {
       if (post.clones.length) {
-        return n++
+        n++
       } else {
-        return post.collect()
+        post.collect()
       }
     })
     if (!n) {
       g.threads.rm(this.fullID)
-      return this.board.threads.rm(this)
+      this.board.threads.rm(this)
     }
+  }
+
+  toString() {
+    return this.ID
   }
 }

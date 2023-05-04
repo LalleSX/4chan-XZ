@@ -1,18 +1,22 @@
 import Callbacks from "../classes/Callbacks"
-import { Conf,g } from "../globals/globals"
+import type Post from "../classes/Post"
+import { Conf, g } from "../globals/globals"
 
 const ThreadLinks = {
   init(): void {
     if ((g.VIEW !== 'index') || !Conf['Open Threads in New Tab']) { return }
 
-    Callbacks.Post.push({
+    const postCallback: Post = {
       name: 'Thread Links',
-      cb:   this.node.bind(this)
-    })
-    Callbacks.CatalogThread.push({
+      cb: this.node.bind(this)
+    }
+    const catalogThreadCallback: Post = {
       name: 'Thread Links',
-      cb:   this.catalogNode.bind(this)
-    })
+      cb: this.catalogNode.bind(this)
+    }
+
+    Callbacks.Post.push(postCallback)
+    Callbacks.CatalogThread.push(catalogThreadCallback)
   },
 
   node(): void {

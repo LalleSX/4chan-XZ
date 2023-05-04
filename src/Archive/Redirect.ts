@@ -125,7 +125,7 @@ const Redirect = {
     $.set(items)
     $.extend(Conf, items)
     Redirect.selectArchives()
-    return cb?.()
+    return cb
   },
 
   to(dest, data) {

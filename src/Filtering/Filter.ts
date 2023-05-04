@@ -378,7 +378,7 @@ const Filter = {
     }
   },
 
-  addFilter(type: FilterType, re: string, cb?: () => void) {
+  addFilter(type: FilterType, re: string, cb?: Callbacks) {
     if (!$.hasOwn(Config.filter, type)) { return }
     return $.get(type, Conf[type], function (item) {
       let save = item[type]
@@ -392,7 +392,7 @@ const Filter = {
     })
   },
 
-  removeFilters(type: FilterType, res: FilterObj[] | Map<string, FilterObj[]>, cb?: () => void) {
+  removeFilters(type: FilterType, res: FilterObj[] | Map<string, FilterObj[]>, cb?: Callbacks) {
     return $.get(type, Conf[type], function (item) {
       let save = item[type]
       const filterArray = Array.isArray(res) ? res : [...res.values()].flat()

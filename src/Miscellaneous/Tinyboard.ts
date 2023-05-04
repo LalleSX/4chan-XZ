@@ -10,12 +10,11 @@ interface QRPostDetail {
 }
 
 const Tinyboard = {
-  init() {
+  init(): void {
     if (g.SITE.software !== 'tinyboard') { return }
     if (g.VIEW === 'thread') {
-      return Main.ready(() => $.global(function() {
-        let base
-        const { boardID, threadID } = document.currentScript.dataset
+      return Main.ready(() => $.global(function (data: { boardID: string, threadID: number }) {
+        const { boardID, threadID } = data
         const threadIdNum = +threadID
         const form = document.querySelector('form[name="post"]') as HTMLFormElement
         window.$(document).ajaxComplete((event, request, settings) => {
@@ -29,14 +28,13 @@ const Tinyboard = {
             if (redirect && (originalNoko != null) && !originalNoko && !noko) {
               detail.redirect = redirect
             }
-          } catch (error) {}
+          } catch (error) { }
           event = new CustomEvent('QRPostSuccessful', { bubbles: true, detail })
           return document.dispatchEvent(event)
         })
         const originalNoko = window.tb_settings?.ajax?.always_noko_replies;
-        ((base = window.tb_settings || (window.tb_settings = {})).ajax || (base.ajax = {})).always_noko_replies = true
-      }
-      , { boardID: g.BOARD.ID, threadID: g.THREADID }))
+        ((window.tb_settings || (window.tb_settings = {})).ajax || (window.tb_settings.ajax = {})).always_noko_replies = true
+      }, { boardID: g.BOARD.ID, threadID: g.THREADID }))
     }
   }
 }

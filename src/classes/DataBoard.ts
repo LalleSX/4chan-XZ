@@ -65,7 +65,7 @@ export default class DataBoard {
       this.data.version = (this.data.version || 0) + 1
       return $.set(this.key, this.data, () => {
         if (needSync) { this.sync?.() }
-        return cb?.()
+        return cb
       })
     })
   }
@@ -77,7 +77,7 @@ export default class DataBoard {
         for (const change of DataBoard.changes) { change() }
         this.sync?.()
       }
-      return cb?.()
+      return cb
     })
   }
 

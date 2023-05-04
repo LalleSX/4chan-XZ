@@ -93,7 +93,6 @@ $.ajaxPage = function (url: string, options: AjaxPageOptions) {
   xhr.send(form)
   return xhr
 }
-$.cache = dict()
 
 $.ready = function (fc: () => void) {
   if (d.readyState !== 'loading') {
@@ -293,7 +292,7 @@ $.ajax = (function () {
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
 $.lastModified = dict()
-$.whenModified = function (url, bucket, cb, options) {
+$.whenModified = function (url, bucket, cb, options = {}) {
   let t: string
   const { timeout, ajax } = options
   const params = []
@@ -315,42 +314,43 @@ $.whenModified = function (url, bucket, cb, options) {
     headers
   })
   return r
-};
+}
 
-(function () {
+$.cache = function (url, cb, options = {}) {
   const reqs = dict()
-  $.cache = function (url, cb, options) {
-    let req
-    const { ajax } = options
-    if (req = reqs[url]) {
-      if (req.callbacks) {
-        req.callbacks.push(cb)
-      } else {
-        $.queueTask(() => cb.call(req, { isCached: true }))
-      }
-      return req
+  let req
+  const { ajax } = options
+  if (req = reqs[url]) {
+    if (req.callbacks) {
+      req.callbacks.push(cb)
+    } else {
+      $.queueTask(() => cb.call(req, { isCached: true }))
     }
-    const onloadend = function () {
-      if (!this.status) {
-        delete reqs[url]
-      }
-      for (cb of this.callbacks) {
-        (cb => $.queueTask(() => cb.call(this, { isCached: false })))(cb)
-      }
-      return delete this.callbacks
-    }
-    req = (ajax || $.ajax)(url, { onloadend })
-    req.callbacks = [cb]
-    return reqs[url] = req
+    return req
   }
-  return $.cleanCache = function (testf) {
-    for (const url in reqs) {
-      if (testf(url)) {
-        delete reqs[url]
-      }
+  const onloadend = function () {
+    if (!this.status) {
+      delete reqs[url]
+    }
+    for (cb of this.callbacks) {
+      (cb => $.queueTask(() => cb.call(this, { isCached: false })))(cb)
+    }
+    return delete this.callbacks
+  }
+  req = (ajax || $.ajax)(url, { onloadend })
+  req.callbacks = [cb]
+  return reqs[url] = req
+}
+
+$.cleanCache = function (testf) {
+  const reqs = dict()
+  for (const url in reqs) {
+    if (testf(url)) {
+      delete reqs[url]
     }
   }
-})()
+}
+
 
 $.cb = {
   checked() {
@@ -788,7 +788,7 @@ if (platform === 'crx') {
           c.error(err.message)
           setTimeout(setArea, MINUTE, area)
           timeout[area] = Date.now() + MINUTE
-          return cb?.(err)
+          return cb
         }
 
         delete timeout[area]
@@ -807,7 +807,7 @@ if (platform === 'crx') {
             return result
           })()))
         }
-        return cb?.()
+        return cb
       })
     }
 
@@ -831,7 +831,7 @@ if (platform === 'crx') {
           c.error(chrome.runtime.lastError.message)
         }
         if (err == null) { err = chrome.runtime.lastError }
-        if (!--count) { return cb?.(err) }
+        if (!--count) { return cb }
       }
       chrome.storage.local.clear(done)
       return chrome.storage.sync.clear(done)
@@ -862,7 +862,7 @@ if (platform === 'crx') {
 
     $.forceSync = function () { }
 
-    $.delete = function (keys, cb) {
+    $.delete = function (keys: string | string[], cb: Callbacks) {
       let key
       if (!(keys instanceof Array)) {
         keys = [keys]
@@ -877,7 +877,7 @@ if (platform === 'crx') {
         const items = dict()
         for (key of keys) { items[key] = undefined }
         $.syncChannel.postMessage(items)
-        return cb?.()
+        return cb
       })
     }
 
@@ -905,7 +905,7 @@ if (platform === 'crx') {
         return result
       })()).then(function () {
         $.syncChannel.postMessage(items)
-        return cb?.()
+        return cb
       })
     })
 
@@ -1044,7 +1044,7 @@ if (platform === 'crx') {
           const value = items[key]
           $.setValue(g.NAMESPACE + key, JSON.stringify(value), cb)
         }
-        return cb?.()
+        return cb
       })
     })
 
@@ -1056,7 +1056,7 @@ if (platform === 'crx') {
       try {
         $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')), cb)
       } catch (error) { }
-      return cb?.()
+      return cb
     }
   }
 }
