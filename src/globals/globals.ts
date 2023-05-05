@@ -14,6 +14,13 @@ declare global {
 }
 // interfaces might be incomplete
 export interface BoardConfig {
+  sjis_tags: string,
+  math_tags: string,
+  forced_anon: boolean,
+  board_flags: string[],
+  require_subject: boolean,
+  text_only: boolean
+  country_flags: 1 | 0,
   board: string
   bump_limit: number
   cooldowns: {
@@ -37,6 +44,8 @@ export interface BoardConfig {
 }
 
 export interface Board {
+  cooldowns(): object
+  forced_anon: 1 | 0,
   ID: string,
   boardID: string,
   siteID: string,

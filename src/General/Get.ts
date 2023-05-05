@@ -35,7 +35,7 @@ const Get = {
     const index = root.dataset.clone
     if (index) { return post.clones[+index] } else { return post }
   },
-  postFromNode(root) {
+  postFromNode(root): Post {
     return Get.postFromRoot($.x(`ancestor-or-self::${g.SITE.xpath.postContainer}[1]`, root))
   },
   postDataFromLink(link) {

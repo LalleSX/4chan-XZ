@@ -6,6 +6,19 @@ import { dict } from "../platform/helpers"
 
 
 const SWTinyboard = {
+  insertTags() {
+    const { config } = Conf['boardConfig']
+    const { markup_tags } = config
+    const { markup_tags_top } = config
+    const { markup_tags_bottom } = config
+    const tags = markup_tags_top + markup_tags + markup_tags_bottom
+    if (tags) {
+      const textarea = $('#body')
+      if (textarea) {
+        textarea.insertAdjacentHTML('beforebegin', tags)
+      }
+    }
+  },
   name: 'Tinyboard',
   isOPContainerThread: true,
   mayLackJSON: true,

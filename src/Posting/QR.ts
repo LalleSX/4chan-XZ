@@ -1,6 +1,7 @@
 import meta from '../../package.json'
 import Callbacks from '../classes/Callbacks'
 import Notice from '../classes/Notice'
+import Thread from '../classes/Thread'
 import BoardConfig from '../General/BoardConfig'
 import Get from '../General/Get'
 import Header from '../General/Header'
@@ -75,7 +76,28 @@ const QR = {
 
     return Header.addShortcut('qr', sc, 540)
   },
-
+  captcha: null,
+  postingIsEnabled: false,
+  nodes: null,
+  posts: null,
+  shortcut: null,
+  link: '',
+  min_width: 0,
+  min_height: 0,
+  max_width: 0,
+  max_height: 0,
+  max_size: 0,
+  max_size_video: null,
+  max_comment: null,
+  max_width_video: null,
+  max_height_video: null,
+  max_duration_video: null,
+  forcedAnon: null,
+  spoiler: null,
+  hasFocus: false,
+  req: null,
+  currentCaptcha: null,
+  errorCount: 0,
   initReady() {
     let origToggle
     const captchaVersion = $('#g-recaptcha, #captcha-forced-noscript') ? 'v2' : 't'
@@ -378,7 +400,7 @@ const QR = {
     let text = post.board.ID === g.BOARD.ID ? `>>${post}\n` : `>>>/${post.board}/${post}\n`
     for (let i = 0, end = sel.rangeCount, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
       try {
-        var insideCode, node
+        let insideCode, node
         range = sel.getRangeAt(i)
         // Trim range to be fully inside post
         if (range.compareBoundaryPoints(Range.START_TO_START, postRange) < 0) {
@@ -407,7 +429,7 @@ const QR = {
         for (node of $$('br', frag)) {
           if (node !== frag.lastChild) { $.replace(node, $.tn('\n>')) }
         }
-        g.SITE.insertTags?.(frag)
+        g.SITE.insertTags?.()
         for (node of $$('.linkify[data-original]', frag)) {
           $.replace(node, $.tn(node.dataset.original))
         }
@@ -416,7 +438,7 @@ const QR = {
           $.rm(node)
         }
         text += `>${frag.textContent.trim()}\n`
-      } catch (error) { }
+      } catch (error) { /* empty */ }
     }
 
     QR.openPost()
@@ -456,7 +478,7 @@ const QR = {
     const file = QR.selected?.file
     if (!file || !/^(image|video)\//.test(file.type)) { return }
     const isVideo = /^video\//.test(file)
-    const el = $.el((isVideo ? 'video' : 'img'))
+    const el = $.el((isVideo ? 'video' : 'img'), { src: '' })
     $.on(el, 'error', () => QR.openError())
     $.on(el, (isVideo ? 'loadeddata' : 'load'), function () {
       e.target.getContext('2d').drawImage(el, 0, 0)
@@ -467,12 +489,12 @@ const QR = {
   },
 
   openError() {
-    const div = $.el('div')
+    const div = $.el('div', { className: 'error' })
     $.extend(div, {
       innerHTML:
         'Could not open file. [<a href="' + E(meta.faq) + '#error-reading-metadata" target="_blank">More info</a>]'
     })
-    return QR.error(div)
+    return QR.error(div, 5000)
   },
 
   setFile(e) {
@@ -508,9 +530,9 @@ const QR = {
     let file = null
     let score = -1
     for (const item of e.clipboardData.items) {
-      var file2
+      let file2
       if ((item.kind === 'file') && (file2 = item.getAsFile())) {
-        const score2 = (2 * (file2.size <= QR.max_size)) + (file2.type === 'image/png')
+        const score2 = (file2.size * 100) / (d.body.clientWidth * d.body.clientHeight)
         if (score2 > score) {
           file = file2
           score = score2
@@ -533,7 +555,7 @@ const QR = {
     const images = $$('img', pasteArea)
     $.rmAll(pasteArea)
     for (const img of images) {
-      var m
+      let m
       const { src } = img
       if (m = src.match(/data:(image\/(\w+));base64,(.+)/)) {
         const bstr = atob(m[3])
@@ -561,10 +583,10 @@ const QR = {
         if (blob && !/^text\//.test(blob.type)) {
           return QR.handleFiles([blob])
         } else {
-          return QR.error("Can't load file.")
+          return QR.error("Can't load file.", 5000)
         }
       })
-    })
+    }, urlDefault, true)
   },
 
   handleFiles(files) {
@@ -727,7 +749,7 @@ const QR = {
     let i = 0
     const save = function () { return QR.selected.save(this) }
     while ((name = items[i++])) {
-      var node
+      let node
       if (!(node = nodes[name])) { continue }
       event = node.nodeName === 'SELECT' ? 'change' : 'input'
       $.on(nodes[name], event, save)
@@ -793,7 +815,7 @@ const QR = {
     }
   },
 
-  submit(e) {
+  submit(e?: KeyboardEvent) {
     let captcha, err, filetag
     e?.preventDefault()
     const force = e?.shiftKey
@@ -803,7 +825,7 @@ const QR = {
       return
     }
 
-    $.forceSync('cooldowns')
+    $.forceSync('cooldowns', QR.cooldown.sync)
     if (QR.cooldown.seconds) {
       if (force) {
         QR.cooldown.clear()
@@ -859,7 +881,7 @@ const QR = {
       // stop auto-posting
       QR.cooldown.auto = false
       QR.status()
-      QR.error(err)
+      QR.error(err, 1)
       return
     }
 
@@ -905,6 +927,7 @@ const QR = {
     }
 
     let cb = function (response) {
+      const cb = null
       if (response != null) {
         QR.currentCaptcha = response
         if (QR.captcha === Captcha.v2) {
@@ -921,7 +944,7 @@ const QR = {
           }
         }
       }
-      QR.req = $.ajax(`https://sys.${location.hostname.split('.')[1]}.org/${g.BOARD}/post`, options)
+      QR.req = $.ajax(`https://sys.${location.hostname.split('.')[1]}.org/${g.BOARD}/post`, options, cb)
       return QR.req.progress = '...'
     }
 
@@ -938,7 +961,7 @@ const QR = {
       }
       captcha(function (response) {
         if ((QR.captcha === Captcha.v2) && Captcha.cache.haveCookie()) {
-          cb?.()
+          cb(response)
           if (response) { return Captcha.cache.save(response) }
         } else if (response) {
           return cb?.(response)
@@ -1017,7 +1040,7 @@ const QR = {
       }
       QR.captcha.setup(QR.cooldown.auto && [QR.nodes.status, d.body].includes(d.activeElement))
       QR.status()
-      QR.error(err)
+      QR.error(err, post)
       return
     }
 
@@ -1103,8 +1126,7 @@ const QR = {
         },
         responseType: 'text',
         type: 'HEAD'
-      }
-      )
+      }, cb)
     }
     return check()
   },
@@ -1124,7 +1146,16 @@ const QR = {
   },
 
   cooldown: {
+    timeout: null,
+    isCounting: true || false,
     seconds: 0,
+    isSetup: false,
+    auto: false,
+    maxDelay: 0,
+    data: null,
+    changes: null,
+    customCooldown: null,
+
     delays: {
       deletion: 60
     }, // cooldown for deleting posts/files
@@ -1368,6 +1399,7 @@ const QR = {
 
   oekaki: {
     menu: {
+      post: null,
       init() {
         if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Edit Link'] || !Conf['Quick Reply']) { return }
 
@@ -1397,9 +1429,14 @@ const QR = {
         const currentTime = post.file.fullImage?.currentTime || 0
         return CrossOrigin.file(post.file.url, function (blob) {
           if (!blob) {
-            return QR.error("Can't load file.")
+            return QR.error("Can't load file.", 'oekaki')
           } else if (isVideo) {
-            const video = $.el('video')
+            const video = $.el('video', {
+              src: URL.createObjectURL(blob),
+              autoplay: true,
+              loop: true,
+              muted: true
+            })
             $.on(video, 'loadedmetadata', function () {
               $.on(video, 'seeked', function () {
                 const canvas = $.el('canvas', {
@@ -1464,22 +1501,31 @@ const QR = {
         return $.add(d.head, [style, script])
       }
     },
-
     draw() {
-      return $.global(function () {
+      return $.global(() => {
         const { Tegaki, FCX } = window
-        if (Tegaki.bg) { Tegaki.destroy() }
+
+        if (Tegaki.bg) {
+          Tegaki.destroy()
+        }
+
         FCX.oekakiName = 'tegaki.png'
+
+        const getWidth = (): number => +(document.querySelector('#qr [name=oekaki-width]') as HTMLInputElement).clientWidth
+        const getHeight = (): number => +(document.querySelector('#qr [name=oekaki-height]') as HTMLInputElement).clientHeight
+        const getBgColor = (): string => {
+          const bgColorCheckbox = document.querySelector('#qr [name=oekaki-bg]') as HTMLInputElement
+          const bgColorInput = document.querySelector('#qr [name=oekaki-bgcolor]') as HTMLInputElement
+
+          return bgColorCheckbox.checked ? bgColorInput.value : 'transparent'
+        }
+
         return Tegaki.open({
           onDone: FCX.oekakiCB,
-          onCancel() { return Tegaki.bgColor = '#ffffff' },
-          width: +document.querySelector('#qr [name=oekaki-width]').value,
-          height: +document.querySelector('#qr [name=oekaki-height]').value,
-          bgColor:
-            document.querySelector('#qr [name=oekaki-bg]').checked ?
-              document.querySelector('#qr [name=oekaki-bgcolor]').value
-              :
-              'transparent'
+          onCancel: () => { Tegaki.bgColor = '#ffffff' },
+          width: getWidth(),
+          height: getHeight(),
+          bgColor: getBgColor(),
         })
       })
     },
@@ -1536,7 +1582,7 @@ const QR = {
           FCX.oekakiName = name
           return Tegaki.resume()
         } else {
-          return cb()
+          return cb(E)
         }
       }))
     },
@@ -1545,13 +1591,15 @@ const QR = {
       return QR.oekaki.load(() => QR.nodes.oekaki.hidden = !QR.nodes.oekaki.hidden)
     }
   },
+  email: null,
 
   persona: {
-    always: {},
+    pwd: '',
+    always: false,
     types: {
-      name: [],
-      email: [],
-      sub: []
+      name: [""],
+      email: [""],
+      sub: [""]
     },
 
     init() {
@@ -1565,6 +1613,7 @@ const QR = {
       let match, needle, type, val
       if (item[0] === '#') { return }
       if (!(match = item.match(/(name|options|email|subject|password):"(.*)"/i))) { return }
+      // eslint-disable-next-line prefer-const
       [match, type, val] = Array.from(match)
 
       // Don't mix up item settings with val.
@@ -1630,8 +1679,23 @@ const QR = {
       })
     }
   },
-
   post: class {
+    thread: Thread
+    flag: string
+    sub: string
+    com: string
+    spoiler: boolean
+    name: string
+    email: string
+    fileUrl: string
+    fileThumb: string
+    nodes: { el: HTMLElement; rm: HTMLElement; spoiler: HTMLInputElement; span: HTMLElement }
+    draggable: boolean
+    parentNode: HTMLElement
+    filesize: string
+    filename: string
+    pasting: boolean
+    URL: string
     constructor(select) {
       this.select = this.select.bind(this)
       const el = $.el('a', {
@@ -1734,7 +1798,7 @@ const QR = {
       this.isLocked = lock
       if (this !== QR.selected) { return }
       for (const name of ['thread', 'name', 'email', 'sub', 'com', 'fileButton', 'filename', 'spoiler', 'flag']) {
-        var node
+        let node
         if ((node = QR.nodes[name])) {
           node.disabled = lock
         }
@@ -1767,7 +1831,7 @@ const QR = {
       // Load this post's values.
 
       for (const name of ['thread', 'name', 'email', 'sub', 'com', 'filename', 'flag']) {
-        var node
+        let node
         if (!(node = QR.nodes[name])) { continue }
         node.value = this[name] || node.dataset.default || ''
       }
@@ -1815,7 +1879,7 @@ const QR = {
       // Do this in case people use extensions
       // that do not trigger the `input` event.
       for (const name of ['thread', 'name', 'email', 'sub', 'com', 'filename', 'spoiler', 'flag']) {
-        var node
+        let node
         if (!(node = QR.nodes[name])) { continue }
         this.save(node, true)
       }
@@ -1856,7 +1920,7 @@ const QR = {
     static rmErrored(e) {
       e.stopPropagation()
       for (let i = QR.posts.length - 1; i >= 0; i--) {
-        var errors
+        let errors
         const post = QR.posts[i]
         if ((errors = post.errors)) {
           for (const error of errors) {
@@ -1926,7 +1990,7 @@ const QR = {
       this.nodes.el.dataset.type = this.file.type
       this.nodes.el.style.backgroundImage = ''
       if (!QR.mimeTypes.includes(this.file.type)) {
-        this.fileError('Unsupported file type.')
+        this.fileError('Unsupported file type.', meta.faq + '#supported-file-types')
       } else if (/^(image|video)\//.test(this.file.type)) {
         this.readFile()
       }
@@ -1937,13 +2001,13 @@ const QR = {
       let max = QR.max_size
       if (/^video\//.test(this.file.type)) { max = Math.min(max, QR.max_size_video) }
       if (this.file.size > max) {
-        return this.fileError(`File too large (file: ${this.filesize}, max: ${$.bytesToString(max)}).`)
+        return this.fileError(`File too large (file: ${this.filesize}, max: ${$.bytesToString(max)}).`, meta.faq + '#file-too-large')
       }
     }
 
     readFile() {
       const isVideo = /^video\//.test(this.file.type)
-      const el = $.el(isVideo ? 'video' : 'img')
+      const el = $.el(isVideo ? 'video' : 'img', { src: this.URL, style: 'display: none' })
       if (isVideo && !el.canPlayType(this.file.type)) { return }
 
       const event = isVideo ? 'loadeddata' : 'load'
@@ -1954,7 +2018,7 @@ const QR = {
         this.setThumbnail(el)
         return $.event('QRMetadata', null, this.nodes.el)
       }
-      var onerror = () => {
+      const onerror = () => {
         $.off(el, event, onload)
         $.off(el, 'error', onerror)
         this.fileError(`Corrupt ${isVideo ? 'video' : 'image'} or error reading metadata.`, meta.faq + '#error-reading-metadata')
@@ -1968,7 +2032,6 @@ const QR = {
       $.on(el, 'error', onerror)
       return el.src = URL.createObjectURL(this.file)
     }
-
     checkDimensions(el) {
       let height, width
       if (el.tagName === 'IMG') {
@@ -1976,10 +2039,10 @@ const QR = {
         this.nodes.el.dataset.height = height
         this.nodes.el.dataset.width = width
         if ((height > QR.max_height) || (width > QR.max_width)) {
-          this.fileError(`Image too large (image: ${height}x${width}px, max: ${QR.max_height}x${QR.max_width}px)`)
+          this.fileError(`Image too large (image: ${height}x${width}px, max: ${QR.max_height}x${QR.max_width}px)`, meta.faq + '#image-too-large')
         }
         if ((height < QR.min_height) || (width < QR.min_width)) {
-          return this.fileError(`Image too small (image: ${height}x${width}px, min: ${QR.min_height}x${QR.min_width}px)`)
+          return this.fileError(`Image too small (image: ${height}x${width}px, min: ${QR.min_height}x${QR.min_width}px)`, meta.faq + '#image-too-small')
         }
       } else {
         const { videoHeight, videoWidth, duration } = el
@@ -1989,18 +2052,18 @@ const QR = {
         const max_height = Math.min(QR.max_height, QR.max_height_video)
         const max_width = Math.min(QR.max_width, QR.max_width_video)
         if ((videoHeight > max_height) || (videoWidth > max_width)) {
-          this.fileError(`Video too large (video: ${videoHeight}x${videoWidth}px, max: ${max_height}x${max_width}px)`)
+          this.fileError(`Video too large (video: ${videoHeight}x${videoWidth}px, max: ${max_height}x${max_width}px)`, meta.faq + '#video-too-large')
         }
         if ((videoHeight < QR.min_height) || (videoWidth < QR.min_width)) {
-          this.fileError(`Video too small (video: ${videoHeight}x${videoWidth}px, min: ${QR.min_height}x${QR.min_width}px)`)
+          this.fileError(`Video too small (video: ${videoHeight}x${videoWidth}px, min: ${QR.min_height}x${QR.min_width}px)`, meta.faq + '#video-too-small')
         }
         if (!isFinite(duration)) {
-          this.fileError('Video lacks duration metadata (try remuxing)')
+          this.fileError('Video lacks duration metadata (try remuxing)', meta.faq + '#video-lacks-duration-metadata')
         } else if (duration > QR.max_duration_video) {
-          this.fileError(`Video too long (video: ${duration}s, max: ${QR.max_duration_video}s)`)
+          this.fileError(`Video too long (video: ${duration}s, max: ${QR.max_duration_video}s)`, meta.faq + '#video-too-long')
         }
         if (BoardConfig.noAudio(g.BOARD.ID) && $.hasAudio(el)) {
-          return this.fileError('Audio not allowed')
+          return this.fileError('Audio not allowed', meta.faq + '#audio-not-allowed')
         }
       }
     }
@@ -2035,7 +2098,7 @@ const QR = {
         height = (s / width) * height
         width = s
       }
-      const cv = $.el('canvas')
+      const cv = $.el('canvas', null)
       cv.height = height
       cv.width = width
       cv.getContext('2d').drawImage(el, 0, 0, width, height)

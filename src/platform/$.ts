@@ -592,19 +592,25 @@ $.queueTask = (() => {
   }
 })()
 
-$.global = function (fn, data) {
-  if (doc) {
-    const script = $.el('script',
-      { textContent: `(${fn}).call(document.currentScript.dataset);` })
-    if (data) { $.extend(script.dataset, data) }
-    $.add((d.head || doc), script)
+$.global = function (fn: Function, data?: any) {
+  const d = document
+  if (d) {
+    const script = $.el('script', {
+      textContent: `(${fn}).call(document.currentScript.dataset);`,
+    })
+    if (data) {
+      $.extend(script.dataset, data)
+    }
+    const target = d.head || d
+    $.add(target, script)
     $.rm(script)
     return script.dataset
   } else {
-    // XXX dwb
     try {
       fn.call(data)
-    } catch (error) { }
+    } catch (error) {
+      console.error(error)
+    }
     return data
   }
 }
@@ -666,13 +672,10 @@ $.item = function (key: string, val: string | JSON) {
   return item
 }
 
-$.oneItemSugar = (fn: Function) => (function (key: string, val: JSON | string, cb) {
-  if (typeof key === 'string') {
-    return fn($.item(key, val), cb)
-  } else {
-    return fn(key, val)
-  }
-})
+$.oneItemSugar = (fn: (item: any, cb?) => any) => (key: string | any, val?: JSON | string, cb?) => {
+  const item = typeof key === 'string' ? $.item(key, val) : key
+  return fn(item, cb)
+}
 
 $.syncing = dict()
 
@@ -701,7 +704,12 @@ if (platform === 'crx') {
     }
   })
   $.sync = (key: string, cb) => $.syncing[key] = cb
-  $.forceSync = function () {/* emptey */ }
+  $.forceSync = (key: string, cb) => {
+    $.syncing[key] = cb
+    chrome.storage.local.get(key, function (data) {
+      cb(data[key], key)
+    })
+  }
 
   $.crxWorking = function () {
     try {

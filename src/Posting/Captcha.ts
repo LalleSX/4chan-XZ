@@ -10,7 +10,7 @@ import CaptchaT from "./Captcha.t"
 import QR from "./QR"
 
 const Captcha = {
-  Cache: {
+  cache: {
     init() {
       $.on(d, 'SaveCaptcha', e => {
         return this.saveAPI(e.detail)
@@ -159,7 +159,8 @@ const Captcha = {
     updateCount() {
       return $.event('CaptchaCount', this.captchas.length)
     }
-  }, Replace: CaptchaReplace, t: CaptchaT, v2: {
+  },
+  Replace: CaptchaReplace, t: CaptchaT, v2: {
     lifetime: 2 * MINUTE,
 
     init() {
