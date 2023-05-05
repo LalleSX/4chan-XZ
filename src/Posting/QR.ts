@@ -20,6 +20,7 @@ import QuickReplyPage from './QR/QuickReply.html'
 
 
 const QR = {
+  selected: null,
   mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/vnd.adobe.flash.movie', 'application/x-shockwave-flash', 'video/webm'],
 
   validExtension: /\.(jpe?g|png|gif|pdf|swf|webm)$/i,
@@ -258,9 +259,10 @@ const QR = {
   },
 
   blur() {
-    if (QR.nodes.el.contains(d.activeElement)) { return d.activeElement.blur() }
+    if (QR.nodes.el.contains(d.activeElement) && d.activeElement instanceof HTMLElement) {
+      d.activeElement.blur()
+    }
   },
-
   toggleSJIS(e) {
     e.preventDefault()
     Conf['sjisPreview'] = !Conf['sjisPreview']
@@ -382,7 +384,7 @@ const QR = {
     QR.open()
     if (QR.selected.isLocked) {
       const index = QR.posts.indexOf(QR.selected);
-      (QR.posts[index + 1] || new QR.post()).select()
+      (QR.posts[index + 1] || new QR.post(QR.selected)).select()
       $.addClass(QR.nodes.el, 'dump')
       return QR.cooldown.auto = true
     }
@@ -542,7 +544,7 @@ const QR = {
     if (file) {
       const { type } = file
       const blob = new Blob([file], { type })
-      blob.name = `${Conf['pastedname']}.${$.getOwn(QR.extensionFromType, type) || 'jpg'}`
+      file.name = blob.name
       QR.open()
       QR.handleFiles([blob])
       $.addClass(QR.nodes.el, 'dump')
@@ -613,7 +615,7 @@ const QR = {
     } else {
       post = QR.posts[QR.posts.length - 1]
       if (isText ? post.com || post.pasting : post.file) {
-        post = new QR.post()
+        post = new QR.post(QR.selected)
       }
     }
     return post[isText ? 'pasteText' : 'setFile'](file)
@@ -1048,7 +1050,7 @@ const QR = {
 
     const h1 = $('h1', this.response)
 
-    let [_, threadID, postID] = Array.from(h1.nextSibling.textContent.match(/thread:(\d+),no:(\d+)/))
+    let [threadID, postID] = Array.from(h1.nextSibling.textContent.match(/thread:(\d+),no:(\d+)/))
     postID = +postID
     threadID = +threadID || postID
     const isReply = threadID !== postID
@@ -1567,10 +1569,11 @@ const QR = {
             bgColor: 'transparent'
           })
           const canvas = document.createElement('canvas')
-          canvas.width = (canvas.naturalWidth = +selected.dataset.width)
-          canvas.height = (canvas.naturalHeight = +selected.dataset.height)
+          canvas.width = +selected.dataset.width
+          canvas.height = +selected.dataset.height
           canvas.hidden = true
           document.body.appendChild(canvas)
+
           canvas.addEventListener('QRImageDrawn', function () {
             this.remove()
             return Tegaki.onOpenImageLoaded.call(this)
@@ -1696,6 +1699,7 @@ const QR = {
     filename: string
     pasting: boolean
     URL: string
+    file: File
     constructor(select) {
       this.select = this.select.bind(this)
       const el = $.el('a', {
@@ -1823,7 +1827,7 @@ const QR = {
       // Scroll the list to center the focused post.
       const rectEl = this.nodes.el.getBoundingClientRect()
       const rectList = this.nodes.el.parentNode.getBoundingClientRect()
-      this.nodes.el.parentNode.scrollLeft += (rectEl.left + (rectEl.width / 2)) - rectList.left - (rectList.width / 2)
+      this.nodes.el.scrollLeft += (rectEl.left + (rectEl.width / 2)) - rectList.left - (rectList.width / 2)
       return this.load()
     }
 
