@@ -32,6 +32,8 @@ import NavLinksPage from './Index/NavLinks.html'
 import PageList from './Index/PageList.html'
 import UI from './UI'
 interface Index {
+  enabled: any
+  menu: any
   req: boolean
   liveThreadData: any
   pageNum: any

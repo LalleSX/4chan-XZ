@@ -10,16 +10,13 @@ import $ from "../platform/$"
 import $$ from "../platform/$$"
 import PostRedirect from "../Posting/PostRedirect"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const QuoteYou = {
+  db: DataBoard,
   init() {
     if (!Conf['Remember Your Posts']) { return }
 
-    this.db = new DataBoard('yourPosts')
+    this.db = new DataBoard('yourPosts', true, true)
     $.sync('Remember Your Posts', enabled => Conf['Remember Your Posts'] = enabled)
     $.on(d, 'QRPostSuccessful', function (e) {
       const cb = PostRedirect.delay()

@@ -7,6 +7,7 @@ import type SWTinyboard from "../site/SW.tinyboard"
 
 declare global {
   interface Window {
+    wrappedJSObject: any
     Tegaki: any
     FCX: any
   }
@@ -61,7 +62,7 @@ export const g: {
   VERSION: version.version,
   NAMESPACE: meta.name,
   sites: Object.create(null),
-  boards: Object.create(null)
+  boards: Object.create(null),
 }
 
 export const E = (function () {

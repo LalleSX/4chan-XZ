@@ -8,7 +8,7 @@ import Thread from "./Thread"
 export default class Board {
   ID: string
   boardID: number | string
-  siteID: number
+  siteID: string
   threads: SimpleDict<Thread>
   posts: SimpleDict<Post>
   config: any

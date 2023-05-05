@@ -3,7 +3,7 @@ clean:
 
 sneed: clean
 	npm run build
-	cat ./dist/4chan-XT.user.js | xclip -selection clipboard
+	cat ./dist/4chan-XZ.user.js | xclip -selection clipboard
 
 diagnostic: 
 	tsc >> temp.txt

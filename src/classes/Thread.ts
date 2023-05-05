@@ -1,10 +1,12 @@
 import { g } from "../globals/globals"
 import $ from "../platform/$"
 import Board from "./Board"
+import CatalogThreadNative from "./CatalogThreadNative"
 import Post from "./Post"
 import SimpleDict from "./SimpleDict"
 
 export default class Thread {
+  catalogViewNative: CatalogThreadNative
   ID: number | string
   OP: Post
   isArchived: boolean

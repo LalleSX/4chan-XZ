@@ -1,13 +1,9 @@
 import Callbacks from "../classes/Callbacks"
 import Get from "../General/Get"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const QuoteStrikeThrough = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) ||
@@ -15,14 +11,14 @@ const QuoteStrikeThrough = {
 
     return Callbacks.Post.push({
       name: 'Strike-through Quotes',
-      cb:   this.node
+      cb: this.node
     })
   },
 
   node() {
     if (this.isClone) { return }
     for (const quotelink of this.nodes.quotelinks) {
-      const {boardID, postID} = Get.postDataFromLink(quotelink)
+      const { boardID, postID } = Get.postDataFromLink(quotelink)
       if (g.posts.get(`${boardID}.${postID}`)?.isHidden) {
         $.addClass(quotelink, 'filtered')
       }

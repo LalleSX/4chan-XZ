@@ -315,7 +315,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
           }
         }
         return ($.delete(['hiddenThreads', 'hiddenPosts'], dict())
-      })
+      )})
     })
     return $.after($('input[name="Stubs"]', section).parentNode.parentNode, div)
   },

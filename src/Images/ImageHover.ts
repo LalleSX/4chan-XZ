@@ -1,18 +1,13 @@
 import Callbacks from "../classes/Callbacks"
+import Post from "../classes/Post"
 import Header from "../General/Header"
 import UI from "../General/UI"
 import { Conf, doc, g } from "../globals/globals"
 import $ from "../platform/$"
 import { SECOND } from "../platform/helpers"
+import type { File } from "../types/globals"
 import ImageCommon from "./ImageCommon"
 import Volume from "./Volume"
-
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 const ImageHover = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW)) { return }
@@ -31,7 +26,7 @@ const ImageHover = {
   },
 
   node() {
-    return this.files.filter((file) => (file.isImage || file.isVideo) && file.thumb).map((file) =>
+    return this.files.filter((file) => (file.isImage || file.isVideo) && file.thumb).map((file: File) =>
       $.on(file.thumb, 'mouseover', ImageHover.mouseover(this, file)))
   },
 
@@ -47,19 +42,24 @@ const ImageHover = {
     return $.on(this.nodes.thumb, 'mouseover', hover)
   },
 
-  mouseover(post, file) {
+  mouseover(post: Post, file: File) {
     return function (e) {
       let el, height, width
-      // @ts-ignore
       if (!doc.contains(this)) { return }
       const { isVideo } = file
       if (file.isExpanding || file.isExpanded || g.SITE.isThumbExpanded?.(file)) { return }
-      const error = ImageHover.error(post, file)
+      const error = ImageHover.error(this.post, file)
       if (ImageCommon.cache?.dataset.fileID === `${post.fullID}.${file.index}`) {
         el = ImageCommon.popCache()
         $.on(el, 'error', error)
       } else {
-        el = $.el((isVideo ? 'video' : 'img'))
+        el = $.el((isVideo ? 'video' : 'img'), {
+          className: 'ihover',
+          style: {
+            maxWidth: '100%',
+            maxHeight: '100%'
+          }
+        })
         el.dataset.fileID = `${post.fullID}.${file.index}`
         $.on(el, 'error', error)
         el.src = file.url
@@ -77,7 +77,6 @@ const ImageHover = {
         Volume.setup(el)
         if (Conf['Autoplay']) {
           el.play()
-          // @ts-ignore
           if (this.nodeName === 'VIDEO') { this.currentTime = el.currentTime }
         }
       }
@@ -111,7 +110,7 @@ const ImageHover = {
     }
   },
 
-  error(post, file) {
+  error(post: HTMLElement, file: File) {
     return function () {
       if (ImageCommon.decodeError(this, file)) { return }
       return ImageCommon.error(this, post, file, 3 * SECOND, URL => {

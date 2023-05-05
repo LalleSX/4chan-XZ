@@ -1,7 +1,8 @@
 import Redirect from "../Archive/Redirect"
+import Callbacks from "../classes/Callbacks"
 import CSS from "../css/CSS"
 import BoardConfig from "../General/BoardConfig"
-import { Conf, d, doc,E, g } from "../globals/globals"
+import { Conf, d, doc, g } from "../globals/globals"
 import h, { hFragment, isEscaped } from "../globals/jsx"
 import ImageHost from "../Images/ImageHost"
 import PassMessage from "../Miscellaneous/PassMessage"
@@ -15,13 +16,7 @@ import generateCatalogThreadHtml from "./SW.yotsuba.Build/CatalogThreadHtml"
 import generateFileHtml from "./SW.yotsuba.Build/FileHtml"
 import generatePostInfoHtml from './SW.yotsuba.Build/PostInfoHtml'
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const SWYotsuba = {
   isOPContainerThread: false,
   hasIPCount: true,
@@ -177,17 +172,17 @@ $\
   },
 
   initAuxiliary() {
+    const pathname = location.pathname.split(/\/+/)
     switch (location.hostname) {
       case 'www.4chan.org': case 'www.4channel.org':
         if (SWYotsuba.regexp.pass.test(location.href)) {
           PassMessage.init()
         } else {
-          $.onExists(doc, 'body', () => $.addStyle(CSS.www))
+          $.onExists(doc, 'body', () => $.addStyle(CSS.www, 'www-css'))
           Captcha.replace.init()
         }
         return
       case 'sys.4chan.org': case 'sys.4channel.org':
-        var pathname = location.pathname.split(/\/+/)
         if (pathname[2] === 'imgboard.php') {
           let match
           if (/\bmode=report\b/.test(location.search)) {
@@ -198,7 +193,7 @@ $\
                 return Redirect.navigate('thread', {
                   boardID: g.BOARD.ID,
                   postID:  +match[1]
-                })
+                }, {replace: true})
               }})
           }
         } else if (pathname[2] === 'post') {
@@ -231,10 +226,10 @@ $\
             return file.text.dataset.md5 = (file.MD5 = this.response.posts[0].md5)
           }
         }
-      }
-      )
+      }, Callbacks.call('parseThreadMetadata'))
     }
   },
+
 
   parseNodes(post, nodes) {
     // Add CSS classes to sticky/closed icons on /f/ to match other boards.
@@ -242,7 +237,7 @@ $\
       return (() => {
         const result = []
         for (const type of ['Sticky', 'Closed']) {
-          var icon
+          let icon
           if (icon = $(`img[alt=${type}]`, nodes.info)) {
             result.push($.addClass(icon, `${type.toLowerCase()}Icon`, 'retina'))
           }
@@ -290,7 +285,7 @@ $\
         $.rm(node)
       }
       for (let i = 0; i < 2; i++) {
-        var br
+        let br
         if ((br = abbr.previousSibling) && (br.nodeName === 'BR')) { $.rm(br) }
       }
       return $.rm(abbr)
@@ -337,7 +332,7 @@ $\
   testNativeExtension() {
     return $.global(function() {
       if (window.Parser?.postMenuIcon) { return this.enabled = 'true' }
-    })
+    }, null)
   },
 
   transformBoardList() {
@@ -347,6 +342,7 @@ $\
     const items = $.X('.//a|.//text()[not(ancestor::a)]', $(SWYotsuba.selectors.boardList))
     let i = 0
     while ((node = items.snapshotItem(i++))) {
+      const a = node.cloneNode(true)
       switch (node.nodeName) {
         case '#text':
           for (const chr of node.nodeValue) {
@@ -358,7 +354,6 @@ $\
           }
           break
         case 'A':
-          var a = node.cloneNode(true)
           nodes.push(a)
           break
       }
@@ -372,7 +367,7 @@ $\
     spoilerRange: Object.create(null),
 
     shortFilename(filename) {
-      const ext = filename.match(/\.?[^\.]*$/)[0]
+      const ext = filename.match(/\.?[^.]*$/)[0]
       if ((filename.length - ext.length) > 30) {
         return `${filename.match(/(?:[\uD800-\uDBFF][\uDC00-\uDFFF]|[^]){0,25}/)[0]}(...)${ext}`
       } else {
@@ -423,22 +418,27 @@ $\
         isArchived: !!data.archived,
         // file status
         fileDeleted: !!data.filedeleted,
-        filesDeleted: data.filedeleted ? [0] : []
-      }
-      o.info = {
-        subject: $.unescape(data.sub),
-        email: $.unescape(data.email),
-        name: $.unescape(data.name) || '',
-        tripcode: data.trip,
-        pass: (data.since4pass != null) ? `${data.since4pass}` : undefined,
-        uniqueID: data.id,
-        flagCode: data.country,
-        flagCodeTroll: data.board_flag,
-        flag: $.unescape((data.country_name || data.flag_name)),
-        dateUTC: data.time,
-        dateText: data.now,
-        // Yes, we use the raw string here
-        commentHTML: { innerHTML: data.com || '', [isEscaped]: true }
+        filesDeleted: data.filedeleted ? [0] : [],
+        info: {        
+          subject: $.unescape(data.sub),
+          email: $.unescape(data.email),
+          name: $.unescape(data.name) || '',
+          tripcode: data.trip,
+          pass: (data.since4pass != null) ? `${data.since4pass}` : undefined,
+          uniqueID: data.id,
+          flagCode: data.country,
+          flagCodeTroll: data.board_flag,
+          flag: $.unescape((data.country_name || data.flag_name)),
+          dateUTC: data.time,
+          dateText: data.now,
+          capcode: null,
+          // Yes, we use the raw string here
+          commentHTML: { innerHTML: data.com || '', [isEscaped]: true }},
+        files: [],
+        file: null,
+        capcodeHighlight: !!data.capcode_highlight,
+        extra: {}
+
       }
       if (data.capcode) {
         o.info.capcode = data.capcode.replace(/_highlight$/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
@@ -478,7 +478,8 @@ $\
         twidth: data.tn_w,
         isSpoiler: !!data.spoiler,
         tag: data.tag,
-        hasDownscale: !!data.m_img
+        hasDownscale: !!data.m_img,
+        dimensions: null
       }
       if ((data.h != null) && !/\.pdf$/.test(o.url)) { o.dimensions = `${o.width}x${o.height}` }
       return o
@@ -585,7 +586,7 @@ $\
             quote.href = this.threadURL(boardID, threadID) + href
           }
         } else {
-          var match
+          let match
           if ((match = quote.href.match(SWYotsuba.regexp.quotelink)) && (this.sameThread(match[1], match[2]))) {
             quote.href = href.match(/(#[^#]*)?$/)[0] || '#'
           }

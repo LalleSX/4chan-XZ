@@ -3,6 +3,7 @@ import { Conf, g } from "../globals/globals"
 import ImageExpand from "../Images/ImageExpand"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
+import type { File } from "../types/globals"
 import type Board from "./Board"
 import Callbacks from "./Callbacks"
 import type Thread from "./Thread"
@@ -27,8 +28,8 @@ export default class Post {
   declare isFetchedQuote: boolean
   declare isClone: boolean
   declare quotes: string[]
-  declare file: ReturnType<Post['parseFile']>
-  declare files: ReturnType<Post['parseFile']>[]
+  declare file: File
+  declare files: File[]
 
   declare info: {
     subject: string,
@@ -267,7 +268,7 @@ export default class Post {
   }
 
   parseFiles() {
-    let file
+    let file: File
     this.files = []
     const fileRoots = this.fileRoots()
     let index = 0
@@ -293,15 +294,6 @@ export default class Post {
   }
 
   parseFile(fileRoot: HTMLElement) {
-    interface File {
-      text: string,
-      link: HTMLAnchorElement,
-      thumb: HTMLElement,
-      thumbLink: HTMLElement,
-      size: string,
-      sizeInBytes: number,
-      isDead: boolean,
-    }
 
     const file: Partial<File> = { isDead: false }
     for (const key in g.SITE.selectors.file) {
@@ -327,7 +319,7 @@ export default class Post {
     return file as File
   }
 
-  kill(file: any, index = 0) {
+  kill(file: File, index = 0) {
     let strong: { textContent: string }
     if (file) {
       if (this.isDead || this.files[index].isDead) { return }

@@ -430,7 +430,7 @@ const Gallery = {
       $.rmClass(doc, 'gallery-open')
       if (Conf['Fullscreen Gallery']) {
         $.off(d, 'fullscreenchange mozfullscreenchange webkitfullscreenchange', Gallery.cb.close)
-        d.mozCancelFullScreen?.()
+        document.mozCancelFullScreen?.()
         d.webkitExitFullscreen?.()
       }
       delete Gallery.nodes

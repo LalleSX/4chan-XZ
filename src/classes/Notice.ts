@@ -3,7 +3,7 @@ import { d } from "../globals/globals"
 import $ from "../platform/$"
 import { SECOND } from "../platform/helpers"
 
-type NoticeType = "success" | "warning" | "error"
+type NoticeType = "success" | "warning" | "error" | "info"
 
 export default class Notice {
   private el: HTMLDivElement

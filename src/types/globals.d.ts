@@ -1,2 +1,19 @@
 declare const cloneInto: Function
 declare const XPCNativeWrapper: any
+export interface File {
+    isImage: boolean
+    isVideo: boolean
+    thumb: HTMLElement
+    url: string
+    dimensions: string
+    index: number
+    isExpanding: boolean
+    isExpanded: boolean
+    text: string,
+    link: HTMLAnchorElement
+    thumbLink: HTMLElement
+    size: string
+    sizeInBytes: number
+    isDead: boolean
+    docIndex: number
+}

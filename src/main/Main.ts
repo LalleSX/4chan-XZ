@@ -75,7 +75,6 @@ import UnreadIndex from "../Monitoring/UnreadIndex"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
 import { dict, platform } from "../platform/helpers"
-import Captcha from "../Posting/Captcha"
 import CaptchaReplace from "../Posting/Captcha.replace"
 import PassLink from "../Posting/PassLink"
 import PostRedirect from "../Posting/PostRedirect"
@@ -102,6 +101,7 @@ import SW from "../site/SW"
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Main = {
+  expectInitFinished: true,
   init() {
     // XXX dwb userscripts extension reloads scripts run at document-start when replaceState/pushState is called.
     // XXX Firefox reinjects WebExtension content scripts when extension is updated / reloaded.
@@ -115,7 +115,7 @@ const Main = {
 
     // Don't run inside ad iframes.
     try {
-      if (window.frameElement && ['', 'about:blank'].includes(window.frameElement.src)) { return }
+      if (window.frameElement && ['', 'about:blank'].includes(window.location.href)) { return }
     } catch (error1) { /* empty */ }
 
     // Detect multiple copies of 4chan X
@@ -136,12 +136,12 @@ const Main = {
     // Detect "mounted" event from Kissu
     const mountedCB = function () {
       d.removeEventListener('mounted', mountedCB, true)
-      Main.isMounted = true
+      Main.mounted(true)
       return Main.mountedCBs.map((cb) =>
         (() => {
           try {
             return cb()
-          } catch (error2) { }
+          } catch (error2) { /* empty */ }
         })())
     }
     d.addEventListener('mounted', mountedCB, true)
@@ -167,12 +167,13 @@ const Main = {
         return String.fromCharCode = function () {
           if (document.body) {
             String.fromCharCode = fromCharCode0
-          } else if (document.currentScript && !document.currentScript.src) {
+          } else if (document.currentScript && !document.location.href) {
             throw Error()
           }
+          // eslint-disable-next-line prefer-rest-params
           return fromCharCode0.apply(this, arguments)
         }
-      })
+      }, 'String.fromCharCode')
       $.asap(docSet, () => $.onExists(doc, 'iframe[srcdoc]', $.rm))
     }
 
@@ -211,7 +212,7 @@ const Main = {
       !SW.yotsuba.regexp.captcha.test(location.href) &&
       !$$('script:not([src])', d).filter(s => /this\[/.test(s.textContent)).length
     ) {
-      ($.getSync || $.get)({ 'jsWhitelist': Conf['jsWhitelist'] }, ({ jsWhitelist }) => $.addCSP(`script-src ${jsWhitelist.replace(/^#.*$/mg, '').replace(/[\s;]+/g, ' ').trim()}`))
+      ($.getSync || $.get)({ 'jsWhitelist': Conf['jsWhitelist'] }, ({ jsWhitelist }) => $.addCSP(`script-src ${jsWhitelist.replace(/^#.*$/mg, '').replace(/[\s;]+/g, ' ').trim()}`), 'jsWhitelist')
     }
 
     // Get saved values as items
@@ -233,8 +234,9 @@ const Main = {
         } else if ((items.previousversion == null)) {
           Main.isFirstRun = true
           Main.ready(function () {
-            $.set('previousversion', g.VERSION)
-            return Settings.open()
+            $.set('previousversion', g.VERSION, function () {
+              return Settings.open(true)
+            })
           })
 
           // Migrate old settings
@@ -250,8 +252,14 @@ const Main = {
 
         return Site.init(Main.initFeatures)
       })
+    }, function () {
+      return Main.ready(function () {
+        return Settings.open(true)
+      })
     })
   },
+  isFirstRun: true,
+  bgColorStyle: null,
 
   upgrade(items) {
     const { previousversion } = items
@@ -263,11 +271,13 @@ const Main = {
           { innerHTML: `${meta.name} has been updated to <a href="${meta.changelog}" target="_blank">version ${g.VERSION}</a>.` })
         return new Notice('info', el, 15)
       }
+    }, function () {
+      return console.warn('Failed to save settings.')
     })
   },
 
   parseURL(site = g.SITE, url = location) {
-    const r = {}
+    const r = dict()
 
     if (!site) { return r }
     r.siteID = site.ID
@@ -294,10 +304,12 @@ const Main = {
     }
     return r
   },
-
+  jsEnabled: false,
   initFeatures() {
     $.global(function () {
       document.documentElement.classList.add('js-enabled')
+      return window.FCX = {}
+    }, function () {
       return window.FCX = {}
     })
     Main.jsEnabled = $.hasClass(doc, 'js-enabled')
@@ -321,7 +333,7 @@ const Main = {
           return Redirect.navigate('file', {
             boardID: g.BOARD.ID,
             filename: pathname[pathname.length - 1]
-          })
+          }, { replace: true })
         } else if (video = $('video')) {
           if (Conf['Volume in New Tab']) {
             Volume.setup(video)
@@ -351,7 +363,7 @@ const Main = {
         feature.init()
       } catch (err) {
         Main.handleErrors({
-          message: `\"${name}\" initialization crashed.`,
+          message: `"${name}" initialization crashed.`,
           error: err
         })
       }
@@ -378,7 +390,7 @@ const Main = {
     $.ready(function () {
       if ((d.body.clientHeight > doc.clientHeight) && ((window.innerWidth === doc.clientWidth) !== Conf['Autohiding Scrollbar'])) {
         Conf['Autohiding Scrollbar'] = !Conf['Autohiding Scrollbar']
-        $.set('Autohiding Scrollbar', Conf['Autohiding Scrollbar'])
+        $.set('Autohiding Scrollbar', Conf['Autohiding Scrollbar'], true)
         return $.toggleClass(doc, 'autohiding-scrollbar')
       }
     })
@@ -447,7 +459,7 @@ const Main = {
   background: ${bgColor};
 }
 .unread-mark-read {
-  background-color: rgba(${rgb.slice(0, 3).join(', ')}, ${0.5 * (rgb[3] || 1)});
+  background-color: rgba(${rgb.slice(0, 3).join(', ')}, ${0.5 * (1 - $.luma(rgb))}) !important;
 }\
 `
       if ($.luma(rgb) < 100) {
@@ -517,9 +529,11 @@ const Main = {
       }
     } else {
       Main.expectInitFinished = true
-      return $.event('4chanXInitFinished')
+      return $.event('4chanXInitFinished', { detail: { board: g.BOARD } })
     }
   },
+  addThreadsObserver: null,
+  addPostsObserver: null,
 
   initThread() {
     let board
@@ -552,17 +566,17 @@ const Main = {
       return Main.callbackNodesDB('Post', posts, function () {
         for (const post of posts) { QuoteThreading.insert(post) }
         Main.expectInitFinished = true
-        return $.event('4chanXInitFinished')
+        return $.event('4chanXInitFinished', { board: g.BOARD, threads, posts })
       })
 
     } else {
       Main.expectInitFinished = true
-      return $.event('4chanXInitFinished')
+      return $.event('4chanXInitFinished', { board: g.BOARD })
     }
   },
 
   parseThreads(threadRoots, threads, posts, errors) {
-    for (var threadRoot of threadRoots) {
+    for (const threadRoot of threadRoots) {
       const boardObj = (() => {
         let boardID
         if (boardID = threadRoot.dataset.board) {
@@ -662,6 +676,7 @@ const Main = {
       }
     })
   },
+  addCatalogThreadsObserver: null,
 
   initCatalog() {
     let board
@@ -680,7 +695,7 @@ const Main = {
     }
 
     Main.expectInitFinished = true
-    return $.event('4chanXInitFinished')
+    return $.event('4chanXInitFinished', { board: g.BOARD })
   },
 
   parseCatalogThreads(threadRoots, threads, errors) {
@@ -762,7 +777,7 @@ const Main = {
 
     // Detect conflicts with native extension
     if (g.SITE.testNativeExtension && !$.hasClass(doc, 'tainted')) {
-      const { enabled } = g.SITE.testNativeExtension()
+      const enabled = g.SITE.testNativeExtension()
       if (enabled) {
         $.addClass(doc, 'tainted')
         if (Conf['Disable Native Extension'] && !Main.isFirstRun) {
@@ -796,13 +811,13 @@ const Main = {
       )), ref
     })
 
-    var logs = $.el('div',
+    const logs = $.el('div',
       { hidden: true })
     for (error of errors) {
-      $.add(logs, Main.parseError(error))
+      $.add(logs, Main.parseError(error, Main.reportLink([error])))
     }
 
-    return new Notice('error', [div, logs], 30)
+    return new Notice('error', [div, logs], 15)
   },
 
   parseError(data, reportLink) {
@@ -869,7 +884,7 @@ User agent: ${navigator.userAgent}\
   },
 
   mounted(cb) {
-    if (Main.isMounted) {
+    if (Main.mounted) {
       return cb()
     } else {
       return Main.mountedCBs.push(cb)

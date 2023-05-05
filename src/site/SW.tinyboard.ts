@@ -4,15 +4,15 @@ import $ from "../platform/$"
 import $$ from "../platform/$$"
 import { dict } from "../platform/helpers"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const SWTinyboard = {
+  name: 'Tinyboard',
   isOPContainerThread: true,
   mayLackJSON: true,
   threadModTimeIgnoresSage: true,
+  testNativeExtension() {
+    return false
+  },
 
   disabledFeatures: [
     'Resurrect Quotes',
@@ -40,7 +40,7 @@ const SWTinyboard = {
 
   detect() {
     for (const script of $$('script:not([src])', d.head)) {
-      var m
+      let m
       if (m = script.textContent.match(/\bvar configRoot=(".*?")/)) {
         const properties = dict()
         try {
@@ -50,13 +50,31 @@ const SWTinyboard = {
           } else if (/^https?:/.test(root)) {
             properties.root = root
           }
-        } catch (error) { }
+        } catch (error) { /* empty */ }
         return properties
       }
     }
     return false
   },
-
+  ID: 'sw-tinyboard',
+  parseThreadMetadata(el: HTMLElement) {
+    const thread = dict()
+    const op = el.querySelector('.op')
+    thread.id = op.id
+    thread.threadID = op.id.match(/^thread_(\d+)$/)[1]
+    thread.boardID = Conf.BOARD.boardID
+    thread.siteID = Conf.BOARD.siteID
+    thread.isArchived = !!el.closest('.archive')
+  },
+  isAuxiliaryPage(url) {
+    return url.pathname === '/catalog.html'
+  },
+  isBoardlessPage(url) {
+    return url.pathname === '/catalog.html'
+  },
+  initAuxiliary() {
+    return Main.mounted(true)
+  },
   awaitBoard(cb) {
     let reactUI
     if (reactUI = $.id('react-ui')) {
@@ -104,6 +122,11 @@ const SWTinyboard = {
   },
 
   selectors: {
+    boardFor: {
+      index: '.page-container',
+      catalog: '.page-container',
+      thread: '.page-container'
+    },
     board: 'form[name="postcontrols"]',
     thread: 'input[name="board"] ~ div[id^="thread_"]',
     threadDivider: 'div[id^="thread_"] > hr:last-child',
@@ -181,7 +204,7 @@ const SWTinyboard = {
 $\
 `),
     quotelinkHTML:
-      /<a [^>]*\bhref="[^"]*\/([^\/]+)\/res\/(\d+)(?:\.\w+)?#(\d+)"/g
+      /<a [^>]*\bhref="[^"]*\/([^/]+)\/res\/(\d+)(?:\.\w+)?#(\d+)"/g
   },
 
   Build: {
@@ -226,7 +249,7 @@ $\
   },
 
   isFileURL(url) {
-    return /\/src\/[^\/]+/.test(url.pathname)
+    return /\/src\/[^/]+/.test(url.pathname)
   },
 
   preParsingFixes(board) {
@@ -267,6 +290,12 @@ $\
     return undefined
   },
 
+  is404() {
+    return !!$('#error')
+  },
+  isIncomplete() {
+    return !!$('#incomplete')
+  },
   parseFile(post, file) {
     let info, infoNode
     const { text, link, thumb } = file

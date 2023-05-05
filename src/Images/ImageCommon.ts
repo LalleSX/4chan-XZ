@@ -3,18 +3,12 @@ import Notice from "../classes/Notice"
 import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 import CrossOrigin from "../platform/CrossOrigin"
+import { dict } from "../platform/helpers"
 import ImageHost from "./ImageHost"
 import Volume from "./Volume"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS104: Avoid inline assignments
- * DS204: Change includes calls to have a more natural evaluation order
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 const ImageCommon = {
+  cache: null,
   // Pause and mute video in preparation for removing the element from the document.
   pause(video) {
     if (video.nodeName !== 'VIDEO') { return }

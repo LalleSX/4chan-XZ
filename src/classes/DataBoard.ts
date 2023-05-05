@@ -11,6 +11,12 @@ import { dict, HOUR } from "../platform/helpers"
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 export default class DataBoard {
+  static set(data, cb) {
+    this.set(data, cb)
+  }
+  static get(cb) {
+    this.get(cb)
+  }
   static keys: string[]
   static changes: string[]
   key: string
@@ -22,7 +28,7 @@ export default class DataBoard {
     this.changes = []
   }
 
-  constructor(key, sync, dontClean) {
+  constructor(key: string, sync: boolean, dontClean: boolean) {
     this.onSync = this.onSync.bind(this)
     this.key = key
     this.initData(Conf[this.key])
@@ -33,7 +39,7 @@ export default class DataBoard {
     // so we only start syncing when we're ready.
     const init = () => {
       $.off(d, '4chanXInitFinished', init)
-      return this.sync = sync
+      return this.sync = () => this.forceSync()
     }
     $.on(d, '4chanXInitFinished', init)
   }
@@ -70,7 +76,7 @@ export default class DataBoard {
     })
   }
 
-  forceSync(cb) {
+  forceSync(cb?) {
     return $.get(this.key, { boards: dict() }, items => {
       if ((items[this.key].version || 0) > (this.data.version || 0)) {
         this.initData(items[this.key])
