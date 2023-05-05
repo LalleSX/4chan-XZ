@@ -1,4 +1,4 @@
-import { Conf, d,doc, g } from "../globals/globals"
+import { Conf, d, doc, g } from "../globals/globals"
 import Main from "../main/Main"
 import $ from "../platform/$"
 import Captcha from "./Captcha"
@@ -8,7 +8,7 @@ const CaptchaReplace = {
     if ((g.SITE.software !== 'yotsuba') || (d.cookie.indexOf('pass_enabled=1') >= 0)) { return }
 
     if (Conf['Force Noscript Captcha'] && Main.jsEnabled) {
-      $.ready(Captcha.replace.noscript)
+      $.ready(Captcha.Replace.noscript)
       return
     }
 
@@ -25,12 +25,12 @@ const CaptchaReplace = {
     let noscript, original, toggle
     if (!((original = $('#g-recaptcha')) && (noscript = $('noscript', original.parentNode)))) { return }
     const span = $.el('span',
-      {id: 'captcha-forced-noscript'})
+      { id: 'captcha-forced-noscript' })
     $.replace(noscript, span)
     $.rm(original)
-    const insert = function() {
+    const insert = function () {
       span.innerHTML = noscript.textContent
-      return Captcha.replace.iframe($('iframe[src^="https://www.google.com/recaptcha/"]', span))
+      return Captcha.Replace.iframe($('iframe[src^="https://www.google.com/recaptcha/"]', span))
     }
     if (toggle = $('#togglePostFormLink a, #form-link')) {
       return $.on(toggle, 'click', insert)
@@ -44,7 +44,7 @@ const CaptchaReplace = {
     if (lang = Conf['captchaLanguage'].trim()) {
       const src = /[?&]hl=/.test(iframe.src) ?
         iframe.src.replace(/([?&]hl=)[^&]*/, '$1' + encodeURIComponent(lang))
-      :
+        :
         iframe.src + `&hl=${encodeURIComponent(lang)}`
       if (iframe.src !== src) { iframe.src = src }
     }

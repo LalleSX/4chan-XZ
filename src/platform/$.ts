@@ -133,7 +133,7 @@ $.extend = function (object: object, properties: object) {
 
 $.hasOwn = (obj: object, key: string) => Object.prototype.hasOwnProperty.call(obj, key)
 
-$.getOwn = function (obj, key) {
+$.getOwn = function (obj: Object, key: string): any {
   if (Object.prototype.hasOwnProperty.call(obj, key)) { return obj[key] } else { return undefined }
 }
 
@@ -148,10 +148,8 @@ $.ajax = (function () {
   const r = (function (url: string, options = dict(), cb: Callbacks) {
     if (options.responseType == null) { options.responseType = 'json' }
     if (!options.type) { options.type = (options.form && 'post') || 'get' }
-    // XXX https://forums.lanik.us/viewtopic.php?f=64&t=24173&p=78310
     url = url.replace(/^((?:https?:)?\/\/(?:\w+\.)?(?:4chan|4channel|4cdn)\.org)\/adv\//, '$1//adv/')
     if (platform === 'crx') {
-      // XXX https://bugs.chromium.org/p/chromium/issues/detail?id=920638
       if (Conf['Work around CORB Bug'] && g.SITE.software === 'yotsuba' && !options.testCORB && FormData.prototype.entries) {
         return $.ajaxPage(url, options)
       }
@@ -199,7 +197,7 @@ $.ajax = (function () {
       $.global(function () {
         window.FCX.requests = Object.create(null)
 
-        document.addEventListener('4chanXAjax', function (e) {
+        document.addEventListener('4chanXAjax', function (e: CustomEvent) {
           let fd, r
           const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail
           window.FCX.requests[id] = (r = new XMLHttpRequest())
@@ -425,11 +423,11 @@ $.X = function (path, root) {
   return d.evaluate(path, root, null, 7, null)
 }
 
-$.addClass = function (el, ...classNames) {
+$.addClass = function (el: Element, ...classNames: string[]) {
   for (const className of classNames) { el.classList.add(className) }
 }
 
-$.rmClass = function (el, ...classNames) {
+$.rmClass = function (el: Element, ...classNames: string[]) {
   for (const className of classNames) { el.classList.remove(className) }
 }
 
@@ -493,8 +491,8 @@ $.one = function (el, events, handler) {
   }
   return $.on(el, events, cb)
 }
-
-$.event = function (event, detail, root = d) {
+let cloneInto: (obj: object, win: Window) => object
+$.event = function (event: Event, detail: object, root = d) {
   if (!globalThis.chrome?.extension) {
     if ((detail != null) && (typeof cloneInto === 'function')) {
       detail = cloneInto(detail, d.defaultView)
@@ -861,7 +859,7 @@ if (platform === 'crx') {
 
     $.sync = (key: string, cb: Callbacks) => $.syncing[key] = cb
 
-    $.forceSync = function () { }
+    $.forceSync = function () {/* empty */ }
 
     $.delete = function (keys: string | string[], cb: Callbacks) {
       let key
@@ -931,7 +929,7 @@ if (platform === 'crx') {
         return result
       })()
     } else {
-      $.getValue = function () { }
+      $.getValue = function () {/* empty */ }
       $.listValues = () => []
     }
 
@@ -973,7 +971,7 @@ if (platform === 'crx') {
           return cb(newValue, key)
         }
       })
-      $.forceSync = function () { }
+      $.forceSync = function () {/* empty */ }
     } else if ((typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) || $.hasStorage) {
       $.sync = function (key, cb) {
         key = g.NAMESPACE + key
@@ -1015,7 +1013,7 @@ if (platform === 'crx') {
         keys = [keys]
       }
       for (const key of keys) {
-        $.deleteValue(g.NAMESPACE + key)
+        $.deleteValue(g.NAMESPACE + key, null)
       }
     }
 
@@ -1024,7 +1022,7 @@ if (platform === 'crx') {
     $.getSync = function (items, cb) {
       for (const key in items) {
         let val2
-        if (val2 = $.getValue(g.NAMESPACE + key)) {
+        if (val2 = $.getValue(g.NAMESPACE + key, null)) {
           try {
             items[key] = dict.json(val2)
           } catch (err) {
@@ -1056,7 +1054,7 @@ if (platform === 'crx') {
       $.delete(['previousversion', 'QR Size', 'QR.persona'], cb)
       try {
         $.delete($.listValues().map(key => key.replace(g.NAMESPACE, '')), cb)
-      } catch (error) { }
+      } catch (error) {/* empty */ }
       return cb
     }
   }

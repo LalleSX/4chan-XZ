@@ -28,7 +28,7 @@ const Site = {
     }
     return $.onExists(doc, 'body', () => {
       for (const software in SW) {
-        var changes
+        let changes
         if (changes = SW[software].detect?.()) {
           changes.software = software
           hostname = location.hostname.replace(/^www\./, '')
