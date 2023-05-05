@@ -1,4 +1,3 @@
-declare const cloneInto: Function
 declare const XPCNativeWrapper: any
 export interface File {
     isImage: boolean

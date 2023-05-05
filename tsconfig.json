@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "importHelpers": true,
     "module": "ES2022",
     "noImplicitAny": false,
     "removeComments": true,
@@ -7,11 +8,14 @@
     "target": "ES2020",
     "allowJs": true,
     "checkJs": true,
+    //TODO: Flip this to true
+    "strict": false,
     "noEmit": true,
     "jsx": "react",
     "jsxFactory": "h",
     "jsxFragmentFactory": "hFragment",
     "types": [
+      "@types/jquery",
       "@violentmonkey/types",
       "@types/chrome",
       "ts-node",
