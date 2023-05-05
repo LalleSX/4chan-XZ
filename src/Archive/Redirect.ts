@@ -31,7 +31,7 @@ const Redirect = {
 
     const archives = dict()
     for (data of Conf['archives']) {
-      var name, software, uid
+      let name, software, uid
       for (const key of ['boards', 'files']) {
         if (!(data[key] instanceof Array)) { data[key] = [] }
       }
@@ -48,7 +48,7 @@ const Redirect = {
     for (boardID in Conf['selectedArchives']) {
       const record = Conf['selectedArchives'][boardID]
       for (const type in record) {
-        var archive
+        let archive
         const id = record[type]
         if ((archive = archives[JSON.stringify(id)]) && $.hasOwn(o, type)) {
           boards = type === 'file' ? archive.files : archive.boards
@@ -89,7 +89,7 @@ const Redirect = {
       for (let i = 0; i < urls.length; i++) {
         url = urls[i]
         if (['[', '{'].includes(url[0])) {
-          var response
+          let response
           try {
             response = JSON.parse(url)
           } catch (err) {

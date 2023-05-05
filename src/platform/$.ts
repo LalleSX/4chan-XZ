@@ -848,7 +848,7 @@ if (platform === 'crx') {
     $.on($.syncChannel, 'message', e => (() => {
       const result = []
       for (const key in e.data) {
-        var cb
+        let cb
         const val = e.data[key]
         if (cb = $.syncing[key]) {
           result.push(cb(dict.json(JSON.stringify(val)), key))

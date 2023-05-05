@@ -24,7 +24,7 @@ const MarkNewIPs = {
 
     switch (ipCount - MarkNewIPs.ipCount) {
       case (postCount - MarkNewIPs.postCount) + deletedPosts.length:
-        var i = MarkNewIPs.ipCount
+        let i = MarkNewIPs.ipCount
         for (fullID of newPosts) {
           MarkNewIPs.markNew(g.posts.get(fullID), ++i)
         }

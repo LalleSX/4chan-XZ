@@ -80,7 +80,7 @@ const Get = {
     //   get all of their backlinks.
     if (Conf['Quote Backlinks']) {
       for (const quote of post.quotes) {
-        var qPost
+        let qPost
         if ((qPost = posts.get(quote))) { handleQuotes(qPost, 'backlinks') }
       }
     }

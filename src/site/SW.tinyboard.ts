@@ -89,15 +89,7 @@ const SWTinyboard = {
     return Main.mounted(true)
   },
   awaitBoard(cb) {
-    let reactUI
-    if (reactUI = $.id('react-ui')) {
-      const s = (this.selectors = Object.create(this.selectors))
-      s.boardFor = { index: '.page-container' }
-      s.thread = 'div[id^="thread_"]'
-      return Main.mounted(cb)
-    } else {
-      return cb()
-    }
+    return Main.mounted(true).then(cb)
   },
 
   urls: {

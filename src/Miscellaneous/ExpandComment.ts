@@ -1,6 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 import Get from "../General/Get"
-import { Conf,g } from "../globals/globals"
+import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
 
@@ -9,13 +9,13 @@ import $$ from "../platform/$$"
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ExpandComment = {
+const ExpandComment = {
   init() {
     if ((g.VIEW !== 'index') || !Conf['Comment Expansion'] || Conf['JSON Index']) { return }
 
     return Callbacks.Post.push({
       name: 'Comment Expansion',
-      cb:   this.node
+      cb: this.node
     })
   },
 
@@ -42,7 +42,7 @@ var ExpandComment = {
     }
     if (!(a = $('.abbr > a', post.nodes.comment))) { return }
     a.textContent = `Post No.${post} Loading...`
-    return $.cache(g.SITE.urls.threadJSON({boardID: post.boardID, threadID: post.threadID}), function() { return ExpandComment.parse(this, a, post) })
+    return $.cache(g.SITE.urls.threadJSON({ boardID: post.boardID, threadID: post.threadID }), function () { return ExpandComment.parse(this, a, post) })
   },
 
   contract(post) {
@@ -55,7 +55,7 @@ var ExpandComment = {
 
   parse(req, a, post) {
     let postObj, spoilerRange
-    const {status} = req
+    const { status } = req
     if (![200, 304].includes(status)) {
       a.textContent = status ? `Error ${req.statusText} (${status})` : 'Connection Error'
       return
@@ -76,7 +76,7 @@ var ExpandComment = {
       return
     }
 
-    const {comment} = post.nodes
+    const { comment } = post.nodes
     const clone = comment.cloneNode(false)
     clone.innerHTML = postObj.com
     // Fix pathnames
@@ -84,9 +84,9 @@ var ExpandComment = {
       const href = quote.getAttribute('href')
       if (href[0] === '/') { continue } // Cross-board quote, or board link
       if (href[0] === '#') {
-        quote.href = `${a.pathname.split(/\/+/).splice(0,4).join('/')}${href}`
+        quote.href = `${a.pathname.split(/\/+/).splice(0, 4).join('/')}${href}`
       } else {
-        quote.href = `${a.pathname.split(/\/+/).splice(0,3).join('/')}/${href}`
+        quote.href = `${a.pathname.split(/\/+/).splice(0, 3).join('/')}/${href}`
       }
     }
     post.nodes.shortComment = comment

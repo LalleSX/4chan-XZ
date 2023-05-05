@@ -72,7 +72,7 @@ const Site = {
 
   set(hostname) {
     for (const ID in Conf['siteProperties']) {
-      var site
+      let site
       const properties = Conf['siteProperties'][ID]
       if (properties.canonical) { continue }
       const {

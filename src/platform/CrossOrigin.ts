@@ -42,7 +42,7 @@ const CrossOrigin = {
               return cb(null)
             }
           }
-        })
+        }, cb)
       }
       if ((typeof window.GM_xmlhttpRequest === 'undefined' || window.GM_xmlhttpRequest === null)) {
         fallback()
@@ -109,6 +109,11 @@ const CrossOrigin = {
 
   Request: (function () {
     const Request = class Request {
+      statusText: string
+      response: any
+      status: number
+      responseHeaderString: string
+      responseHeaders: any
       static initClass() {
         this.prototype.status = 0
         this.prototype.statusText = ''
@@ -119,7 +124,7 @@ const CrossOrigin = {
         if ((this.responseHeaders == null) && (this.responseHeaderString != null)) {
           this.responseHeaders = dict()
           for (const header of this.responseHeaderString.split('\r\n')) {
-            var i
+            let i
             if ((i = header.indexOf(':')) >= 0) {
               const key = header.slice(0, i).trim().toLowerCase()
               const val = header.slice(i + 1).trim()
@@ -193,7 +198,12 @@ const CrossOrigin = {
       try {
         gmReq = (GM?.xmlHttpRequest || GM_xmlhttpRequest)(gmOptions)
       } catch (error) {
-        return $.ajax(url, options)
+        return $.ajax(url, options, function (result) {
+          if (result.status) {
+            $.extend(req, result)
+          }
+          return req.onloadend()
+        })
       }
 
       if (gmReq && (typeof gmReq.abort === 'function')) {

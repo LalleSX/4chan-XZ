@@ -29,7 +29,7 @@ export default async function generateMetadata(packageJson, channel) {
 
   output += (function () {
     function expand(items, regex, substitutions) {
-      var results = [];
+      let results = [];
       items.forEach(function (item) {
         if (regex.test(item)) {
           substitutions.forEach(function (s) {

@@ -10,7 +10,7 @@ import Notice from "../classes/Notice"
 import Post from "../classes/Post"
 import Config from "../config/Config"
 import Filter from "../Filtering/Filter"
-import { c,Conf, g } from "../globals/globals"
+import { c, Conf, g } from "../globals/globals"
 import ImageHost from "../Images/ImageHost"
 import Menu from "../Menu/Menu"
 import Keybinds from "../Miscellaneous/Keybinds"
@@ -25,7 +25,7 @@ const Test = {
 
     if (Conf['Menu']) {
       const a = $.el('a',
-        {textContent: 'Test HTML building'})
+        { textContent: 'Test HTML building' })
       $.on(a, 'click', this.cb.testOne)
       Menu.menu.addEntry({
         el: a,
@@ -37,17 +37,19 @@ const Test = {
     }
 
     const a2 = $.el('a',
-      {textContent: 'Test HTML building'})
+      { textContent: 'Test HTML building' })
     $.on(a2, 'click', this.cb.testAll)
     Header.menu.addEntry({
-      el: a2})
+      el: a2
+    })
 
     if (Unread.posts) {
       const testOrderLink = $.el('a',
-        {textContent: 'Test Post Order'})
+        { textContent: 'Test Post Order' })
       $.on(testOrderLink, 'click', this.cb.testOrder)
       Header.menu.addEntry({
-        el: testOrderLink})
+        el: testOrderLink
+      })
     }
 
     return $.on(d, 'keydown', this.cb.keydown)
@@ -78,7 +80,7 @@ const Test = {
       el.src = el.src.replace(/(spoiler-\w+)\d(\.png)$/, '$11$2')
     }
     for (el of $$('pre.prettyprinted', root2)) {
-      var nodes = $.X('.//br|.//wbr|.//text()', el)
+      let nodes = $.X('.//br|.//wbr|.//text()', el)
       i = 0
       nodes = ((() => {
         const result = []
@@ -125,9 +127,9 @@ const Test = {
 
   testOne(post) {
     Test.postsRemaining++
-    return $.cache(g.SITE.urls.threadJSON({boardID: post.boardID, threadID: post.threadID}), function() {
+    return $.cache(g.SITE.urls.threadJSON({ boardID: post.boardID, threadID: post.threadID }), function () {
       if (!this.response) { return }
-      const {posts} = this.response
+      const { posts } = this.response
       g.SITE.Build.spoilerRange[post.board.ID] = posts[0].custom_spoiler
       for (const postData of posts) {
         if (postData.no === post.ID) {
@@ -136,7 +138,7 @@ const Test = {
           const root = g.SITE.Build.post(obj)
           const t2 = new Date().getTime()
           Test.time += t2 - t1
-          const post2 = new Post(root, post.thread, post.board, {forBuildTest: true})
+          const post2 = new Post(root, post.thread, post.board, { forBuildTest: true })
           let fail = false
 
           const x = post.normalizedOriginal
@@ -154,7 +156,7 @@ const Test = {
           for (const key in Config.filter) {
             if ((!key === 'General') && !((key === 'MD5') && (post.board.ID === 'f'))) {
               const val1 = Filter.values(key, obj)
-              var val2 = Filter.values(key, post2)
+              const val2 = Filter.values(key, post2)
               if ((val1.length !== val2.length) || !val1.every((x, i) => x === val2[i])) {
                 fail = true
                 c.log(`${post.fullID} has filter bug in ${key}`)
@@ -177,7 +179,7 @@ const Test = {
   },
 
   testAll() {
-    g.posts.forEach(function(post) {
+    g.posts.forEach(function (post) {
       if (!post.isClone && !post.isFetchedQuote) {
         let abbr
         if (!((abbr = $('.abbr', post.nodes.comment)) && /Comment too long\./.test(abbr.textContent))) {
@@ -215,17 +217,19 @@ const Test = {
       let x
       const list1 = ((() => {
         const result = []
-        for (x of Unread.order.order()) {           result.push(x.ID)
+        for (x of Unread.order.order()) {
+          result.push(x.ID)
         }
         return result
       })())
       const list2 = ((() => {
         const result1 = []
-        for (x of ($$((g.SITE.isOPContainerThread ? `${g.SITE.selectors.thread}, ` : '') + g.SITE.selectors.postContainer))) {           result1.push(+x.id.match(/\d*$/)[0])
+        for (x of ($$((g.SITE.isOPContainerThread ? `${g.SITE.selectors.thread}, ` : '') + g.SITE.selectors.postContainer))) {
+          result1.push(+x.id.match(/\d*$/)[0])
         }
         return result1
       })())
-      const pass = (function() {
+      const pass = (function () {
         if (list1.length !== list2.length) { return false }
         for (let i = 0, end = list1.length; i < end; i++) {
           if (list1[i] !== list2[i]) { return false }

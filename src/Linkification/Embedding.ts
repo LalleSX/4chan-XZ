@@ -64,7 +64,7 @@ const Embedding = {
       i = 0
       items = $$('.linkify', post.nodes.comment)
       while ((el = items[i++])) {
-        var data
+        let data
         if (data = Embedding.services(el)) {
           Embedding.preview(data)
         }
@@ -88,7 +88,7 @@ const Embedding = {
   services(link) {
     const { href } = link
     for (const type of Embedding.ordered_types) {
-      var match
+      let match
       if (match = type.regExp.exec(href)) {
         return { key: type.key, uid: match[1], options: match[2], link }
       }
@@ -482,9 +482,9 @@ const Embedding = {
           default: return ['.webm', '.mp4']
         }
       })()
-      for (var name of names.split(',')) {
-        for (var type of types) {
-          var base = `${name}${type}`
+      for (const name of names.split(',')) {
+        for (const type of types) {
+          const base = `${name}${type}`
           const urls = (() => {
             switch (host) {
               // list from src/common.py at http://loopvid.appspot.com/source.html
@@ -621,7 +621,7 @@ const Embedding = {
       if ($.engine === 'gecko') {
         // XXX https://bugzilla.mozilla.org/show_bug.cgi?id=680823
         el.style.cssText = 'border: none; width: 100%; height: 100%;'
-        var cont = $.el('div')
+        const cont = $.el('div')
         $.add(cont, el)
         return cont
       } else {

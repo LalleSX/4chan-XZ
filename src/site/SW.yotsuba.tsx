@@ -131,7 +131,7 @@ const SWYotsuba = {
 $\
 `),
     quotelinkHTML:
-      /<a [^>]*\bhref="(?:(?:\/\/boards\.4chan(?:nel)?\.org)?\/([^\/]+)\/thread\/)?(\d+)?(?:#p(\d+))?"/g,
+      /<a [^>]*\bhref="(?:(?:\/\/boards\.4chan(?:nel)?\.org)?\/([^/]+)\/thread\/)?(\d+)?(?:#p(\d+))?"/g,
     pass:
       /^https?:\/\/www\.4chan(?:nel)?\.org\/+pass(?:$|[?#])/,
     captcha:

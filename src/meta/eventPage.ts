@@ -37,8 +37,8 @@ const handlers = {
     xhr.responseType = request.responseType;
     xhr.timeout = request.timeout;
     const object = request.headers || {};
-    for (var key in object) {
-      var value = object[key];
+    for (let key in object) {
+      let value = object[key];
       xhr.setRequestHeader(key, value);
     }
     xhr.addEventListener('load', function () {

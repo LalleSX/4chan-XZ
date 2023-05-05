@@ -39,7 +39,7 @@ const ExpandThread = {
   disconnect(refresh) {
     if ((g.VIEW === 'thread') || !Conf['Thread Expansion']) { return }
     for (const threadID in ExpandThread.statuses) {
-      var oldReq
+      let oldReq
       const status = ExpandThread.statuses[threadID]
       if (oldReq = status.req) {
         delete status.req
@@ -112,7 +112,7 @@ const ExpandThread = {
     for (const reply of replies) {
       // rm clones
       if (Conf['Quote Inlining']) {
-        var inlined
+        let inlined
         while ((inlined = $('.inlined', reply))) { inlined.click() }
       }
       postsCount++
@@ -139,7 +139,7 @@ const ExpandThread = {
     const postsRoot = []
     let filesCount = 0
     for (const postData of req.response.posts) {
-      var post
+      let post
       if (postData.no === thread.ID) { continue }
       if ((post = thread.posts.get(postData.no)) && !post.isFetchedQuote) {
         if ('file' in post) { filesCount++ }

@@ -80,7 +80,7 @@ const QR = {
   captcha: null,
   postingIsEnabled: false,
   nodes: null,
-  posts: null,
+  posts: 0,
   shortcut: null,
   link: '',
   min_width: 0,
@@ -1480,7 +1480,7 @@ const QR = {
         if (window.Tegaki) {
           return document.querySelector('#qr .oekaki').hidden = false
         }
-      })
+      }, 'oekaki')
     },
 
     load(cb) {
@@ -1529,7 +1529,7 @@ const QR = {
           height: getHeight(),
           bgColor: getBgColor(),
         })
-      })
+      }, 'oekaki')
     },
 
     button() {
@@ -1587,18 +1587,21 @@ const QR = {
         } else {
           return cb(E)
         }
-      }))
+      }, 0))
     },
 
     toggle() {
       return QR.oekaki.load(() => QR.nodes.oekaki.hidden = !QR.nodes.oekaki.hidden)
     }
   },
-  email: null,
+  email: {
+  },
+  sub: {
+  },
 
   persona: {
     pwd: '',
-    always: false,
+    always: [],
     types: {
       name: [""],
       email: [""],
@@ -1689,7 +1692,6 @@ const QR = {
     com: string
     spoiler: boolean
     name: string
-    email: string
     fileUrl: string
     fileThumb: string
     nodes: { el: HTMLElement; rm: HTMLElement; spoiler: HTMLInputElement; span: HTMLElement }
@@ -1752,12 +1754,12 @@ const QR = {
             :
             persona.name
 
-        this.email = 'email' in QR.persona.always ?
+        QR.email = 'email' in QR.persona.always ?
           QR.persona.always.email
           :
           ''
 
-        this.sub = 'sub' in QR.persona.always ?
+        QR.sub = 'sub' in QR.persona.always ?
           QR.persona.always.sub
           :
           ''
