@@ -10,6 +10,7 @@ import $ from "../platform/$"
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const QuoteOP = {
+  mark: null,
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Mark OP Quotes']) { return }
 

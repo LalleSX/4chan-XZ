@@ -41,7 +41,7 @@ const Site = {
             }
           }
           if (changed) {
-            $.set('siteProperties', Conf['siteProperties'])
+            $.set('siteProperties', Conf['siteProperties'], true)
           }
           if (!g.SITE) {
             this.set(hostname)

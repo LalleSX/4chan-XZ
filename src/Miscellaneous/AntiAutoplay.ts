@@ -18,7 +18,7 @@ const AntiAutoplay = {
       name: 'Disable Autoplaying Sounds',
       cb: this.node
     })
-    return $.ready(() => this.process(d.body))
+    return $.ready(() => this.process(document.body))
   },
 
   stop(audio) {

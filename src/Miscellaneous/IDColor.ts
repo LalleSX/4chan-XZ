@@ -19,7 +19,7 @@ const IDColor = {
       cb: this.node
     })
   },
-
+  ids: dict(),
   node() {
     let span, uid
     if (this.isClone || !((uid = this.info.uniqueID) && (span = this.nodes.uniqueID))) { return }

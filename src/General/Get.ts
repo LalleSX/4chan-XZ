@@ -1,4 +1,5 @@
 import Post from "../classes/Post"
+import Thread from "../classes/Thread"
 import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 

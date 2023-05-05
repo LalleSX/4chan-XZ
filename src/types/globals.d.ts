@@ -1,5 +1,6 @@
 declare const XPCNativeWrapper: any
 export interface File {
+    name: string
     isImage: boolean
     isVideo: boolean
     thumb: HTMLElement

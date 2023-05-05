@@ -6,6 +6,7 @@ import $ from "../platform/$"
 
 
 const Menu = {
+  menu: null,
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) { return }
 

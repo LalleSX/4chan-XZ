@@ -6,6 +6,7 @@ import $ from "../platform/$"
 
 
 const QuoteCT = {
+  mark: null,
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Mark Cross-thread Quotes']) { return }
 

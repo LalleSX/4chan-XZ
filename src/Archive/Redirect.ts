@@ -12,6 +12,8 @@ import archives from './archives.json'
 
 const Redirect = {
   archives,
+  selectedArchives: dict(),
+  data: dict(),
 
   init() {
     this.selectArchives()
@@ -122,7 +124,7 @@ const Redirect = {
       }
     }
     const items = { archives, lastarchivecheck: Date.now() }
-    $.set(items)
+    $.set(Conf, items, true)
     $.extend(Conf, items)
     Redirect.selectArchives()
     return cb

@@ -193,6 +193,7 @@ const SWTinyboard = {
   },
 
   xpath: {
+    post: 'div[starts-with(@id,"reply_")]',
     thread: 'div[starts-with(@id,"thread_")]',
     postContainer: 'div[starts-with(@id,"reply_") or starts-with(@id,"thread_")]',
     replyContainer: 'div[starts-with(@id,"reply_")]'
