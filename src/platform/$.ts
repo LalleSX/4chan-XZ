@@ -700,7 +700,12 @@ if (platform === 'crx') {
     }
   })
   $.sync = (key: string, cb) => $.syncing[key] = cb
-  $.forceSync = function () {/* emptey */ }
+  $.forceSync = function (key: string) {
+    chrome.storage.local.get(key, function (data) {
+      const cb = $.syncing[key]
+      if (cb) { cb(data[key], key) }
+    })
+  }
 
   $.crxWorking = function () {
     try {

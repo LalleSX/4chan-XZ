@@ -1,5 +1,6 @@
 import Callbacks from "../classes/Callbacks"
 import DataBoard from "../classes/DataBoard"
+import Post from "../classes/Post"
 import RandomAccessList from "../classes/RandomAccessList"
 import Get from "../General/Get"
 import Header from "../General/Header"
@@ -10,12 +11,7 @@ import QuoteYou from "../Quotelinks/QuoteYou"
 import Favicon from "./Favicon"
 import ThreadWatcher from "./ThreadWatcher"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const Unread = {
   init() {
     if ((g.VIEW !== 'thread') || (
@@ -52,6 +48,17 @@ const Unread = {
       cb: this.addPost
     })
   },
+  lastReadPost: null,
+  title: '',
+  readCount: 0,
+  posts: null,
+  thread: null,
+  postsQuotingYou: null,
+  hr: null,
+  order: null,
+  position: null,
+  db: null,
+  linePosition: null,
 
   node() {
     Unread.thread = this

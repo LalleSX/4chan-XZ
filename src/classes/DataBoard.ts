@@ -28,7 +28,7 @@ export default class DataBoard {
     this.changes = []
   }
 
-  constructor(key: string, sync: boolean, dontClean: boolean) {
+  constructor(key: string, sync: boolean, dontClean?: boolean) {
     this.onSync = this.onSync.bind(this)
     this.key = key
     this.initData(Conf[this.key])

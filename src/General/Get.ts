@@ -1,9 +1,10 @@
+import Post from "../classes/Post"
 import { Conf, g } from "../globals/globals"
 import $ from "../platform/$"
 
 
 const Get = {
-  url(type, IDs, ...args) {
+  url(type: string, IDs: any, ...args: any[]) {
     let f, site
     if ((site = g.sites[IDs.siteID]) && (f = $.getOwn(site.urls, type))) {
       return f(IDs, ...Array.from(args))

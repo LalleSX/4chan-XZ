@@ -44,6 +44,7 @@ export interface BoardConfig {
 }
 
 export interface Board {
+  length?: number,
   cooldowns(): object
   forced_anon: 1 | 0,
   ID: string,

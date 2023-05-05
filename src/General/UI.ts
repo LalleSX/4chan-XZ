@@ -1,3 +1,6 @@
+import { event } from "jquery"
+
+import Callbacks from "../classes/Callbacks"
 import { Conf, d, doc } from "../globals/globals"
 import Main from "../main/Main"
 import $ from "../platform/$"
@@ -390,9 +393,20 @@ export const dragend = function () {
   return $.set(`${this.id}.position`, this.style.cssText)
 }
 
-const hoverstart = function ({ root, el, latestEvent, endEvents, height, width, cb, noRemove }) {
+const hoverstart = function ({ root, el, latestEvent, endEvents, height, width, cb, noRemove }: {
+  root: HTMLElement,
+  el: HTMLElement,
+  latestEvent: Event,
+  endEvents: string[],
+  height: number,
+  width: number,
+  cb: Callbacks,
+  noRemove: boolean
+}) {
   const rect = root.getBoundingClientRect()
   const o = {
+    hover,
+    hoverend,
     root,
     el,
     style: el.style,
@@ -403,6 +417,7 @@ const hoverstart = function ({ root, el, latestEvent, endEvents, height, width, 
     clientHeight: doc.clientHeight,
     clientWidth: doc.clientWidth,
     height,
+    workaround: function (e) { if (!root.contains(e.target)) { return o.hoverend(e) } },
     width,
     noRemove,
     clientX: (rect.left + rect.right) / 2,
@@ -423,7 +438,6 @@ const hoverstart = function ({ root, el, latestEvent, endEvents, height, width, 
   $.on(root, 'mousemove', o.hover)
 
   // Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=674955
-  o.workaround = function (e) { if (!root.contains(e.target)) { return o.hoverend(e) } }
   return $.on(doc, 'mousemove', o.workaround)
 }
 
@@ -466,9 +480,10 @@ export const hoverend = function (e) {
 
 export const checkbox = function (name, text, checked) {
   if (checked == null) { checked = Conf[name] }
-  const label = $.el('label')
+  const label = $.el('label', { className: 'checkbox' })
   const input = $.el('input', { type: 'checkbox', name, checked })
   $.add(label, [input, $.tn(` ${text}`)])
+
   return label
 }
 

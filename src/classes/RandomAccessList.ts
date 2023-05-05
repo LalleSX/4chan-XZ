@@ -7,7 +7,7 @@ export default class RandomAccessList {
   length: number
   last: any
   first: any
-  constructor(items) {
+  constructor(items?) {
     this.length = 0
     if (items) { for (const item of items) { this.push(item) } }
   }

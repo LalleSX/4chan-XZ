@@ -20,6 +20,7 @@ const SWTinyboard = {
     }
   },
   name: 'Tinyboard',
+  software: 'Tinyboard',
   isOPContainerThread: true,
   mayLackJSON: true,
   threadModTimeIgnoresSage: true,
