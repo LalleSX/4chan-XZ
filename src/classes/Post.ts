@@ -9,6 +9,7 @@ import Callbacks from "./Callbacks"
 import type Thread from "./Thread"
 
 export default class Post {
+  callbacksExecuted: boolean
   declare root: HTMLElement
   declare thread: Thread
   declare board: Board

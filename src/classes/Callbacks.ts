@@ -26,7 +26,7 @@ export default class Callbacks {
     return this[name] = cb
   }
 
-  execute(node, keys = this.keys, force = false) {
+  execute(node: Post, keys = this.keys, force = false) {
     let errors
     if (node.callbacksExecuted && !force) { return }
     node.callbacksExecuted = true

@@ -19,6 +19,7 @@ const SWTinyboard = {
       }
     }
   },
+  ID: 'sw-tinyboard',
   name: 'Tinyboard',
   software: 'Tinyboard',
   isOPContainerThread: true,

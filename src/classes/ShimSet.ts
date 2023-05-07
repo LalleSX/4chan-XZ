@@ -1,9 +1,8 @@
-import $ from '../platform/$'
 class ShimSet {
-  elements: any
+  elements: Element
   size: number
   constructor() {
-    this.elements = $.dict()
+    this.elements
     this.size = 0
   }
   has(value) {

@@ -763,7 +763,7 @@ const Config = {
 
     comment: `\
 # Filter Stallman copypasta on /g/:
-#/what you\'re refer+ing to as linux/i;boards:g
+#/what you're refer+ing to as linux/i;boards:g
 # Filter posts with 20 or more quote links:
 #/(?:>>\\d(?:(?!>>\\d)[^])*){20}/
 # Filter posts like T H I S / H / I / S:
@@ -817,7 +817,7 @@ http://eye.swfchan.com/search/?q=%name;types:swf
 `,
 
   FappeT: {
-    werk:  false
+    werk: false
   },
 
   'Custom CSS': true,
@@ -826,29 +826,29 @@ http://eye.swfchan.com/search/?q=%name;types:swf
     'Index Mode': 'paged',
     'Previous Index Mode': 'paged',
     'Index Size': 'small',
-    'Show Replies':          [true,  'Show replies in the index, and also in the catalog if "Catalog hover expand" is checked.'],
-    'Catalog Hover Expand':  [false, 'Expand the comment and show more details when you hover over a thread in the catalog.'],
-    'Catalog Hover Toggle':  [true,  'Turn "Catalog hover expand" on and off by clicking in the catalog.'],
-    'Pin Watched Threads':   [false, 'Move watched threads to the start of the index.'],
-    'Anchor Hidden Threads': [true,  'Move hidden threads to the end of the index.'],
-    'Refreshed Navigation':  [false, 'Refresh index when navigating through pages.']
+    'Show Replies': [true, 'Show replies in the index, and also in the catalog if "Catalog hover expand" is checked.'],
+    'Catalog Hover Expand': [false, 'Expand the comment and show more details when you hover over a thread in the catalog.'],
+    'Catalog Hover Toggle': [true, 'Turn "Catalog hover expand" on and off by clicking in the catalog.'],
+    'Pin Watched Threads': [false, 'Move watched threads to the start of the index.'],
+    'Anchor Hidden Threads': [true, 'Move hidden threads to the end of the index.'],
+    'Refreshed Navigation': [false, 'Refresh index when navigating through pages.']
   },
 
   Header: {
-    'Fixed Header':               true,
-    'Header auto-hide':           false,
+    'Fixed Header': true,
+    'Header auto-hide': false,
     'Header auto-hide on scroll': false,
-    'Bottom Header':              false,
-    'Centered links':             false,
-    'Header catalog links':       false,
-    'Bottom Board List':          true,
-    'Shortcut Icons':             true,
-    'Custom Board Navigation':    true
+    'Bottom Header': false,
+    'Centered links': false,
+    'Header catalog links': false,
+    'Bottom Board List': true,
+    'Shortcut Icons': true,
+    'Custom Board Navigation': true
   },
 
   archives: {
-    archiveLists:      'https://4chenz.github.io/archives.json/archives.json',
-    lastarchivecheck:  0,
+    archiveLists: 'https://4chenz.github.io/archives.json/archives.json',
+    lastarchivecheck: 0,
     archiveAutoUpdate: true
   },
 
@@ -937,7 +937,7 @@ https://*.hcaptcha.com
       'Alt+c',
       'Insert code tags.'
     ],
-    'Eqn tags':  [
+    'Eqn tags': [
       'Alt+e',
       'Insert eqn tags.'
     ],
@@ -1184,11 +1184,11 @@ https://*.hcaptcha.com
   'Autohiding Scrollbar': false,
 
   position: {
-    'embedding.position':      'top: 50px; right: 0px;',
-    'thread-stats.position':   'bottom: 0px; right: 0px;',
-    'updater.position':        'bottom: 0px; left: 0px;',
+    'embedding.position': 'top: 50px; right: 0px;',
+    'thread-stats.position': 'bottom: 0px; right: 0px;',
+    'updater.position': 'bottom: 0px; left: 0px;',
     'thread-watcher.position': 'top: 50px; left: 0px;',
-    'qr.position':             'top: 50px; right: 0px;'
+    'qr.position': 'top: 50px; right: 0px;'
   },
 
   fourchanImageHost: 'i.4cdn.org',

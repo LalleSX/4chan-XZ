@@ -7,7 +7,7 @@ import SimpleDict from "./SimpleDict"
 
 export default class Thread {
   catalogViewNative: CatalogThreadNative
-  ID: number | string
+  ID: string | number
   OP: Post
   isArchived: boolean
   isClosed: boolean
@@ -16,7 +16,7 @@ export default class Thread {
   board: Board
   threadID: number
   boardID: number | string
-  siteID: number
+  siteID: number | string
   fullID: string
   isDead: boolean
   isHidden: boolean
@@ -52,7 +52,7 @@ export default class Thread {
 
     this.nodes = { root: null }
 
-    this.board.threads.push(this.ID, this)
+    this.board.threads.push(this.ID.toString(), this)
     g.threads.push(this.fullID, this)
   }
 

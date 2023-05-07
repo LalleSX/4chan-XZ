@@ -81,7 +81,7 @@ const CatalogLinks = {
   },
 
   toggle() {
-    $.event('CloseMenu')
+    $.event('CloseMenu', { menu: Header.menu })
     $.set('Header catalog links', this.checked)
     return CatalogLinks.set(this.checked)
   },

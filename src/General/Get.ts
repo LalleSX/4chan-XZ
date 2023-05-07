@@ -38,7 +38,7 @@ const Get = {
     if (index) { return post.clones[+index] } else { return post }
   },
   postFromNode(root): Post {
-    return Get.postFromRoot($.x(`ancestor-or-self::${g.SITE.xpath.postContainer}[1]`, root))
+    return Get.postFromRoot($.x(`ancestor-or-self::${g.SITE.xpath.postContainer}[1]`, root)) as Post
   },
   postDataFromLink(link) {
     let boardID, postID, threadID

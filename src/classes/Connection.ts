@@ -4,8 +4,8 @@ import Callbacks from "./Callbacks"
 
 
 export default class Connection {
-  target: any
-  origin: any
+  target: Window | HTMLIFrameElement
+  origin: string
   cb: Callbacks
   constructor(target: Window, origin: string, cb: Callbacks) {
     this.send = this.send.bind(this)

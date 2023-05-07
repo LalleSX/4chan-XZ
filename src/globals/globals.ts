@@ -61,7 +61,7 @@ export const g: {
   VERSION: string,
   NAMESPACE: string,
   sites: (typeof SWTinyboard)[],
-  boards: Board[],
+  boards: SimpleDict<Board>,
   posts?: SimpleDict<Post>,
   threads?: SimpleDict<Thread>
   THREADID?: number,
@@ -90,7 +90,7 @@ export const E = (function () {
   const output = function (text: string) {
     return text.toString().replace(regex, fn)
   }
-  output.cat = function (templates) {
+  output.cat = function (templates: HTMLCollectionOf<Element>) {
     let html = ''
     for (let i = 0; i < templates.length; i++) {
       html += templates[i].innerHTML

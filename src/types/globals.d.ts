@@ -17,3 +17,8 @@ export interface File {
     isDead: boolean
     docIndex: number
 }
+export interface CacheOptions {
+    dataType: string
+    sync: boolean
+    dontClean: boolean
+}

@@ -14,7 +14,7 @@ export default class Board {
   config: any
   toString() { return this.ID }
 
-  constructor(ID) {
+  constructor(ID: string) {
     this.ID = ID
     this.boardID = this.ID
     this.siteID = g.SITE.ID
@@ -22,7 +22,7 @@ export default class Board {
     this.posts = new SimpleDict()
     this.config = BoardConfig.boards?.[this.ID] || {}
 
-    g.boards[this] = this
+    g.boards[this.ID] = this
   }
 
   cooldowns() {

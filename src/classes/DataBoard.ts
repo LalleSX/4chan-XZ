@@ -1,6 +1,7 @@
 import { Conf, d, g } from "../globals/globals"
 import $ from "../platform/$"
 import { dict, HOUR } from "../platform/helpers"
+import { CacheOptions } from "../types/globals"
 
 /*
  * decaffeinate suggestions:
@@ -20,7 +21,6 @@ export default class DataBoard {
   static keys: string[]
   static changes: string[]
   key: string
-  sync: VoidFunction
   data: any
   static initClass() {
     this.keys = ['hiddenThreads', 'hiddenPosts', 'lastReadPosts', 'yourPosts', 'watchedThreads', 'watcherLastModified', 'customTitles']
@@ -98,7 +98,7 @@ export default class DataBoard {
       } else if (threadID) {
         if (!this.data[siteID].boards[boardID]) { return }
         delete this.data[siteID].boards[boardID][threadID]
-        return this.deleteIfEmpty({ siteID, boardID })
+        return this.deleteIfEmpty({ siteID, boardID, threadID: null })
       } else {
         return delete this.data[siteID].boards[boardID]
       }
@@ -111,7 +111,7 @@ export default class DataBoard {
     if (threadID) {
       if (!Object.keys(this.data[siteID].boards[boardID][threadID]).length) {
         delete this.data[siteID].boards[boardID][threadID]
-        return this.deleteIfEmpty({ siteID, boardID })
+        return this.deleteIfEmpty({ siteID, boardID, threadID: null })
       }
     } else if (!Object.keys(this.data[siteID].boards[boardID]).length) {
       return delete this.data[siteID].boards[boardID]
@@ -157,7 +157,10 @@ export default class DataBoard {
   setLastChecked(key = 'lastChecked') {
     return this.save(() => {
       return this.data[key] = Date.now()
-    })
+    }, () => {
+      return this.sync?.()
+    }
+    )
   }
 
   get({ siteID, boardID, threadID, postID, defaultValue }) {
@@ -203,21 +206,21 @@ export default class DataBoard {
     }
   }
 
-  ajaxClean(boardID) {
+  ajaxClean(boardID: string) {
     const that = this
     const siteID = g.SITE.ID
     const threadsList = g.SITE.urls.threadsListJSON?.({ siteID, boardID })
     if (!threadsList) { return }
-    return $.cache(threadsList, function () {
+    return $.cache(threadsList, () => {
       if (this.status !== 200) { return }
       const archiveList = g.SITE.urls.archiveListJSON?.({ siteID, boardID })
       if (!archiveList) { return that.ajaxCleanParse(boardID, this.response) }
       const response1 = this.response
-      return $.cache(archiveList, function () {
+      return $.cache(archiveList, () => {
         if ((this.status !== 200) && (!!g.SITE.archivedBoardsKnown || (this.status !== 404))) { return }
         return that.ajaxCleanParse(boardID, response1, this.response)
-      })
-    })
+      }, { type: 'json' }) as CacheOptions
+    }, { type: 'json' }) as CacheOptions
   }
 
   ajaxCleanParse(boardID, response1, response2) {

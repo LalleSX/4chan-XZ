@@ -62,6 +62,97 @@ $.setValue = function (key: string, value: string, cb) {
   }
 }
 
+interface AjaxDetail {
+  url: string;
+  timeout: number;
+  responseType: XMLHttpRequestResponseType;
+  withCredentials: boolean;
+  type: string;
+  onprogress?: (e: ProgressEvent) => void;
+  form?: [string, string][];
+  headers?: Record<string, string>;
+  id: string;
+}
+
+$.ajaxPageInit = function (): void {
+  $.global(function (): void {
+    const r = new XMLHttpRequest()
+    window.FCX.requests = Object.create(null)
+    document.addEventListener('4chanXAjax', function (e): void {
+      let fd: FormData | null
+      const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail
+      window.FCX.requests[id] = (r = new XMLHttpRequest())
+      r.open(type, url, true)
+      const object = headers || {}
+      for (const key in object) {
+        const value = object[key]
+        r.setRequestHeader(key, value)
+      }
+      r.responseType = responseType === 'document' ? 'text' : responseType
+      r.timeout = timeout
+      r.withCredentials = withCredentials
+      if (onprogress) {
+        r.upload.onprogress = function (e: ProgressEvent) {
+          const { loaded, total } = e
+          const detail = { loaded, total, id }
+          return document.dispatchEvent(new CustomEvent('4chanXAjaxProgress', { bubbles: true, detail }))
+        }
+      }
+      r.onloadend = function (): void {
+        delete window.FCX.requests[id]
+        const { status, statusText, response } = this
+        const responseHeaderString = this.getAllResponseHeaders()
+        const detail = { status, statusText, response, responseHeaderString, id }
+        return document.dispatchEvent(new CustomEvent('4chanXAjaxLoadend', { bubbles: true, detail })) as any
+      }
+      // connection error or content blocker
+      r.onerror = function (): void {
+        if (!r.status) { return console.warn(`4chan X failed to load: ${url}`) }
+      }
+      if (form) {
+        fd = new FormData()
+        for (const entry of form) {
+          fd.append(entry[0], entry[1])
+        }
+      } else {
+        fd = null
+      }
+      return r.send(fd)
+    }, false)
+
+    return document.addEventListener('4chanXAbort', function (e): void {
+      const { id } = e.detail
+      if (window.FCX.requests[id]) {
+        window.FCX.requests[id].abort()
+        return delete window.FCX.requests[id]
+      }
+    }, false)
+
+  }, '4chanXAjax')
+
+  $.on(d, '4chanXAjaxProgress', function (e: CustomEvent<{ id: string; loaded: number; total: number }>): void {
+    let req: XMLHttpRequest
+    if (!(req = requests[e.detail.id])) { return }
+    return req.upload.onprogress.call(req.upload, e.detail)
+  })
+
+  return $.on(d, '4chanXAjaxLoadend', function (e: CustomEvent<AjaxDetail & { status: number; statusText: string; response: string; responseHeaderString: string }>): void {
+    let req: XMLHttpRequest
+    if (!(req = Request[e.detail.id])) { return }
+    delete Request[e.detail.id]
+    if (e.detail.status) {
+      for (const key of ['status', 'statusText', 'response', 'responseHeaderString']) {
+        req[key] = e.detail[key]
+      }
+      if (req.responseType === 'document') {
+        req.response = new DOMParser().parseFromString
+          (req.response, 'text/html')
+      }
+      return req.onloadend.call(req)
+    }
+  })
+}
+
 $.ajaxPage = function (url: string, options: AjaxPageOptions) {
   const {
     responseType = 'json',
@@ -192,84 +283,7 @@ $.ajax = (function () {
     // # XXX https://bugs.chromium.org/p/chromium/issues/detail?id=920638
     let requestID = 0
     const requests = dict()
-
-    $.ajaxPageInit = function () {
-      $.global(function () {
-        window.FCX.requests = Object.create(null)
-
-        document.addEventListener('4chanXAjax', function (e: CustomEvent) {
-          let fd, r
-          const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail
-          window.FCX.requests[id] = (r = new XMLHttpRequest())
-          r.open(type, url, true)
-          const object = headers || {}
-          for (const key in object) {
-            const value = object[key]
-            r.setRequestHeader(key, value)
-          }
-          r.responseType = responseType === 'document' ? 'text' : responseType
-          r.timeout = timeout
-          r.withCredentials = withCredentials
-          if (onprogress) {
-            r.upload.onprogress = function (e) {
-              const { loaded, total } = e
-              const detail = { loaded, total, id }
-              return document.dispatchEvent(new CustomEvent('4chanXAjaxProgress', { bubbles: true, detail }))
-            }
-          }
-          r.onloadend = function () {
-            delete window.FCX.requests[id]
-            const { status, statusText, response } = this
-            const responseHeaderString = this.getAllResponseHeaders()
-            const detail = { status, statusText, response, responseHeaderString, id }
-            return document.dispatchEvent(new CustomEvent('4chanXAjaxLoadend', { bubbles: true, detail }))
-          }
-          // connection error or content blocker
-          r.onerror = function () {
-            if (!r.status) { return console.warn(`4chan X failed to load: ${url}`) }
-          }
-          if (form) {
-            fd = new FormData()
-            for (const entry of form) {
-              fd.append(entry[0], entry[1])
-            }
-          } else {
-            fd = null
-          }
-          return r.send(fd)
-        }
-          , false)
-
-        return document.addEventListener('4chanXAjaxAbort', function (e) {
-          let r
-          if (!(r = window.FCX.requests[e.detail.id])) { return }
-          return r.abort()
-        }
-          , false)
-      }, '4chanXAjax')
-
-      $.on(d, '4chanXAjaxProgress', function (e) {
-        let req
-        if (!(req = requests[e.detail.id])) { return }
-        return req.upload.onprogress.call(req.upload, e.detail)
-      })
-
-      return $.on(d, '4chanXAjaxLoadend', function (e) {
-        let req
-        if (!(req = requests[e.detail.id])) { return }
-        delete requests[e.detail.id]
-        if (e.detail.status) {
-          for (const key of ['status', 'statusText', 'response', 'responseHeaderString']) {
-            req[key] = e.detail[key]
-          }
-          if (req.responseType === 'document') {
-            req.response = new DOMParser().parseFromString(e.detail.response, 'text/html')
-          }
-        }
-        return req.onloadend()
-      })
-    }
-
+    $.ajaxPageInit()
     return $.ajaxPage = function (url, options = {}) {
       let req: XMLHttpRequest
       const { onloadend, timeout, responseType, withCredentials, type, onprogress, headers } = options
@@ -314,7 +328,7 @@ $.whenModified = function (url, bucket, cb, options = {}) {
   return r
 }
 
-$.cache = function (url, cb, options = {}) {
+$.cache = function (url, cb, options) {
   const reqs = dict()
   let req
   const { ajax } = options
@@ -350,18 +364,9 @@ $.cleanCache = function (testf) {
 }
 
 
-$.cb = {
-  checked() {
-    if ($.hasOwn(Conf, this.name)) {
-      $.set(this.name, this.checked, this.type)
-      return Conf[this.name] = this.checked
-    }
-  },
-  value() {
-    if ($.hasOwn(Conf, this.name)) {
-      $.set(this.name, this.value.trim(), this.type)
-      return Conf[this.name] = this.value
-    }
+$.cb = function (cb: VoidCallback) {
+  if (cb) {
+    return cb()
   }
 }
 
@@ -492,7 +497,7 @@ $.one = function (el, events, handler) {
   return $.on(el, events, cb)
 }
 let cloneInto: (obj: object, win: Window) => object
-$.event = function (event: Event, detail: object, root = d) {
+$.event = function (event: string, detail: object, root = d) {
   if (!globalThis.chrome?.extension) {
     if ((detail != null) && (typeof cloneInto === 'function')) {
       detail = cloneInto(detail, d.defaultView)
@@ -978,7 +983,7 @@ if (platform === 'crx') {
       })
       $.forceSync = function () {/* empty */ }
     } else if ((typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) || $.hasStorage) {
-      $.sync = function (key, cb) {
+      $.sync = function (key: string, cb: (newValue: any, key: string) => void) {
         key = g.NAMESPACE + key
         $.syncing[key] = cb
         return $.oldValue[key] = $.getValue(key, cb)
@@ -1000,10 +1005,7 @@ if (platform === 'crx') {
         }
         $.on(window, 'storage', onChange)
 
-        return $.forceSync = function (key, cb) {
-          // Storage events don't work across origins
-          // e.g. http://boards.4chan.org and https://boards.4chan.org
-          // so force a check for changes to avoid lost data.
+        return $.forceSync = function (key: string, cb: (newValue: any, key: string) => void) {
           key = g.NAMESPACE + key
           return onChange({ key, newValue: $.getValue(key, cb) })
         }

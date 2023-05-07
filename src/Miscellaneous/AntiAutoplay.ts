@@ -3,11 +3,7 @@ import { Conf, doc } from "../globals/globals"
 import $ from "../platform/$"
 import $$ from "../platform/$$"
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
+
 const AntiAutoplay = {
   init() {
     if (!Conf['Disable Autoplaying Sounds']) { return }
@@ -31,10 +27,10 @@ const AntiAutoplay = {
   },
 
   node() {
-    return AntiAutoplay.process(this.nodes.comment)
+    return AntiAutoplay.process(this.node())
   },
 
-  process(root) {
+  process(root: HTMLElement) {
     for (const iframe of $$('iframe[src*="youtube"][src*="autoplay=1"]', root)) {
       AntiAutoplay.processVideo(iframe, 'src')
     }
@@ -43,7 +39,7 @@ const AntiAutoplay = {
     }
   },
 
-  processVideo(el, attr) {
+  processVideo(el: HTMLIFrameElement | HTMLObjectElement, attr: 'src' | 'data') {
     el[attr] = el[attr].replace(/\?autoplay=1&?/, '?').replace('&autoplay=1', '')
     if (window.getComputedStyle(el).display === 'none') { el.style.display = 'block' }
     return $.addClass(el, 'autoplay-removed')
