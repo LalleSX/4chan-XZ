@@ -17,9 +17,9 @@ import CrossOrigin from "./CrossOrigin"
 import { debounce, dict, MINUTE, platform, SECOND } from "./helpers"
 
 // not chainable
-const $ = (selector: string, root: HTMLElement = document.body): Element | null => root.querySelector(selector)
+const $ = (selector, root = document.body) => root.querySelector(selector)
 
-$.id = (id: string): HTMLElement | null => document.getElementById(id)
+$.id = id => d.getElementById(id)
 
 type AjaxPageOptions = {
   responseType?: string;
@@ -60,100 +60,6 @@ $.setValue = function (key: string, value: string, cb) {
   } else {
     return GM_setValue(key, value)
   }
-}
-
-$.crxWarningShown = false
-
-interface AjaxDetail {
-  url: string;
-  timeout: number;
-  responseType: XMLHttpRequestResponseType;
-  withCredentials: boolean;
-  type: string;
-  onprogress?: (e: ProgressEvent) => void;
-  form?: [string, string][];
-  headers?: Record<string, string>;
-  id: string;
-}
-
-$.ajaxPageInit = function (): void {
-  $.global(function (): void {
-    let r = new XMLHttpRequest()
-    window.FCX.requests = Object.create(null)
-    document.addEventListener('4chanXAjax', function (e: CustomEvent<AjaxDetail>): void {
-      let fd: FormData | null
-      const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail
-      window.FCX.requests[id] = (r = new XMLHttpRequest())
-      r.open(type, url, true)
-      const object = headers || {}
-      for (const key in object) {
-        const value = object[key]
-        r.setRequestHeader(key, value)
-      }
-      r.responseType = responseType === 'document' ? 'text' : responseType
-      r.timeout = timeout
-      r.withCredentials = withCredentials
-      if (onprogress) {
-        r.upload.onprogress = function (e: ProgressEvent) {
-          const { loaded, total } = e
-          const detail = { loaded, total, id }
-          return document.dispatchEvent(new CustomEvent('4chanXAjaxProgress', { bubbles: true, detail }))
-        }
-      }
-      r.onloadend = function (): void {
-        delete window.FCX.requests[id]
-        const { status, statusText, response } = this
-        const responseHeaderString = this.getAllResponseHeaders()
-        const detail = { status, statusText, response, responseHeaderString, id }
-        return document.dispatchEvent(new CustomEvent('4chanXAjaxLoadend', { bubbles: true, detail })) as any
-      }
-      // connection error or content blocker
-      r.onerror = function (): void {
-        if (!r.status) { return console.warn(`4chan X failed to load: ${url}`) }
-      }
-      if (form) {
-        fd = new FormData()
-        for (const entry of form) {
-          fd.append(entry[0], entry[1])
-        }
-      } else {
-        fd = null
-      }
-      return r.send(fd)
-    }, false)
-
-    return document.addEventListener('4chanXAbort', function (e: CustomEvent<{ id: string }>) {
-      const { id } = e.detail
-      if (window.FCX.requests[id]) {
-        window.FCX.requests[id].abort()
-        return delete window.FCX.requests[id]
-      }
-    }
-      , false)
-
-  }, '4chanXAjax')
-
-  $.on(d, '4chanXAjaxProgress', function (e: CustomEvent<{ id: string; loaded: number; total: number }>): void {
-    let req: XMLHttpRequest
-    if (!(req = Request[e.detail.id])) { return }
-    return req.upload.onprogress.call(req.upload, e.detail)
-  })
-
-  return $.on(d, '4chanXAjaxLoadend', function (e: CustomEvent<AjaxDetail & { status: number; statusText: string; response: string; responseHeaderString: string }>): void {
-    let req: XMLHttpRequest
-    if (!(req = Request[e.detail.id])) { return }
-    delete Request[e.detail.id]
-    if (e.detail.status) {
-      for (const key of ['status', 'statusText', 'response', 'responseHeaderString']) {
-        req[key] = e.detail[key]
-      }
-      if (req.responseType === 'document') {
-        req.response = new DOMParser().parseFromString
-          (req.response, 'text/html')
-      }
-      return req.onloadend.call(req)
-    }
-  })
 }
 
 $.ajaxPage = function (url: string, options: AjaxPageOptions) {
@@ -200,7 +106,7 @@ $.ready = function (fc: () => void) {
   return $.on(d, 'DOMContentLoaded', cb)
 }
 
-$.formData = function (form: object | HTMLFormElement) {
+$.formData = function (form) {
   if (form instanceof HTMLFormElement) {
     return new FormData(form)
   }
@@ -239,7 +145,7 @@ $.ajax = (function () {
     pageXHR = XMLHttpRequest
   }
 
-  const r = (function (url: string, options = dict(), cb?: (this: XMLHttpRequest, e: ProgressEvent) => void) {
+  const r = (function (url: string, options = dict(), cb: Callbacks) {
     if (options.responseType == null) { options.responseType = 'json' }
     if (!options.type) { options.type = (options.form && 'post') || 'get' }
     url = url.replace(/^((?:https?:)?\/\/(?:\w+\.)?(?:4chan|4channel|4cdn)\.org)\/adv\//, '$1//adv/')
@@ -286,7 +192,84 @@ $.ajax = (function () {
     // # XXX https://bugs.chromium.org/p/chromium/issues/detail?id=920638
     let requestID = 0
     const requests = dict()
-    $.ajaxPageInit()
+
+    $.ajaxPageInit = function () {
+      $.global(function () {
+        window.FCX.requests = Object.create(null)
+
+        document.addEventListener('4chanXAjax', function (e: CustomEvent) {
+          let fd, r
+          const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail
+          window.FCX.requests[id] = (r = new XMLHttpRequest())
+          r.open(type, url, true)
+          const object = headers || {}
+          for (const key in object) {
+            const value = object[key]
+            r.setRequestHeader(key, value)
+          }
+          r.responseType = responseType === 'document' ? 'text' : responseType
+          r.timeout = timeout
+          r.withCredentials = withCredentials
+          if (onprogress) {
+            r.upload.onprogress = function (e) {
+              const { loaded, total } = e
+              const detail = { loaded, total, id }
+              return document.dispatchEvent(new CustomEvent('4chanXAjaxProgress', { bubbles: true, detail }))
+            }
+          }
+          r.onloadend = function () {
+            delete window.FCX.requests[id]
+            const { status, statusText, response } = this
+            const responseHeaderString = this.getAllResponseHeaders()
+            const detail = { status, statusText, response, responseHeaderString, id }
+            return document.dispatchEvent(new CustomEvent('4chanXAjaxLoadend', { bubbles: true, detail }))
+          }
+          // connection error or content blocker
+          r.onerror = function () {
+            if (!r.status) { return console.warn(`4chan X failed to load: ${url}`) }
+          }
+          if (form) {
+            fd = new FormData()
+            for (const entry of form) {
+              fd.append(entry[0], entry[1])
+            }
+          } else {
+            fd = null
+          }
+          return r.send(fd)
+        }
+          , false)
+
+        return document.addEventListener('4chanXAjaxAbort', function (e) {
+          let r
+          if (!(r = window.FCX.requests[e.detail.id])) { return }
+          return r.abort()
+        }
+          , false)
+      }, '4chanXAjax')
+
+      $.on(d, '4chanXAjaxProgress', function (e) {
+        let req
+        if (!(req = requests[e.detail.id])) { return }
+        return req.upload.onprogress.call(req.upload, e.detail)
+      })
+
+      return $.on(d, '4chanXAjaxLoadend', function (e) {
+        let req
+        if (!(req = requests[e.detail.id])) { return }
+        delete requests[e.detail.id]
+        if (e.detail.status) {
+          for (const key of ['status', 'statusText', 'response', 'responseHeaderString']) {
+            req[key] = e.detail[key]
+          }
+          if (req.responseType === 'document') {
+            req.response = new DOMParser().parseFromString(e.detail.response, 'text/html')
+          }
+        }
+        return req.onloadend()
+      })
+    }
+
     return $.ajaxPage = function (url, options = {}) {
       let req: XMLHttpRequest
       const { onloadend, timeout, responseType, withCredentials, type, onprogress, headers } = options
@@ -307,7 +290,7 @@ $.ajax = (function () {
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
 $.lastModified = dict()
-$.whenModified = function (url: string, bucket: string, cb: Callbacks, options = {}) {
+$.whenModified = function (url, bucket, cb, options = {}) {
   let t: string
   const { timeout, ajax } = options
   const params = []
@@ -331,7 +314,7 @@ $.whenModified = function (url: string, bucket: string, cb: Callbacks, options =
   return r
 }
 
-$.cache = function (url: string, cb, options = {}) {
+$.cache = function (url, cb, options = {}) {
   const reqs = dict()
   let req
   const { ajax } = options
@@ -357,7 +340,7 @@ $.cache = function (url: string, cb, options = {}) {
   return reqs[url] = req
 }
 
-$.cleanCache = function (testf: (url: string) => boolean) {
+$.cleanCache = function (testf) {
   const reqs = dict()
   for (const url in reqs) {
     if (testf(url)) {
@@ -367,9 +350,18 @@ $.cleanCache = function (testf: (url: string) => boolean) {
 }
 
 
-$.cb = function (cb: VoidCallback) {
-  if (cb) {
-    return cb()
+$.cb = {
+  checked() {
+    if ($.hasOwn(Conf, this.name)) {
+      $.set(this.name, this.checked, this.type)
+      return Conf[this.name] = this.checked
+    }
+  },
+  value() {
+    if ($.hasOwn(Conf, this.name)) {
+      $.set(this.name, this.value.trim(), this.type)
+      return Conf[this.name] = this.value
+    }
   }
 }
 
@@ -403,7 +395,7 @@ $.addStyle = function (css, id, test = 'head') {
   return style
 }
 
-$.addCSP = function (policy: string, doc = d) {
+$.addCSP = function (policy) {
   const meta = $.el('meta', {
     httpEquiv: 'Content-Security-Policy',
     content: policy
@@ -419,13 +411,13 @@ $.addCSP = function (policy: string, doc = d) {
   }
 }
 
-$.x = function (path: string, root: Element) {
+$.x = function (path, root) {
   if (!root) { root = d.body }
   // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
   return d.evaluate(path, root, null, 8, null).singleNodeValue
 }
 
-$.X = function (path: string, root: Element): XPathResult {
+$.X = function (path, root) {
   if (!root) { root = d.body }
   // XPathResult.ORDERED_NODE_SNAPSHOT_TYPE === 7
   return d.evaluate(path, root, null, 7, null)
@@ -439,19 +431,20 @@ $.rmClass = function (el: Element, ...classNames: string[]) {
   for (const className of classNames) { el.classList.remove(className) }
 }
 
-$.toggleClass = (el: Element, className: string) => el.classList.toggle(className)
+$.toggleClass = (el, className) => el.classList.toggle(className)
 
-$.hasClass = (el: Element, className: string) => el.classList.contains(className)
+$.hasClass = (el, className) => el.classList.contains(className)
 
-$.rm = (el: Element) => el?.remove()
+$.rm = el => el?.remove()
 
-$.rmAll = (root: HTMLElement, selector) => $(selector, root)?.remove()
+$.rmAll = root => // https://gist.github.com/MayhemYDG/8646194
+  root.textContent = null
 
 $.tn = s => d.createTextNode(s)
 
 $.frag = () => d.createDocumentFragment()
 
-$.nodes = function (nodes: Node | Node[]) {
+$.nodes = function (nodes) {
   if (!(nodes instanceof Array)) {
     return nodes
   }
@@ -462,17 +455,17 @@ $.nodes = function (nodes: Node | Node[]) {
   return frag
 }
 
-$.add = (parent: HTMLElement, el: Element) => parent.appendChild($.nodes(el))
+$.add = (parent, el) => parent.appendChild($.nodes(el))
 
-$.prepend = (parent: HTMLElement, el: Element) => parent.insertBefore($.nodes(el), parent.firstChild)
+$.prepend = (parent, el) => parent.insertBefore($.nodes(el), parent.firstChild)
 
-$.after = (root: HTMLElement, el: Element) => root.parentNode.insertBefore($.nodes(el), root.nextSibling)
+$.after = (root, el) => root.parentNode.insertBefore($.nodes(el), root.nextSibling)
 
-$.before = (root: HTMLElement, el: Element) => root.parentNode.insertBefore($.nodes(el), root)
+$.before = (root, el) => root.parentNode.insertBefore($.nodes(el), root)
 
-$.replace = (root: HTMLElement, el: Element) => root.parentNode.replaceChild($.nodes(el), root)
+$.replace = (root, el) => root.parentNode.replaceChild($.nodes(el), root)
 
-$.el = function (tag: string, properties: object, properties2?) {
+$.el = function (tag, properties, properties2?) {
   const el = d.createElement(tag)
   if (properties) { $.extend(el, properties) }
   if (properties2) { $.extend(el, properties2) }
@@ -483,14 +476,12 @@ $.on = function (el, events, handler) {
   for (const event of events.split(' ')) {
     el.addEventListener(event, handler, false)
   }
-  return handler
 }
 
-$.off = function (el: HTMLElement, events: string, handler: (e: Event) => void) {
+$.off = function (el, events, handler) {
   for (const event of events.split(' ')) {
     el.removeEventListener(event, handler, false)
   }
-  return handler
 }
 
 $.one = function (el, events, handler) {
@@ -500,10 +491,8 @@ $.one = function (el, events, handler) {
   }
   return $.on(el, events, cb)
 }
-
 let cloneInto: (obj: object, win: Window) => object
-
-$.event = function (event: string, detail: object, root = d) {
+$.event = function (event: Event, detail: object, root = d) {
   if (!globalThis.chrome?.extension) {
     if ((detail != null) && (typeof cloneInto === 'function')) {
       detail = cloneInto(detail, d.defaultView)
@@ -557,12 +546,15 @@ if (!globalThis.chrome?.extension) {
 $.debounce = function (wait, fn) {
   let lastCall = 0
   let timeout = null
+  let that = null
+  let args = null
   const exec = function () {
     lastCall = Date.now()
-    // eslint-disable-next-line prefer-rest-params
-    return fn.apply(this, ...arguments)
+    return fn.apply(that, args)
   }
   return function () {
+    args = arguments
+    that = this
     if (lastCall < (Date.now() - wait)) {
       return exec()
     }
@@ -647,8 +639,8 @@ $.unescape = function (text) {
   return text.replace(/<[^>]*>/g, '').replace(/&(amp|#039|quot|lt|gt|#44);/g, c => ({ '&amp;': '&', '&#039;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>', '&#44;': ',' })[c])
 }
 
-$.isImage = (url: string) => /\.(jpe?g|png|gif|webp|bmp|ico|svg|tiff?)$/i.test(url)
-$.isVideo = (url: string) => /\.(webm|mp4|ogv|flv|mov|mpe?g|3gp)$/i.test(url)
+$.isImage = url => /\.(jpe?g|png|gif|webp|bmp|ico|svg|tiff?)$/i.test(url)
+$.isVideo = url => /\.(webm|mp4|ogv|flv|mov|mpe?g|3gp)$/i.test(url)
 
 $.engine = (function () {
   if (/Edge\//.test(navigator.userAgent)) { return 'edge' }
@@ -731,9 +723,9 @@ if (platform === 'crx') {
     return false
   }
 
-  $.get = $.oneItemSugar(function (data: DataBoard, cb) {
+  $.get = $.oneItemSugar(function (data, cb) {
     if (!$.crxWorking()) { return }
-    const results = dict()
+    const results = {}
     const get = function (area) {
       let keys = Object.keys(data)
       // XXX slow performance in Firefox
@@ -893,7 +885,7 @@ if (platform === 'crx') {
       })
     }
 
-    $.get = $.oneItemSugar(function (items: any, cb) {
+    $.get = $.oneItemSugar(function (items, cb) {
       const keys = Object.keys(items)
       return Promise.all(keys.map((key) => GM.getValue(g.NAMESPACE + key))).then(function (values) {
         for (let i = 0; i < values.length; i++) {
@@ -906,7 +898,7 @@ if (platform === 'crx') {
       })
     })
 
-    $.set = $.oneItemSugar(function (items: any, cb: Callbacks) {
+    $.set = $.oneItemSugar(function (items, cb) {
       $.securityCheck(items)
       return Promise.all((() => {
         const result = []
@@ -948,14 +940,14 @@ if (platform === 'crx') {
 
     if (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) {
       $.oldValue = dict()
-      $.setValue = function (key: string, val: any) {
+      $.setValue = function (key, val) {
         GM_setValue(key, val)
         if (key in $.syncing) {
           $.oldValue[key] = val
           if ($.hasStorage) { return localStorage.setItem(key, val) } // for `storage` events
         }
       }
-      $.deleteValue = function (key: string) {
+      $.deleteValue = function (key) {
         GM_deleteValue(key)
         if (key in $.syncing) {
           delete $.oldValue[key]
@@ -965,11 +957,11 @@ if (platform === 'crx') {
       if (!$.hasStorage) { $.cantSync = true }
     } else if ($.hasStorage) {
       $.oldValue = dict()
-      $.setValue = function (key: string, val: any) {
+      $.setValue = function (key, val) {
         if (key in $.syncing) { $.oldValue[key] = val }
         return localStorage.setItem(key, val)
       }
-      $.deleteValue = function (key: string) {
+      $.deleteValue = function (key) {
         if (key in $.syncing) { delete $.oldValue[key] }
         return localStorage.removeItem(key)
       }
@@ -986,7 +978,7 @@ if (platform === 'crx') {
       })
       $.forceSync = function () {/* empty */ }
     } else if ((typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) || $.hasStorage) {
-      $.sync = function (key: string, cb: (newValue: any, key: string) => void) {
+      $.sync = function (key, cb) {
         key = g.NAMESPACE + key
         $.syncing[key] = cb
         return $.oldValue[key] = $.getValue(key, cb)
@@ -1008,7 +1000,10 @@ if (platform === 'crx') {
         }
         $.on(window, 'storage', onChange)
 
-        return $.forceSync = function (key: string, cb: (newValue: any, key: string) => void) {
+        return $.forceSync = function (key, cb) {
+          // Storage events don't work across origins
+          // e.g. http://boards.4chan.org and https://boards.4chan.org
+          // so force a check for changes to avoid lost data.
           key = g.NAMESPACE + key
           return onChange({ key, newValue: $.getValue(key, cb) })
         }
@@ -1046,7 +1041,7 @@ if (platform === 'crx') {
       return cb(items)
     }
 
-    $.set = $.oneItemSugar(function (items: any, cb: (items: any) => void) {
+    $.set = $.oneItemSugar(function (items, cb) {
       $.securityCheck(items)
       return $.queueTask(function () {
         for (const key in items) {
