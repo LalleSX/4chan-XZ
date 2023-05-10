@@ -1,39 +1,25 @@
 {
   "compilerOptions": {
-    "importHelpers": true,
-    "module": "ES2022",
-    "noImplicitAny": false,
-    "removeComments": true,
-    "sourceMap": true,
-    "target": "ES2020",
-    "allowJs": true,
-    "checkJs": true,
-    //TODO: Flip this to true
-    "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    },
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "hFragment",
-    "types": [
-      "@types/jquery",
-      "@violentmonkey/types",
-      "@types/chrome",
-      "ts-node",
-      "@types/firefox-webext-browser"
-    ],
-    "lib": [
-      "DOM",
-      "ES2020"
-    ],
-    // needs to be in the deepest dir used as target in the rollup build
-    // https://stackoverflow.com/q/40460790, https://github.com/rollup/plugins/issues/243
-    "outDir": "builds/test/crx/tsOutput",
+    "jsx": "react-jsx"
   },
-  "exclude": [
-    "/node_modules/*",
-    "tools/*",
-    "dist/*",
-    "src/meta/*",
-    "builds/test/tsOutput"
-  ]
+  "exclude": ["enableDevHmr.ts"],
+  "include": ["./src"]
 }
