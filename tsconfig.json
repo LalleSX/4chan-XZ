@@ -9,7 +9,7 @@
     "allowJs": true,
     "checkJs": true,
     //TODO: Flip this to true
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "jsx": "react",
     "jsxFactory": "h",

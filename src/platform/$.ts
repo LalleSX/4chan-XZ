@@ -17,9 +17,9 @@ import CrossOrigin from "./CrossOrigin"
 import { debounce, dict, MINUTE, platform, SECOND } from "./helpers"
 
 // not chainable
-const $ = (selector, root = document.body) => root.querySelector(selector)
+const $ = (selector: string, root: HTMLElement = document.body): Element | null => root.querySelector(selector)
 
-$.id = id => d.getElementById(id)
+$.id = (id: string): HTMLElement | null => document.getElementById(id)
 
 type AjaxPageOptions = {
   responseType?: string;
@@ -62,6 +62,8 @@ $.setValue = function (key: string, value: string, cb) {
   }
 }
 
+$.crxWarningShown = false
+
 interface AjaxDetail {
   url: string;
   timeout: number;
@@ -76,9 +78,9 @@ interface AjaxDetail {
 
 $.ajaxPageInit = function (): void {
   $.global(function (): void {
-    const r = new XMLHttpRequest()
+    let r = new XMLHttpRequest()
     window.FCX.requests = Object.create(null)
-    document.addEventListener('4chanXAjax', function (e): void {
+    document.addEventListener('4chanXAjax', function (e: CustomEvent<AjaxDetail>): void {
       let fd: FormData | null
       const { url, timeout, responseType, withCredentials, type, onprogress, form, headers, id } = e.detail
       window.FCX.requests[id] = (r = new XMLHttpRequest())
@@ -120,19 +122,20 @@ $.ajaxPageInit = function (): void {
       return r.send(fd)
     }, false)
 
-    return document.addEventListener('4chanXAbort', function (e): void {
+    return document.addEventListener('4chanXAbort', function (e: CustomEvent<{ id: string }>) {
       const { id } = e.detail
       if (window.FCX.requests[id]) {
         window.FCX.requests[id].abort()
         return delete window.FCX.requests[id]
       }
-    }, false)
+    }
+      , false)
 
   }, '4chanXAjax')
 
   $.on(d, '4chanXAjaxProgress', function (e: CustomEvent<{ id: string; loaded: number; total: number }>): void {
     let req: XMLHttpRequest
-    if (!(req = requests[e.detail.id])) { return }
+    if (!(req = Request[e.detail.id])) { return }
     return req.upload.onprogress.call(req.upload, e.detail)
   })
 
@@ -197,7 +200,7 @@ $.ready = function (fc: () => void) {
   return $.on(d, 'DOMContentLoaded', cb)
 }
 
-$.formData = function (form) {
+$.formData = function (form: object | HTMLFormElement) {
   if (form instanceof HTMLFormElement) {
     return new FormData(form)
   }
@@ -236,7 +239,7 @@ $.ajax = (function () {
     pageXHR = XMLHttpRequest
   }
 
-  const r = (function (url: string, options = dict(), cb: Callbacks) {
+  const r = (function (url: string, options = dict(), cb?: (this: XMLHttpRequest, e: ProgressEvent) => void) {
     if (options.responseType == null) { options.responseType = 'json' }
     if (!options.type) { options.type = (options.form && 'post') || 'get' }
     url = url.replace(/^((?:https?:)?\/\/(?:\w+\.)?(?:4chan|4channel|4cdn)\.org)\/adv\//, '$1//adv/')
@@ -304,7 +307,7 @@ $.ajax = (function () {
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
 $.lastModified = dict()
-$.whenModified = function (url, bucket, cb, options = {}) {
+$.whenModified = function (url: string, bucket: string, cb: Callbacks, options = {}) {
   let t: string
   const { timeout, ajax } = options
   const params = []
@@ -328,7 +331,7 @@ $.whenModified = function (url, bucket, cb, options = {}) {
   return r
 }
 
-$.cache = function (url, cb, options) {
+$.cache = function (url: string, cb, options = {}) {
   const reqs = dict()
   let req
   const { ajax } = options
@@ -354,7 +357,7 @@ $.cache = function (url, cb, options) {
   return reqs[url] = req
 }
 
-$.cleanCache = function (testf) {
+$.cleanCache = function (testf: (url: string) => boolean) {
   const reqs = dict()
   for (const url in reqs) {
     if (testf(url)) {
@@ -400,7 +403,7 @@ $.addStyle = function (css, id, test = 'head') {
   return style
 }
 
-$.addCSP = function (policy) {
+$.addCSP = function (policy: string, doc = d) {
   const meta = $.el('meta', {
     httpEquiv: 'Content-Security-Policy',
     content: policy
@@ -416,13 +419,13 @@ $.addCSP = function (policy) {
   }
 }
 
-$.x = function (path, root) {
+$.x = function (path: string, root: Element) {
   if (!root) { root = d.body }
   // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
   return d.evaluate(path, root, null, 8, null).singleNodeValue
 }
 
-$.X = function (path, root) {
+$.X = function (path: string, root: Element): XPathResult {
   if (!root) { root = d.body }
   // XPathResult.ORDERED_NODE_SNAPSHOT_TYPE === 7
   return d.evaluate(path, root, null, 7, null)
@@ -436,20 +439,19 @@ $.rmClass = function (el: Element, ...classNames: string[]) {
   for (const className of classNames) { el.classList.remove(className) }
 }
 
-$.toggleClass = (el, className) => el.classList.toggle(className)
+$.toggleClass = (el: Element, className: string) => el.classList.toggle(className)
 
-$.hasClass = (el, className) => el.classList.contains(className)
+$.hasClass = (el: Element, className: string) => el.classList.contains(className)
 
-$.rm = el => el?.remove()
+$.rm = (el: Element) => el?.remove()
 
-$.rmAll = root => // https://gist.github.com/MayhemYDG/8646194
-  root.textContent = null
+$.rmAll = (root: HTMLElement, selector) => $(selector, root)?.remove()
 
 $.tn = s => d.createTextNode(s)
 
 $.frag = () => d.createDocumentFragment()
 
-$.nodes = function (nodes) {
+$.nodes = function (nodes: Node | Node[]) {
   if (!(nodes instanceof Array)) {
     return nodes
   }
@@ -460,17 +462,17 @@ $.nodes = function (nodes) {
   return frag
 }
 
-$.add = (parent, el) => parent.appendChild($.nodes(el))
+$.add = (parent: HTMLElement, el: Element) => parent.appendChild($.nodes(el))
 
-$.prepend = (parent, el) => parent.insertBefore($.nodes(el), parent.firstChild)
+$.prepend = (parent: HTMLElement, el: Element) => parent.insertBefore($.nodes(el), parent.firstChild)
 
-$.after = (root, el) => root.parentNode.insertBefore($.nodes(el), root.nextSibling)
+$.after = (root: HTMLElement, el: Element) => root.parentNode.insertBefore($.nodes(el), root.nextSibling)
 
-$.before = (root, el) => root.parentNode.insertBefore($.nodes(el), root)
+$.before = (root: HTMLElement, el: Element) => root.parentNode.insertBefore($.nodes(el), root)
 
-$.replace = (root, el) => root.parentNode.replaceChild($.nodes(el), root)
+$.replace = (root: HTMLElement, el: Element) => root.parentNode.replaceChild($.nodes(el), root)
 
-$.el = function (tag, properties, properties2?) {
+$.el = function (tag: string, properties: object, properties2?) {
   const el = d.createElement(tag)
   if (properties) { $.extend(el, properties) }
   if (properties2) { $.extend(el, properties2) }
@@ -481,12 +483,14 @@ $.on = function (el, events, handler) {
   for (const event of events.split(' ')) {
     el.addEventListener(event, handler, false)
   }
+  return handler
 }
 
-$.off = function (el, events, handler) {
+$.off = function (el: HTMLElement, events: string, handler: (e: Event) => void) {
   for (const event of events.split(' ')) {
     el.removeEventListener(event, handler, false)
   }
+  return handler
 }
 
 $.one = function (el, events, handler) {
@@ -496,7 +500,9 @@ $.one = function (el, events, handler) {
   }
   return $.on(el, events, cb)
 }
+
 let cloneInto: (obj: object, win: Window) => object
+
 $.event = function (event: string, detail: object, root = d) {
   if (!globalThis.chrome?.extension) {
     if ((detail != null) && (typeof cloneInto === 'function')) {
@@ -551,15 +557,12 @@ if (!globalThis.chrome?.extension) {
 $.debounce = function (wait, fn) {
   let lastCall = 0
   let timeout = null
-  let that = null
-  let args = null
   const exec = function () {
     lastCall = Date.now()
-    return fn.apply(that, args)
+    // eslint-disable-next-line prefer-rest-params
+    return fn.apply(this, ...arguments)
   }
   return function () {
-    args = arguments
-    that = this
     if (lastCall < (Date.now() - wait)) {
       return exec()
     }
@@ -644,8 +647,8 @@ $.unescape = function (text) {
   return text.replace(/<[^>]*>/g, '').replace(/&(amp|#039|quot|lt|gt|#44);/g, c => ({ '&amp;': '&', '&#039;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>', '&#44;': ',' })[c])
 }
 
-$.isImage = url => /\.(jpe?g|png|gif|webp|bmp|ico|svg|tiff?)$/i.test(url)
-$.isVideo = url => /\.(webm|mp4|ogv|flv|mov|mpe?g|3gp)$/i.test(url)
+$.isImage = (url: string) => /\.(jpe?g|png|gif|webp|bmp|ico|svg|tiff?)$/i.test(url)
+$.isVideo = (url: string) => /\.(webm|mp4|ogv|flv|mov|mpe?g|3gp)$/i.test(url)
 
 $.engine = (function () {
   if (/Edge\//.test(navigator.userAgent)) { return 'edge' }
@@ -728,9 +731,9 @@ if (platform === 'crx') {
     return false
   }
 
-  $.get = $.oneItemSugar(function (data, cb) {
+  $.get = $.oneItemSugar(function (data: DataBoard, cb) {
     if (!$.crxWorking()) { return }
-    const results = {}
+    const results = dict()
     const get = function (area) {
       let keys = Object.keys(data)
       // XXX slow performance in Firefox
@@ -890,7 +893,7 @@ if (platform === 'crx') {
       })
     }
 
-    $.get = $.oneItemSugar(function (items, cb) {
+    $.get = $.oneItemSugar(function (items: any, cb) {
       const keys = Object.keys(items)
       return Promise.all(keys.map((key) => GM.getValue(g.NAMESPACE + key))).then(function (values) {
         for (let i = 0; i < values.length; i++) {
@@ -903,7 +906,7 @@ if (platform === 'crx') {
       })
     })
 
-    $.set = $.oneItemSugar(function (items, cb) {
+    $.set = $.oneItemSugar(function (items: any, cb: Callbacks) {
       $.securityCheck(items)
       return Promise.all((() => {
         const result = []
@@ -945,14 +948,14 @@ if (platform === 'crx') {
 
     if (typeof GM_deleteValue !== 'undefined' && GM_deleteValue !== null) {
       $.oldValue = dict()
-      $.setValue = function (key, val) {
+      $.setValue = function (key: string, val: any) {
         GM_setValue(key, val)
         if (key in $.syncing) {
           $.oldValue[key] = val
           if ($.hasStorage) { return localStorage.setItem(key, val) } // for `storage` events
         }
       }
-      $.deleteValue = function (key) {
+      $.deleteValue = function (key: string) {
         GM_deleteValue(key)
         if (key in $.syncing) {
           delete $.oldValue[key]
@@ -962,11 +965,11 @@ if (platform === 'crx') {
       if (!$.hasStorage) { $.cantSync = true }
     } else if ($.hasStorage) {
       $.oldValue = dict()
-      $.setValue = function (key, val) {
+      $.setValue = function (key: string, val: any) {
         if (key in $.syncing) { $.oldValue[key] = val }
         return localStorage.setItem(key, val)
       }
-      $.deleteValue = function (key) {
+      $.deleteValue = function (key: string) {
         if (key in $.syncing) { delete $.oldValue[key] }
         return localStorage.removeItem(key)
       }
@@ -1043,7 +1046,7 @@ if (platform === 'crx') {
       return cb(items)
     }
 
-    $.set = $.oneItemSugar(function (items, cb) {
+    $.set = $.oneItemSugar(function (items: any, cb: (items: any) => void) {
       $.securityCheck(items)
       return $.queueTask(function () {
         for (const key in items) {
