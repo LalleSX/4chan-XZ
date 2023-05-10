@@ -4,7 +4,7 @@ const sharedManifest = {
 	content_scripts: [
 		{
 			js: ["src/entries/contentScript/primary/main.tsx"],
-			matches: ["*://*/*"],
+			matches: ["*://4chan.org/*", "*://boards.4chan.org/*, *://boards.4channel.org/*", "*://boards.4channel.org/*"],
 		},
 	],
 	icons: {
@@ -47,7 +47,7 @@ const ManifestV2 = {
 		...sharedManifest.options_ui,
 		chrome_style: false,
 	},
-	permissions: [...sharedManifest.permissions, "*://*/*"],
+	permissions: [...sharedManifest.permissions, "*://4chan.org/*", "*://boards.4chan.org/*", "*://boards.4channel.org/*"],
 }
 
 const ManifestV3 = {
@@ -56,7 +56,7 @@ const ManifestV3 = {
 	background: {
 		service_worker: "src/entries/background/serviceWorker.ts",
 	},
-	host_permissions: ["*://*/*"],
+	host_permissions: ["*://4chan.org/*", "*://boards.4chan.org/*", "*://boards.4channel.org/*"],
 }
 
 export function getManifest(manifestVersion: number): chrome.runtime.ManifestV2 | chrome.runtime.ManifestV3 {

@@ -1,0 +1,17 @@
+{
+    "search.exclude": {
+      "*.jst": true,
+      "*.md": true,
+      "*.yaml": true,
+      "*.yml": true,
+      "*.css": true,
+      "non-property-errors-logs.txt": true,
+      "package*.json": true
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll": true
+    }
+  }
