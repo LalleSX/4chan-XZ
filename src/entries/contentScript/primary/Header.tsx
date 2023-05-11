@@ -1,14 +1,21 @@
 import React, { useState } from "react"
 import SettingsPopup from "./SettingsPopup"
+import $ from "jquery"
 
 interface HeaderBarProps {
 	board: string;
 }
 
-const Header: React.FC<HeaderBarProps> = ({ board }) => {
-	const indexUrl = `https://boards.4chan.org/${board}/`
-	const catalogUrl = `https://boards.4chan.org/${board}/catalog`
+const Header: React.FC<HeaderBarProps> = () => {
+	const indexUrl = "https://boards.4chan.org/pol/"
+	const catalogUrl = "https://boards.4chan.org/pol/catalog"
 	const [settingsVisible, setSettingsVisible] = useState<boolean>(false)
+	// Remove the default header
+	$("#boardNavDesktop").remove()
+	$(".danbo-slot").remove()
+	$("h4").remove()
+	$(".abovePostForm").remove()
+	$(".boardList").remove()
 
 	const toggleSettingsPopup = () => {
 		setSettingsVisible(!settingsVisible)
@@ -32,7 +39,7 @@ const Header: React.FC<HeaderBarProps> = ({ board }) => {
 			</button>
 			{settingsVisible && (
 				<div className="absolute right-0 mt-2">
-					<SettingsPopup />
+					<SettingsPopup onClose={toggleSettingsPopup} />
 				</div>
 			)}
 		</div>

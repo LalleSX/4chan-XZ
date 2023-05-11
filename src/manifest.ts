@@ -4,7 +4,7 @@ const sharedManifest = {
 	content_scripts: [
 		{
 			js: ["src/entries/contentScript/primary/main.tsx"],
-			matches: ["*://4chan.org/*", "*://boards.4chan.org/*, *://boards.4channel.org/*", "*://boards.4channel.org/*"],
+			matches: ["*://4chan.org/*", "*://boards.4chan.org/*, *://boards.4chan.org/*", "*://boards.4channel.org/*"],
 		},
 	],
 	icons: {
