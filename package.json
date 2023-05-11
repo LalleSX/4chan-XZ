@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "displayName": "a 4chan browser extension",
   "author": "LalleSX",
-  "type": "module",
   "description": "A @samrum/vite-plugin-web-extension web extension",
   "scripts": {
     "build": "vite build",

@@ -4,17 +4,15 @@ import ReactDOM from "react-dom/client"
 import renderContent from "../renderContent"
 import App from "./App"
 import "../../../index.css"
-import Header from "./Header"
-import Catalog from "./Catalog"
 import Post from "../classes/Post"
 import Thread from "../classes/Thread"
+import { initImageHovering } from "../image"
+import $ from "jquery"
 
 renderContent(import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS, (appRoot) => {
 	ReactDOM.createRoot(appRoot).render(
 		<React.StrictMode>
 			<App />
-			<Header />
-			<Catalog />
 		</React.StrictMode>
 	)
 })
@@ -31,3 +29,9 @@ thread.addReply(reply1)
 console.log("Thread ID:", thread.threadId)
 console.log("Thread Title:", thread.title)
 console.log("Number of Replies:", thread.getReplyCount())
+
+// Initialize the image hovering functionality once the document is ready
+$(document).ready(() => {
+	console.log("Document is ready!")
+    initImageHovering()
+})
