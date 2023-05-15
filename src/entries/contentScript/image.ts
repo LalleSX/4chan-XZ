@@ -14,21 +14,23 @@ export function initImageHovering(): void {
         return
     }
 
-
     // Find all thumbnail images on the page
-    const thumbnails = $("a.fileThumb")
+    const thumbnails = $("a.fileThumb") as JQuery<HTMLAnchorElement>
 
     // Attach hover events to each thumbnail image
     thumbnails.each(function () {
         const thumbnail = $(this)
         const imageUrl = thumbnail.attr("href") as string
+
         // Create a new image element to be displayed on hover
         const hoverImage = $("<img>")
             .attr("src", imageUrl)
             .css({
-                position: "absolute",
+                position: "fixed",
                 display: "none",
-                border: "1px solid #000",
+                border: "none",
+                maxWidth: "100%",
+                maxHeight: "100%",
             })
             .appendTo("body")
 
@@ -43,9 +45,21 @@ export function initImageHovering(): void {
 
         // Update the hover image position based on the mouse cursor
         thumbnail.on("mousemove", (event) => {
+            const offsetX = 10
+            const offsetY = 10
+
+            const imageWidth = hoverImage.width() as number
+            const imageHeight = hoverImage.height() as number
+
+            const windowWidth = $(window).width() as number
+            const windowHeight = $(window).height() as number
+
+            const left = Math.min(event.pageX + offsetX, windowWidth - imageWidth - offsetX)
+            const top = Math.min(event.pageY + offsetY, windowHeight - imageHeight - offsetY)
+
             hoverImage.css({
-                left: event.pageX + 10 + "px",
-                top: event.pageY + 10 + "px",
+                left: left + "px",
+                top: top + "px",
             })
         })
     })
