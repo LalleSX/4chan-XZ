@@ -2,13 +2,15 @@ import React, { useState } from "react"
 import SettingsPopup from "./SettingsPopup"
 import $ from "jquery"
 
-interface HeaderBarProps {
-	board: string;
-}
 
-const Header: React.FC<HeaderBarProps> = () => {
-	const indexUrl = "https://boards.4chan.org/pol/"
-	const catalogUrl = "https://boards.4chan.org/pol/catalog"
+
+const Header = () => {
+	// Get the board name from the URL (e.g. /g/ or /pol/)
+	const board = window.location.pathname.split("/")[1]
+	// Get the URL for the index page of the board
+	const indexUrl = `https://boards.4chan.org/${board}/`
+	// Get the URL for the catalog page of the board
+	const catalogUrl = `https://boards.4chan.org/${board}/catalog`
 	const [settingsVisible, setSettingsVisible] = useState<boolean>(false)
 	// Remove the default header
 	$("#boardNavDesktop").remove()
@@ -16,6 +18,7 @@ const Header: React.FC<HeaderBarProps> = () => {
 	$("h4").remove()
 	$(".abovePostForm").remove()
 	$(".boardList").remove()
+	$("#boardNavMobile").remove()
 
 	const toggleSettingsPopup = () => {
 		setSettingsVisible(!settingsVisible)
