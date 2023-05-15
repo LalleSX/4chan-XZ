@@ -38,12 +38,18 @@ $(document).ready(() => {
 		threads.forEach((thread: Thread) => {
 			const threadId = thread.no
 			const comment = thread.com
+			const subject = thread.sub
 
 			// Assuming each thread teaser has an id like `thread-{id}`
 			const threadTeaser = $(`#thread-${threadId} > .teaser`)
 			if (threadTeaser.length > 0) {
 				// Replace the teaser with the comment
 				threadTeaser.html(comment)
+				// Add the subject to the top of the comment if it exists
+				if (subject) {
+					threadTeaser.prepend(`<span class= "subject">${subject}</span> <br>`)
+					threadTeaser.find(".subject").css("color", "#0f0c5d").css("font-weight", "700")
+				}
 				// Add css to the class "quote" and make the text green #789922
 				threadTeaser.find(".quote").css("color", "#789922")
 			}

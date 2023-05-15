@@ -25,7 +25,7 @@ const Header = () => {
 	}
 
 	return (
-		<div className=" bg-indigo-50 text-gray-900 py-2 px-4 flex justify-between items-center fixed top-0 left-0 w-full">
+		<div className=" bg-indigo-50 text-gray-900 py-2 px-4 flex justify-between items-center fixed top-0 left-0 w-full border-b border-gray-300 z-10">
 			<div className="flex">
 				<a href={indexUrl} className="mx-2 hover:text-red-500">
 					Index

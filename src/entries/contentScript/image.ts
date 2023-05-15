@@ -15,7 +15,7 @@ export function initImageHovering(): void {
     }
 
     // Find all thumbnail images on the page
-    const thumbnails = $("a.fileThumb") as JQuery<HTMLAnchorElement>
+    const thumbnails = $("a.fileThumb")
 
     // Attach hover events to each thumbnail image
     thumbnails.each(function () {
