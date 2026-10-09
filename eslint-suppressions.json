@@ -22,16 +22,16 @@
   },
   "src/Filtering/Filter.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 6
+      "count": 4
     },
     "@typescript-eslint/no-unused-expressions": {
-      "count": 4
+      "count": 3
     },
     "no-cond-assign": {
       "count": 2
     },
     "no-var": {
-      "count": 12
+      "count": 10
     }
   },
   "src/Filtering/PostHiding.ts": {

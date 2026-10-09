@@ -14,6 +14,7 @@ import PostHiding from "./PostHiding";
 import ThreadHiding from "./ThreadHiding";
 import Post from "../classes/Post";
 import Recursive from "./Recursive";
+import { exactField, matchesRule, parseRule } from './FilterRule';
 
 /*
  * decaffeinate suggestions:
@@ -30,7 +31,7 @@ interface FilterObj {
   mask: any;
   hide: boolean;
   stub: any;
-  hl: string;
+  hl?: string;
   top?: boolean;
   noti?: boolean;
   poster?: boolean;
@@ -69,112 +70,20 @@ const Filter = {
 
     for (var key in Config.filter) {
       for (var line of (Conf[key] as string).split('\n')) {
-        let hl:       string;
-        let regexp:   RegExp | string;
-        let top:      boolean;
-        let hide =    true;
-        let mask =    0;
-        let boards:   any = false;
-        let excludes: any = false;
-        let reason:   string | undefined;
-        let poster =  false;
-        let replies = false;
-        let noti =    false;
-        let stub =    Conf.Stubs;
-
-        if (line[0] === '#') continue;
-
-        const regexpMatch = line.match(/\/(.*)\/(\w*)/);
-        if (!regexpMatch) {
-          continue;
-        }
-
-        if (key === 'uniqueID' || key === 'MD5') {
-          // MD5 filter will use strings instead of regular expressions.
-          regexp = regexpMatch[1];
-        } else {
-          try {
-            // Please, don't write silly regular expressions.
-            regexp = RegExp(regexpMatch[1], regexpMatch[2]);
-          } catch (err) {
-            // I warned you, bro.
-            new Notice('warning', [
-              $.tn(`Invalid ${key} filter:`),
-              $.el('br'),
-              $.tn(line),
-              $.el('br'),
-              $.tn(err.message)
-            ], 60);
-            continue;
-          }
-        }
-
-        // Don't mix up filter flags with the regular expression.
-        const options = line.length > regexpMatch[0].length ? line.replace(regexpMatch[0], '') : '';
-
-        if (options) {
-
-          // List of the boards this filter applies to.
-          boards = this.parseBoards(options.match(/(?:^|;)\s*boards:([^;]+)/)?.[1]);
-
-          // Boards to exclude from an otherwise global rule.
-          excludes = this.parseBoards(options.match(/(?:^|;)\s*exclude:([^;]+)/)?.[1]);
-
-          // Filter OPs along with their threads or replies only.
-          const op = options.match(/(?:^|;)\s*op:(no|only)/)?.[1] || '';
-          mask = $.getOwn({'no': 1, 'only': 2}, op) || 0;
-
-          // Filter only posts with/without files.
-          const file = options.match(/(?:^|;)\s*file:(no|only)/)?.[1] || '';
-          mask = mask | ($.getOwn({'no': 4, 'only': 8}, file) || 0);
-
-          // Overrule the `Show Stubs` setting.
-          // Defaults to stub showing.
-          stub = (() => { switch (options.match(/(?:^|;)\s*stub:(yes|no)/)?.[1]) {
-            case 'yes':
-              return true;
-            case 'no':
-              return false;
-            default:
-              return Conf['Stubs'];
-          } })();
-
-          // Desktop notification
-          noti = /(?:^|;)\s*notify/.test(options);
-
-          // Highlight the post.
-          // If not specified, the highlight class will be filter-highlight.
-          const highlightRes = options.match(/(?:^|;)\s*highlight(?::([\w-]+))?/)
-          if (highlightRes) {
-            hl = highlightRes[1] || 'filter-highlight';
-            // Put highlighted OP's thread on top of the board page or not.
-            // Defaults to on top.
-            top = (options.match(/(?:^|;)\s*top:(yes|no)/)?.[1] || 'yes') === 'yes';
-            hide = /(?:^|;)\s*hide(?:[;:]|$)/.test(options);
-          }
-
-          // Hide the post (default case).
-          hide = hide || !(hl || noti);
-
-          reason = options.match(/(?:^|;)\s*reason:([^;$]+)/)?.[1];
-
-          poster = /(?:^|;)\s*poster(?:[;:]|$)/.test(options);
-
-          replies = /(?:^|;)\s*replies(?:[;:]|$)/.test(options);
-        }
-
-        const filterObj: FilterObj
-          = { regexp, boards, excludes, mask, hide, stub, hl, top, noti, reason, poster, replies };
-
-        // Fields that this filter applies to (for 'general' filters)
-        if (key === 'general') {
-          const types = options.match(/(?:^|;)\s*type:([^;]*)/)?.[1].split(',')
-            || ['subject', 'name', 'filename', 'comment'];
-          for (var type of types) {
+        try {
+          const rule = parseRule(line, key, Conf.Stubs);
+          if (!rule) continue;
+          for (const type of rule.types) {
+            const filterObj: FilterObj = {
+              ...rule,
+              regexp: exactField(type) ? rule.source : rule.regexp,
+              boards: this.parseBoards(rule.boards),
+              excludes: this.parseBoards(rule.excludes)
+            };
             this.filters.get(type)?.push(filterObj) ?? this.filters.set(type, [filterObj]);
           }
-        } else {
-          this.filters.get(key)?.push(filterObj) ?? this.filters.set(key, [filterObj]);
+        } catch (err) {
+          new Notice('warning', `Invalid ${key} filter: ${line}\n${err.message}`, 60);
         }
       }
     }
@@ -213,8 +122,12 @@ const Filter = {
     boards = dict();
     let siteFilter = '';
     for (var boardID of boardsRaw.split(',')) {
+      boardID = boardID.trim();
+      if (!boardID) continue;
       if (boardID.includes(':')) {
         [siteFilter, boardID] = boardID.split(':').slice(-2);
+        siteFilter = siteFilter.trim();
+        boardID = boardID.trim();
       }
       for (var siteID in g.sites) {
         var site = g.sites[siteID];
@@ -259,14 +172,12 @@ const Filter = {
         const filtersForType: FilterObj[] = Array.isArray(filtersOrMap) ? filtersOrMap : filtersOrMap.get(value);
         if (!filtersForType) continue;
 
-        const isString = type === 'uniqueID' || type === 'MD5';
-
         for (const filter of filtersForType) {
           if (
             (filter.boards   && !(filter.boards[board]   || filter.boards[site]  )) ||
             (filter.excludes &&  (filter.excludes[board] || filter.excludes[site])) ||
             (filter.mask & mask) ||
-            (isString ? (filter.regexp !== value) : !(filter.regexp as RegExp).test(value))
+            !matchesRule(filter.regexp, value)
           ) continue;
           if (filter.hide) {
             if (hideable) {
@@ -497,7 +408,8 @@ const Filter = {
     const select = $('select[name=filter]', section);
     select.value = type;
     Settings.selectFilter.call(select);
-    return $.onExists(section, 'textarea', function(ta) {
+    return $.onExists(section, 'textarea[name]', function(ta) {
+      (ta.closest('details') as HTMLDetailsElement).open = true;
       const tl = ta.textLength;
       ta.setSelectionRange(tl, tl);
       return ta.focus();

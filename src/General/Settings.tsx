@@ -24,6 +24,7 @@ import h, { hFragment } from '../globals/jsx';
 import { dict } from '../platform/helpers';
 import Icon from '../Icons/icon';
 import UI from './UI';
+import filterEditor from './Settings/FilterEditor';
 
 var Settings = {
   dialog: undefined as HTMLDivElement | undefined,
@@ -507,6 +508,9 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
 
   filter(section) {
     $.extend(section, { innerHTML: FilterSelectPage });
+    const enabled = $('input[name="Filter"]', section);
+    enabled.checked = Conf['Filter'];
+    $.on(enabled, 'change', $.cb.checked);
     const select = $('select', section);
     $.on(select, 'change', Settings.selectFilter);
     Settings.selectFilter.call(select);
@@ -518,15 +522,12 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     if ((name = this.value) !== 'guide') {
       if (!$.hasOwn(Config.filter, name)) { return; }
       $.rmAll(div);
-      const ta = $.el('textarea', {
-        name,
-        className: 'field',
-        spellcheck: false
-      }) as HTMLTextAreaElement;
-      $.on(ta, 'change', $.cb.value);
-      $.get(name, Conf[name], function(item) {
-        ta.value = item[name];
-        $.add(div, ta);
+      $.get(name, Conf[name], item => {
+        if (this.value !== name) return;
+        filterEditor(div, name, item[name], value => {
+          Conf[name] = value;
+          $.set(name, value);
+        });
       });
       return;
     }

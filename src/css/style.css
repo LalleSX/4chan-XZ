@@ -580,6 +580,98 @@ div[data-checked="false"] > .suboption-list {
 .section-filter textarea {
   height: 500px;
 }
+.filter-builder, .filter-saved, .filter-raw {
+  margin: 10px 0;
+}
+.filter-enabled {
+  display: block;
+  margin-bottom: 8px;
+}
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 8px 12px;
+  margin: 8px 0;
+}
+.filter-grid label, .filter-test > label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.filter-grid input:not([type="checkbox"]), .filter-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.filter-grid .filter-check {
+  flex-direction: row;
+  align-items: center;
+}
+.filter-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 8px 0;
+}
+.filter-types[hidden] {
+  display: none;
+}
+.filter-preview {
+  display: block;
+  font-family: monospace;
+  overflow-wrap: anywhere;
+  margin: 8px 0;
+}
+.filter-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter-builder-error, .filter-diagnostics {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.filter-test {
+  margin-top: 8px;
+}
+.section-filter .filter-test textarea {
+  width: 100%;
+  box-sizing: border-box;
+  height: 80px;
+}
+.filter-rule-list {
+  max-height: 240px;
+  overflow: auto;
+  margin: 6px 0;
+}
+.filter-rule-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 28px 28px;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(128, 128, 128, .3);
+}
+.filter-rule-row code {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.filter-rule-row button {
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+}
+.section-filter .filter-raw textarea {
+  width: 100%;
+  box-sizing: border-box;
+  height: 220px;
+  margin-top: 6px;
+}
+.filter-save-status {
+  margin: 8px 0;
+}
 .section-main a, .section-filter a, .section-advanced a {
   text-decoration: underline;
 }
