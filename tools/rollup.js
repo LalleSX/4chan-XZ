@@ -198,7 +198,7 @@ const createTsPlugin = () => typescript({
   /** @type {import('rollup').OutputOptions} */
   const sharedBundleOpts = {
     format: "iife",
-    name: 'fourchanNeoX',
+    name: 'fourchanNZ',
     generatedCode: {
       // needed for possible circular dependencies
       constBindings: false,

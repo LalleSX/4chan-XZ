@@ -1,11 +1,11 @@
 {
-  "name": "4chan-neox",
+  "name": "4chan-NZ",
   "private": true,
-  "description": "4chan-NeoX revives 4chan XT to complete its TypeScript migration and modernize the imageboard enhancement script.",
+  "description": "4chan-NZ revives 4chan XT to complete its TypeScript migration and modernize the imageboard enhancement script.",
   "meta": {
-    "name": "4chan-NeoX",
-    "path": "4chan-NeoX",
-    "fork": "NeoX",
+    "name": "4chan-NZ",
+    "path": "4chan-NZ",
+    "fork": "NZ",
     "page": "https://github.com/TuxedoTako/4chan-xt",
     "downloads": "https://github.com/TuxedoTako/4chan-xt/releases",
     "oldVersions": "https://raw.githubusercontent.com/ccd0/4chan-x/",

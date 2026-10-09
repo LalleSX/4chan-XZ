@@ -1,13 +1,13 @@
-# Contributing to 4chan-NeoX
+# Contributing to 4chan-NZ
 
-NeoX continues the abandoned 4chan XT fork of 4chan X. Its goals are to finish
+NZ continues the abandoned 4chan XT fork of 4chan X. Its goals are to finish
 the TypeScript migration and modernize and optimize the script. The current
 phase prepares tooling and documentation; application work should be scoped in
 a separate issue or request before starting.
 
 ## Getting started
 
-Clone your chosen NeoX checkout or fork and open the repository root. Use
+Clone your chosen NZ checkout or fork and open the repository root. Use
 Node 24 LTS and npm 11+:
 
 ```sh
@@ -60,9 +60,9 @@ verify all output variants. Never routinely regenerate ESLint suppressions.
 
 ## Reporting bugs
 
-Use the issue tracker of the NeoX repository you are working in once it is
+Use the issue tracker of the NZ repository you are working in once it is
 configured. The old XT project and its releases are historical references;
-do not send NeoX-specific reports to the former maintainer.
+do not send NZ-specific reports to the former maintainer.
 
 Include:
 
@@ -84,7 +84,7 @@ can help explain inherited behavior but may be outdated. Archive data originates
 from [4chenz/archives.json](https://github.com/4chenz/archives.json); coordinate
 archive-data changes with that project when appropriate.
 
-NeoX release URLs, extension identity, signing, and publishing are not configured.
+NZ release URLs, extension identity, signing, and publishing are not configured.
 Local userscripts disable automatic updates. Review inherited metadata and set
-the NeoX version/date before the first public release; do not use the old signing
-or download-statistics helpers as a NeoX release pipeline.
+the NZ version/date before the first public release; do not use the old signing
+or download-statistics helpers as a NZ release pipeline.
