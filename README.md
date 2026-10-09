@@ -4,7 +4,7 @@
 
 4chan-XZ is a continuation of [4chan XT](https://github.com/TuxedoTako/4chan-xt),
 the now-abandoned fork of [4chan X](https://github.com/ccd0/4chan-x). XT moved the
-CoffeeScript codebase into JavaScript and TypeScript. NZ builds on that work
+CoffeeScript codebase into JavaScript and TypeScript. XZ builds on that work
 with the goal of completing the conversion to TypeScript and improving the
 script's performance, maintainability, and compatibility with modern browsers.
 
@@ -14,15 +14,15 @@ originally developed for 4chan and has no affiliation with it.
 
 ## Project status
 
-NZ is in its **repository preparation phase**. The build and development
+XZ is in its **repository preparation phase**. The build and development
 tooling are being renewed; the inherited application remains a mixture of
 JavaScript, TypeScript, and custom JSX. Feature development, source conversion,
 and runtime optimization have not started as part of this setup.
 
-There is no NZ release channel configured yet. Files in `builds/` are historical
-XT artifacts, not NZ releases. New local builds go into `dist/` and have
+There is no XZ release channel configured yet. Files in `builds/` are historical
+XT artifacts, not XZ releases. New local builds go into `dist/` and have
 userscript automatic updates disabled. The inherited release version in
-`version.json` is retained until the first NZ release is planned.
+`version.json` is retained until the first XZ release is planned.
 
 ## Direction
 
@@ -125,9 +125,9 @@ Strict mode is a future migration milestone, not silently enabled over legacy co
 CI runs checks and all build variants on Windows and Linux with Node 24 and saves
 temporary development artifacts. A passing build does not verify live browser behavior.
 
-## Before publishing NZ
+## Before publishing XZ
 
-Choose the NZ repository and release URLs, configure support links and extension
+Choose the XZ repository and release URLs, configure support links and extension
 identifiers, review permissions and browser compatibility, and assign a release
 version/date. `package.json` still contains inherited XT/upstream links and
 extension IDs as historical placeholders; they must be reviewed before release.
@@ -145,7 +145,7 @@ in private browsing. Disable “Remember Last Read Post” and “Remember Your 
 to change that behavior. Resetting script settings clears its stored browsing
 history. Some optional features contact third-party sites; the original
 [privacy documentation](https://github.com/ccd0/4chan-x/wiki/Privacy) provides
-historical context and will need review as NZ evolves.
+historical context and will need review as XZ evolves.
 
 ## Contributing and credits
 
@@ -154,7 +154,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development and bug-report guidance a
 [CHANGELOG.md](CHANGELOG.md) preserves XT history; the
 [original 4chan X changelog](original%204chan%20X%20CHANGELOG.md) preserves upstream history.
 
-NZ builds on the work of Tuxedo Takodachi and the 4chan X authors, including
+XZ builds on the work of Tuxedo Takodachi and the 4chan X authors, including
 James Campos, Nicolas Stepien, ihavenoface, Zixaphir, Seaweed, Spittie, ccd0, and
 many other contributors. Original authorship and history remain intact.
 
