@@ -52,7 +52,7 @@ export interface FilterResults {
 type FilterType = "postID" | "name" | "uniqueID" | "tripcode" | "capcode" | "pass" | "email" | "subject" | "comment"
   | "flag" | "filename" | "dimensions" | "filesize" | "MD5";
 
-var Filter = {
+const Filter = {
   /**
    * Uses a Map for string types, with the value to filter for as the key.
    * This allows faster lookup than iterating over every filter.
