@@ -1,10 +1,10 @@
 {
-  "name": "4chan-NZ",
+  "name": "4chan-XZ",
   "private": true,
-  "description": "4chan-NZ revives 4chan XT to complete its TypeScript migration and modernize the imageboard enhancement script.",
+  "description": "4chan-XZ revives 4chan XT to complete its TypeScript migration and modernize the imageboard enhancement script.",
   "meta": {
-    "name": "4chan-NZ",
-    "path": "4chan-NZ",
+    "name": "4chan-XZ",
+    "path": "4chan-XZ",
     "fork": "NZ",
     "page": "https://github.com/TuxedoTako/4chan-xt",
     "downloads": "https://github.com/TuxedoTako/4chan-xt/releases",

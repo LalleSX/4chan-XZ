@@ -1,8 +1,8 @@
-# Working on 4chan-NZ
+# Working on 4chan-XZ
 
 ## Purpose and scope
 
-4chan-NZ continues 4chan XT, which ported the original 4chan X from CoffeeScript
+4chan-XZ continues 4chan XT, which ported the original 4chan X from CoffeeScript
 to JavaScript and TypeScript. The long-term goals are a complete TypeScript
 migration, clearer architecture, and measured performance improvements.
 
@@ -78,7 +78,7 @@ Never run `eslint --suppress-all` as a routine verification step.
 
 ## Identity, releases, and history
 
-The local package and generated builds use 4chan-NZ. Historical links in
+The local package and generated builds use 4chan-XZ. Historical links in
 `package.json` and extension IDs remain inherited pending a release identity
 decision. Do not invent a new GitHub owner, store listing, signing key, or release
 URL. Development userscripts have `@updateURL none` and `@downloadURL none`.

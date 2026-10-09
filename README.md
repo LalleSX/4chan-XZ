@@ -1,8 +1,8 @@
-# 4chan-NZ
+# 4chan-XZ
 
 **A new chapter for 4chan X: finish the TypeScript migration, then optimize and modernize the script.**
 
-4chan-NZ is a continuation of [4chan XT](https://github.com/TuxedoTako/4chan-xt),
+4chan-XZ is a continuation of [4chan XT](https://github.com/TuxedoTako/4chan-xt),
 the now-abandoned fork of [4chan X](https://github.com/ccd0/4chan-x). XT moved the
 CoffeeScript codebase into JavaScript and TypeScript. NZ builds on that work
 with the goal of completing the conversion to TypeScript and improving the
@@ -90,7 +90,7 @@ The old `-min`, `-platform=...`, `-no-format`, and `-test` flags remain accepted
 
 ## Local build output
 
-- `dist/4chan-NZ.user.js` and `dist/4chan-NZ.min.user.js`: development userscripts.
+- `dist/4chan-XZ.user.js` and `dist/4chan-XZ.min.user.js`: development userscripts.
 - Corresponding `.meta.js` files contain userscript metadata; the minified script
   also has a `.map` file.
 - `dist/crx/` and `dist/crx-min/`: readable and minified unpacked extensions.

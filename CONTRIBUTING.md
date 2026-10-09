@@ -1,4 +1,4 @@
-# Contributing to 4chan-NZ
+# Contributing to 4chan-XZ
 
 NZ continues the abandoned 4chan XT fork of 4chan X. Its goals are to finish
 the TypeScript migration and modernize and optimize the script. The current
