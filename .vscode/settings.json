@@ -1,0 +1,10 @@
+{
+  "search.exclude": {
+    "**/[Bb]uild": true,
+    "**/[Bb]uilds": true,
+    "**/[Oo]utput": true,
+    "**/dist": true,
+    "**/testbuilds": true,
+    "package-lock.json": true
+  }
+}
