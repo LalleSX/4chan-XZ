@@ -50,6 +50,41 @@ test('MD5 and poster IDs remain exact strings, including slash and plus', () => 
   }
 });
 
+test('delimiter scanning preserves flags, whitespace and the first valid delimiter', () => {
+  for (const [line, source, flags, reason] of [
+    ['/https://example.test/a/i ;reason:URL /g', 'https://example.test/a', 'i', 'URL /g'],
+    ['/a/word/b/g\t;reason:path', 'a/word/b', 'g', 'path'],
+    ['/a/\u00a0;reason:space', 'a', '', 'space'],
+    ['/a/;reason:first /b/i', 'a', '', 'first /b/i'],
+    ['/[/;]/i;reason:class', '[/;]', 'i', 'class'],
+    [String.raw`/a\/;b/m;reason:escaped`, String.raw`a\/;b`, 'm', 'escaped'],
+    [String.raw`/a\\/i;reason:backslash`, String.raw`a\\`, 'i', 'backslash'],
+    ['/a/g', 'a', 'g', undefined],
+    ['/a/', 'a', '', undefined]
+  ] as const) {
+    const rule = parseRule(line, 'comment')!;
+    assert.equal(rule.source, source, line);
+    assert.equal((rule.regexp as RegExp).flags, flags, line);
+    assert.equal(rule.reason, reason, line);
+  }
+  // A failed candidate must not search forward to flags after a later slash.
+  assert.throws(() => parseRule('/a/123', 'comment'), /Expected/);
+  for (const line of ['/a/I', '/a/gg', '/a/z']) {
+    assert.throws(() => parseRule(line, 'comment'), SyntaxError, line);
+  }
+});
+
+test('shared delimiter matching is independent across successful and failed rules', () => {
+  for (let i = 0; i < 10; i++) {
+    assert.equal(parseRule('/long/path/to/a/value/gi;notify', 'comment')!.source, 'long/path/to/a/value');
+    assert.throws(() => parseRule('/missing/123', 'comment'));
+    assert.equal(parseRule('/x/', 'comment')!.source, 'x');
+    assert.equal(parseRule(String.raw`/[abc\DEF+123==/`, 'MD5')!.regexp, String.raw`[abc\DEF+123==`);
+    assert.equal(parseRule('#/disabled/', 'comment'), null);
+    assert.equal(parseRule('/y/i;reason:short', 'comment')!.reason, 'short');
+  }
+});
+
 test('notification, highlight and hide actions are independent', () => {
   assert.equal(parseRule('/x/;notify', 'comment')!.hide, false);
   assert.equal(parseRule('/x/;highlight', 'comment')!.hide, false);
@@ -164,7 +199,7 @@ test('general rules cover multiple fields, combined values and exact IDs', () =>
 });
 
 test('inherited example filters still parse without warnings', () => {
-  const source = ts.transpileModule(readFileSync(new URL('../src/config/Config.js', import.meta.url), 'utf8'), {
+  const source = ts.transpileModule(readFileSync(new URL('../src/config/Config.ts', import.meta.url), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
   }).outputText;
   const exports = {};

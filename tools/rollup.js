@@ -95,7 +95,7 @@ const createTsPlugin = () => typescript({
 
   const circularDependencies = [];
   const bundle = await rollup({
-    input: resolve(__dirname, '../src/main/Main.js'),
+    input: resolve(__dirname, '../src/main/Main.ts'),
     onwarn(warning, warn) {
       if (warning.code === 'CIRCULAR_DEPENDENCY') circularDependencies.push(warning.message);
       else warn(warning);
@@ -105,7 +105,7 @@ const createTsPlugin = () => typescript({
         platform,
         include: [
           // Only files that actually have platform specific code.
-          "**/src/main/Main.js",
+          "**/src/main/Main.ts",
           "**/src/platform/$.ts",
           "**/src/platform/CrossOrigin.ts",
         ],
@@ -114,9 +114,9 @@ const createTsPlugin = () => typescript({
       buildForTest ? undefined : removeTestCode({
         include: [
           // Only files that actually have test code.
-          "**/src/main/Main.js",
+          "**/src/main/Main.ts",
           "**/src/classes/Post.ts",
-          "**/src/Linkification/Linkify.js",
+          "**/src/Linkification/Linkify.ts",
         ],
         sourceMap: minify,
       }),
@@ -238,7 +238,7 @@ const createTsPlugin = () => typescript({
       });
 
       const eventPage = await rollup({
-        input: resolve(__dirname, '../src/meta/eventPage.js'),
+        input: resolve(__dirname, '../src/meta/eventPage.ts'),
         plugins: [
           createTsPlugin(),
           minify || noFormat ? undefined : fixTsOutputFormat({ include: ["**/*.ts", "**/*.tsx"] }),

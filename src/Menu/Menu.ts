@@ -9,7 +9,7 @@ import Icon from "../Icons/icon";
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Menu = {
+const Menu = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) { return; }
 

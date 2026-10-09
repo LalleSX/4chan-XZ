@@ -26,7 +26,7 @@ import Icon from '../Icons/icon';
 import UI from './UI';
 import filterEditor from './Settings/FilterEditor';
 
-var Settings = {
+const Settings = {
   dialog: undefined as HTMLDivElement | undefined,
 
   init() {

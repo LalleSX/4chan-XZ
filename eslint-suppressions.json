@@ -45,7 +45,7 @@
       "count": 1
     },
     "no-var": {
-      "count": 3
+      "count": 2
     },
     "prefer-const": {
       "count": 1
@@ -56,15 +56,15 @@
       "count": 7
     },
     "no-var": {
-      "count": 3
+      "count": 2
     }
   },
-  "src/Filtering/ThreadHiding.js": {
+  "src/Filtering/ThreadHiding.ts": {
     "no-cond-assign": {
       "count": 3
     }
   },
-  "src/General/BoardConfig.js": {
+  "src/General/BoardConfig.ts": {
     "no-unused-vars": {
       "count": 1
     }
@@ -83,10 +83,10 @@
       "count": 5
     },
     "no-var": {
-      "count": 4
+      "count": 3
     }
   },
-  "src/General/Index.js": {
+  "src/General/Index.ts": {
     "no-cond-assign": {
       "count": 12
     },
@@ -114,7 +114,7 @@
       "count": 2
     },
     "no-var": {
-      "count": 34
+      "count": 33
     }
   },
   "src/General/Settings/SettingsHtml.tsx": {
@@ -122,7 +122,7 @@
       "count": 1
     }
   },
-  "src/General/Test.js": {
+  "src/General/Test.ts": {
     "no-cond-assign": {
       "count": 2
     },
@@ -130,7 +130,7 @@
       "count": 2
     }
   },
-  "src/General/UI.js": {
+  "src/General/UI.ts": {
     "no-cond-assign": {
       "count": 5
     }
@@ -140,12 +140,12 @@
       "count": 1
     }
   },
-  "src/Images/Gallery.js": {
+  "src/Images/Gallery.ts": {
     "no-cond-assign": {
       "count": 2
     }
   },
-  "src/Images/ImageCommon.js": {
+  "src/Images/ImageCommon.ts": {
     "no-self-assign": {
       "count": 1
     }
@@ -158,7 +158,7 @@
       "count": 11
     }
   },
-  "src/Images/Sauce.js": {
+  "src/Images/Sauce.ts": {
     "no-cond-assign": {
       "count": 3
     }
@@ -177,7 +177,7 @@
       "count": 13
     },
     "no-var": {
-      "count": 18
+      "count": 17
     }
   },
   "src/Linkification/Embedding/FxTwitter.tsx": {
@@ -188,7 +188,7 @@
       "count": 1
     }
   },
-  "src/Linkification/Linkify.js": {
+  "src/Linkification/Linkify.ts": {
     "no-cond-assign": {
       "count": 3
     },
@@ -196,7 +196,7 @@
       "count": 1
     }
   },
-  "src/Menu/CopyTextLink.js": {
+  "src/Menu/CopyTextLink.ts": {
     "no-empty": {
       "count": 1
     },
@@ -204,17 +204,17 @@
       "count": 1
     }
   },
-  "src/Menu/DeleteLink.js": {
+  "src/Menu/DeleteLink.ts": {
     "no-cond-assign": {
       "count": 1
     }
   },
-  "src/Miscellaneous/Banner.js": {
+  "src/Miscellaneous/Banner.ts": {
     "no-cond-assign": {
       "count": 2
     }
   },
-  "src/Miscellaneous/CatalogLinks.js": {
+  "src/Miscellaneous/CatalogLinks.ts": {
     "no-cond-assign": {
       "count": 3
     },
@@ -222,12 +222,12 @@
       "count": 1
     }
   },
-  "src/Miscellaneous/ExpandComment.js": {
+  "src/Miscellaneous/ExpandComment.ts": {
     "no-cond-assign": {
       "count": 2
     }
   },
-  "src/Miscellaneous/ExpandThread.js": {
+  "src/Miscellaneous/ExpandThread.ts": {
     "no-cond-assign": {
       "count": 2
     }
@@ -240,12 +240,12 @@
       "count": 1
     }
   },
-  "src/Miscellaneous/Nav.js": {
+  "src/Miscellaneous/Nav.ts": {
     "no-cond-assign": {
       "count": 1
     }
   },
-  "src/Miscellaneous/PassMessage.js": {
+  "src/Miscellaneous/PassMessage.ts": {
     "no-cond-assign": {
       "count": 1
     }
@@ -255,7 +255,7 @@
       "count": 1
     }
   },
-  "src/Miscellaneous/PostJumper.js": {
+  "src/Miscellaneous/PostJumper.ts": {
     "no-cond-assign": {
       "count": 3
     },
@@ -268,7 +268,7 @@
       "count": 3
     }
   },
-  "src/Miscellaneous/Report.js": {
+  "src/Miscellaneous/Report.ts": {
     "no-cond-assign": {
       "count": 1
     },
@@ -295,10 +295,10 @@
       "count": 2
     },
     "no-var": {
-      "count": 7
+      "count": 6
     }
   },
-  "src/Monitoring/ThreadWatcher.js": {
+  "src/Monitoring/ThreadWatcher.ts": {
     "no-cond-assign": {
       "count": 3
     },
@@ -309,12 +309,12 @@
       "count": 1
     }
   },
-  "src/Monitoring/Unread.js": {
+  "src/Monitoring/Unread.ts": {
     "no-cond-assign": {
       "count": 1
     }
   },
-  "src/Monitoring/UnreadIndex.js": {
+  "src/Monitoring/UnreadIndex.ts": {
     "no-cond-assign": {
       "count": 1
     }
@@ -336,17 +336,17 @@
       "count": 3
     }
   },
-  "src/Posting/Captcha.js": {
+  "src/Posting/Captcha.ts": {
     "no-cond-assign": {
       "count": 8
     }
   },
-  "src/Posting/Captcha.replace.js": {
+  "src/Posting/Captcha.replace.ts": {
     "no-cond-assign": {
       "count": 2
     }
   },
-  "src/Posting/PostSuccessful.js": {
+  "src/Posting/PostSuccessful.ts": {
     "no-unused-vars": {
       "count": 1
     }
@@ -380,7 +380,7 @@
       "count": 3
     }
   },
-  "src/Quotelinks/QuoteBacklink.js": {
+  "src/Quotelinks/QuoteBacklink.ts": {
     "no-cond-assign": {
       "count": 1
     }
@@ -393,12 +393,12 @@
       "count": 5
     }
   },
-  "src/Quotelinks/QuoteYou.js": {
+  "src/Quotelinks/QuoteYou.ts": {
     "no-cond-assign": {
       "count": 2
     }
   },
-  "src/Quotelinks/Quotify.js": {
+  "src/Quotelinks/Quotify.ts": {
     "no-cond-assign": {
       "count": 2
     }
@@ -460,7 +460,7 @@
       "count": 4
     }
   },
-  "src/config/Config.js": {
+  "src/config/Config.ts": {
     "no-useless-escape": {
       "count": 1
     }
@@ -473,7 +473,7 @@
       "count": 4
     }
   },
-  "src/main/Main.js": {
+  "src/main/Main.ts": {
     "no-cond-assign": {
       "count": 4
     },
@@ -487,7 +487,7 @@
       "count": 2
     }
   },
-  "src/meta/eventPage.js": {
+  "src/meta/eventPage.ts": {
     "no-unused-vars": {
       "count": 1
     }
@@ -554,7 +554,7 @@
       "count": 1
     }
   },
-  "src/site/SW.tinyboard.js": {
+  "src/site/SW.tinyboard.ts": {
     "no-cond-assign": {
       "count": 4
     },
@@ -597,7 +597,7 @@
       "count": 14
     }
   },
-  "src/site/Site.js": {
+  "src/site/Site.ts": {
     "no-cond-assign": {
       "count": 2
     }

@@ -14,7 +14,7 @@ confirmation merely because this file describes the preparation phase.
 
 ## Repository map
 
-- `src/main/Main.js`: application entry point and initialization.
+- `src/main/Main.ts`: application entry point and initialization.
 - `src/platform/`: userscript and extension adapters, storage, network access.
 - `src/classes/`, feature directories, and `src/site/`: application behavior.
 - `src/globals/jsx.ts` and `src/types/jsx.d.ts`: custom HTML JSX implementation.

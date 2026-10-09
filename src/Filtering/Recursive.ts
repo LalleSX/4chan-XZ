@@ -4,7 +4,7 @@ import { g } from "../globals/globals";
 
 type DropFirst<T extends unknown[]> = T extends [any, ...infer U] ? U : never;
 
-var Recursive = {
+const Recursive = {
   recursives: new Map<string, { recursives: ((...args: any) => void)[], args: any[][] }>(),
 
   init() {

@@ -18,7 +18,7 @@ import Icon from "../Icons/icon";
  * DS104: Avoid inline assignments
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Header = {
+const Header = {
   init() {
     $.onExists(doc, 'body', () => {
       if (!Main.isThisPageLegit()) { return; }

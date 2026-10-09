@@ -28,6 +28,9 @@ export function exactField(field: string): boolean {
   return field === 'uniqueID' || field === 'MD5';
 }
 
+// Sticky matching checks only the candidate delimiter, without slicing the line.
+const ruleSuffix = /[a-z]*(?=\s*(?:;|$))/iy;
+
 /** The closing slash is followed by flags and an option separator or end of line.
  * Slashes inside legacy MD5 values and unescaped URL patterns remain supported.
  */
@@ -37,22 +40,25 @@ export function parseRule(line: string, field: string, stubs = true): ParsedRule
   let end = -1;
   let flags = '';
   let inClass = false;
+  const exact = exactField(field);
   if (line.startsWith('/')) {
     for (let index = 1; index < line.length; index++) {
       const char = line[index];
-      if (!exactField(field)) {
+      if (!exact) {
         if (char === '\\') { index++; continue; }
         if (char === '[') inClass = true;
         if (char === ']') inClass = false;
       }
       if (char !== '/' || inClass) continue;
-      const suffix = line.slice(index + 1).match(/^([a-z]*)(?=\s*(?:;|$))/i);
-      if (suffix) { end = index; flags = suffix[1]; break; }
+      // Reset before every attempt, including after another rule used this regex.
+      ruleSuffix.lastIndex = index + 1;
+      const suffix = ruleSuffix.exec(line);
+      if (suffix) { end = index; flags = suffix[0]; break; }
     }
   }
   if (end < 0) throw new Error('Expected /pattern/flags followed by optional ;options.');
   const source = line.slice(1, end);
-  const regexp = exactField(field) ? source : new RegExp(source, flags);
+  const regexp = exact ? source : new RegExp(source, flags);
   const options = new Map<string, string>();
   const warnings: string[] = [];
   for (const part of line.slice(end + 1 + flags.length).split(';')) {

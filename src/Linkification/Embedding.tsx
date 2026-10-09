@@ -20,7 +20,7 @@ import Icon from '../Icons/icon';
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var Embedding = {
+const Embedding = {
   init() {
     if (!['index', 'thread', 'archive'].includes(g.VIEW) || !Conf['Linkify'] || (!Conf['Embedding'] && !Conf['Link Title'] && !Conf['Cover Preview'])) { return; }
     this.types = dict();

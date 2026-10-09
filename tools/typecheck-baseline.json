@@ -18,7 +18,7 @@
       "src/classes/Board.ts": {
         "TS2536": 1
       },
-      "src/classes/CatalogThreadNative.js": {
+      "src/classes/CatalogThreadNative.ts": {
         "TS2345": 1
       },
       "src/classes/DataBoard.ts": {
@@ -30,13 +30,13 @@
         "TS2339": 7,
         "TS2345": 3
       },
-      "src/classes/Notice.js": {
+      "src/classes/Notice.ts": {
         "TS2322": 2
       },
       "src/classes/Post.ts": {
         "TS2339": 5
       },
-      "src/config/Config.js": {
+      "src/config/Config.ts": {
         "TS2339": 1
       },
       "src/Filtering/Filter.ts": {
@@ -48,7 +48,7 @@
         "TS2339": 4,
         "TS2554": 4
       },
-      "src/Filtering/ThreadHiding.js": {
+      "src/Filtering/ThreadHiding.ts": {
         "TS2339": 2,
         "TS2741": 1
       },
@@ -58,7 +58,7 @@
         "TS2551": 4,
         "TS2554": 6
       },
-      "src/General/Index.js": {
+      "src/General/Index.ts": {
         "TS2322": 1,
         "TS2339": 9,
         "TS2345": 4
@@ -72,29 +72,29 @@
       "src/General/Settings/SettingsHtml.tsx": {
         "TS2339": 3
       },
-      "src/General/Test.js": {
+      "src/General/Test.ts": {
         "TS2339": 11,
         "TS2345": 1,
         "TS2367": 1,
         "TS2740": 1
       },
-      "src/General/UI.js": {
+      "src/General/UI.ts": {
         "TS2322": 2,
         "TS2339": 19,
         "TS2345": 1,
         "TS2367": 2
       },
-      "src/Images/FappeTyme.js": {
+      "src/Images/FappeTyme.ts": {
         "TS2339": 1
       },
-      "src/Images/Gallery.js": {
+      "src/Images/Gallery.ts": {
         "TS2339": 17,
         "TS2362": 2,
         "TS2363": 2,
         "TS2551": 3,
         "TS2554": 2
       },
-      "src/Images/ImageCommon.js": {
+      "src/Images/ImageCommon.ts": {
         "TS2353": 1
       },
       "src/Images/ImageExpand.ts": {
@@ -102,20 +102,20 @@
         "TS2551": 1,
         "TS2554": 2
       },
-      "src/Images/ImageHover.js": {
+      "src/Images/ImageHover.ts": {
         "TS2339": 1,
         "TS2345": 1
       },
-      "src/Images/ImageLoader.js": {
+      "src/Images/ImageLoader.ts": {
         "TS2339": 3,
         "TS2551": 1
       },
-      "src/Images/Metadata.js": {
+      "src/Images/Metadata.ts": {
         "TS2322": 1,
         "TS2339": 1,
         "TS2367": 1
       },
-      "src/Images/Volume.js": {
+      "src/Images/Volume.ts": {
         "TS2322": 1,
         "TS2339": 2,
         "TS2345": 1
@@ -125,64 +125,64 @@
         "TS2339": 26,
         "TS2345": 2
       },
-      "src/Linkification/Linkify.js": {
+      "src/Linkification/Linkify.ts": {
         "TS2339": 2
       },
-      "src/main/Main.js": {
+      "src/main/Main.ts": {
         "TS2339": 13,
         "TS2345": 2,
         "TS2363": 1
       },
-      "src/Menu/ArchiveLink.js": {
+      "src/Menu/ArchiveLink.ts": {
         "TS2353": 1
       },
-      "src/Menu/DeleteLink.js": {
+      "src/Menu/DeleteLink.ts": {
         "TS2339": 2
       },
-      "src/Menu/ReportLink.js": {
+      "src/Menu/ReportLink.ts": {
         "TS2345": 1
       },
-      "src/Miscellaneous/Banner.js": {
+      "src/Miscellaneous/Banner.ts": {
         "TS2345": 2
       },
-      "src/Miscellaneous/CatalogLinks.js": {
+      "src/Miscellaneous/CatalogLinks.ts": {
         "TS2339": 2,
         "TS2345": 1,
         "TS2551": 1
       },
-      "src/Miscellaneous/ExpandComment.js": {
+      "src/Miscellaneous/ExpandComment.ts": {
         "TS2339": 1,
         "TS2345": 1,
         "TS2538": 1
       },
-      "src/Miscellaneous/ExpandThread.js": {
+      "src/Miscellaneous/ExpandThread.ts": {
         "TS2339": 5,
         "TS2345": 1
       },
       "src/Miscellaneous/FileInfo.tsx": {
         "TS2554": 1
       },
-      "src/Miscellaneous/Fourchan.js": {
+      "src/Miscellaneous/Fourchan.ts": {
         "TS2339": 7
       },
-      "src/Miscellaneous/IDColor.js": {
+      "src/Miscellaneous/IDColor.ts": {
         "TS2345": 1
       },
-      "src/Miscellaneous/Keybinds.js": {
+      "src/Miscellaneous/Keybinds.ts": {
         "TS2339": 8,
         "TS2345": 1
       },
-      "src/Miscellaneous/Nav.js": {
+      "src/Miscellaneous/Nav.ts": {
         "TS2339": 2
       },
-      "src/Miscellaneous/NormalizeURL.js": {
+      "src/Miscellaneous/NormalizeURL.ts": {
         "TS2322": 1,
         "TS2367": 1
       },
       "src/Miscellaneous/PassMessage/PassMessageHtml.tsx": {
         "TS2339": 1
       },
-      "src/Miscellaneous/PSAHiding.js": {
+      "src/Miscellaneous/PSAHiding.ts": {
         "TS2339": 1
       },
       "src/Miscellaneous/RelativeDates.ts": {
@@ -190,13 +190,13 @@
         "TS2363": 3,
         "TS2554": 1
       },
-      "src/Miscellaneous/Report.js": {
+      "src/Miscellaneous/Report.ts": {
         "TS2339": 3
       },
-      "src/Monitoring/Favicon.js": {
+      "src/Monitoring/Favicon.ts": {
         "TS2488": 1
       },
-      "src/Monitoring/ReplyPruning.js": {
+      "src/Monitoring/ReplyPruning.ts": {
         "TS2339": 4
       },
       "src/Monitoring/ThreadUpdater.ts": {
@@ -206,16 +206,16 @@
         "TS2363": 1,
         "TS2538": 1
       },
-      "src/Monitoring/ThreadWatcher.js": {
+      "src/Monitoring/ThreadWatcher.ts": {
         "TS2339": 23,
         "TS2345": 1,
         "TS2365": 1
       },
-      "src/Monitoring/Unread.js": {
+      "src/Monitoring/Unread.ts": {
         "TS2339": 2,
         "TS2554": 3
       },
-      "src/Monitoring/UnreadIndex.js": {
+      "src/Monitoring/UnreadIndex.ts": {
         "TS2339": 1
       },
       "src/PageContext/pageContext.ts": {
@@ -234,15 +234,15 @@
         "TS2345": 1,
         "TS2551": 4
       },
-      "src/Posting/Captcha.js": {
+      "src/Posting/Captcha.ts": {
         "TS2322": 1,
         "TS2339": 5,
         "TS2554": 1
       },
-      "src/Posting/PassLink.js": {
+      "src/Posting/PassLink.ts": {
         "TS2345": 1
       },
-      "src/Posting/PostRedirect.js": {
+      "src/Posting/PostRedirect.ts": {
         "TS2339": 2
       },
       "src/Posting/QR.ts": {
@@ -255,14 +255,14 @@
         "TS2554": 6,
         "TS2739": 3
       },
-      "src/Quotelinks/QuoteBacklink.js": {
+      "src/Quotelinks/QuoteBacklink.ts": {
         "TS2339": 1
       },
-      "src/Quotelinks/QuoteInline.js": {
+      "src/Quotelinks/QuoteInline.ts": {
         "TS2339": 5,
         "TS2345": 1
       },
-      "src/Quotelinks/QuotePreview.js": {
+      "src/Quotelinks/QuotePreview.ts": {
         "TS2339": 1,
         "TS2345": 3
       },
@@ -270,10 +270,10 @@
         "TS2339": 6,
         "TS2551": 1
       },
-      "src/Quotelinks/QuoteYou.js": {
+      "src/Quotelinks/QuoteYou.ts": {
         "TS2339": 1
       },
-      "src/site/SW.tinyboard.js": {
+      "src/site/SW.tinyboard.ts": {
         "TS2339": 5
       },
       "src/site/SW.yotsuba.tsx": {

@@ -21,7 +21,7 @@ import type Thread from '../classes/Thread';
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
-var ThreadUpdater = {
+const ThreadUpdater = {
   init(this: typeof ThreadUpdater) {
     let sc;
 

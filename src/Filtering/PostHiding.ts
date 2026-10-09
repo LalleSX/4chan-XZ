@@ -19,7 +19,7 @@ interface HideOptions {
   byId?: boolean;
 };
 
-var PostHiding = {
+const PostHiding = {
   db: undefined as DataBoard,
   /** poster Ids to filter */
   posterIdDb: undefined as DataBoard,
