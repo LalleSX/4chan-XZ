@@ -6,19 +6,18 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default async function generateMetadata(packageJson, channel) {
+export default async function generateMetadata(packageJson, fileName, metaFileName) {
   const meta = packageJson.meta;
 
   const versionFile = await readFile(resolve(__dirname, '../../version.json'));
   const version = JSON.parse(versionFile.toString());
 
-  const iconFile = await readFile(resolve(__dirname, './icon48.png'));
-  const icon = Buffer.from(iconFile).toString('base64');
+  const icon = await readFile(resolve(__dirname, './icon48.png'));
 
   const archives = JSON.parse(await readFile(resolve(__dirname, '../Archive/archives.json'), { encoding: 'utf-8' }));
 
   let output = `// ==UserScript==
-// @name         ${meta.name}${channel === '-beta' ? ' beta' : ''}
+// @name         ${meta.name}
 // @version      ${version.version}
 // @minGMVer     ${meta.min.greasemonkey}
 // @minFFVer     ${meta.min.firefox}
@@ -28,27 +27,11 @@ export default async function generateMetadata(packageJson, channel) {
 `;
 
   output += (function () {
-    function expand(items, regex, substitutions) {
-      let results = [];
-      items.forEach(function (item) {
-        if (regex.test(item)) {
-          substitutions.forEach(function (s) {
-            results.push(item.replace(regex, s));
-          });
-        } else {
-          results.push(item);
-        }
-      });
-      return results;
-    }
-    function expandMatches(matches) {
-      return expand(matches, /^\*/, ['http', 'https']);
-    }
     return [].concat(
-      expandMatches(meta.includes_only.concat(meta.matches, meta.matches_extra)).map(function (match) {
+      meta.includes_only.concat(meta.matches, meta.matches_extra).map(function (match) {
         return '// @include      ' + match;
       }),
-      expandMatches(meta.exclude_matches).map(function (match) {
+      meta.exclude_matches.map(function (match) {
         return '// @exclude      ' + match;
       })
     ).join('\n');
@@ -78,17 +61,13 @@ export default async function generateMetadata(packageJson, channel) {
     return '// @grant        ' + grant;
   }).join('\n');
 
-  output += '\n// @run-at       document-start';
-
-  if (channel === '-noupdate') {
-    output += '\n// @updateURL    https://noupdate.invalid/\n// @downloadURL  https://noupdate.invalid/';
-  } else {
-    output += `
-// @updateURL    ${meta.downloads}${packageJson.name}${channel}.meta.js
-// @downloadURL  ${meta.downloads}${packageJson.name}${channel}.user.js`;
-  }
+  // @updateURL    ${meta.downloads}/latest/download/${metaFileName}
   output += `
-// @icon         data:image/png;base64,${icon}
+// @run-at       document-start
+// @updateURL    none
+// @downloadURL  ${meta.downloads}/latest/download/${fileName}
+// @icon         data:image/png;base64,${icon.toString('base64')}
+// @license      MIT
 // ==/UserScript==
 `;
 

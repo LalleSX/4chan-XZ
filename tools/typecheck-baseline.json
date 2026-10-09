@@ -1,0 +1,290 @@
+{
+  "version": 1,
+  "projects": {
+    "tsconfig.json": {
+      "src/Archive/Parse.ts": {
+        "TS2339": 1,
+        "TS2353": 2,
+        "TS2551": 1,
+        "TS2552": 1,
+        "TS2740": 1
+      },
+      "src/Archive/Redirect.ts": {
+        "TS2345": 1
+      },
+      "src/Archive/RestoreDeletedFromArchive.ts": {
+        "TS2339": 2
+      },
+      "src/classes/Board.ts": {
+        "TS2536": 1
+      },
+      "src/classes/CatalogThreadNative.js": {
+        "TS2345": 1
+      },
+      "src/classes/DataBoard.ts": {
+        "TS2322": 1,
+        "TS2339": 4,
+        "TS2345": 4
+      },
+      "src/classes/Fetcher.ts": {
+        "TS2339": 7,
+        "TS2345": 3
+      },
+      "src/classes/Notice.js": {
+        "TS2322": 2
+      },
+      "src/classes/Post.ts": {
+        "TS2339": 5
+      },
+      "src/config/Config.js": {
+        "TS2339": 1
+      },
+      "src/Filtering/Filter.ts": {
+        "TS2339": 7,
+        "TS2345": 2
+      },
+      "src/Filtering/PostHiding.ts": {
+        "TS2322": 1,
+        "TS2339": 4,
+        "TS2554": 4
+      },
+      "src/Filtering/ThreadHiding.js": {
+        "TS2339": 2,
+        "TS2741": 1
+      },
+      "src/General/Header.ts": {
+        "TS2322": 1,
+        "TS2339": 16,
+        "TS2551": 4,
+        "TS2554": 6
+      },
+      "src/General/Index.js": {
+        "TS2322": 1,
+        "TS2339": 9,
+        "TS2345": 4
+      },
+      "src/General/Settings.tsx": {
+        "TS2339": 6,
+        "TS2345": 7,
+        "TS2554": 2,
+        "TS2769": 1
+      },
+      "src/General/Settings/SettingsHtml.tsx": {
+        "TS2339": 3
+      },
+      "src/General/Test.js": {
+        "TS2339": 11,
+        "TS2345": 1,
+        "TS2367": 1,
+        "TS2740": 1
+      },
+      "src/General/UI.js": {
+        "TS2322": 2,
+        "TS2339": 19,
+        "TS2345": 1,
+        "TS2367": 2
+      },
+      "src/Images/FappeTyme.js": {
+        "TS2339": 1
+      },
+      "src/Images/Gallery.js": {
+        "TS2339": 17,
+        "TS2362": 2,
+        "TS2363": 2,
+        "TS2551": 3,
+        "TS2554": 2
+      },
+      "src/Images/ImageCommon.js": {
+        "TS2353": 1
+      },
+      "src/Images/ImageExpand.ts": {
+        "TS2339": 28,
+        "TS2551": 1,
+        "TS2554": 2
+      },
+      "src/Images/ImageHover.js": {
+        "TS2339": 1,
+        "TS2345": 1
+      },
+      "src/Images/ImageLoader.js": {
+        "TS2339": 3,
+        "TS2551": 1
+      },
+      "src/Images/Metadata.js": {
+        "TS2322": 1,
+        "TS2339": 1,
+        "TS2367": 1
+      },
+      "src/Images/Volume.js": {
+        "TS2322": 1,
+        "TS2339": 2,
+        "TS2345": 1
+      },
+      "src/Linkification/Embedding.tsx": {
+        "TS2322": 2,
+        "TS2339": 26,
+        "TS2345": 2
+      },
+      "src/Linkification/Linkify.js": {
+        "TS2339": 2
+      },
+      "src/main/Main.js": {
+        "TS2339": 13,
+        "TS2345": 2,
+        "TS2363": 1
+      },
+      "src/Menu/ArchiveLink.js": {
+        "TS2353": 1
+      },
+      "src/Menu/DeleteLink.js": {
+        "TS2339": 2
+      },
+      "src/Menu/ReportLink.js": {
+        "TS2345": 1
+      },
+      "src/Miscellaneous/Banner.js": {
+        "TS2345": 2
+      },
+      "src/Miscellaneous/CatalogLinks.js": {
+        "TS2339": 2,
+        "TS2345": 1,
+        "TS2551": 1
+      },
+      "src/Miscellaneous/ExpandComment.js": {
+        "TS2339": 1,
+        "TS2345": 1,
+        "TS2538": 1
+      },
+      "src/Miscellaneous/ExpandThread.js": {
+        "TS2339": 5,
+        "TS2345": 1
+      },
+      "src/Miscellaneous/FileInfo.tsx": {
+        "TS2554": 1
+      },
+      "src/Miscellaneous/Fourchan.js": {
+        "TS2339": 7
+      },
+      "src/Miscellaneous/IDColor.js": {
+        "TS2345": 1
+      },
+      "src/Miscellaneous/Keybinds.js": {
+        "TS2339": 8,
+        "TS2345": 1
+      },
+      "src/Miscellaneous/Nav.js": {
+        "TS2339": 2
+      },
+      "src/Miscellaneous/NormalizeURL.js": {
+        "TS2322": 1,
+        "TS2367": 1
+      },
+      "src/Miscellaneous/PassMessage/PassMessageHtml.tsx": {
+        "TS2339": 1
+      },
+      "src/Miscellaneous/PSAHiding.js": {
+        "TS2339": 1
+      },
+      "src/Miscellaneous/RelativeDates.ts": {
+        "TS2362": 2,
+        "TS2363": 3,
+        "TS2554": 1
+      },
+      "src/Miscellaneous/Report.js": {
+        "TS2339": 3
+      },
+      "src/Monitoring/Favicon.js": {
+        "TS2488": 1
+      },
+      "src/Monitoring/ReplyPruning.js": {
+        "TS2339": 4
+      },
+      "src/Monitoring/ThreadUpdater.ts": {
+        "TS2339": 3,
+        "TS2345": 2,
+        "TS2362": 1,
+        "TS2363": 1,
+        "TS2538": 1
+      },
+      "src/Monitoring/ThreadWatcher.js": {
+        "TS2339": 23,
+        "TS2345": 1,
+        "TS2365": 1
+      },
+      "src/Monitoring/Unread.js": {
+        "TS2339": 2,
+        "TS2554": 3
+      },
+      "src/Monitoring/UnreadIndex.js": {
+        "TS2339": 1
+      },
+      "src/PageContext/pageContext.ts": {
+        "TS2339": 5,
+        "TS2558": 1
+      },
+      "src/platform/$.ts": {
+        "TS2300": 13,
+        "TS2322": 4,
+        "TS2339": 31,
+        "TS2345": 6,
+        "TS2554": 4
+      },
+      "src/platform/CrossOrigin.ts": {
+        "TS2339": 8,
+        "TS2345": 1,
+        "TS2551": 4
+      },
+      "src/Posting/Captcha.js": {
+        "TS2322": 1,
+        "TS2339": 5,
+        "TS2554": 1
+      },
+      "src/Posting/PassLink.js": {
+        "TS2345": 1
+      },
+      "src/Posting/PostRedirect.js": {
+        "TS2339": 2
+      },
+      "src/Posting/QR.ts": {
+        "TS2322": 5,
+        "TS2339": 64,
+        "TS2345": 12,
+        "TS2363": 2,
+        "TS2540": 1,
+        "TS2551": 5,
+        "TS2554": 6,
+        "TS2739": 3
+      },
+      "src/Quotelinks/QuoteBacklink.js": {
+        "TS2339": 1
+      },
+      "src/Quotelinks/QuoteInline.js": {
+        "TS2339": 5,
+        "TS2345": 1
+      },
+      "src/Quotelinks/QuotePreview.js": {
+        "TS2339": 1,
+        "TS2345": 3
+      },
+      "src/Quotelinks/QuoteThreading.ts": {
+        "TS2339": 6,
+        "TS2551": 1
+      },
+      "src/Quotelinks/QuoteYou.js": {
+        "TS2339": 1
+      },
+      "src/site/SW.tinyboard.js": {
+        "TS2339": 5
+      },
+      "src/site/SW.yotsuba.tsx": {
+        "TS2339": 11,
+        "TS2554": 2
+      }
+    },
+    "tools/tsconfig.json": {
+      "tools/stats.js": {
+        "TS2488": 1
+      }
+    }
+  }
+}

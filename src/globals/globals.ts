@@ -1,79 +1,69 @@
-import meta from "../../package.json"
-import version from "../../version.json"
-import type Post from "../classes/Post"
-import type SimpleDict from "../classes/SimpleDict"
-import type Thread from "../classes/Thread"
-import type SWTinyboard from "../site/SW.tinyboard"
+import version from "../../version.json";
+import meta from "../../package.json";
+import type SimpleDict from "../classes/SimpleDict";
+import type Post from "../classes/Post";
+import type Thread from "../classes/Thread";
+import type SWTinyboard from "../site/SW.tinyboard";
 
-declare global {
-  interface Window {
-    wrappedJSObject: any
-    Tegaki: any
-    FCX: any
-  }
-}
 // interfaces might be incomplete
 export interface BoardConfig {
-  sjis_tags: string,
-  math_tags: string,
-  forced_anon: boolean,
-  board_flags: string[],
-  require_subject: boolean,
-  text_only: boolean
-  country_flags: 1 | 0,
-  board: string
+  board:      string
   bump_limit: number
   cooldowns: {
     threads: number,
     replies: number,
-    images: number,
+    images:  number,
   }
-  custom_spoilers: 1 | 0,
-  image_limit: number,
-  is_archived: 1 | 0,
+  custom_spoilers:   1 | 0,
+  image_limit:       number,
+  is_archived:       1 | 0,
   max_comment_chars: number
-  max_filesize: number
+  max_filesize:      number
   max_webm_duration: number
   max_webm_filesize: number
-  meta_description: string,
-  pages: number,
-  per_page: number,
-  spoilers: number,
-  title: string
-  ws_board: 1 | 0
+  meta_description:  string,
+  pages:             number,
+  per_page:          number,
+  spoilers:          number,
+  title:             string
+  ws_board:          1 | 0
+  country_flags:     number,
+  board_flags:       Record<string, string>,
+  user_ids?:         number,
 }
 
 export interface Board {
-  length?: number,
-  cooldowns(): object
-  forced_anon: 1 | 0,
-  ID: string,
+  ID:      string,
   boardID: string,
-  siteID: string,
-  config: BoardConfig,
-  posts: SimpleDict<Post>,
+  siteID:  string,
+  config:  BoardConfig,
+  posts:   SimpleDict<Post>,
   threads: SimpleDict<Thread>,
 }
 
-export const Conf = Object.create(null)
+export const Conf = Object.create(null);
 
 export const g: {
-  VERSION: string,
+  VERSION:   string,
+  VERSION_DATE: Date,
   NAMESPACE: string,
-  sites: (typeof SWTinyboard)[],
-  boards: SimpleDict<Board>,
-  posts?: SimpleDict<Post>,
-  threads?: SimpleDict<Thread>
+  sites:     (typeof SWTinyboard)[],
+  boardID?:  string,
+  boards:    Board[],
+  posts?:    SimpleDict<Post>,
+  threads?:  SimpleDict<Thread>,
+  threadID?: number,
   THREADID?: number,
-  SITE?: typeof SWTinyboard,
-  BOARD?: Board,
-  VIEW?: string,
+  SITE?:     typeof SWTinyboard,
+  BOARD?:    Board,
+  VIEW?:     string,
 } = {
-  VERSION: version.version,
+  VERSION:   version.version,
+  VERSION_DATE: new Date(version.date),
   NAMESPACE: meta.name,
-  sites: Object.create(null),
-  boards: Object.create(null),
-}
+  sites:     Object.create(null),
+  boards:    Object.create(null)
+};
 
 export const E = (function () {
   const str = {
@@ -82,30 +72,30 @@ export const E = (function () {
     '"': '&quot;',
     '<': '&lt;',
     '>': '&gt;'
-  }
-  const regex = /[&"'<>]/g
+  };
+  const regex = /[&"'<>]/g;
   const fn = function (x: string) {
-    return str[x]
-  }
+    return str[x];
+  };
   const output = function (text: string) {
-    return text.toString().replace(regex, fn)
-  }
-  output.cat = function (templates: HTMLCollectionOf<Element>) {
-    let html = ''
+    return text.toString().replace(regex, fn);
+  };
+  output.cat = function (templates) {
+    let html = '';
     for (let i = 0; i < templates.length; i++) {
-      html += templates[i].innerHTML
+      html += templates[i].innerHTML;
     }
-    return html
-  }
-  return output
-})()
+    return html;
+  };
+  return output;
+})();
 
-export const d = document
-export const doc = d.documentElement
+export const d = document;
+export const doc = d.documentElement;
 
-export const c = console
+export const c = console;
 
 export const docSet = function () {
   // return (doc = d.documentElement);
-  return doc
-}
+  return doc;
+};

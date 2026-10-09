@@ -16,6 +16,10 @@
     For example: <code>boards:4:*;</code>.<br>
   </li>
   <li>
+    Show a custom reason in the stub. If not given, the type and regex will be shown.<br>
+    For example: <code>reason:This is bait;</code>
+  </li>
+  <li>
     Select boards to be excluded from the filter. The syntax is the same as for the <code>boards:</code> option above.<br>
     For example: <code>exclude:vg,v;</code>.
   </li>
@@ -39,14 +43,14 @@
     Highlighted OPs will have their threads put on top of the board index by default.<br>
     For example: <code>top:yes;</code> or <code>top:no;</code>.
   </li>
-  <li>
-    Show a desktop notification instead of hiding.<br>
-    For example: <code>notify;</code>.
-  </li>
+  <li>Show a desktop notification instead of hiding: <code>notify;</code>.</li>
+  <li>Hide all posts from this poster: <code>poster;</code>.</li>
+  <li>Recursively hide replies: <code>replies;</code>.</li>
+  <li>Hide anyway even if highlighting. The highlight class will be applied to the stub: <code>hide;</code>.</li>
   <li>
     Filters in the "General" section apply to multiple fields, by default <code>subject,name,filename,comment</code>.<br>
     The fields can be specified with the <code>type</code> option, separated by commas.<br>
-    For example: <code>type:@{filterTypes};</code>.<br>
+    For example: <code id="filterTypes"></code>.<br>
     Types can also be combined with a <code>+</code> sign; this indicates the filter applies to the given fields joined by newlines.<br>
     For example: <code>type:filename+filesize+dimensions;</code>.<br>
   </li>

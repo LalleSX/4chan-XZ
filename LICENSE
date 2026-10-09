@@ -1,9 +1,11 @@
 /*
-* 4chan X
+* 4chan XT
 *
 * Licensed under the MIT license.
-* https://github.com/ccd0/4chan-x/blob/master/LICENSE
+* https://github.com/TuxedoTako/4chan-xt/blob/project-XT/LICENSE
 *
+* 4chan X Copyright © 2009-2023 ccd0
+* https://github.com/ccd0/4chan-x
 * Appchan X Copyright © 2013-2016 Zixaphir <zixaphirmoxphar@gmail.com>
 * http://zixaphir.github.io/appchan-x/ 
 * 4chan x Copyright © 2009-2011 James Campos <james.r.campos@gmail.com>
@@ -60,6 +62,7 @@
 * btmcsweeney
 * AppleBloom
 * detharonil
+* TuxedoTako
 *
 * All the people who've taken the time to write bug reports.
 *
@@ -72,8 +75,8 @@
 * src/Monitoring/ThreadUpdater/beep.wav from http://freesound.org/people/pierrecartoons1979/sounds/90112/
 *   cc-by-nc-3.0
 *
-* Font Awesome by Dave Gandy (http://fontawesome.io)
-*   license: http://fontawesome.io/license/
+* Font Awesome (https://fontawesome.com)
+*   license: CC BY 4.0 (https://fontawesome.com/license/free#icons)
 *
 * Icons used to identify various websites are property of the respective websites.
 */

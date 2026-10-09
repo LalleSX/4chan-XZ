@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      compatible-tooling:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      # TS 7 changes the compiler API; Rollup and typescript-eslint must support it first.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      # The icon transform depends on Font Awesome 6's module shape.
+      - dependency-name: "@fortawesome/*"
+        update-types: [version-update:semver-major]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

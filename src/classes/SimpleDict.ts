@@ -1,28 +1,84 @@
+import $ from "../platform/$";
+
 export default class SimpleDict<T> {
   keys: string[]
 
   constructor() {
-    this.keys = []
+    this.keys = [];
   }
 
-  push(key: string, data: T): T {
-    key = `${key}`
-    this[key] = data
-    this.keys.push(key)
-    return data
+  push(key, data: T) {
+    key = `${key}`;
+    if (!this[key]) { this.keys.push(key); }
+    this[key] = data;
   }
 
-  rm(key: string) {
-    key = `${key}`
-    delete this[key]
-    this.keys = this.keys.filter(k => k !== key)
+  /**
+   * Inserts at the right place. Assumes the keys are numeric and already sorted ascending.
+   * @returns The index where the item was inserted.
+   */
+  insert(key: number, data: T): number;
+  /**
+   * Inserts at the right place. Assumes the keys are already sorted ascending.
+   * @param compare A function to compare the keys. Should return true if the given key is bigger than the one compared
+   * to, and false otherwise. Defaults to a numeric comparison.
+   * @returns The index where the item was inserted.
+   */
+  insert(key: string | number, data: T, compare: (lastKey: string, key: string | number) => boolean): number;
+  insert(key: string | number, data: T, compare = (lastKey: string, key: string | number) => (+lastKey) < (+key)): number {
+    const keyString = key.toString();
+    if (keyString in this) {
+      this[keyString] = data;
+      return this.keys.indexOf(keyString);
+    }
+
+    const length = this.keys.length
+    if (!length || compare(this.lastKey(), key)) {
+      this.push(key, data);
+      return length;
+    }
+
+    let indexOfNext = this.keys.findIndex(k => !compare(k, key));
+    if (indexOfNext === -1) {
+      this.push(key, data);
+    } else {
+      this[keyString] = data;
+      this.keys.splice(indexOfNext, 0, keyString);
+    }
+    return indexOfNext;
   }
 
-  forEach(fn: (value: T) => void): void {
-    for (const key of [...Array.from(this.keys)]) { fn(this[key]) }
+  insertAt(key: string, index: number, data: T) {
+    this[key] = data;
+    this.keys.splice(index, 0, key);
   }
 
-  get(key: string): T {
-    return this[key]
+  rm(key) {
+    let i;
+    key = `${key}`;
+    if ((i = this.keys.indexOf(key)) !== -1) {
+      this.keys.splice(i, 1);
+      delete this[key];
+    }
+  }
+
+  forEach(fn: (data: T) => void) {
+    for (var key of this.keys) { fn(this[key]); }
+  }
+
+  get(key): T {
+    if (key === 'keys') {
+      return undefined;
+    } else {
+      return $.getOwn(this, key);
+    }
+  }
+
+  lastKey(): string {
+    return this.keys[this.keys.length - 1];
+  }
+
+  last(): T {
+    return this.keys.length ? this[this.keys.length - 1] : undefined;
   }
 }

@@ -1,0 +1,628 @@
+{
+  "src/Archive/Parse.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 14
+    },
+    "no-useless-escape": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 2
+    }
+  },
+  "src/Archive/Redirect.ts": {
+    "no-var": {
+      "count": 10
+    }
+  },
+  "src/Archive/RestoreDeletedFromArchive.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/Filtering/Filter.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 4
+    },
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 12
+    }
+  },
+  "src/Filtering/PostHiding.ts": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-cond-assign": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 3
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/Filtering/Recursive.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 7
+    },
+    "no-var": {
+      "count": 3
+    }
+  },
+  "src/Filtering/ThreadHiding.js": {
+    "no-cond-assign": {
+      "count": 3
+    }
+  },
+  "src/General/BoardConfig.js": {
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/General/Header.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "no-useless-escape": {
+      "count": 5
+    },
+    "no-var": {
+      "count": 4
+    }
+  },
+  "src/General/Index.js": {
+    "no-cond-assign": {
+      "count": 12
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "no-unused-vars": {
+      "count": 2
+    },
+    "no-useless-escape": {
+      "count": 5
+    }
+  },
+  "src/General/Settings.tsx": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    },
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-empty": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 34
+    }
+  },
+  "src/General/Settings/SettingsHtml.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/General/Test.js": {
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-useless-escape": {
+      "count": 2
+    }
+  },
+  "src/General/UI.js": {
+    "no-cond-assign": {
+      "count": 5
+    }
+  },
+  "src/Icons/icon.ts": {
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/Images/Gallery.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/Images/ImageCommon.js": {
+    "no-self-assign": {
+      "count": 1
+    }
+  },
+  "src/Images/ImageExpand.ts": {
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 11
+    }
+  },
+  "src/Images/Sauce.js": {
+    "no-cond-assign": {
+      "count": 3
+    }
+  },
+  "src/Linkification/Embedding.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    },
+    "no-cond-assign": {
+      "count": 6
+    },
+    "no-prototype-builtins": {
+      "count": 1
+    },
+    "no-useless-escape": {
+      "count": 13
+    },
+    "no-var": {
+      "count": 18
+    }
+  },
+  "src/Linkification/Embedding/FxTwitter.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 3
+    },
+    "no-useless-escape": {
+      "count": 1
+    }
+  },
+  "src/Linkification/Linkify.js": {
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-useless-escape": {
+      "count": 1
+    }
+  },
+  "src/Menu/CopyTextLink.js": {
+    "no-empty": {
+      "count": 1
+    },
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/Menu/DeleteLink.js": {
+    "no-cond-assign": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/Banner.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/Miscellaneous/CatalogLinks.js": {
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-useless-escape": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/ExpandComment.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/Miscellaneous/ExpandThread.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/Miscellaneous/FileInfo.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/Nav.js": {
+    "no-cond-assign": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/PassMessage.js": {
+    "no-cond-assign": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/PassMessage/PassMessageHtml.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/PostJumper.js": {
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-useless-escape": {
+      "count": 6
+    }
+  },
+  "src/Miscellaneous/RelativeDates.ts": {
+    "no-var": {
+      "count": 3
+    }
+  },
+  "src/Miscellaneous/Report.js": {
+    "no-cond-assign": {
+      "count": 1
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/Miscellaneous/Time.ts": {
+    "@typescript-eslint/no-wrapper-object-types": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/Monitoring/ThreadUpdater.ts": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 7
+    }
+  },
+  "src/Monitoring/ThreadWatcher.js": {
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-extra-boolean-cast": {
+      "count": 1
+    },
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/Monitoring/Unread.js": {
+    "no-cond-assign": {
+      "count": 1
+    }
+  },
+  "src/Monitoring/UnreadIndex.js": {
+    "no-cond-assign": {
+      "count": 1
+    }
+  },
+  "src/PageContext/pageContext.ts": {
+    "@typescript-eslint/ban-ts-comment": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 38
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 3
+    }
+  },
+  "src/Posting/Captcha.js": {
+    "no-cond-assign": {
+      "count": 8
+    }
+  },
+  "src/Posting/Captcha.replace.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/Posting/PostSuccessful.js": {
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/Posting/QR.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-cond-assign": {
+      "count": 7
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "no-extra-boolean-cast": {
+      "count": 2
+    },
+    "no-useless-escape": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 60
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/Quotelinks/QuoteBacklink.js": {
+    "no-cond-assign": {
+      "count": 1
+    }
+  },
+  "src/Quotelinks/QuoteThreading.ts": {
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 5
+    }
+  },
+  "src/Quotelinks/QuoteYou.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/Quotelinks/Quotify.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/classes/Board.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 1
+    }
+  },
+  "src/classes/DataBoard.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    },
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    },
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 6
+    }
+  },
+  "src/classes/Fetcher.ts": {
+    "@typescript-eslint/no-this-alias": {
+      "count": 3
+    },
+    "no-cond-assign": {
+      "count": 3
+    },
+    "no-var": {
+      "count": 3
+    }
+  },
+  "src/classes/Post.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 6
+    },
+    "no-cond-assign": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 24
+    }
+  },
+  "src/classes/SimpleDict.ts": {
+    "no-var": {
+      "count": 1
+    },
+    "prefer-const": {
+      "count": 1
+    }
+  },
+  "src/classes/Thread.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    }
+  },
+  "src/config/Config.js": {
+    "no-useless-escape": {
+      "count": 1
+    }
+  },
+  "src/css/CSS.ts": {
+    "no-useless-escape": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 4
+    }
+  },
+  "src/main/Main.js": {
+    "no-cond-assign": {
+      "count": 4
+    },
+    "no-empty": {
+      "count": 4
+    },
+    "no-unused-vars": {
+      "count": 4
+    },
+    "no-useless-escape": {
+      "count": 2
+    }
+  },
+  "src/meta/eventPage.js": {
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/meta/metadata.js": {
+    "no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/platform/$.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 9
+    },
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 5
+    },
+    "no-cond-assign": {
+      "count": 6
+    },
+    "no-empty": {
+      "count": 3
+    },
+    "no-var": {
+      "count": 37
+    },
+    "prefer-rest-params": {
+      "count": 2
+    }
+  },
+  "src/platform/CrossOrigin.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 4
+    },
+    "no-empty": {
+      "count": 2
+    },
+    "no-useless-escape": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 5
+    },
+    "prefer-const": {
+      "count": 3
+    }
+  },
+  "src/platform/helpers.ts": {
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unsafe-function-type": {
+      "count": 1
+    },
+    "no-var": {
+      "count": 2
+    },
+    "prefer-rest-params": {
+      "count": 1
+    }
+  },
+  "src/site/SW.tinyboard.js": {
+    "no-cond-assign": {
+      "count": 4
+    },
+    "no-empty": {
+      "count": 1
+    },
+    "no-unused-vars": {
+      "count": 2
+    },
+    "no-useless-escape": {
+      "count": 2
+    }
+  },
+  "src/site/SW.yotsuba.Build/CatalogThreadHtml.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    }
+  },
+  "src/site/SW.yotsuba.Build/FileHtml.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/site/SW.yotsuba.Build/PostInfoHtml.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    }
+  },
+  "src/site/SW.yotsuba.tsx": {
+    "@typescript-eslint/no-unused-vars": {
+      "count": 2
+    },
+    "no-cond-assign": {
+      "count": 7
+    },
+    "no-useless-escape": {
+      "count": 2
+    },
+    "no-var": {
+      "count": 14
+    }
+  },
+  "src/site/Site.js": {
+    "no-cond-assign": {
+      "count": 2
+    }
+  },
+  "src/types/globals.d.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unsafe-function-type": {
+      "count": 1
+    }
+  },
+  "src/types/jsx.d.ts": {
+    "@typescript-eslint/no-empty-object-type": {
+      "count": 2
+    }
+  },
+  "tools/rollup-plugin-fa.js": {
+    "no-useless-escape": {
+      "count": 2
+    }
+  },
+  "tools/rollup-plugin-inline-file.js": {
+    "no-useless-escape": {
+      "count": 1
+    }
+  }
+}

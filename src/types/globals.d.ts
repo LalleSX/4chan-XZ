@@ -1,24 +1,6 @@
-declare const XPCNativeWrapper: any
-export interface File {
-    name: string
-    isImage: boolean
-    isVideo: boolean
-    thumb: HTMLElement
-    url: string
-    dimensions: string
-    index: number
-    isExpanding: boolean
-    isExpanded: boolean
-    text: string,
-    link: HTMLAnchorElement
-    thumbLink: HTMLElement
-    size: string
-    sizeInBytes: number
-    isDead: boolean
-    docIndex: number
-}
-export interface CacheOptions {
-    dataType: string
-    sync: boolean
-    dontClean: boolean
+declare const cloneInto: Function;
+declare const XPCNativeWrapper: any;
+declare interface Window {
+  /** Only available in the page context, so in a `$.global` */
+  TCaptcha: any;
 }

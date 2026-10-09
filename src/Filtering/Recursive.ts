@@ -1,64 +1,73 @@
-import Callbacks from "../classes/Callbacks"
-import { g } from "../globals/globals"
-import { dict } from "../platform/helpers"
+import Callbacks from "../classes/Callbacks";
+import type Post from "../classes/Post";
+import { g } from "../globals/globals";
 
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-const Recursive = {
-  recursives: dict(),
+type DropFirst<T extends unknown[]> = T extends [any, ...infer U] ? U : never;
+
+var Recursive = {
+  recursives: new Map<string, { recursives: ((...args: any) => void)[], args: any[][] }>(),
+
   init() {
-    if (!['index', 'thread'].includes(g.VIEW)) { return }
-    return Callbacks.Post.push({
+    if (!['index', 'thread'].includes(g.VIEW)) return;
+    Callbacks.Post.push({
       name: 'Recursive',
-      cb: this.node
-    })
+      cb:   this.node
+    });
   },
 
-  node() {
-    if (this.isClone || this.isFetchedQuote) { return }
-    for (const quote of this.quotes) {
-      let obj
-      if ((obj = Recursive.recursives[quote])) {
-        for (let i = 0; i < obj.recursives.length; i++) {
-          const recursive = obj.recursives[i]
-          recursive(this, ...Array.from(obj.args[i]))
+  node(this: Post) {
+    if (this.isClone || this.isFetchedQuote) return;
+    for (var quote of this.quotes) {
+      const obj = Recursive.recursives.get(quote);
+      if (obj) {
+        for (var i = 0; i < obj.recursives.length; i++) {
+          obj.recursives[i](this, ...obj.args[i]);
         }
       }
     }
   },
 
-  add(recursive, post, ...args) {
-    const obj = Recursive.recursives[post.fullID] || (Recursive.recursives[post.fullID] = {
-      recursives: [],
-      args: []
-    })
-    obj.recursives.push(recursive)
-    return obj.args.push(args)
+  add<Fn extends (post: Post, ...args: any[]) => void>(recursive: Fn, post, ...args: DropFirst<Parameters<Fn>>) {
+    let obj = Recursive.recursives.get(post.fullID);
+    if (!obj) {
+      obj = { recursives: [], args: [] };
+      Recursive.recursives.set(post.fullID, obj);
+    }
+    obj.recursives.push(recursive);
+    obj.args.push(args);
   },
 
-  rm(recursive, post) {
-    let obj
-    if (!(obj = Recursive.recursives[post.fullID])) { return }
-    for (let i = 0; i < obj.recursives.length; i++) {
-      const rec = obj.recursives[i]
-      if (rec === recursive) {
-        obj.recursives.splice(i, 1)
-        obj.args.splice(i, 1)
+  rm(recursive: (...args: any[]) => void, post: Post) {
+    const obj = Recursive.recursives.get(post.fullID);
+    if (!obj) return;
+    for (let i = obj.recursives.length - 1; i >= 0; --i) {
+      if (obj.recursives[i] === recursive) {
+        obj.recursives.splice(i, 1);
+        obj.args.splice(i, 1);
       }
     }
   },
 
-  apply(recursive, post, ...args) {
-    const { fullID } = post
-    return g.posts.forEach(function (post) {
+  apply<Fn extends (post: Post, ...args: any[]) => void>(
+    recursive: Fn,
+    post: Post,
+    ...args: DropFirst<Parameters<Fn>>
+  ) {
+    const {fullID} = post;
+    g.posts.forEach(function(post) {
       if (post.quotes.includes(fullID)) {
-        return recursive(post, ...Array.from(args))
+        recursive(post, ...args);
       }
-    })
-  }
-}
-export default Recursive
+    });
+  },
+
+  applyAndAdd<Fn extends (post: Post, ...args: any[]) => void>(
+    recursive: Fn,
+    post: Post,
+    ...args: DropFirst<Parameters<Fn>>
+  ) {
+    Recursive.apply(recursive, post, ...args);
+    this.add(recursive, post, ...args);
+  },
+};
+export default Recursive;

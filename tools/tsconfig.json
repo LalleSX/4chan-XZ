@@ -1,11 +1,11 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "moduleResolution": "node16",
-    "types": [
-      "@violentmonkey/types",
-      "@types/chrome",
-      "node"
-    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": ["node"]
   },
-  "extends": "../tsconfig.json"
+  "include": ["./**/*.js", "../eslint.config.js", "../src/meta/metadata.js", "../src/meta/manifestJson.js"]
 }

@@ -5,6 +5,7 @@
   <table id="archive-table">
     <thead>
       <th>Thread redirection</th>
+      <th>Thread fetching</th>
       <th>Post fetching</th>
       <th>File redirection</th>
     </thead>
@@ -12,7 +13,7 @@
   </table>
   <br>
   <div>
-    <b>Archive Lists</b>: Each line below should be an archive list in <a href="https://github.com/MayhemYDG/archives.json/blob/gh-pages/CONTRIBUTING.md" target="_blank">this format</a> or a URL to load an archive list from.<br>
+    <b>Archive Lists</b>: Each line below should be an archive list in <a href="https://github.com/4chenz/archives.json/blob/gh-pages/CONTRIBUTING.md" target="_blank">this format</a> or a URL to load an archive list from.<br>
     Archive properties can be overriden by another item with the same <code>uid</code> (or if absent, its <code>name</code>).
   </div>
   <textarea hidden name="archiveLists" class="field" spellcheck="false"></textarea>
@@ -69,20 +70,40 @@
     <code>[ + ] [Technology] [Technology / Anime & Manga / Otaku Culture] [x / wsg / h] [Piracy]</code><br>
     if you are on /g/.
   </div>
+  <div class="note">
+    For custom styling, you can wrap groups or individual links in <code>{{</code> and <code>}}</code>, to wrap them in
+    a span. You can also add classes in double quotes right after the {{. For example: <br />
+    <code>[g-title] {{"favorites"[a-title / jp-title]}}</code><br />
+    Results in:<br />
+    <code>[&lt;a [...] &gt;Technology&lt;/a&gt;] &lt;span class="favorites"&gt;[&lt;a [...] &gt;Anime &amp;amp;
+      Manga&lt;/a&gt; / &lt;a [...] &gt;Otaku Culture&lt;/a&gt;]&lt;/span&gt;</code>
+  </div>
 </fieldset>
 
 <fieldset>
-  <legend>Time Formatting <span class="warning" data-feature="Time Formatting">is disabled.</span></legend>
+  <legend>
+    Time Formatting
+    <span class="warning" data-feature="Time Formatting">is disabled, relative time setting still applies.</span>
+  </legend>
   <div><input name="time" class="field" spellcheck="false">: <span class="time-preview"></span></div>
   <div>Supported <a href="http://man7.org/linux/man-pages/man1/date.1.html" target="_blank">format specifiers</a>:</div>
   <div>Day: <code>%a</code>, <code>%A</code>, <code>%d</code>, <code>%e</code></div>
-  <div>Month: <code>%m</code>, <code>%b</code>, <code>%B</code></div>
+  <div>Month: <code>%m</code>, <code>%b</code>, <code>%B</code>, <code>%n</code> (Not zero padded)</div>
   <div>Year: <code>%y</code>, <code>%Y</code></div>
   <div>Hour: <code>%k</code>, <code>%H</code>, <code>%l</code>, <code>%I</code>, <code>%p</code>, <code>%P</code></div>
   <div>Minute: <code>%M</code></div>
   <div>Second: <code>%S</code></div>
   <div>Literal <code>%</code>: <code>%%</code></div>
   <div><a href="https://www.w3.org/International/articles/language-tags/" target="_blank">Language tag</a>: <input name="timeLocale" class="field" spellcheck="false"></div>
+  <div>Relative time, like "3 minutes ago":
+    <select name="RelativeTime">
+      <option value="No">Disabled</option>
+      <option value="Hover">Show when hovering on the date</option>
+      <option value="Show">Show relative time, and time and date on hover</option>
+      <option value="Both">Show both timestamp and relative date</option>
+      <option value="BothRelativeFirst">Show both relative date and timestamp</option>
+    </select>
+  </div>
 </fieldset>
 
 <fieldset>
@@ -166,7 +187,7 @@
   <legend>Javascript Whitelist</legend>
   <div>
     Sources from which Javascript is allowed to be loaded by <a href="http://content-security-policy.com/#source_list" target="_blank">Content Security Policy</a>.<br>
-    Lines starting with a <code>#</code> will be ignored.
+    Lines starting with a <code>#</code> will be ignored. Remove or comment out all lines to allow everything.
   </div>
   <textarea hidden name="jsWhitelist" class="field" spellcheck="false"></textarea>
 </fieldset>
@@ -175,4 +196,36 @@
   <legend>Known Banners</legend>
   <div>List of known banners, used for click-to-change feature.</div>
   <textarea hidden name="knownBanners" class="field" spellcheck="false"></textarea>
+</fieldset>
+
+<fieldset>
+  <legend>X (formerly Twitter) embeds</legend>
+  <div>Only applies if embeds are enabled in the main settings</div>
+  <label>Service to use for embeds
+    <select name="XEmbedder">
+      <option value="fxt">FxTwitter</option>
+      <option value="tf">Twitframe</option>
+    </select>
+  </label><br />
+  <label>
+    Language to translate FxTwitter embeds to, as a two character ISO code, like <code>en</code>.
+    Leave empty for no translation.
+    <input name="fxtLang" maxlength="2" class="field" />
+  </label><br />
+  <label>FxTwitter endpoint <input name="fxtUrl" type="url" class="field" /></label><br />
+  <label>FxTwitter maximum amount of replies include
+    <input name="fxtMaxReplies" type="number" min="0" step="1" max="100" class="field" />
+  </label>
+</fieldset>
+
+<fieldset>
+  <legend>Thread updater sound</legend>
+  <label>
+    Sound volume, between 0 and 1:
+    <input name="beepVolume" type="number" min=".01" max="1" step=".01" class="field" />
+  </label><br />
+  <label>
+    Sound url. Can be a base64 one starting with <code>data:</code>. Leave empty for the default beep.
+    <input type="string" name="beepSource" class="field wide" />
+  </label>
 </fieldset>

@@ -1,302 +1,384 @@
-import Callbacks from "../classes/Callbacks"
-import DataBoard from "../classes/DataBoard"
-import Get from "../General/Get"
-import UI from "../General/UI"
-import { Conf, doc, g } from "../globals/globals"
-import Menu from "../Menu/Menu"
-import $ from "../platform/$"
-import Recursive from "./Recursive"
+import Callbacks from "../classes/Callbacks";
+import DataBoard from "../classes/DataBoard";
+import type Post from "../classes/Post";
+import BoardConfig from "../General/BoardConfig";
+import Get from "../General/Get";
+import UI from "../General/UI";
+import { g, Conf, doc } from "../globals/globals";
+import Menu from "../Menu/Menu";
+import $ from "../platform/$";
+import { dict } from "../platform/helpers";
+import Recursive from "./Recursive";
+import Icon from '../Icons/icon';
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-const PostHiding = {
+/** Used in DataBoards data */
+interface HideOptions {
+  thisPost?: boolean;
+  makeStub: boolean;
+  hideRecursively: boolean;
+  byId?: boolean;
+};
+
+var PostHiding = {
+  db: undefined as DataBoard,
+  /** poster Ids to filter */
+  posterIdDb: undefined as DataBoard,
+
   init() {
-    if (!['index', 'thread'].includes(g.VIEW) || (!Conf['Reply Hiding Buttons'] && !(Conf['Menu'] && Conf['Reply Hiding Link']))) { return }
+    if (!['index', 'thread'].includes(g.VIEW) || (!Conf['Reply Hiding Buttons'] && !(Conf['Menu'] && Conf['Reply Hiding Link']))) { return; }
 
     if (Conf['Reply Hiding Buttons']) {
-      $.addClass(doc, "reply-hide")
+      $.addClass(doc, "reply-hide");
     }
 
-    this.db = new DataBoard('hiddenPosts')
-    return Callbacks.Post.push({
+    this.db = new DataBoard('hiddenPosts');
+    this.posterIdDb = new DataBoard('hiddenPosterIds');
+    Callbacks.Post.push({
       name: 'Reply Hiding',
-      cb: this.node
-    })
+      cb:   this.node
+    });
   },
 
   isHidden(boardID, threadID, postID) {
-    return !!(PostHiding.db && PostHiding.db.get({ boardID, threadID, postID }))
+    return !!(PostHiding.db && PostHiding.db.get({boardID, threadID, postID}));
   },
 
-  node() {
-    let data, sa
-    if (!this.isReply || this.isClone || this.isFetchedQuote) { return }
+  node(this: Post) {
+    if (!this.isReply || this.isClone || this.isFetchedQuote) return;
 
-    if (data = PostHiding.db.get({ boardID: this.board.ID, threadID: this.thread.ID, postID: this.ID })) {
-      if (data.thisPost) {
-        PostHiding.hide(this, data.makeStub, data.hideRecursively)
-      } else {
-        Recursive.apply(PostHiding.hide, this, data.makeStub, true)
-        Recursive.add(PostHiding.hide, this, data.makeStub, true)
+    let data: HideOptions = PostHiding.db.get({boardID: this.board.ID, threadID: this.thread.ID, postID: this.ID});
+    if (!data && this.info.uniqueID) {
+      const hiddenPosterIds: Record<string, HideOptions> = PostHiding.posterIdDb.get(
+        { boardID: this.board.ID, threadID: this.thread.ID }
+      );
+      if (hiddenPosterIds && this.info.uniqueID in hiddenPosterIds) {
+        data = hiddenPosterIds[this.info.uniqueID];
+        // thisPost is only on the first hidden posts, it shouldn't apply when hiding on poster ID
+        data.thisPost = true;
       }
     }
 
-    if (!Conf['Reply Hiding Buttons']) { return }
+    if (data) {
+      if (data.thisPost) {
+        PostHiding.hide(this, data.makeStub, data.hideRecursively, 'Hidden manually');
+      } else {
+        PostHiding.hideRecursive(this, data.makeStub);
+      }
+    }
 
-    const button = PostHiding.makeButton(this, 'hide')
-    if (sa = g.SITE.selectors.sideArrows) {
-      const sideArrows = $(sa, this.nodes.root)
-      $.replace(sideArrows.firstChild, button)
-      return sideArrows.className = 'replacedSideArrows'
+    if (!Conf['Reply Hiding Buttons']) { return; }
+
+    const button = PostHiding.makeButton(this, 'hide');
+    const sa = g.SITE.selectors.sideArrows;
+    if (sa) {
+      const sideArrows = $(sa, this.nodes.root);
+      $.replace(sideArrows.firstChild, button);
+      sideArrows.className = 'replacedSideArrows';
     } else {
-      return $.prepend(this.nodes.info, button)
+      $.prepend(this.nodes.info, button);
     }
   },
 
   menu: {
-    init() {
-      if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Reply Hiding Link']) { return }
+    post: undefined as Post,
+
+    async init() {
+      if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Reply Hiding Link']) return;
+
+      await new Promise(res => BoardConfig.ready(res));
 
       // Hide
-      let div = $.el('div', {
-        className: 'hide-reply-link',
-        textContent: 'Hide'
-      }
-      )
-
-      let apply = $.el('a', {
+      let applyHide = $.el('a', {
         textContent: 'Apply',
         href: 'javascript:;'
-      }
-      )
-      $.on(apply, 'click', PostHiding.menu.hide)
+      });
+      $.on(applyHide, 'click', PostHiding.menu.hide);
 
-      let thisPost = UI.checkbox('thisPost', 'This post', true)
-      let replies = UI.checkbox('replies', 'Hide replies', Conf['Recursive Hiding'])
-      const makeStub = UI.checkbox('makeStub', 'Make stub', Conf['Stubs'])
+      const hideOptions = [
+        { el: applyHide },
+        { el: UI.checkbox('thisPost', 'This post', true) },
+        { el: UI.checkbox('replies', 'Hide replies', Conf['Recursive Hiding']) },
+        { el: UI.checkbox('makeStub', 'Make stub', Conf['Stubs']) },
+      ];
+      if (g.BOARD.config.user_ids) {
+        hideOptions.push({ el: UI.checkbox('byId', 'By poster id', false) });
+      }
 
       Menu.menu.addEntry({
-        el: div,
+        el: $.el('div', {
+          className: 'hide-reply-link',
+          textContent: 'Hide'
+        }),
         order: 20,
         open(post) {
           if (!post.isReply || post.isClone || post.isHidden) {
-            return false
+            return false;
           }
-          PostHiding.menu.post = post
-          return true
+          PostHiding.menu.post = post;
+          return true;
         },
-        subEntries: [
-          { el: apply }
-          ,
-          { el: thisPost }
-          ,
-          { el: replies }
-          ,
-          { el: makeStub }
-        ]
-      })
+        subEntries: hideOptions
+      });
 
       // Show
-      div = $.el('div', {
-        className: 'show-reply-link',
-        textContent: 'Show'
-      }
-      )
-
-      apply = $.el('a', {
+      const applyShow = $.el('a', {
         textContent: 'Apply',
         href: 'javascript:;'
-      }
-      )
-      $.on(apply, 'click', PostHiding.menu.show)
+      });
+      $.on(applyShow, 'click', PostHiding.menu.show);
 
-      thisPost = UI.checkbox('thisPost', 'This post', false)
-      replies = UI.checkbox('replies', 'Show replies', false)
+      const thisPost = UI.checkbox('thisPost', 'This post',    false);
+      const replies  = UI.checkbox('replies',  'Show replies', false);
       const hideStubLink = $.el('a', {
         textContent: 'Hide stub',
         href: 'javascript:;'
+      });
+      $.on(hideStubLink, 'click', PostHiding.menu.hideStub);
+
+      const showOptions = [
+        { el: applyShow },
+        { el: thisPost },
+        { el: replies },
+      ];
+      let byId: HTMLElement;
+      if (g.BOARD.config.user_ids) {
+        byId = UI.checkbox('byId', 'By poster id', false);
+        showOptions.push({ el: byId });
       }
-      )
-      $.on(hideStubLink, 'click', PostHiding.menu.hideStub)
 
       Menu.menu.addEntry({
-        el: div,
+        el: $.el('div', {
+          className: 'show-reply-link',
+          textContent: 'Show'
+        }),
         order: 20,
-        open(post) {
-          let data
+        open(post: Post) {
           if (!post.isReply || post.isClone || !post.isHidden) {
-            return false
+            return false;
           }
-          if (!(data = PostHiding.db.get({ boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID }))) {
-            return false
-          }
-          PostHiding.menu.post = post
-          thisPost.firstChild.checked = post.isHidden
-          replies.firstChild.checked = (data?.hideRecursively != null) ? data.hideRecursively : Conf['Recursive Hiding']
-          return true
-        },
-        subEntries: [
-          { el: apply }
-          ,
-          { el: thisPost }
-          ,
-          { el: replies }
-        ]
-      })
+          const data = PostHiding.db.get({boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID});
+          if (!data) return false;
 
-      return Menu.menu.addEntry({
+          PostHiding.menu.post = post;
+          thisPost.firstChild.checked = post.isHidden;
+          replies.firstChild.checked = data.hideRecursively ?? Conf['Recursive Hiding'];
+          if (byId) byId.firstChild.checked = data.byId;
+          return true;
+        },
+        subEntries: showOptions
+      });
+
+      Menu.menu.addEntry({
         el: hideStubLink,
         order: 15,
         open(post) {
-          let data
+          let data;
           if (!post.isReply || post.isClone || !post.isHidden) {
-            return false
+            return false;
           }
-          if (!(data = PostHiding.db.get({ boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID }))) {
-            return false
+          if (!(data = PostHiding.db.get({boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID}))) {
+            return false;
           }
-          return PostHiding.menu.post = post
+          return PostHiding.menu.post = post;
         }
-      })
+      });
     },
 
     hide() {
-      const parent = this.parentNode
-      const thisPost = $('input[name=thisPost]', parent).checked
-      const replies = $('input[name=replies]', parent).checked
-      const makeStub = $('input[name=makeStub]', parent).checked
-      const { post } = PostHiding.menu
+      const parent   = this.parentNode;
+      const thisPost = $('input[name=thisPost]', parent).checked;
+      const replies  = $('input[name=replies]',  parent).checked;
+      const makeStub = $('input[name=makeStub]', parent).checked;
+      const byId     = $('input[name=byId]', parent)?.checked;
+      const {post}   = PostHiding.menu as { post: Post };
+
+      if (!thisPost && !replies && !byId) return;
+
       if (thisPost) {
-        PostHiding.hide(post, makeStub, replies)
+        PostHiding.hide(post, makeStub, replies, 'Hidden manually');
       } else if (replies) {
-        Recursive.apply(PostHiding.hide, post, makeStub, true)
-        Recursive.add(PostHiding.hide, post, makeStub, true)
-      } else {
-        return
+        PostHiding.hideRecursive(post, makeStub);
       }
-      PostHiding.saveHiddenState(post, true, thisPost, makeStub, replies)
-      return $.event('CloseMenu')
+      if (byId) {
+        const msg = `Hidden because of poster ID ${post.info.uniqueID}`;
+        g.posts.forEach((p) => {
+          if (p.info.uniqueID === post.info.uniqueID && p !== post) {
+            PostHiding.hide(p, makeStub, replies, msg);
+            PostHiding.saveHiddenState(p, true, thisPost, makeStub, replies, byId);
+          }
+        });
+        const data: Record<string, HideOptions> = PostHiding.posterIdDb.get(
+          { boardID: post.boardID, threadID: post.threadID, defaultValue: dict() }
+        );
+        if (!(post.info.uniqueID in data)) {
+          data[post.info.uniqueID] = { makeStub, hideRecursively: replies };
+          PostHiding.posterIdDb.set({ boardID: post.boardID, threadID: post.threadID, val: data });
+        }
+      }
+
+      PostHiding.saveHiddenState(post, true, thisPost, makeStub, replies, byId);
+      $.event('CloseMenu');
     },
 
     show() {
-      let data
-      const parent = this.parentNode
-      const thisPost = $('input[name=thisPost]', parent).checked
-      const replies = $('input[name=replies]', parent).checked
-      const { post } = PostHiding.menu
+      const parent   = this.parentNode;
+      const thisPost = $('input[name=thisPost]', parent).checked;
+      const replies  = $('input[name=replies]',  parent).checked;
+      const byId     = $('input[name=byId]', parent)?.checked;
+      const { post } = PostHiding.menu as { post: Post };
+      const { boardID, threadID, postID } = post;
+
+      if (!thisPost && !replies && !byId) return;
+
       if (thisPost) {
-        PostHiding.show(post, replies)
+        PostHiding.show(post, replies);
       } else if (replies) {
-        Recursive.apply(PostHiding.show, post, true)
-        Recursive.rm(PostHiding.hide, post)
-      } else {
-        return
+        Recursive.apply(PostHiding.show, post, true);
+        Recursive.rm(PostHiding.hide, post);
       }
-      if (data = PostHiding.db.get({ boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID })) {
-        PostHiding.saveHiddenState(post, !(thisPost && replies), !thisPost, data.makeStub, !replies)
+      if (byId) {
+        g.posts.forEach((p) => {
+          if (p.info.uniqueID === post.info.uniqueID && p !== post) {
+            PostHiding.show(p, replies);
+            const data = PostHiding.db.get({ boardID, threadID, postID });
+            if (data) {
+              PostHiding.saveHiddenState(post, !(thisPost && replies), !thisPost, data.makeStub, !replies, byId);
+            }
+          }
+        });
+        const byIdState: Record<string, HideOptions> = PostHiding.posterIdDb.get({ boardID, threadID });
+        if (byIdState && post.info.uniqueID in byIdState) {
+          delete byIdState[post.info.uniqueID];
+          PostHiding.posterIdDb.set({ boardID, threadID, val: byIdState });
+        }
       }
-      return $.event('CloseMenu')
+
+      const data = PostHiding.db.get({ boardID, threadID, postID })
+      if (data) {
+        PostHiding.saveHiddenState(post, !(thisPost && replies), !thisPost, data.makeStub, !replies, byId);
+      }
+      $.event('CloseMenu');
     },
     hideStub() {
-      let data
-      const { post } = PostHiding.menu
-      if (data = PostHiding.db.get({ boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID })) {
-        PostHiding.show(post, data.hideRecursively)
-        PostHiding.hide(post, false, data.hideRecursively)
-        PostHiding.saveHiddenState(post, true, true, false, data.hideRecursively)
+      let data;
+      const {post} = PostHiding.menu;
+      if (data = PostHiding.db.get({boardID: post.board.ID, threadID: post.thread.ID, postID: post.ID})) {
+        PostHiding.show(post, data.hideRecursively);
+        PostHiding.hide(post, false, data.hideRecursively);
+        PostHiding.saveHiddenState(post, true, true, false, data.hideRecursively, data.byId);
       }
-      $.event('CloseMenu')
+      $.event('CloseMenu');
     }
   },
 
   makeButton(post, type) {
     const span = $.el('span', {
-      className: `fa fa-${type === 'hide' ? 'minus' : 'plus'}-square-o`,
-      textContent: ""
-    }
-    )
+      className: 'stub-icon',
+    });
     const a = $.el('a', {
-      className: `${type}-reply-button`,
-      href: 'javascript:;'
-    }
-    )
-    $.add(a, span)
-    $.on(a, 'click', PostHiding.toggle)
-    return a
+      className: `${type}-post-button ${type}-reply-button`,
+      href:      'javascript:;'
+    });
+    Icon.set(span, type === 'hide' ? 'squareMinus' : 'squarePlus');
+    $.add(a, span);
+    $.on(a, 'click', PostHiding.toggle);
+    return a;
   },
 
-  saveHiddenState(post, isHiding, thisPost, makeStub, hideRecursively) {
+  saveHiddenState(
+    post: Post,
+    isHiding: boolean,
+    thisPost?: boolean,
+    makeStub?: boolean,
+    hideRecursively?: boolean,
+    byId?: boolean
+  ) {
     const data = {
-      boardID: post.board.ID,
+      boardID:  post.board.ID,
       threadID: post.thread.ID,
-      postID: post.ID
-    }
+      postID:   post.ID
+    };
     if (isHiding) {
       data.val = {
         thisPost: thisPost !== false, // undefined -> true
         makeStub,
-        hideRecursively
-      }
-      return PostHiding.db.set(data)
+        hideRecursively,
+        byId
+      } satisfies HideOptions;
+      PostHiding.db.set(data);
     } else {
-      return PostHiding.db.delete(data)
+      PostHiding.db.delete(data);
     }
   },
 
   toggle() {
-    const post = Get.postFromNode(this)
-    PostHiding[(post.isHidden ? 'show' : 'hide')](post)
-    return PostHiding.saveHiddenState(post, post.isHidden)
+    const post: Post = Get.postFromNode(this);
+    post.isHidden ? PostHiding.show(post) : PostHiding.hide(post, undefined, undefined, 'Hidden manually');
+    PostHiding.saveHiddenState(post, post.isHidden);
   },
 
-  hide(post, makeStub = Conf['Stubs'], hideRecursively = Conf['Recursive Hiding']) {
-    if (post.isHidden) { return }
-    post.isHidden = true
+  hide(
+    post: Post,
+    makeStub: boolean = Conf['Stubs'],
+    hideRecursively: boolean = Conf['Recursive Hiding'],
+    reason?: string
+  ) {
+    if (post.isHidden) return;
+    post.isHidden = true;
 
     if (hideRecursively) {
-      Recursive.apply(PostHiding.hide, post, makeStub, true)
-      Recursive.add(PostHiding.hide, post, makeStub, true)
+      PostHiding.hideRecursive(post, makeStub);
     }
 
-    for (const quotelink of Get.allQuotelinksLinkingTo(post)) {
-      $.addClass(quotelink, 'filtered')
+    for (var quotelink of Get.allQuotelinksLinkingTo(post)) {
+      $.addClass(quotelink, 'filtered');
     }
 
     if (!makeStub) {
-      post.nodes.root.hidden = true
-      return
+      post.nodes.root.hidden = true;
+      return;
     }
 
-    const a = PostHiding.makeButton(post, 'show')
-    $.add(a, $.tn(` ${post.info.nameBlock}`))
-    post.nodes.stub = $.el('div',
-      { className: 'stub' })
-    $.add(post.nodes.stub, a)
-    if (Conf['Menu']) {
-      $.add(post.nodes.stub, Menu.makeButton(post))
+    post.nodes.stub = $.el('div', { className: 'stub' });
+    const a = PostHiding.makeButton(post, 'show');
+    $.add(a, $.el('span', { className: 'stub-name', textContent: post.info.nameBlock}));
+
+    let reasons = post.filterResults?.reasons || [];
+    if (reason) reasons = [...reasons, reason];
+    if (Conf['Filter Reason'] && reasons.length) {
+      const reasonsSpan = $.el('span', { className: 'stub-reasons' });
+      $.add(reasonsSpan, reasons.map(re => $.el('span', { className: 'stub-reason', textContent: re })));
+      a.appendChild(reasonsSpan);
     }
-    return $.prepend(post.nodes.root, post.nodes.stub)
+
+    $.add(post.nodes.stub, a);
+
+    if (!Conf['Filter Reason'] && reasons) post.nodes.stub.title = reasons.join(' & ');
+    if (Conf['Menu']) {
+      $.add(post.nodes.stub, Menu.makeButton(post));
+    }
+    $.prepend(post.nodes.root, post.nodes.stub);
   },
 
-  show(post, showRecursively = Conf['Recursive Hiding']) {
+  hideRecursive(post: Post, makeStub: boolean) {
+    Recursive.applyAndAdd(PostHiding.hide, post, makeStub, true, `Hidden recursively from ${post.ID}`);
+  },
+
+  show(post: Post, showRecursively: boolean = Conf['Recursive Hiding']) {
     if (post.nodes.stub) {
-      $.rm(post.nodes.stub)
-      delete post.nodes.stub
+      $.rm(post.nodes.stub);
+      delete post.nodes.stub;
     } else {
-      post.nodes.root.hidden = false
+      post.nodes.root.hidden = false;
     }
-    post.isHidden = false
+    post.isHidden = false;
     if (showRecursively) {
-      Recursive.apply(PostHiding.show, post, true)
-      Recursive.rm(PostHiding.hide, post)
+      Recursive.apply(PostHiding.show, post, true);
+      Recursive.rm(PostHiding.hide, post);
     }
-    for (const quotelink of Get.allQuotelinksLinkingTo(post)) {
-      $.rmClass(quotelink, 'filtered')
+    for (var quotelink of Get.allQuotelinksLinkingTo(post)) {
+      $.rmClass(quotelink, 'filtered');
     }
   }
-}
-export default PostHiding
+};
+export default PostHiding;
