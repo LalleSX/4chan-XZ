@@ -87,4 +87,4 @@ Before a public release, configure project/support/download URLs and extension
 identifiers, review compatibility and permissions, and set the version/date in
 `version.json`. Do not publish, sign, upload, push, or contact upstream maintainers
 unless requested. `tools/sign.sh` and `tools/stats.js` are historical utilities,
-not the NZ release pipeline. Preserve upstream authorship and the MIT license.
+not the XZ release pipeline. Preserve upstream authorship and the MIT license.
