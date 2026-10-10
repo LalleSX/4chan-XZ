@@ -18,7 +18,7 @@ import Icon from "../Icons/icon";
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var ImageExpand = {
+const ImageExpand = {
   init() {
     if (!(this.enabled = Conf['Image Expansion'] && ['index', 'thread'].includes(g.VIEW))) { return; }
 

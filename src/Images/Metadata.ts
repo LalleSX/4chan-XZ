@@ -7,10 +7,10 @@ import Get from "../General/Get";
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
+ * DS207: Consider shorter constiations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Metadata = {
+const Metadata = {
   init() {
     if (!Conf['WEBM Metadata'] || !['index', 'thread'].includes(g.VIEW)) { return; }
 
@@ -24,7 +24,7 @@ var Metadata = {
     for (let i = 0; i < this.files.length; i++) {
       const file = this.files[i];
       if (/webm$/i.test(file.url)) {var el;
-      
+
         if (this.isClone) {
           el = $('.webm-title', file.text);
         } else {

@@ -7,7 +7,7 @@ import archives from './archives.json';
 
 type Archive = (typeof archives)[number];
 
-var Redirect = {
+const Redirect = {
   archives,
   /** List of archives by compatible functions. */
   data: null as {

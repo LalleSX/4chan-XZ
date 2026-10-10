@@ -5,7 +5,7 @@ import { g, Conf, E, doc, d } from "../globals/globals";
 import $ from "../platform/$";
 import { MINUTE, SECOND } from "../platform/helpers";
 
-var ThreadStats = {
+const ThreadStats = {
   postCount: 0,
   fileCount: 0,
   postIndex: 0,

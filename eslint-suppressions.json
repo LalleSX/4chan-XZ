@@ -9,7 +9,7 @@
   },
   "src/Archive/Redirect.ts": {
     "no-var": {
-      "count": 3
+      "count": 2
     }
   },
   "src/Archive/RestoreDeletedFromArchive.ts": {
@@ -104,11 +104,6 @@
       "count": 2
     }
   },
-  "src/General/UI.ts": {
-    "no-cond-assign": {
-      "count": 5
-    }
-  },
   "src/Images/Gallery.ts": {
     "no-cond-assign": {
       "count": 2
@@ -122,9 +117,6 @@
   "src/Images/ImageExpand.ts": {
     "no-cond-assign": {
       "count": 2
-    },
-    "no-var": {
-      "count": 1
     }
   },
   "src/Images/Sauce.ts": {
@@ -201,9 +193,6 @@
   "src/Miscellaneous/FileInfo.tsx": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
-    },
-    "no-var": {
-      "count": 1
     }
   },
   "src/Miscellaneous/Nav.ts": {
@@ -229,21 +218,11 @@
       "count": 6
     }
   },
-  "src/Miscellaneous/RelativeDates.ts": {
-    "no-var": {
-      "count": 1
-    }
-  },
   "src/Miscellaneous/Report.ts": {
     "no-cond-assign": {
       "count": 1
     },
     "no-empty": {
-      "count": 1
-    }
-  },
-  "src/Miscellaneous/Time.ts": {
-    "no-var": {
       "count": 1
     }
   },
@@ -317,7 +296,7 @@
       "count": 1
     },
     "no-var": {
-      "count": 10
+      "count": 9
     },
     "prefer-const": {
       "count": 3
@@ -331,9 +310,6 @@
   "src/Quotelinks/QuoteThreading.ts": {
     "no-cond-assign": {
       "count": 2
-    },
-    "no-var": {
-      "count": 1
     }
   },
   "src/Quotelinks/QuoteYou.ts": {

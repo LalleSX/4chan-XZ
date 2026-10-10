@@ -12,7 +12,7 @@ import { dict } from "../platform/helpers";
   <3 aeosynth
 */
 
-var QuoteThreading = {
+const QuoteThreading = {
   init() {
     if (!Conf['Quote Threading'] || (g.VIEW !== 'thread')) { return; }
 

@@ -21,7 +21,7 @@ import Get from '../General/Get';
 import { debounce, dict, SECOND } from '../platform/helpers';
 import Icon from '../Icons/icon';
 
-var Gallery = {
+const Gallery = {
   init() {
     if (!(this.enabled = Conf['Gallery'] && ['index', 'thread'].includes(g.VIEW))) { return; }
 
