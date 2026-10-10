@@ -8,7 +8,7 @@ import $ from "../platform/$";
 import $$ from "../platform/$$";
 import { dict } from "../platform/helpers";
 
-var ExpandThread = {
+const ExpandThread = {
   statuses: dict(),
   init() {
     if (!((g.VIEW === 'index') && Conf['Thread Expansion'])) { return; }

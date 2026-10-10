@@ -8,7 +8,7 @@ import $ from "../platform/$";
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var IDPostCount = {
+const IDPostCount = {
   init() {
     if ((g.VIEW !== 'thread') || !Conf['Count Posts by ID']) { return; }
     Callbacks.Thread.push({

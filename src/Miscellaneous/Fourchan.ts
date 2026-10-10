@@ -11,7 +11,7 @@ import ExpandComment from "./ExpandComment";
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Fourchan = {
+const Fourchan = {
   init() {
     if ((g.SITE.software !== 'yotsuba') || !['index', 'thread', 'archive'].includes(g.VIEW)) { return; }
     BoardConfig.ready(this.initBoard);

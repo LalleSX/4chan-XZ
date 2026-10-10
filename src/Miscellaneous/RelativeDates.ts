@@ -5,7 +5,7 @@ import { g, Conf, d, doc } from "../globals/globals";
 import $ from "../platform/$";
 import { DAY, HOUR, MINUTE, SECOND } from "../platform/helpers";
 
-var RelativeDates = {
+const RelativeDates = {
   INTERVAL: 30000,
 
   init() {

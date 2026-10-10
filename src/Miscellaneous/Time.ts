@@ -2,7 +2,7 @@ import $ from "../platform/$";
 import Callbacks from "../classes/Callbacks";
 import { g, Conf } from "../globals/globals";
 
-var Time = {
+const Time = {
   init() {
     if (!['index', 'thread', 'archive'].includes(g.VIEW) || !Conf['Time Formatting']) { return; }
 

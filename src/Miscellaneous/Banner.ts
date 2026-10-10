@@ -12,7 +12,7 @@ import { dict } from "../platform/helpers";
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Banner = {
+const Banner = {
   init() {
     if (Conf['Custom Board Titles']) {
       this.db = new DataBoard('customTitles', null, true);

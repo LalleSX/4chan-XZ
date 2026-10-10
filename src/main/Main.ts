@@ -102,7 +102,7 @@ import Test from "../General/Test";
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Main = {
+const Main = {
   init() {
     // Return if the url is exactly https://www.4chan.org, this is only the home page which has a cloudflare checking
     // system which breaks this script. Keep it in the includes so it can be found on greasy fork.

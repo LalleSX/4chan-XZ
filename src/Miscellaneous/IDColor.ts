@@ -8,7 +8,7 @@ import { dict } from "../platform/helpers";
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var IDColor = {
+const IDColor = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Color User IDs']) { return; }
     this.ids = dict();
@@ -45,7 +45,7 @@ var IDColor = {
       hash & 0xFF
     ];
 
-    // Weight color luminance values, assign a font color that should be readable. 
+    // Weight color luminance values, assign a font color that should be readable.
     rgb.push($.luma(rgb) > 125 ?
       '#000'
     :
