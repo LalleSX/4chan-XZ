@@ -7,7 +7,7 @@ import $ from "../platform/$";
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-var Get = {
+const Get = {
   url(type, IDs, ...args) {
     let f, site;
     if ((site = g.sites[IDs.siteID]) && (f = $.getOwn(site.urls, type))) {
