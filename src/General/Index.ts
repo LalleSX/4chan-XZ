@@ -33,7 +33,7 @@ import Get from './Get';
 import { dict, SECOND } from '../platform/helpers';
 import Icon from '../Icons/icon';
 
-var Index = {
+const Index = {
   showHiddenThreads: false,
   changed: {},
 

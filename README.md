@@ -63,6 +63,16 @@ On Windows, if PowerShell's `npm` launcher reports a missing `npm-cli.js`, use
 `npm.cmd` for these commands. That is a local npm installation issue rather than
 a project build failure.
 
+To build the project and copy the readable userscript to your clipboard on Windows:
+
+```powershell
+.\build-and-copy.ps1
+```
+
+The script runs `npm.cmd run build` and copies the full UTF-8 contents of
+`dist/4chan-XZ.user.js` after a successful build. It can also be invoked by its
+full path from another directory.
+
 | Command | Purpose |
 | --- | --- |
 | `npm run build` | Build readable userscript and unpacked extension together |

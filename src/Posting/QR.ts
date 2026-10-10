@@ -28,7 +28,7 @@ interface ConvertOptions {
   height?: number;
 };
 
-var QR = {
+const QR = {
   postingIsEnabled: false,
 
   // will be set at init
