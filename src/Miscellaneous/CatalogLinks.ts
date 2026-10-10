@@ -26,7 +26,7 @@ var CatalogLinks = {
         case 'index':             return '#ctrl-top > a, .cataloglink > a';
       } })();
       $.ready(function() {
-        for (var link of $$(selector)) {
+        for (const link of $$(selector)) {
           var catalogURL;
           switch (link.pathname.replace(/\/+/g, '/')) {
             case `/${g.BOARD}/`:
@@ -38,8 +38,8 @@ var CatalogLinks = {
               break;
           }
           if ((g.VIEW === 'catalog') && ((catalogURL = CatalogLinks.catalog()) !== g.SITE.urls.catalog?.(g.BOARD))) {
-            var catalogLink = link.parentNode.cloneNode(true);
-            var link2 = catalogLink.firstElementChild;
+            const catalogLink = link.parentNode.cloneNode(true);
+            const link2 = catalogLink.firstElementChild;
             link2.href = catalogURL;
             link2.textContent = link2.hostname === location.hostname ? `${meta.name} Catalog` : 'External Catalog';
             $.after(link.parentNode, [$.tn(' '), catalogLink]);
@@ -70,7 +70,7 @@ var CatalogLinks = {
   },
 
   node() {
-    for (var a of $$('a', this.nodes.comment)) {
+    for (const a of $$('a', this.nodes.comment)) {
       var m;
       if (m = a.href.match(/^https?:\/\/(boards\.4chan(?:nel)?\.org\/[^\/]+)\/catalog(#s=.*)?/)) {
         a.href = `//${m[1]}/${m[2] || '#catalog'}`;
@@ -99,8 +99,8 @@ var CatalogLinks = {
     // do not transform links unless they differ from the expected value at most by this tail
     const tail = /(?:index)?(?:\.\w+)?$/;
 
-    for (var a of $$('a:not([data-only])', list)) {
-      var {siteID, boardID} = a.dataset;
+    for (const a of $$('a:not([data-only])', list)) {
+      let {siteID, boardID} = a.dataset;
       if (!siteID || !boardID) {
         var VIEW;
         ({siteID, boardID, VIEW} = Site.parseURL(a));
@@ -112,8 +112,8 @@ var CatalogLinks = {
         $.extend(a.dataset, {siteID, boardID});
       }
 
-      var board = {siteID, boardID};
-      var url = Conf['Header catalog links'] ? CatalogLinks.catalog(board) : Get.url('index', board);
+      const board = {siteID, boardID};
+      const url = Conf['Header catalog links'] ? CatalogLinks.catalog(board) : Get.url('index', board);
       if (url) {
         a.href = url;
         if (a.dataset.indexOptions && (url.split('#')[0] === Get.url('index', board))) {
@@ -125,12 +125,12 @@ var CatalogLinks = {
 
   externalParse() {
     CatalogLinks.externalList = dict();
-    for (var line of Conf['externalCatalogURLs'].split('\n')) {
+    for (const line of Conf['externalCatalogURLs'].split('\n')) {
       if (line[0] === '#') { continue; }
-      var url = line.split(';')[0];
-      var boards   = Filter.parseBoards(line.match(/;boards:([^;]+)/)?.[1] || '*');
-      var excludes = Filter.parseBoards(line.match(/;exclude:([^;]+)/)?.[1]) || dict();
-      for (var board in boards) {
+      const url = line.split(';')[0];
+      const boards   = Filter.parseBoards(line.match(/;boards:([^;]+)/)?.[1] || '*');
+      const excludes = Filter.parseBoards(line.match(/;exclude:([^;]+)/)?.[1]) || dict();
+      for (const board in boards) {
         if (!excludes[board] && !excludes[board.split('/')[0] + '/*']) {
           CatalogLinks.externalList[board] = url;
         }

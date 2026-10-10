@@ -95,8 +95,8 @@ export default class Fetcher {
 
     // Indicate links to the containing post.
     const quotes = [...clone.nodes.quotelinks, ...clone.nodes.backlinks];
-    for (var quote of quotes) {
-      var {boardID, postID} = Get.postDataFromLink(quote);
+    for (const quote of quotes) {
+      const {boardID, postID} = Get.postDataFromLink(quote);
       if ((postID === this.quoter.ID) && (boardID === this.quoter.board.ID)) {
         $.addClass(quote, 'forwardlink');
       }
@@ -189,7 +189,7 @@ export default class Fetcher {
       CrossOrigin.cache(url, function() {
         if (!encryptionOK && this.response?.media) {
           const {media} = this.response;
-          for (var key in media) {
+          for (const key in media) {
             // Image/thumbnail URLs loaded over HTTP can be modified in transit.
             // Require them to be from an HTTP host so that no referrer is sent to them from an HTTPS page.
             if (/_link$/.test(key)) {

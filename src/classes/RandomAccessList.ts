@@ -6,7 +6,7 @@
 export default class RandomAccessList {
   constructor(items) {
     this.length = 0;
-    if (items) { for (var item of items) { this.push(item); } }
+    if (items) { for (const item of items) { this.push(item); } }
   }
 
   push(data) {

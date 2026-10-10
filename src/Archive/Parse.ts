@@ -85,10 +85,10 @@ export const parseArchivePost = (data: RawArchivePost) => {
   let comment = (data.comment || '').split(/(\n|\[\/?(?:b|spoiler|code|moot|banned|fortune(?: color="#\w+")?|i|red|green|blue)\])/);
   comment = comment.map((text, i) => {
     if ((i % 2) === 1) {
-      var tag = Fetcher.archiveTags[text.replace(/\ .*\]/, ']')];
+      const tag = Fetcher.archiveTags[text.replace(/\ .*\]/, ']')];
       return (typeof tag === 'function') ? tag(text) : tag;
     } else {
-      var greentext = text[0] === '>';
+      const greentext = text[0] === '>';
       text = text
         .replace(/(\[\/?[a-z]+):lit(\])/g, '$1$2')
         .split(/(>>(?:>\/[a-z\d]+\/)?\d+)/g)

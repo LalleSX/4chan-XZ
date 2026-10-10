@@ -68,8 +68,8 @@ const Filter = {
       $.addClass(doc, 'hide-backlinks');
     }
 
-    for (var key in Config.filter) {
-      for (var line of (Conf[key] as string).split('\n')) {
+    for (const key in Config.filter) {
+      for (const line of (Conf[key] as string).split('\n')) {
         try {
           const rule = parseRule(line, key, Conf.Stubs);
           if (!rule) continue;
@@ -121,7 +121,7 @@ const Filter = {
     if (boards = Filter.parseBoardsMemo[boardsRaw]) { return boards; }
     boards = dict();
     let siteFilter = '';
-    for (var boardID of boardsRaw.split(',')) {
+    for (let boardID of boardsRaw.split(',')) {
       boardID = boardID.trim();
       if (!boardID) continue;
       if (boardID.includes(':')) {
@@ -129,11 +129,11 @@ const Filter = {
         siteFilter = siteFilter.trim();
         boardID = boardID.trim();
       }
-      for (var siteID in g.sites) {
-        var site = g.sites[siteID];
+      for (const siteID in g.sites) {
+        const site = g.sites[siteID];
         if (siteID.slice(0, siteFilter.length) === siteFilter) {
           if (['nsfw', 'sfw'].includes(boardID)) {
-            for (var boardID2 of site.sfwBoards?.(boardID === 'sfw') || []) {
+            for (const boardID2 of site.sfwBoards?.(boardID === 'sfw') || []) {
               boards[`${siteID}/${boardID2}`] = true;
             }
           } else {
@@ -307,8 +307,8 @@ const Filter = {
       new Notice('warning', `Failed to fetch catalog JSON data. ${this.status ? `Error ${this.statusText} (${this.status})` : 'Connection Error'}`, 1);
       return;
     }
-    for (var page of this.response) {
-      for (var item of page.threads) {
+    for (const page of this.response) {
+      for (const item of page.threads) {
         Filter.catalogData[item.no] = item;
       }
     }
@@ -462,7 +462,7 @@ const Filter = {
     },
     undo() {
       Filter.removeFilters('MD5', this.filters);
-      for (var post of this.posts) {
+      for (const post of this.posts) {
         if (post.isReply) {
           PostHiding.show(post);
         } else if (g.VIEW === 'index') {
@@ -500,7 +500,7 @@ const Filter = {
         subEntries: []
       };
 
-      for (var type of [
+      for (const type of [
         ['Name',             'name'],
         ['Unique ID',        'uniqueID'],
         ['Tripcode',         'tripcode'],

@@ -22,7 +22,7 @@ var Metadata = {
 
   node() {
     for (let i = 0; i < this.files.length; i++) {
-      var file = this.files[i];
+      const file = this.files[i];
       if (/webm$/i.test(file.url)) {var el;
       
         if (this.isClone) {
@@ -78,10 +78,10 @@ var Metadata = {
 
     var i = 0;
     while (i < data.length) {
-      var element = readInt();
-      var size    = readInt();
+      const element = readInt();
+      let size    = readInt();
       if (element === 0x3BA9) { // Title
-        var title = '';
+        let title = '';
         while (size-- && (i < data.length)) {
           title += String.fromCharCode(data[i++]);
         }

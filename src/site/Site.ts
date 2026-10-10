@@ -27,14 +27,14 @@ var Site = {
       cb();
     }
     $.onExists(doc, 'body', () => {
-      for (var software in SW) {
+      for (const software in SW) {
         var changes;
         if (changes = SW[software].detect?.()) {
           changes.software = software;
           hostname = location.hostname.replace(/^www\./, '');
-          var properties = (Conf['siteProperties'][hostname] || (Conf['siteProperties'][hostname] = dict()));
-          var changed = 0;
-          for (var key in changes) {
+          const properties = (Conf['siteProperties'][hostname] || (Conf['siteProperties'][hostname] = dict()));
+          let changed = 0;
+          for (const key in changes) {
             if (properties[key] !== changes[key]) {
               properties[key] = changes[key];
               changed++;
@@ -71,11 +71,11 @@ var Site = {
   },
 
   set(hostname) {
-    for (var ID in Conf['siteProperties']) {
+    for (const ID in Conf['siteProperties']) {
       var site;
-      var properties = Conf['siteProperties'][ID];
+      const properties = Conf['siteProperties'][ID];
       if (properties.canonical) { continue; }
-      var {
+      const {
         software
       } = properties;
       if (!software || !$.hasOwn(SW, software)) { continue; }

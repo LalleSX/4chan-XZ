@@ -173,7 +173,7 @@ var DeleteLink = {
         setTimeout(DeleteLink.cooldown.count, 1000, post);
       } else {
         delete DeleteLink.cooldown.seconds[post.fullID];
-        for (var fileOnly of [false, true]) {
+        for (const fileOnly of [false, true]) {
           if (DeleteLink.auto[+fileOnly][post.fullID]) {
             DeleteLink.delete(post, fileOnly);
           }

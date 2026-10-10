@@ -35,14 +35,14 @@ var Keybinds = {
   init() {
     if (!Conf['Keybinds']) { return; }
 
-    for (var hotkey in Config.hotkeys) {
+    for (const hotkey in Config.hotkeys) {
       $.sync(hotkey, Keybinds.sync);
     }
 
-    var init = function() {
+    const init = function() {
       $.off(d, '4chanXInitFinished', init);
       $.on(d, 'keydown', Keybinds.keydown);
-      for (var node of $$('[accesskey]')) {
+      for (const node of $$('[accesskey]')) {
         node.removeAttribute('accesskey');
       }
     };
@@ -91,7 +91,7 @@ var Keybinds = {
       if (Settings.dialog) {
         Settings.close();
       } else if ((notifications = $$('.notification')).length) {
-        for (var notification of notifications) {
+        for (const notification of notifications) {
           $('.close', notification).click();
         }
       } else if (QR.nodes?.preview) {
@@ -236,7 +236,7 @@ var Keybinds = {
       hasAction = true;
     }
     if (key === Conf['Search form'] && g.VIEW === 'index') {
-      var searchInput = Index.enabled ?
+      const searchInput = Index.enabled ?
         Index.searchInput
       : g.SITE.selectors.searchBox ?
         $(g.SITE.selectors.searchBox)
@@ -466,7 +466,7 @@ var Keybinds = {
 
     const replies = $$(replySelector, thread);
     if (delta === -1) { replies.reverse(); }
-    for (var reply of replies) {
+    for (const reply of replies) {
       if (((delta === +1) && (Header.getTopOf(reply) > 0)) || ((delta === -1) && (Header.getBottomOf(reply) > 0))) {
         $.addClass(reply, highlight);
         return;

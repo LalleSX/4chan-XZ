@@ -66,7 +66,7 @@ const Test = {
       $.rm(el);
     }
     for (el of $$('a[href]', root2)) {
-      var {
+      let {
         href
       } = el;
       href = href.replace(/(^\w+:\/\/boards\.4chan(?:nel)?\.org\/[^\/]+\/thread\/\d+)\/.*/, '$1');
@@ -128,31 +128,31 @@ const Test = {
       if (!this.response) { return; }
       const {posts} = this.response;
       g.SITE.Build.spoilerRange[post.board.ID] = posts[0].custom_spoiler;
-      for (var postData of posts) {
+      for (const postData of posts) {
         if (postData.no === post.ID) {
-          var t1 = new Date().getTime();
-          var obj = g.SITE.Build.parseJSON(postData, post.board);
-          var root = g.SITE.Build.post(obj);
-          var t2 = new Date().getTime();
+          const t1 = new Date().getTime();
+          const obj = g.SITE.Build.parseJSON(postData, post.board);
+          const root = g.SITE.Build.post(obj);
+          const t2 = new Date().getTime();
           Test.time += t2 - t1;
-          var post2 = new Post(root, post.thread, post.board, {forBuildTest: true});
-          var fail = false;
+          const post2 = new Post(root, post.thread, post.board, {forBuildTest: true});
+          let fail = false;
 
-          var x = post.normalizedOriginal;
-          var y = post2.normalizedOriginal;
+          const x = post.normalizedOriginal;
+          const y = post2.normalizedOriginal;
           if (!x.isEqualNode(y)) {
             fail = true;
             c.log(`${post.fullID} differs`);
-            var [x2, y2] = Test.firstDiff(x, y);
+            const [x2, y2] = Test.firstDiff(x, y);
             c.log(x2);
             c.log(y2);
             c.log(x.outerHTML);
             c.log(y.outerHTML);
           }
 
-          for (var key in Config.filter) {
+          for (const key in Config.filter) {
             if ((!key === 'General') && !((key === 'MD5') && (post.board.ID === 'f'))) {
-              var val1 = Filter.values(key, obj);
+              const val1 = Filter.values(key, obj);
               var val2 = Filter.values(key, post2);
               if ((val1.length !== val2.length) || !val1.every((x, i) => x === val2[i])) {
                 fail = true;

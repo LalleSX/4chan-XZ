@@ -67,7 +67,7 @@ var Fourchan = {
     return $.ready(() => {
       const iterable = $$('.prettyprint', this.nodes.comment);
       for (let i = 0; i < iterable.length; i++) {
-        var pre = iterable[i];
+        const pre = iterable[i];
         if (!$.hasClass(pre, 'prettyprinted')) {
           $.event('prettyprint', {ID: this.fullID, i, html: pre.innerHTML}, window);
         }
@@ -80,10 +80,10 @@ var Fourchan = {
     if (!/\[(math|eqn)\]/.test(this.nodes.comment.textContent)) { return; }
     // XXX <wbr> tags frequently break MathJax; remove them.
     if ((wbrs = $$('wbr', this.nodes.comment)).length) {
-      for (var wbr of wbrs) { $.rm(wbr); }
+      for (const wbr of wbrs) { $.rm(wbr); }
       this.nodes.comment.normalize();
     }
-    var cb = () => {
+    const cb = () => {
       if (!doc.contains(this.nodes.comment)) { return; }
       $.off(d, 'PostsInserted', cb);
       return $.event('mathjax', null, this.nodes.comment);

@@ -66,7 +66,7 @@ var Get = {
     const {fullID} = post;
     const handleQuotes = function(qPost, type) {
       quotelinks.push(...(qPost.nodes[type] || []));
-      for (var clone of qPost.clones) { quotelinks.push(...(clone.nodes[type] || [])); }
+      for (const clone of qPost.clones) { quotelinks.push(...(clone.nodes[type] || [])); }
     };
     // First:
     //   In every posts,
@@ -84,7 +84,7 @@ var Get = {
     //   and their clones,
     //   get all of their backlinks.
     if (Conf['Quote Backlinks']) {
-      for (var quote of post.quotes) { var qPost;
+      for (const quote of post.quotes) { var qPost;
       if ((qPost = posts.get(quote))) { handleQuotes(qPost, 'backlinks'); } }
     }
 

@@ -45,11 +45,11 @@ var Sauce = {
     const parts = dict();
     const iterable = link.split(/;(?=(?:text|boards|types|regexp|sandbox):?)/);
     for (let i = 0; i < iterable.length; i++) {
-      var part = iterable[i];
+      const part = iterable[i];
       if (i === 0) {
         parts['url'] = part;
       } else {
-        var m = part.match(/^(\w*):?(.*)$/);
+        const m = part.match(/^(\w*):?(.*)$/);
         parts[m[1]] = m[2];
       }
     }
@@ -129,7 +129,7 @@ var Sauce = {
 
   node() {
     if (this.isClone) { return; }
-    for (var file of this.files) {
+    for (const file of this.files) {
       Sauce.file(this, file);
     }
   },

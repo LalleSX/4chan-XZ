@@ -38,7 +38,7 @@ export default class SimpleDict<T> {
       return length;
     }
 
-    let indexOfNext = this.keys.findIndex(k => !compare(k, key));
+    const indexOfNext = this.keys.findIndex(k => !compare(k, key));
     if (indexOfNext === -1) {
       this.push(key, data);
     } else {
@@ -63,7 +63,7 @@ export default class SimpleDict<T> {
   }
 
   forEach(fn: (data: T) => void) {
-    for (var key of this.keys) { fn(this[key]); }
+    for (const key of this.keys) { fn(this[key]); }
   }
 
   get(key): T {

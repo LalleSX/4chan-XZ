@@ -75,13 +75,13 @@ const CSS = {
   www,
 
   sub: function(css: string) {
-    var variables = {
+    const variables = {
       site: g.SITE.selectors
     };
     return css.replace(/\$[\w\$]+/g, function(name) {
-      var words = name.slice(1).split('$');
-      var sel = variables;
-      for (var i = 0; i < words.length; i++) {
+      const words = name.slice(1).split('$');
+      let sel = variables;
+      for (let i = 0; i < words.length; i++) {
         if (typeof sel !== 'object') return ':not(*)';
         sel = $.getOwn(sel, words[i]);
       }

@@ -116,11 +116,11 @@ var ImageExpand = {
     playVideos() {
       return g.posts.forEach(function(post) {
         for (post of [post, ...post.clones]) {
-          var {file} = post;
+          const {file} = post;
           if (!file || !file.isVideo || !file.isExpanded) { continue; }
 
-          var video = file.fullImage;
-          var visible = ($.hasAudio(video) && !video.muted) || Header.isNodeVisible(video);
+          const video = file.fullImage;
+          const visible = ($.hasAudio(video) && !video.muted) || Header.isNodeVisible(video);
           if (visible && file.wasPlaying) {
             delete file.wasPlaying;
             video.play();
@@ -173,7 +173,7 @@ var ImageExpand = {
     $.rm(file.videoControls);
     file.thumbLink.href   = file.url;
     file.thumbLink.target = '_blank';
-    for (var x of ['isExpanding', 'isExpanded', 'videoControls', 'wasPlaying', 'scrollIntoView']) {
+    for (const x of ['isExpanding', 'isExpanded', 'videoControls', 'wasPlaying', 'scrollIntoView']) {
       delete file[x];
     }
 
@@ -197,8 +197,8 @@ var ImageExpand = {
     ImageCommon.pushCache(el);
     if (file.isVideo) {
       ImageCommon.pause(el);
-      for (var eventName in ImageExpand.videoCB) {
-        var cb = ImageExpand.videoCB[eventName];
+      for (const eventName in ImageExpand.videoCB) {
+        const cb = ImageExpand.videoCB[eventName];
         $.off(el, eventName, cb);
       }
     }
@@ -357,8 +357,8 @@ var ImageExpand = {
   })(),
 
   setupVideoCB(post) {
-    for (var eventName in ImageExpand.videoCB) {
-      var cb = ImageExpand.videoCB[eventName];
+    for (const eventName in ImageExpand.videoCB) {
+      const cb = ImageExpand.videoCB[eventName];
       $.on(post.file.fullImage, eventName, cb);
     }
     if (post.file.videoControls) {
@@ -402,8 +402,8 @@ var ImageExpand = {
 
       const {createSubEntry} = ImageExpand.menu;
       const subEntries = [];
-      for (var name in Config.imageExpansion) {
-        var conf = Config.imageExpansion[name];
+      for (const name in Config.imageExpansion) {
+        const conf = Config.imageExpansion[name];
         subEntries.push(createSubEntry(name, conf[1]));
       }
 

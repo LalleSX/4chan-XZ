@@ -73,8 +73,8 @@ var Volume = {
       'Allow Sound': !muted,
       'Default Volume': volume
     };
-    for (var key in items) {
-      var val = items[key];
+    for (const key in items) {
+      const val = items[key];
       if (Conf[key] === val) {
         delete items[key];
       }
@@ -89,7 +89,7 @@ var Volume = {
 
   node() {
     if (g.SITE.noAudio?.(this.board)) { return; }
-    for (var file of this.files) {
+    for (const file of this.files) {
       if (file.isVideo) {
         if (file.thumb) { $.on(file.thumb, 'wheel', Volume.wheel.bind(Header.hover)); }
         $.on(($('.file-info', file.text) || file.link), 'wheel', Volume.wheel.bind(file.thumbLink));

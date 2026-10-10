@@ -12,7 +12,7 @@ var AntiAutoplay = {
   init() {
     if (!Conf['Disable Autoplaying Sounds']) { return; }
     $.addClass(doc, 'anti-autoplay');
-    for (var audio of $$('audio[autoplay]', doc)) { this.stop(audio); }
+    for (const audio of $$('audio[autoplay]', doc)) { this.stop(audio); }
     window.addEventListener('loadstart', (e => this.stop(e.target)), true);
     Callbacks.Post.push({
       name: 'Disable Autoplaying Sounds',
@@ -35,10 +35,10 @@ var AntiAutoplay = {
   },
 
   process(root) {
-    for (var iframe of $$('iframe[src*="youtube"][src*="autoplay=1"]', root)) {
+    for (const iframe of $$('iframe[src*="youtube"][src*="autoplay=1"]', root)) {
       AntiAutoplay.processVideo(iframe, 'src');
     }
-    for (var object of $$('object[data*="youtube"][data*="autoplay=1"]', root)) {
+    for (const object of $$('object[data*="youtube"][data*="autoplay=1"]', root)) {
       AntiAutoplay.processVideo(object, 'data');
     }
   },

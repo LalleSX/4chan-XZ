@@ -45,9 +45,9 @@ var ImageHost = {
   },
 
   fixLinks(links) {
-    for (var link of links) {
+    for (const link of links) {
       if (ImageHost.test(link.hostname) && !/\.swf$/.test(link.pathname)) {
-        var host = ImageHost.host();
+        const host = ImageHost.host();
         if (link.hostname !== host) { link.hostname = host; }
       }
     }

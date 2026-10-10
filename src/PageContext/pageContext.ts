@@ -81,7 +81,7 @@ const PageContextFunctions = {
 
   disable4chanIdHl: () => {
     (window as any).clickable_ids = false;
-    for (var node of document.querySelectorAll('.posteruid, .capcode')) {
+    for (const node of document.querySelectorAll('.posteruid, .capcode')) {
       node.removeEventListener('click', (window as any).idClick, false);
     }
   },
@@ -188,7 +188,7 @@ const PageContextFunctions = {
       bubbles: true,
       detail: { type: 'warning', content, lifetime: 20 }
     }));
-    var cb = function (e?: any) {
+    const cb = function (e?: any) {
       if (e) { this.removeEventListener('QRMetadata', cb, false); }
       const selected = document.getElementById('selected');
       if (!selected?.dataset.type) return error('No file to edit.');

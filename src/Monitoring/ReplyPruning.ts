@@ -117,7 +117,7 @@ var ReplyPruning = {
 
   updateCount(e) {
     if (e.detail[404]) { return; }
-    for (var fullID of e.detail.newPosts) {
+    for (const fullID of e.detail.newPosts) {
       ReplyPruning.total++;
       if (g.posts.get(fullID).file) { ReplyPruning.totalFiles++; }
     }

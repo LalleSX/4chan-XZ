@@ -24,7 +24,7 @@ const Embedding = {
   init() {
     if (!['index', 'thread', 'archive'].includes(g.VIEW) || !Conf['Linkify'] || (!Conf['Embedding'] && !Conf['Link Title'] && !Conf['Cover Preview'])) { return; }
     this.types = dict();
-    for (var type of this.ordered_types) { this.types[type.key] = type; }
+    for (const type of this.ordered_types) { this.types[type.key] = type; }
 
     if (Conf['Embedding'] && (g.VIEW !== 'archive')) {
       this.dialog = UI.dialog('embedding',
@@ -33,7 +33,7 @@ const Embedding = {
       $.one(d, '4chanXInitFinished', this.ready);
       $.on(d, 'IndexRefreshInternal', () => g.posts.forEach(function(post) {
         for (post of [post, ...post.clones]) {
-          for (var embed of post.nodes.embedlinks) {
+          for (const embed of post.nodes.embedlinks) {
             Embedding.cb.catalogRemove.call(embed);
           }
         }
@@ -88,7 +88,7 @@ const Embedding = {
 
   services(link) {
     const {href} = link;
-    for (var type of Embedding.ordered_types) {
+    for (const type of Embedding.ordered_types) {
       var match;
       if (match = type.regExp.exec(href)) {
         return {key: type.key, uid: match[1], options: match[2], link};
@@ -110,7 +110,7 @@ const Embedding = {
       {innerHTML: '(<span>un</span>embed)'});
 
     const object = {key, uid, options, href};
-    for (var name in object) { var value = object[name]; embed.dataset[name] = value; }
+    for (const name in object) { const value = object[name]; embed.dataset[name] = value; }
 
     $.on(embed, 'click', Embedding.cb.click);
     $.after(link, [$.tn(' '), embed]);
@@ -287,8 +287,8 @@ const Embedding = {
 
       link.dataset.original = link.textContent;
       link.textContent = text;
-      for (var post2 of post.clones) {
-        for (var link2 of $$('a.linkify', post2.nodes.comment)) {
+      for (const post2 of post.clones) {
+        for (const link2 of $$('a.linkify', post2.nodes.comment)) {
           if (link2.href === link.href) {
             if (link2.dataset.original == null) { link2.dataset.original = link2.textContent; }
             link2.textContent = text;
@@ -431,7 +431,7 @@ const Embedding = {
       title: {
         api(uid) { return `https://api.github.com/gists/${uid}`; },
         text({files}) {
-          for (var file in files) { if (files.hasOwnProperty(file)) { return file; } }
+          for (const file in files) { if (files.hasOwnProperty(file)) { return file; } }
         }
       }
     }
@@ -477,7 +477,7 @@ const Embedding = {
         for (var name of names.split(',')) {
           for (var type of types) {
             var base = `${name}${type}`;
-            var urls = (() => { switch (host) {
+            const urls = (() => { switch (host) {
               // list from src/common.py at http://loopvid.appspot.com/source.html
               case 'pf': return [`https://kastden.org/_loopvid_media/pf/${base}`, `https://web.archive.org/web/2/http://a.pomf.se/${base}`];
               case 'kd': return [`https://kastden.org/loopvid/${base}`];
@@ -505,7 +505,7 @@ const Embedding = {
               case 'gc': return [`https://${type}.gfycat.com/${name}.webm`];
             } })();
 
-            for (var url of urls) {
+            for (const url of urls) {
               $.add(el, $.el('source', {src: url}));
             }
           }
@@ -602,7 +602,7 @@ const Embedding = {
           $.on(el, 'load', function() {
             return this.contentWindow.postMessage({element: 't', query: 'height'}, 'https://twitframe.com');
           });
-          var onMessage = function(e) {
+          const onMessage = function(e) {
             if ((e.source === el.contentWindow) && (e.origin === 'https://twitframe.com')) {
               $.off(window, 'message', onMessage);
               return (cont || el).style.height = `${+$.minmax(e.data.height, 250, 0.8 * doc.clientHeight)}px`;

@@ -38,7 +38,7 @@ var ThreadHiding = {
       boardID: board.ID,
       defaultValue: dict()
     });
-    for (var threadID in hiddenThreads) { hiddenThreads[threadID] = true; }
+    for (const threadID in hiddenThreads) { hiddenThreads[threadID] = true; }
     return localStorage.setItem(`4chan-hide-t-${board}`, JSON.stringify(hiddenThreads));
   },
 

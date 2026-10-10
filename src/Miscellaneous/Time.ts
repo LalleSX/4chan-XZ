@@ -32,7 +32,7 @@ var Time = {
 
   // Setting up the formatter takes more time than actually formatting the date,
   // So while setting up this cache is a bit more code, it's faster at runtime
-  formatterCache: new Map<String, Intl.DateTimeFormat>(),
+  formatterCache: new Map<string, Intl.DateTimeFormat>(),
 
   formatters: {
     a() {

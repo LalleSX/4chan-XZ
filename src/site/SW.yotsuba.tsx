@@ -209,7 +209,7 @@ $\
   },
 
   scriptData() {
-    for (var script of $$('script:not([src])', d.head)) {
+    for (const script of $$('script:not([src])', d.head)) {
       if (/\bcooldowns *=/.test(script.textContent)) { return script.textContent; }
     }
     return '';
@@ -241,7 +241,7 @@ $\
     if (post.boardID === 'f') {
       return (() => {
         const result = [];
-        for (var type of ['Sticky', 'Closed']) {
+        for (const type of ['Sticky', 'Closed']) {
           var icon;
           if (icon = $(`img[alt=${type}]`, nodes.info)) {
             result.push($.addClass(icon, `${type.toLowerCase()}Icon`, 'retina'));
@@ -286,7 +286,7 @@ $\
   cleanComment(bq) {
     let abbr;
     if (abbr = $('.abbr', bq)) { // 'Comment too long' or 'EXIF data available'
-      for (var node of $$('.abbr + br, .exif', bq)) {
+      for (const node of $$('.abbr + br, .exif', bq)) {
         $.rm(node);
       }
       for (let i = 0; i < 2; i++) {
@@ -347,8 +347,8 @@ $\
     while ((node = items.snapshotItem(i++))) {
       switch (node.nodeName) {
         case '#text':
-          for (var chr of node.nodeValue) {
-            var span = $.el('span', {textContent: chr});
+          for (const chr of node.nodeValue) {
+            const span = $.el('span', {textContent: chr});
             if (chr === ' ') { span.className = 'space'; }
             if (chr === ']') { nodes.push(spacer()); }
             nodes.push(span);
@@ -452,7 +452,7 @@ $\
       }
       // Temporary JSON properties for events such as April 1 / Halloween
       o.extra = dict();
-      for (var key in data) {
+      for (const key in data) {
         if (key[0] === 'x') {
           o.extra[key] = data[key];
         }
@@ -587,8 +587,8 @@ $\
       $.extend(container, wholePost);
 
       // Fix quotelinks
-      for (var quote of $$('.quotelink', container)) {
-        var href = quote.getAttribute('href');
+      for (const quote of $$('.quotelink', container)) {
+        const href = quote.getAttribute('href');
         if (href[0] === '#') {
           if (!this.sameThread(boardID, threadID)) {
             quote.href = this.threadURL(boardID, threadID) + href;
@@ -682,7 +682,7 @@ $\
       );
       $.before(thread.OP.nodes.info, [...container.childNodes]);
 
-      for (var br of $$('br', thread.OP.nodes.comment)) {
+      for (const br of $$('br', thread.OP.nodes.comment)) {
         if (br.previousSibling && (br.previousSibling.nodeName === 'BR')) {
           $.addClass(br, 'extra-linebreak');
         }

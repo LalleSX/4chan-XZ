@@ -61,7 +61,7 @@ var Unread = {
       threadID: this.ID
     }) || 0;
     Unread.readCount = 0;
-    for (var ID of this.posts.keys) { if (+ID <= Unread.lastReadPost) { Unread.readCount++; } }
+    for (const ID of this.posts.keys) { if (+ID <= Unread.lastReadPost) { Unread.readCount++; } }
     $.one(d, '4chanXInitFinished', Unread.ready);
     $.on(d, 'PostsInserted',      Unread.onUpdate);
     $.on(d, 'ThreadUpdate',       function(e) { if (e.detail[404]) { return Unread.update(); } });
@@ -98,7 +98,7 @@ var Unread = {
 
     let position = Unread.positionPrev();
     while (position) {
-      var {bottom} = position.data.nodes;
+      const {bottom} = position.data.nodes;
       if (!bottom.getBoundingClientRect().height) {
         // Don't try to scroll to posts with display: none
         position = position.prev;
@@ -146,7 +146,7 @@ var Unread = {
 
     const postIDs = Unread.thread.posts.keys;
     for (let i = Unread.readCount, end = postIDs.length; i < end; i++) {
-      var ID = +postIDs[i];
+      const ID = +postIDs[i];
       if (!Unread.thread.posts.get(ID).isFetchedQuote) {
         if (ID > Unread.lastReadPost) { break; }
         Unread.posts.delete(ID);
@@ -170,7 +170,7 @@ var Unread = {
   },
 
   addPostQuotingYou(post) {
-    for (var quotelink of post.nodes.quotelinks) {
+    for (const quotelink of post.nodes.quotelinks) {
       if (QuoteYou.db?.get(Get.postDataFromLink(quotelink))) {
         Unread.postsQuotingYou.add((Unread.postsQuotingYou.last = post.ID));
         Unread.openNotification(post);
@@ -222,8 +222,8 @@ var Unread = {
 
     let count = 0;
     while (Unread.position) {
-      var {ID, data} = Unread.position;
-      var {bottom} = data.nodes;
+      const {ID, data} = Unread.position;
+      const {bottom} = data.nodes;
       if (!!bottom.getBoundingClientRect().height && // post has been hidden
         (Header.getBottomOf(bottom) <= -1)) { break; }                      // post is completely read
       count++;

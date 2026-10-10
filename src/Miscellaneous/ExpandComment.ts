@@ -80,8 +80,8 @@ var ExpandComment = {
     const clone = comment.cloneNode(false);
     clone.innerHTML = postObj.com;
     // Fix pathnames
-    for (var quote of $$('.quotelink', clone)) {
-      var href = quote.getAttribute('href');
+    for (const quote of $$('.quotelink', clone)) {
+      const href = quote.getAttribute('href');
       if (href[0] === '/') { continue; } // Cross-board quote, or board link
       if (href[0] === '#') {
         quote.href = `${a.pathname.split(/\/+/).splice(0,4).join('/')}${href}`;
@@ -95,7 +95,7 @@ var ExpandComment = {
     post.parseComment();
     post.parseQuotes();
 
-    for (var callback of ExpandComment.callbacks) {
+    for (const callback of ExpandComment.callbacks) {
       callback.call(post);
     }
   }

@@ -35,7 +35,7 @@ var Redirect = {
 
     const archives = dict();
     for (const data of Conf['archives']) {
-      for (var key of ['boards', 'files']) {
+      for (const key of ['boards', 'files']) {
         if (!(data[key] instanceof Array)) { data[key] = []; }
       }
       const { uid, name, boards, files, software } = data;
@@ -52,7 +52,7 @@ var Redirect = {
     }
 
     for (const boardID in Conf['selectedArchives']) {
-      var record = Conf['selectedArchives'][boardID];
+      const record = Conf['selectedArchives'][boardID];
       for (const [type, id] of Object.entries(record)) {
         var archive;
         if ((archive = archives[JSON.stringify(id)]) && $.hasOwn(o, type)) {
@@ -115,9 +115,9 @@ var Redirect = {
   parse(responses, cb) {
     const archives = [];
     const archiveUIDs = dict();
-    for (var response of responses) {
-      for (var data of response) {
-        var uid = JSON.stringify(data.uid ?? data.name);
+    for (const response of responses) {
+      for (const data of response) {
+        const uid = JSON.stringify(data.uid ?? data.name);
         if (uid in archiveUIDs) {
           $.extend(archiveUIDs[uid], data);
         } else {
@@ -233,8 +233,8 @@ var Redirect = {
 
   report(boardID) {
     const urls = [];
-    for (var archive of Conf['archives']) {
-      var {software, https, reports, boards, name, domain} = archive;
+    for (const archive of Conf['archives']) {
+      const {software, https, reports, boards, name, domain} = archive;
       if ((software === 'foolfuuka') && https && reports && boards instanceof Array && boards.includes(boardID)) {
         urls.push([name, `https://${domain}/_/api/chan/offsite_report/`]);
       }

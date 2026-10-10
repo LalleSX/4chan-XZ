@@ -40,12 +40,12 @@ const SWTinyboard = {
   ],
 
   detect() {
-    for (var script of $$('script:not([src])', d.head)) {
+    for (const script of $$('script:not([src])', d.head)) {
       var m;
       if (m = script.textContent.match(/\bvar configRoot=(".*?")/)) {
-        var properties = dict();
+        const properties = dict();
         try {
-          var root = JSON.parse(m[1]);
+          const root = JSON.parse(m[1]);
           if (root[0] === '/') {
             properties.root = location.origin + root;
           } else if (/^https?:/.test(root)) {
@@ -199,7 +199,7 @@ $\
       if (data.extra_files) {
         let file;
         for (let i = 0; i < data.extra_files.length; i++) {
-          var extra_file = data.extra_files[i];
+          const extra_file = data.extra_files[i];
           if (extra_file.ext === 'deleted') {
             o.filesDeleted.push(i);
           } else {

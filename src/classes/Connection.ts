@@ -34,8 +34,8 @@ export default class Connection {
       (typeof e.data !== 'string') ||
       (e.data.slice(0, g.NAMESPACE.length) !== g.NAMESPACE)) { return; }
     const data = JSON.parse(e.data.slice(g.NAMESPACE.length));
-    for (var type in data) {
-      var value = data[type];
+    for (const type in data) {
+      const value = data[type];
       if ($.hasOwn(this.cb, type)) {
         this.cb[type](value);
       }

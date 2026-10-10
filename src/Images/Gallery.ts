@@ -46,7 +46,7 @@ var Gallery = {
   node() {
     return (() => {
       const result = [];
-      for (var file of this.files) {
+      for (const file of this.files) {
         if (file.thumb) {
           if (Gallery.nodes) {
             Gallery.generateThumb(this, file);
@@ -94,7 +94,7 @@ var Gallery = {
       next:    '.gal-image a',
       current: '.gal-image img'
     };
-    for (var key in object) { var value = object[key]; nodes[key] = $(value, dialog); }
+    for (const key in object) { const value = object[key]; nodes[key] = $(value, dialog); }
 
     const menuButton = $('.menu-button', dialog);
     nodes.menu = new UI.Menu('gallery');
@@ -127,7 +127,7 @@ var Gallery = {
     Icon.set(prev, 'caretLeft');
     Icon.set(next, 'caretRight');
 
-    for (var entry of Gallery.menu.createSubEntries()) {
+    for (const entry of Gallery.menu.createSubEntries()) {
       entry.order = 0;
       nodes.menu.addEntry(entry);
     }
@@ -137,15 +137,15 @@ var Gallery = {
 
     $.on(window, 'resize', Gallery.cb.setHeight);
 
-    for (var postThumb of $$(g.SITE.selectors.file.thumb)) {
+    for (const postThumb of $$(g.SITE.selectors.file.thumb)) {
       var post;
       if (!(post = Get.postFromNode(postThumb))) { continue; }
-      for (var file of post.files) {
+      for (const file of post.files) {
         if (file.thumb) {
           Gallery.generateThumb(post, file);
           // If no image to open is given, pick image we have scrolled to.
           if (!image && Gallery.fileIDs[`${post.fullID}.${file.index}`]) {
-            var candidate = file.thumbLink;
+            const candidate = file.thumbLink;
             if ((Header.getTopOf(candidate) + candidate.getBoundingClientRect().height) >= 0) {
               image = candidate;
             }
@@ -252,7 +252,7 @@ var Gallery = {
     $.rmAll(nodes.sauce);
     if (Conf['Sauce'] && Sauce.links && (post = g.posts.get(file.dataset.post))) {
       const sauces = [];
-      for (var link of Sauce.links) {
+      for (const link of Sauce.links) {
         var node;
         if (node = Sauce.createSauceLink(link, post, post.files[+file.dataset.file])) {
           sauces.push($.tn(' '), node);

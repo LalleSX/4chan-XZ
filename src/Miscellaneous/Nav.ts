@@ -45,7 +45,7 @@ var Nav = {
     $.on(next, 'click', this.next);
 
     $.add(span, [prev, $.tn(' '), next]);
-    var append = function() {
+    const append = function() {
       $.off(d, '4chanXInitFinished', append);
       return $.add(d.body, span);
     };
@@ -71,8 +71,8 @@ var Nav = {
   getThread() {
     if (g.VIEW === 'thread') { return g.threads.get(`${g.BOARD}.${g.THREADID}`).nodes.root; }
     if ($.hasClass(doc, 'catalog-mode')) { return; }
-    for (var threadRoot of $$(g.SITE.selectors.thread)) {
-      var thread = Get.threadFromRoot(threadRoot);
+    for (const threadRoot of $$(g.SITE.selectors.thread)) {
+      const thread = Get.threadFromRoot(threadRoot);
       if (thread.isHidden && !thread.stub) { continue; }
       if (Header.getTopOf(threadRoot) >= -threadRoot.getBoundingClientRect().height) { // not scrolled past
         return threadRoot;

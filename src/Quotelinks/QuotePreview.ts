@@ -37,7 +37,7 @@ var QuotePreview = {
   },
 
   node() {
-    for (var link of this.nodes.quotelinks.concat([...this.nodes.backlinks], this.nodes.archivelinks)) {
+    for (const link of this.nodes.quotelinks.concat([...this.nodes.backlinks], this.nodes.archivelinks)) {
       $.on(link, 'mouseover', QuotePreview.mouseover);
     }
   },
@@ -69,7 +69,7 @@ var QuotePreview = {
       const posts = [origin].concat(origin.clones);
       // Remove the clone that's in the qp from the array.
       posts.pop();
-      for (var post of posts) {
+      for (const post of posts) {
         $.addClass(post.nodes.post, 'qphl');
       }
     }

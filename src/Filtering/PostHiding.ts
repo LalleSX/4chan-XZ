@@ -88,7 +88,7 @@ const PostHiding = {
       await new Promise(res => BoardConfig.ready(res));
 
       // Hide
-      let applyHide = $.el('a', {
+      const applyHide = $.el('a', {
         textContent: 'Apply',
         href: 'javascript:;'
       });
@@ -330,7 +330,7 @@ const PostHiding = {
       PostHiding.hideRecursive(post, makeStub);
     }
 
-    for (var quotelink of Get.allQuotelinksLinkingTo(post)) {
+    for (const quotelink of Get.allQuotelinksLinkingTo(post)) {
       $.addClass(quotelink, 'filtered');
     }
 
@@ -376,7 +376,7 @@ const PostHiding = {
       Recursive.apply(PostHiding.show, post, true);
       Recursive.rm(PostHiding.hide, post);
     }
-    for (var quotelink of Get.allQuotelinksLinkingTo(post)) {
+    for (const quotelink of Get.allQuotelinksLinkingTo(post)) {
       $.rmClass(quotelink, 'filtered');
     }
   }

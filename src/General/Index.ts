@@ -93,9 +93,9 @@ var Index = {
     const entries = [];
     this.inputs = (inputs = dict());
     for (name in Config.Index) {
-      var arr = Config.Index[name];
+      const arr = Config.Index[name];
       if (arr instanceof Array) {
-        var label = UI.checkbox(name, `${name[0]}${name.slice(1).toLowerCase()}`);
+        const label = UI.checkbox(name, `${name[0]}${name.slice(1).toLowerCase()}`);
         label.title = arr[1];
         entries.push({el: label});
         input = label.firstChild;
@@ -156,7 +156,7 @@ var Index = {
     $.on(this.selectSort, 'change', this.cb.sort);
     $.on(this.selectSize, 'change', $.cb.value);
     $.on(this.selectSize, 'change', this.cb.size);
-    for (var select of [this.selectMode, this.selectSize]) {
+    for (const select of [this.selectMode, this.selectSize]) {
       select.value = Conf[select.name];
     }
     this.selectRev.checked = /-rev$/.test(Index.currentSort);
@@ -170,7 +170,7 @@ var Index = {
     for (let i = 0; i < this.lastLongInputs.length; i++) {
       input = this.lastLongInputs[i];
       $.on(input, 'change', this.cb.lastLongThresholds);
-      var tRaw = Conf[`Last Long Reply Thresholds ${i}`];
+      const tRaw = Conf[`Last Long Reply Thresholds ${i}`];
       input.value = (this.lastLongThresholds[i] =
         typeof tRaw === 'object' ? (tRaw[g.BOARD.ID] ?? 100) : tRaw);
     }
@@ -322,7 +322,7 @@ var Index = {
     let i;
     const types = Index.selectSort.options.filter(option => !option.disabled);
     for (i = 0; i < types.length; i++) {
-      var type = types[i];
+      const type = types[i];
       if (type.selected) { break; }
     }
     types[(i + 1) % types.length].selected = true;
@@ -535,7 +535,7 @@ var Index = {
       {replace: true};
     const commands = hash.slice(1).split('/');
     const leftover = [];
-    for (var command of commands) {
+    for (const command of commands) {
       var mode, sort;
       if (mode = $.getOwn(Index.hashCommands.mode, command)) {
         state.mode = mode;
@@ -643,7 +643,7 @@ var Index = {
   },
 
   setupMode() {
-    for (var mode of ['paged', 'infinite', 'all pages', 'catalog']) {
+    for (const mode of ['paged', 'infinite', 'all pages', 'catalog']) {
       $[mode === Conf['Index Mode'] ? 'addClass' : 'rmClass'](doc, `${mode.replace(/\ /g, '-')}-mode`);
     }
     Index.selectMode.value = Conf['Index Mode'];
@@ -676,7 +676,7 @@ var Index = {
     if (pagesRoot.childElementCount !== maxPageNum) {
       const nodes = [];
       for (let i = 1, end = maxPageNum; i <= end; i++) {
-        var a = $.el('a', {
+        const a = $.el('a', {
           textContent: i,
           href: i === 1 ? './' : i
         }
@@ -721,7 +721,7 @@ var Index = {
   updateHideLabel() {
     if (!Index.hideLabel) { return; }
     let hiddenCount = 0;
-    for (var threadID of Index.liveThreadIDs) {
+    for (const threadID of Index.liveThreadIDs) {
       if (Index.isHidden(threadID)) {
         hiddenCount++;
       }
@@ -849,7 +849,7 @@ var Index = {
     Index.replyData         = dict();
     for (let i = 0; i < Index.liveThreadData.length; i++) {
       var obj, results;
-      var data = Index.liveThreadData[i];
+      const data = Index.liveThreadData[i];
       Index.liveThreadDict[data.no] = data;
       Index.threadPosition[data.no] = i;
       Index.parsedThreads[data.no] = (obj = g.SITE.Build.parseJSON(data, g.BOARD));
@@ -857,7 +857,7 @@ var Index = {
       obj.isOnTop  = results.top;
       obj.isHidden = results.hide || ThreadHiding.isHidden(obj.boardID, obj.threadID);
       if (data.last_replies) {
-        for (var reply of data.last_replies) {
+        for (const reply of data.last_replies) {
           Index.replyData[`${g.BOARD}.${reply.no}`] = reply;
         }
       }
@@ -890,14 +890,14 @@ var Index = {
     const threads    = [];
     const newThreads = [];
     let newPosts   = [];
-    for (var ID of threadIDs) {
+    for (const ID of threadIDs) {
       var opRoot, thread;
       try {
         var OP;
-        var threadData = Index.liveThreadDict[ID];
+        const threadData = Index.liveThreadDict[ID];
 
         if (thread = g.BOARD.threads.get(ID)) {
-          var isStale = (thread.json !== threadData) && (JSON.stringify(thread.json) !== JSON.stringify(threadData));
+          const isStale = (thread.json !== threadData) && (JSON.stringify(thread.json) !== JSON.stringify(threadData));
           if (isStale) {
             thread.setCount('post', threadData.replies + 1,                threadData.bumplimit);
             thread.setCount('file', threadData.images  + !!threadData.ext, threadData.imagelimit);
@@ -912,7 +912,7 @@ var Index = {
           thread = new Thread(ID, g.BOARD);
           newThreads.push(thread);
         }
-        var lastPost = threadData.last_replies && threadData.last_replies.length ? threadData.last_replies[threadData.last_replies.length - 1].no : ID;
+        const lastPost = threadData.last_replies && threadData.last_replies.length ? threadData.last_replies[threadData.last_replies.length - 1].no : ID;
         if (lastPost > thread.lastPost) { thread.lastPost = lastPost; }
         thread.json = threadData;
         threads.push(thread);
@@ -921,7 +921,7 @@ var Index = {
           OP.setCatalogOP(isCatalog);
           thread.setPage(Math.floor(Index.threadPosition[ID] / Index.threadsNumPerPage) + 1);
         } else {
-          var obj = Index.parsedThreads[ID];
+          const obj = Index.parsedThreads[ID];
           opRoot = g.SITE.Build.post(obj);
           OP = new Post(opRoot, thread, g.BOARD);
           OP.filterResults = obj.filterResults;
@@ -958,11 +958,11 @@ var Index = {
   buildReplies(threads) {
     let errors;
     const posts = [];
-    for (var thread of threads) {
+    for (const thread of threads) {
       var lastReplies;
       if (!(lastReplies = Index.liveThreadDict[thread.ID].last_replies)) { continue; }
-      var nodes = [];
-      for (var data of lastReplies) {
+      const nodes = [];
+      for (const data of lastReplies) {
         var node, post;
         if ((post = thread.posts.get(data.no)) && !post.isFetchedQuote) {
           nodes.push(post.nodes.root);
@@ -990,11 +990,11 @@ var Index = {
 
   buildCatalogViews(threads) {
     const catalogThreads = [];
-    for (var thread of threads) {
+    for (const thread of threads) {
       if (!thread.catalogView) {
-        var {ID} = thread;
-        var page = Math.floor(Index.threadPosition[ID] / Index.threadsNumPerPage) + 1;
-        var root = g.SITE.Build.catalogThread(thread, Index.liveThreadDict[ID], page);
+        const {ID} = thread;
+        const page = Math.floor(Index.threadPosition[ID] / Index.threadsNumPerPage) + 1;
+        const root = g.SITE.Build.catalogThread(thread, Index.liveThreadDict[ID], page);
         catalogThreads.push(new CatalogThread(root, thread));
       }
     }
@@ -1004,11 +1004,11 @@ var Index = {
   sizeCatalogViews(threads) {
     // XXX When browsers support CSS3 attr(), use it instead.
     const size = Conf['Index Size'] === 'small' ? 150 : 250;
-    for (var thread of threads) {
-      var {thumb} = thread.catalogView.nodes;
-      var {width, height} = thumb.dataset;
+    for (const thread of threads) {
+      const {thumb} = thread.catalogView.nodes;
+      const {width, height} = thumb.dataset;
       if (!width) { continue; }
-      var ratio = size / Math.max(width, height);
+      const ratio = size / Math.max(width, height);
       thumb.style.width  = (width  * ratio) + 'px';
       thumb.style.height = (height * ratio) + 'px';
     }
@@ -1020,9 +1020,9 @@ var Index = {
     if (!(lastReplies = Index.liveThreadDict[thread.ID].last_replies)) { return; }
 
     const replies = [];
-    for (var data of lastReplies) {
+    for (const data of lastReplies) {
       if (Index.isHiddenReply(thread.ID, data)) { continue; }
-      var reply = g.SITE.Build.catalogReply(thread, data);
+      const reply = g.SITE.Build.catalogReply(thread, data);
       RelativeDates.update($('time', reply));
       $.on($('.catalog-reply-preview', reply), 'mouseover', QuotePreview.mouseover);
       replies.push(reply);
@@ -1048,12 +1048,12 @@ var Index = {
           }
           const iterable = thread.last_replies || [];
           for (let i = iterable.length - 1; i >= 0; i--) {
-            var r = iterable[i];
+            const r = iterable[i];
             if (Index.isHiddenReply(thread.no, r)) { continue; }
             if (sortType === 'lastreply') {
               return r;
             }
-            var len = r.com ? g.SITE.Build.parseComment(r.com).replace(/[^a-z]/ig, '').length : 0;
+            const len = r.com ? g.SITE.Build.parseComment(r.com).replace(/[^a-z]/ig, '').length : 0;
             if (len >= Index.lastLongThresholds[+!!r.ext]) {
               return r;
             }
@@ -1061,7 +1061,7 @@ var Index = {
           if (thread.omitted_posts && thread.last_replies?.length) { return thread.last_replies[0]; } else { return thread; }
         };
         var lastlongD = dict();
-        for (var thread of liveThreadData) {
+        for (const thread of liveThreadData) {
           lastlongD[thread.no] = lastlong(thread).no;
         }
         return [...liveThreadData].sort((a, b) => lastlongD[b.no] - lastlongD[a.no]).map(post => post.no);
@@ -1089,7 +1089,7 @@ var Index = {
   sortOnTop(match) {
     const topThreads    = [];
     const bottomThreads = [];
-    for (var ID of Index.sortedThreadIDs) {
+    for (const ID of Index.sortedThreadIDs) {
       (match(Index.parsedThreads[ID]) ? topThreads : bottomThreads).push(ID);
     }
     return Index.sortedThreadIDs = topThreads.concat(bottomThreads);
@@ -1130,7 +1130,7 @@ var Index = {
   buildStructure(threadIDs) {
     const threads = Index.buildThreads(threadIDs, false, Conf['Show Replies']);
     const nodes = [];
-    for (var thread of threads) {
+    for (const thread of threads) {
       nodes.push(thread.nodes.root, $.el('hr'));
     }
     $.add(Index.root, nodes);
@@ -1144,7 +1144,7 @@ var Index = {
     let i = 0;
     const n = threadIDs.length;
     let node0 = null;
-    var fn = function() {
+    const fn = function() {
       if (node0 && !node0.parentNode) { return; } // Index.root cleared
       const j = (i > 0) && Index.root.parentNode ? n : i + 30;
       node0 = Index.buildCatalogPart(threadIDs.slice(i, j))[0];
@@ -1166,7 +1166,7 @@ var Index = {
     Index.buildCatalogViews(threads);
     Index.sizeCatalogViews(threads);
     const nodes = [];
-    for (var thread of threads) {
+    for (const thread of threads) {
       thread.OP.setCatalogOP(true);
       $.add(thread.catalogView.nodes.root, thread.OP.nodes.root);
       nodes.push(thread.catalogView.nodes.root);
@@ -1222,12 +1222,12 @@ var Index = {
     const {info, file} = obj;
     if (info.comment == null) { info.comment = g.SITE.Build.parseComment(info.commentHTML.innerHTML); }
     let text = [];
-    for (var key of ['comment', 'subject', 'name', 'tripcode']) {
+    for (const key of ['comment', 'subject', 'name', 'tripcode']) {
       if (key in info) { text.push(info[key]); }
     }
     if (file) { text.push(file.name); }
     text = text.join(' ').toLowerCase();
-    for (var keyword of keywords) {
+    for (const keyword of keywords) {
       if (-1 === text.indexOf(keyword)) { return false; }
     }
     return true;

@@ -91,7 +91,7 @@ var QuoteThreading = {
 
     const parents = new Set();
     let lastParent = null;
-    for (var quote of this.quotes) {
+    for (const quote of this.quotes) {
       if ((parent = g.posts.get(quote))) {
         if (!parent.isFetchedQuote && parent.isReply && (parent.ID < this.ID)) {
           parents.add(parent.ID);
@@ -116,7 +116,7 @@ var QuoteThreading = {
     let children;
     let posts = [post];
     if (children = QuoteThreading.children[post.fullID]) {
-      for (var child of children) {
+      for (const child of children) {
         posts = posts.concat(QuoteThreading.descendants(child));
       }
     }
@@ -133,7 +133,7 @@ var QuoteThreading = {
 
     const descendants = QuoteThreading.descendants(post);
     if (!Unread.posts.has(parent.ID)) {
-      if ((function() { for (var x of descendants) { if (Unread.posts.has(x.ID)) { return true; } } })()) {
+      if ((function() { for (const x of descendants) { if (Unread.posts.has(x.ID)) { return true; } } })()) {
         QuoteThreading.threadNewLink.hidden = false;
         return false;
       }
@@ -146,7 +146,7 @@ var QuoteThreading = {
     if (post.nodes.threadContainer) { nodes.push(post.nodes.threadContainer); }
 
     let i = children.length;
-    for (let j = children.length - 1; j >= 0; j--) { var child = children[j]; if (child.ID >= post.ID) { i--; } }
+    for (let j = children.length - 1; j >= 0; j--) { const child = children[j]; if (child.ID >= post.ID) { i--; } }
     if (i !== children.length) {
       const next = children[i];
       for (x of descendants) { order.before(order[next.ID], order[x.ID]); }

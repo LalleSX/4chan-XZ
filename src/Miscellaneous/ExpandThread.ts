@@ -33,9 +33,9 @@ var ExpandThread = {
 
   disconnect(refresh) {
     if ((g.VIEW === 'thread') || !Conf['Thread Expansion']) { return; }
-    for (var threadID in ExpandThread.statuses) {
+    for (const threadID in ExpandThread.statuses) {
       var oldReq;
-      var status = ExpandThread.statuses[threadID];
+      const status = ExpandThread.statuses[threadID];
       if (oldReq = status.req) {
         delete status.req;
         oldReq.abort();
@@ -105,7 +105,7 @@ var ExpandThread = {
     if (status.numReplies) { replies = replies.slice(0, (-status.numReplies)); }
     let postsCount = 0;
     let filesCount = 0;
-    for (var reply of replies) {
+    for (const reply of replies) {
       // rm clones
       if (Conf['Quote Inlining']) { var inlined;
       while ((inlined = $('.inlined', reply))) { inlined.click(); } }
@@ -132,7 +132,7 @@ var ExpandThread = {
     const posts      = [];
     const postsRoot  = [];
     let filesCount = 0;
-    for (var postData of req.response.posts) {
+    for (const postData of req.response.posts) {
       var post;
       if (postData.no === thread.ID) { continue; }
       if ((post = thread.posts.get(postData.no)) && !post.isFetchedQuote) {

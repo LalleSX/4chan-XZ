@@ -51,7 +51,7 @@ var QuoteOP = {
     if (!quotes.includes(fullID)) { return; }
     i = 0;
     while ((quotelink = quotelinks[i++])) {
-      var {boardID, postID} = Get.postDataFromLink(quotelink);
+      const {boardID, postID} = Get.postDataFromLink(quotelink);
       if (`${boardID}.${postID}` === fullID) {
         $.add(quotelink, QuoteOP.mark.cloneNode(true));
       }

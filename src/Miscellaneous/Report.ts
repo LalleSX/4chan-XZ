@@ -106,7 +106,7 @@ var Report = {
       reason
     });
     const results = [];
-    for (var [name, url] of urls) {
+    for (const [name, url] of urls) {
       (function(name, url) {
         return $.ajax(url, {
           onloadend() {
@@ -123,8 +123,8 @@ var Report = {
 
   archiveResults(results) {
     const fieldset = $.id('archive-report');
-    for (var [name, response] of results) {
-      var line = $.el('h3',
+    for (const [name, response] of results) {
+      const line = $.el('h3',
         {className: 'archive-report-response'});
       if ('success' in response) {
         $.addClass(line, 'archive-report-success');

@@ -24,7 +24,7 @@ $.ready = function(fc) {
     $.queueTask(fc);
     return;
   }
-  var cb = function() {
+  const cb = function() {
     $.off(d, 'DOMContentLoaded', cb);
     fc();
   };
@@ -36,8 +36,8 @@ $.formData = function(form) {
     return new FormData(form);
   }
   const fd = new FormData();
-  for (var key in form) {
-    var val = form[key];
+  for (const key in form) {
+    const val = form[key];
     if (val) {
       if ((typeof val === 'object') && 'newName' in val) {
         fd.append(key, val, val.newName);
@@ -50,8 +50,8 @@ $.formData = function(form) {
 };
 
 $.extend = function(object, properties) {
-  for (var key in properties) {
-    var val = properties[key];
+  for (const key in properties) {
+    const val = properties[key];
     object[key] = val;
   }
 };
@@ -80,8 +80,8 @@ $.ajax = (function() {
     try {
       r.open(type, url, true);
       const object = headers || {};
-      for (var key in object) {
-        var value = object[key];
+      for (const key in object) {
+        const value = object[key];
         r.setRequestHeader(key, value);
       }
       $.extend(r, {onloadend, timeout, responseType, withCredentials});
@@ -149,7 +149,7 @@ $.whenModified = function(url, bucket, cb, options={}) {
     return reqs[url] = req;
   };
   return $.cleanCache = function(testf) {
-    for (var url in reqs) {
+    for (const url in reqs) {
       if (testf(url)) {
         delete reqs[url];
       }
@@ -256,7 +256,7 @@ $.nodes = function(nodes) {
     return nodes;
   }
   const frag = $.frag();
-  for (var node of nodes) {
+  for (const node of nodes) {
     frag.appendChild(node);
   }
   return frag;
@@ -284,19 +284,19 @@ $.el = function <K extends keyof HTMLElementTagNameMap>(
 };
 
 $.on = function (el: EventTarget, events: string, handler: (event: Event) => void) {
-  for (var event of events.split(' ')) {
+  for (const event of events.split(' ')) {
     el.addEventListener(event, handler, false);
   }
 };
 
 $.off = function(el, events, handler) {
-  for (var event of events.split(' ')) {
+  for (const event of events.split(' ')) {
     el.removeEventListener(event, handler, false);
   }
 };
 
 $.one = function(el, events, handler) {
-  var cb = function(e) {
+  const cb = function(e) {
     $.off(el, events, cb);
     return handler.call(this, e);
   };
@@ -324,11 +324,11 @@ if (platform === 'userscript') {
         Object: unsafeWindow.Object,
         Array:  unsafeWindow.Array
       };
-      var clone = function(obj) {
+      const clone = function(obj) {
         let constructor;
         if ((obj != null) && (typeof obj === 'object') && (constructor = unsafeConstructors[obj.constructor.name])) {
           const obj2 = new constructor();
-          for (var key in obj) { var val = obj[key]; obj2[key] = clone(val); }
+          for (const key in obj) { const val = obj[key]; obj2[key] = clone(val); }
           return obj2;
         } else {
           return obj;
@@ -522,11 +522,11 @@ if (platform === 'crx') {
   };
 
   chrome.storage.onChanged.addListener(function(changes, area) {
-    for (var key in changes) {
-      var oldValue = $.oldValue.local[key] ?? $.oldValue.sync[key];
+    for (const key in changes) {
+      const oldValue = $.oldValue.local[key] ?? $.oldValue.sync[key];
       $.oldValue[area][key] = dict.clone(changes[key].newValue);
-      var newValue = $.oldValue.local[key] ?? $.oldValue.sync[key];
-      var cb = $.syncing[key];
+      const newValue = $.oldValue.local[key] ?? $.oldValue.sync[key];
+      const cb = $.syncing[key];
       if (cb && (JSON.stringify(newValue) !== JSON.stringify(oldValue))) {
         cb(newValue, key);
       }
@@ -568,7 +568,7 @@ if (platform === 'crx') {
         }
         if (keys === null) {
           const result2 = dict();
-          for (key in result) { var val = result[key]; if ($.hasOwn(data, key)) { result2[key] = val; } }
+          for (key in result) { const val = result[key]; if ($.hasOwn(data, key)) { result2[key] = val; } }
           result = result2;
         }
         for (key in data) {
@@ -600,7 +600,7 @@ if (platform === 'crx') {
       if (typeof keys === 'string') {
         keys = [keys];
       }
-      for (var key of keys) {
+      for (const key of keys) {
         delete items.local[key];
         delete items.sync[key];
       }
@@ -609,7 +609,7 @@ if (platform === 'crx') {
     };
 
     const timeout = {};
-    var setArea = function(area, cb) {
+    const setArea = function(area, cb) {
       const data = dict();
       $.extend(data, items[area]);
       if (!Object.keys(data).length || (timeout[area] > Date.now())) { return; }
@@ -626,7 +626,7 @@ if (platform === 'crx') {
         delete timeout[area];
         for (key in data) { if (items[area][key] === data[key]) { delete items[area][key]; } }
         if (area === 'local') {
-          for (key in data) { var val = data[key]; if (!exceedsQuota(key, val)) { items.sync[key] = val; } }
+          for (key in data) { const val = data[key]; if (!exceedsQuota(key, val)) { items.sync[key] = val; } }
           setSync();
         } else {
           chrome.storage.local.remove(((() => {
@@ -680,9 +680,9 @@ if (platform === 'crx') {
 
     $.on($.syncChannel, 'message', e => (() => {
       const result = [];
-      for (var key in e.data) {
+      for (const key in e.data) {
         var cb;
-        var val = e.data[key];
+        const val = e.data[key];
         if (cb = $.syncing[key]) {
           result.push(cb(dict.json(JSON.stringify(val)), key));
         }
@@ -711,7 +711,7 @@ if (platform === 'crx') {
       const keys = Object.keys(items);
       return Promise.all(keys.map((key) => GM.getValue(g.NAMESPACE + key))).then(function(values) {
         for (let i = 0; i < values.length; i++) {
-          var val = values[i];
+          const val = values[i];
           if (val) {
             items[keys[i]] = dict.json(val);
           }
@@ -724,8 +724,8 @@ if (platform === 'crx') {
       $.securityCheck(items);
       return Promise.all((() => {
         const result = [];
-        for (var key in items) {
-          var val = items[key];
+        for (const key in items) {
+          const val = items[key];
           result.push(GM.setValue(g.NAMESPACE + key, JSON.stringify(val)));
         }
         return result;
@@ -744,7 +744,7 @@ if (platform === 'crx') {
       $.getValue = key => localStorage.getItem(key);
       $.listValues = () => (() => {
         const result = [];
-        for (var key in localStorage) {
+        for (const key in localStorage) {
           if (key.slice(0, g.NAMESPACE.length) === g.NAMESPACE) {
             result.push(key);
           }
@@ -840,7 +840,7 @@ if (platform === 'crx') {
       if (!(keys instanceof Array)) {
         keys = [keys];
       }
-      for (var key of keys) {
+      for (const key of keys) {
         $.deleteValue(g.NAMESPACE + key);
       }
     };
@@ -848,7 +848,7 @@ if (platform === 'crx') {
     $.get = $.oneItemSugar((items, cb) => $.queueTask($.getSync, items, cb));
 
     $.getSync = function(items, cb) {
-      for (var key in items) {
+      for (const key in items) {
         var val2;
         if (val2 = $.getValue(g.NAMESPACE + key)) {
           try {
@@ -867,8 +867,8 @@ if (platform === 'crx') {
     $.set = $.oneItemSugar(function(items, cb) {
       $.securityCheck(items);
       return $.queueTask(function() {
-        for (var key in items) {
-          var value = items[key];
+        for (const key in items) {
+          const value = items[key];
           $.setValue(g.NAMESPACE + key, JSON.stringify(value));
         }
         return cb?.();

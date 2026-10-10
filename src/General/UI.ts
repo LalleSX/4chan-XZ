@@ -23,7 +23,7 @@ const dialog = function(id, properties) {
 
   const move = $('.move', el);
   $.on(move, 'touchstart mousedown', dragstart);
-  for (var child of move.children) {
+  for (const child of move.children) {
     if (!child.tagName) { continue; }
     $.on(child, 'touchstart mousedown', e => e.stopPropagation());
   }
@@ -154,7 +154,7 @@ var Menu = (function() {
       }
       submenu = $.el('div',
         {className: 'dialog submenu'});
-      for (var subEntry of entry.subEntries) {
+      for (const subEntry of entry.subEntries) {
         this.insertEntry(subEntry, submenu, data);
       }
       $.add(entry.el, submenu);
@@ -273,7 +273,7 @@ var Menu = (function() {
       el.style.order = entry.order || 100;
       if (!subEntries) { return; }
       $.addClass(el, 'has-submenu');
-      for (var subEntry of subEntries) {
+      for (const subEntry of subEntries) {
         this.parseEntry(subEntry);
       }
       const span = $.el('span',
@@ -334,7 +334,7 @@ export var dragstart = function (e) {
 };
 
 export var touchmove = function (e) {
-  for (var touch of e.changedTouches) {
+  for (const touch of e.changedTouches) {
     if (touch.identifier === this.identifier) {
       drag.call(this, touch);
       return;
@@ -379,7 +379,7 @@ export var drag = function (e) {
 };
 
 export var touchend = function (e) {
-  for (var touch of e.changedTouches) {
+  for (const touch of e.changedTouches) {
     if (touch.identifier === this.identifier) {
       dragend.call(this);
       return;

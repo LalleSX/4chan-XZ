@@ -72,7 +72,7 @@ var ThreadStats = {
     const {posts} = ThreadStats.thread;
     const n = posts.keys.length;
     for (let i = ThreadStats.postIndex, end = n; i < end; i++) {
-      var post = posts.get(posts.keys[i]);
+      const post = posts.get(posts.keys[i]);
       if (!post.isFetchedQuote) {
         ThreadStats.postCount++;
         ThreadStats.fileCount += post.files.length;

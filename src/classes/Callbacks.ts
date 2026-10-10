@@ -28,7 +28,7 @@ export default class Callbacks {
     let errors;
     if (node.callbacksExecuted && !force) { return; }
     node.callbacksExecuted = true;
-    for (var name of keys) {
+    for (const name of keys) {
       try {
         this[name]?.call(node);
       } catch (err) {

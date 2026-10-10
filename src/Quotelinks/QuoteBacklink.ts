@@ -52,26 +52,26 @@ var QuoteBacklink = {
     }
     );
     if (markYours) { $.add(a, QuoteYou.mark.cloneNode(true)); }
-    for (var quote of this.quotes) {
+    for (const quote of this.quotes) {
       var post;
-      var containers = [QuoteBacklink.getContainer(quote)];
+      const containers = [QuoteBacklink.getContainer(quote)];
       if ((post = g.posts.get(quote)) && post.nodes.backlinkContainer) {
         // Don't add OP clones when OP Backlinks is disabled,
         // as the clones won't have the backlink containers.
-        for (var clone of post.clones) {
+        for (const clone of post.clones) {
           containers.push(clone.nodes.backlinkContainer);
         }
       }
-      for (var container of containers) {
-        var link = a.cloneNode(true);
-        var nodes = container.firstChild ? [$.tn(' '), link] : [link];
+      for (const container of containers) {
+        const link = a.cloneNode(true);
+        const nodes = container.firstChild ? [$.tn(' '), link] : [link];
         if (Conf['Quote Previewing']) {
           $.on(link, 'mouseover', QuotePreview.mouseover);
         }
         if (Conf['Quote Inlining']) {
           $.on(link, 'click', QuoteInline.toggle);
           if (Conf['Quote Hash Navigation']) {
-            var hash = QuoteInline.qiQuote(link, $.hasClass(link, 'filtered'));
+            const hash = QuoteInline.qiQuote(link, $.hasClass(link, 'filtered'));
             nodes.push(hash);
           }
         }

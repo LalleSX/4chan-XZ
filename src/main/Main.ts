@@ -149,7 +149,7 @@ var Main = {
     });
 
     // Detect "mounted" event from Kissu
-    var mountedCB = function() {
+    const mountedCB = function() {
       d.removeEventListener('mounted', mountedCB, true);
       Main.isMounted = true;
       return Main.mountedCBs.map((cb) =>
@@ -160,11 +160,11 @@ var Main = {
     d.addEventListener('mounted', mountedCB, true);
 
     // Flatten default values from Config into Conf
-    var flatten = function(parent, obj) {
+    const flatten = function(parent, obj) {
       if (obj instanceof Array) {
         Conf[parent] = dict.clone(obj[0]);
       } else if (typeof obj === 'object') {
-        for (var key in obj) {
+        for (const key in obj) {
           flatten(key, obj[key]);
         }
       } else { // string or number
@@ -179,7 +179,7 @@ var Main = {
 
     flatten(null, Config);
 
-    for (var db of DataBoard.keys) {
+    for (const db of DataBoard.keys) {
       Conf[db] = dict();
     }
     Conf['customTitles'] = dict.clone({'4chan.org': {boards: {'qa': {'boardTitle': {orig: '/qa/ - Question & Answer', title: '/qa/ - 2D/Random'}}}}});
@@ -336,7 +336,7 @@ var Main = {
     $.onExists(doc, 'body', Main.initStyle);
 
     // c.time 'All initializations'
-    for (var [name, feature] of Main.features) {
+    for (const [name, feature] of Main.features) {
       if (g.SITE.disabledFeatures && g.SITE.disabledFeatures.includes(name)) { continue; }
       // c.time "#{name} initialization"
       try {
@@ -401,7 +401,7 @@ var Main = {
       if (g.SITE.software === 'yotsuba') {
         $.rmClass(doc, style);
         style = null;
-        for (var styleSheet of styleSheets) {
+        for (const styleSheet of styleSheets) {
           if (styleSheet.href === mainStyleSheet?.href) {
             style = styleSheet.title.toLowerCase().replace('new', '').trim().replace(/\s+/g, '-');
             if (style === '_special') { style = styleSheet.href.match(/[a-z]*(?=[^/]*$)/)[0]; }
@@ -457,7 +457,7 @@ var Main = {
       return setStyle();
     });
     if (!mainStyleSheet) {
-      for (var styleSheet of $$('link[rel="stylesheet"]', d.head)) {
+      for (const styleSheet of $$('link[rel="stylesheet"]', d.head)) {
         $.on(styleSheet, 'load', setStyle);
       }
       return setStyle();
@@ -534,7 +534,7 @@ var Main = {
       setTimeout(() => {
         Main.callbackNodes('Thread', threads);
         Main.callbackNodesDB('Post', posts, function() {
-          for (var post of posts) QuoteThreading.insert(post);
+          for (const post of posts) QuoteThreading.insert(post);
           Main.expectInitFinished = true;
           $.event('4chanXInitFinished');
         });
@@ -548,7 +548,7 @@ var Main = {
 
   parseThreads(threadRoots, threads, posts, errors) {
     for (var threadRoot of threadRoots) {
-      var boardObj = (() => {
+      const boardObj = (() => {
         let boardID;
         if (boardID = threadRoot.dataset.board) {
         boardID = encodeURIComponent(boardID);
@@ -557,12 +557,12 @@ var Main = {
         return g.BOARD;
       }
       })();
-      var threadID = +threadRoot.id.match(/\d*$/)[0];
+      const threadID = +threadRoot.id.match(/\d*$/)[0];
       if (!threadID || boardObj.threads.get(threadID)?.nodes.root) { return; }
-      var thread = new Thread(threadID, boardObj);
+      const thread = new Thread(threadID, boardObj);
       thread.nodes.root = threadRoot;
       threads.push(thread);
-      var postRoots = $$(g.SITE.selectors.postContainer, threadRoot);
+      const postRoots = $$(g.SITE.selectors.postContainer, threadRoot);
       if (g.SITE.isOPContainerThread) { postRoots.unshift(threadRoot); }
       Main.parsePosts(postRoots, thread, posts, errors);
       Main.addPostsObserver.observe(threadRoot, {childList: true});
@@ -570,7 +570,7 @@ var Main = {
   },
 
   parsePosts(postRoots, thread, posts, errors) {
-    for (var postRoot of postRoots) {
+    for (const postRoot of postRoots) {
       if (!(postRoot.dataset.fullID && g.posts.get(postRoot.dataset.fullID)) && $(g.SITE.selectors.comment, postRoot)) {
         try {
           posts.push(new Post(postRoot, thread, thread.board));
@@ -588,8 +588,8 @@ var Main = {
 
   addThreads(records) {
     const threadRoots = [];
-    for (var record of records) {
-      for (var node of record.addedNodes) {
+    for (const record of records) {
+      for (const node of record.addedNodes) {
         if ((node.nodeType === Node.ELEMENT_NODE) && node.matches(g.SITE.selectors.thread)) {
           threadRoots.push(node);
         }
@@ -611,23 +611,23 @@ var Main = {
     const threadsRM = [];
     const posts     = [];
     const errors    = [];
-    for (var record of records) {
+    for (const record of records) {
       thread = Get.threadFromRoot(record.target);
-      var postRoots = [];
-      for (var node of record.addedNodes) {
+      const postRoots = [];
+      for (let node of record.addedNodes) {
         if (node.nodeType === Node.ELEMENT_NODE) {
           if (node.matches(g.SITE.selectors.postContainer) || (node = $(g.SITE.selectors.postContainer, node))) {
             postRoots.push(node);
           }
         }
       }
-      var n = posts.length;
+      const n = posts.length;
       Main.parsePosts(postRoots, thread, posts, errors);
       if ((posts.length > n) && !threads.includes(thread)) {
         threads.push(thread);
       }
-      var anyRemoved = false;
-      for (var el of record.removedNodes) {
+      let anyRemoved = false;
+      for (const el of record.removedNodes) {
         if ((Get.postFromRoot(el)?.nodes.root === el) && !doc.contains(el)) {
           anyRemoved = true;
           break;
@@ -669,9 +669,9 @@ var Main = {
   },
 
   parseCatalogThreads(threadRoots, threads, errors) {
-    for (var threadRoot of threadRoots) {
+    for (const threadRoot of threadRoots) {
       try {
-        var thread = new CatalogThreadNative(threadRoot);
+        const thread = new CatalogThreadNative(threadRoot);
         if (thread.thread.catalogViewNative?.nodes.root !== threadRoot) {
           thread.thread.catalogViewNative = thread;
           threads.push(thread);
@@ -689,8 +689,8 @@ var Main = {
 
   addCatalogThreads(records) {
     const threadRoots = [];
-    for (var record of records) {
-      for (var node of record.addedNodes) {
+    for (const record of records) {
+      for (const node of record.addedNodes) {
         if ((node.nodeType === Node.ELEMENT_NODE) && node.matches(g.SITE.selectors.catalog.thread)) {
           threadRoots.push(node);
         }
@@ -723,7 +723,7 @@ var Main = {
       return ++i % 250;
     };
 
-    var softTask = function() {
+    const softTask = function() {
       while (fn()) {
         continue;
       }

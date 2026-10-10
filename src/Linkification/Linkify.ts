@@ -55,12 +55,12 @@ var Linkify = {
     const links = [];
     while ((node = snapshot.snapshotItem(i++))) {
       var result;
-      var {data} = node;
+      let {data} = node;
       if (!data || (node.parentElement.nodeName === "A")) { continue; }
 
       while ((result = test.exec(data))) {
-        var {index} = result;
-        var endNode = node;
+        const {index} = result;
+        let endNode = node;
         var word    = result[0];
         // End of node, not necessarily end of space-delimited string
         if ((length = index + word.length) === data.length) {

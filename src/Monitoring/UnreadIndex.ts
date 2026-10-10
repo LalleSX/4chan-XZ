@@ -50,8 +50,8 @@ var UnreadIndex = {
     if (e.detail.isCatalog) { return; }
     return (() => {
       const result = [];
-      for (var threadID of e.detail.threadIDs) {
-        var thread = g.threads.get(threadID);
+      for (const threadID of e.detail.threadIDs) {
+        const thread = g.threads.get(threadID);
         result.push(UnreadIndex.update(thread));
       }
       return result;

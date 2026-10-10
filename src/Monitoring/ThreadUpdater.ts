@@ -69,10 +69,10 @@ const ThreadUpdater = {
 
     const subEntries = [];
     for (const name in Config.updater.checkbox) {
-      var conf = Config.updater.checkbox[name];
+      const conf = Config.updater.checkbox[name];
       const el = UI.checkbox(name, name);
       el.title = conf[1];
-      var input = el.firstElementChild;
+      const input = el.firstElementChild;
       $.on(input, 'change', $.cb.checked);
       if (input.name === 'Scroll BG') {
         $.on(input, 'change', this.cb.scrollBG);
@@ -193,8 +193,8 @@ const ThreadUpdater = {
             let confirmed;
             if (this.status === 200) {
               confirmed = true;
-              for (var page of this.response) {
-                for (var thread of page.threads) {
+              for (const page of this.response) {
+                for (const thread of page.threads) {
                   if (thread.no === ThreadUpdater.thread.ID) {
                     confirmed = false;
                     break;
@@ -366,7 +366,7 @@ const ThreadUpdater = {
     const newPosts = []; // new post fullID list for API
 
     // Build the index, create posts.
-    for (var postObject of postObjects) {
+    for (const postObject of postObjects) {
       ID = postObject.no;
       index.push(ID);
       if (postObject.fsize) { files.push(ID); }
@@ -381,7 +381,7 @@ const ThreadUpdater = {
       }
 
       newPosts.push(`${board}.${ID}`);
-      var node = g.SITE.Build.postFromObject(postObject, board.ID);
+      const node = g.SITE.Build.postFromObject(postObject, board.ID);
       posts.push(new Post(node, thread, board));
       // Fetching your own posts after posting
       if (ThreadUpdater.postID === ID) { delete ThreadUpdater.postID; }

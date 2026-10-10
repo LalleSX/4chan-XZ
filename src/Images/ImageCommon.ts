@@ -87,7 +87,7 @@ var ImageCommon = {
 
     const threadJSON = g.SITE.urls.threadJSON?.(post);
     if (!threadJSON) { return; }
-    var parseJSON = function(isArchiveURL) {
+    const parseJSON = function(isArchiveURL) {
       let needle, postObj;
       if (this.status === 404) {
         let archivedThreadJSON;

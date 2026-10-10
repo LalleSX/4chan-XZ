@@ -40,7 +40,7 @@ export default class Board {
     };
     // Pass users have reduced cooldowns.
     if (d.cookie.indexOf('pass_enabled=1') >= 0) {
-      for (var key of ['reply', 'image']) {
+      for (const key of ['reply', 'image']) {
         c[key] = Math.ceil(c[key] / 2);
       }
     }

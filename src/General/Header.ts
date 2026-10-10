@@ -131,7 +131,7 @@ const Header = {
         $.global('stubCloneTopNav');
       }
       if (Header.bottomBoardList = $(g.SITE.selectors.boardListBottom)) {
-        for (var a of $$('a', Header.bottomBoardList)) {
+        for (const a of $$('a', Header.bottomBoardList)) {
           if ((a.hostname === location.hostname) && (a.pathname.split('/')[1] === g.BOARD.ID)) { a.className = 'current'; }
         }
         return CatalogLinks.setLinks(Header.bottomBoardList);
@@ -197,7 +197,7 @@ const Header = {
     }
     const fullBoardList = $('.boardList', Header.boardList);
     $.add(fullBoardList, nodes);
-    for (var a of $$('a', fullBoardList)) {
+    for (const a of $$('a', fullBoardList)) {
       if ((a.hostname === location.hostname) && (a.pathname.split('/')[1] === g.BOARD.ID)) { a.className = 'current'; }
     }
     return CatalogLinks.setLinks(fullBoardList);
@@ -625,7 +625,7 @@ const Header = {
     });
     $.add(shortcut, el);
     shortcut.dataset.index = index.toString();
-    for (var item of $$('[data-index]', Header.shortcuts)) {
+    for (const item of $$('[data-index]', Header.shortcuts)) {
       if (+item.dataset.index > +index) {
         $.before(item, shortcut);
         return;

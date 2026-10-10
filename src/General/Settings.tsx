@@ -78,8 +78,8 @@ const Settings = {
     $.on($('input',   dialog), 'change', Settings.onImport);
 
     const links = [];
-    for (var section of Settings.sections) {
-      var link = $.el('a', {
+    for (const section of Settings.sections) {
+      const link = $.el('a', {
         className: `tab-${section.hyphenatedTitle}`,
         textContent: section.title,
         href: 'javascript:;'
@@ -180,7 +180,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
       warnings.hidden = false;
     };
     for (key in Settings.warnings) {
-      var warning = Settings.warnings[key];
+      const warning = Settings.warnings[key];
       warning(addWarning);
     }
     $.add(section, warnings);
@@ -191,20 +191,20 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
       const containers = [root];
       const result = [];
       for (key in obj) {
-        var arr = obj[key];
+        const arr = obj[key];
         if (arr instanceof Array) {
-          var description = arr[1];
-          var div = $.el('div',
+          const description = arr[1];
+          const div = $.el('div',
             { innerHTML: `<label><input type="checkbox" name="${key}">${key}</label><span class="description">: ${description}</span>` });
           div.dataset.name = key;
-          var input = $('input', div);
+          const input = $('input', div);
           $.on(input, 'change', $.cb.checked);
           $.on(input, 'change', function() { this.parentNode.parentNode.dataset.checked = this.checked; });
           items[key] = Conf[key];
           inputs[key] = input;
-          var level = arr[2] || 0;
+          const level = arr[2] || 0;
           if (containers.length <= level) {
-            var container = $.el('div', {className: 'suboption-list' });
+            const container = $.el('div', {className: 'suboption-list' });
             $.add(containers[containers.length-1].lastElementChild, container);
             containers[level] = container;
           } else if (containers.length > (level+1)) {
@@ -216,9 +216,9 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
       return result;
     };
 
-    for (var keyFS in Config.main) {
-      var obj = Config.main[keyFS];
-      var fs = $.el('fieldset',
+    for (const keyFS in Config.main) {
+      const obj = Config.main[keyFS];
+      const fs = $.el('fieldset',
         { innerHTML: `<legend>${keyFS}</legend>` });
       addCheckboxes(fs, obj);
       if (keyFS === 'Posting and Captchas') {
@@ -232,7 +232,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
 
     $.get(items, function(items) {
       for (key in items) {
-        var val = items[key];
+        const val = items[key];
         inputs[key].checked = val;
         inputs[key].parentNode.parentNode.dataset.checked = val;
       }
@@ -424,7 +424,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
         val = data[key];
         if (typeof val === 'string') {
           try {
-            var val2 = JSON.parse(val);
+            const val2 = JSON.parse(val);
             set(key, val2);
           } catch (error1) {}
         }
@@ -553,7 +553,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
   advanced(section) {
     let input, name;
     $.extend(section, { innerHTML: AdvancedPage });
-    for (var warning of $$('.warning', section)) { warning.hidden = Conf[warning.dataset.feature]; }
+    for (const warning of $$('.warning', section)) { warning.hidden = Conf[warning.dataset.feature]; }
 
     const inputs = dict();
     for (input of $$('[name]', section)) {
@@ -571,7 +571,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
       input = inputs[name];
       if (!['Interval', 'Custom CSS', 'timeLocale'].includes(name)) {
         items[name] = Conf[name];
-        var event = (
+        const event = (
           (input.nodeName === 'SELECT') ||
           ['checkbox', 'radio'].includes(input.type) ||
           ((input.nodeName === 'TEXTAREA') && !(name in Settings))
@@ -582,8 +582,8 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     }
 
     $.get(items, function(items) {
-      for (var key in items) {
-        var val = items[key];
+      for (const key in items) {
+        const val = items[key];
         input = inputs[key];
         input[input.type === 'checkbox' ? 'checked' : 'value'] = val;
         input.hidden = false; // XXX prevent Firefox from adding initialization to undo queue
@@ -594,7 +594,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     });
 
     const listImageHost = $.id('list-fourchanImageHost');
-    for (var textContent of ImageHost.suggestions) {
+    for (const textContent of ImageHost.suggestions) {
       $.add(listImageHost, $.el('option', {textContent}));
     }
 
@@ -652,7 +652,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     $.rmAll(tbody);
 
     const archBoards = dict();
-    for (var {uid, name, boards, files, software} of Conf['archives']) {
+    for (const {uid, name, boards, files, software} of Conf['archives']) {
       if (!['fuuka', 'foolfuuka'].includes(software)) { continue; }
       for (boardID of boards) {
         o = archBoards[boardID] || (archBoards[boardID] = {
@@ -662,7 +662,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
           file:   []
         });
         if (!o.threadJSON) o.threadJSON = [];
-        var archive = [uid ?? name, name];
+        const archive = [uid ?? name, name];
         o.thread.push(archive);
         if (software === 'foolfuuka') {
           o.post.push(archive);
@@ -675,7 +675,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     const rows = [];
     const boardOptions = [];
     for (boardID of Object.keys(archBoards).sort()) { // Alphabetical order
-      var row = $.el('tr',
+      const row = $.el('tr',
         {className: `board-${boardID}`});
       row.hidden = boardID !== g.BOARD.ID;
 
@@ -686,7 +686,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
       }));
 
       o = archBoards[boardID];
-      for (var item of ['thread', 'threadJSON', 'post', 'file']) {
+      for (const item of ['thread', 'threadJSON', 'post', 'file']) {
         $.add(row, Settings.addArchiveCell(boardID, o, item));
       }
       rows.push(row);
@@ -707,10 +707,10 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     $.add(tbody, rows);
 
     for (boardID in Conf['selectedArchives']) {
-      var data = Conf['selectedArchives'][boardID];
-      for (var type in data) {
+      const data = Conf['selectedArchives'][boardID];
+      for (const type in data) {
         var select;
-        var id = data[type];
+        const id = data[type];
         if (select = $(`select[data-boardid='${boardID}'][data-type='${type}']`, tbody)) {
           select.value = JSON.stringify(id);
           if (!select.value) { select.value = select.firstChild.value; }
@@ -732,7 +732,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     const options = [];
     let i = 0;
     while (i < length) {
-      var archive = data[type][i++];
+      const archive = data[type][i++];
       options.push($.el('option', {
         value: JSON.stringify(archive[0]),
         textContent: archive[1]
@@ -802,7 +802,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     const f = Favicon;
     const iterable = [f.SFW, f.unreadSFW, f.unreadSFWY, f.NSFW, f.unreadNSFW, f.unreadNSFWY, f.dead, f.unreadDead, f.unreadDeadY];
     for (let i = 0; i < iterable.length; i++) {
-      var icon = iterable[i];
+      const icon = iterable[i];
       if (!img[i]) { $.add(this.nextElementSibling, $.el('img')); }
       img[i].src = icon;
     }
@@ -842,10 +842,10 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
     const items  = dict();
     const inputs = Settings.keyBindInputs;
     for (key in Config.hotkeys) {
-      var arr = Config.hotkeys[key];
-      var tr = $.el('tr',
+      const arr = Config.hotkeys[key];
+      const tr = $.el('tr',
         { innerHTML: `<td>${arr[1]}</td><td><input class="field"></td>` });
-      var input = $('input', tr);
+      const input = $('input', tr);
       input.name = key;
       input.spellcheck = false;
       items[key]  = Conf[key];
@@ -856,7 +856,7 @@ Enable it on boards.${location.hostname.split('.')[1]}.org in your browser's pri
 
     $.get(items, function (items) {
       for (key in items) {
-        var val = items[key];
+        const val = items[key];
         inputs[key].value = val;
       }
     });

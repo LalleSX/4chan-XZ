@@ -25,7 +25,7 @@ var PostJumper = {
 
   node() {
     if (this.isClone) {
-      for (var buttons of $$('.postJumper', this.nodes.info)) {
+      for (const buttons of $$('.postJumper', this.nodes.info)) {
         PostJumper.addListeners(buttons);
       }
       return;

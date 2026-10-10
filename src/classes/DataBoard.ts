@@ -58,7 +58,7 @@ export default class DataBoard {
     if (!sync) return;
     // Chrome also fires the onChanged callback on the current tab,
     // so we only start syncing when we're ready.
-    var init = () => {
+    const init = () => {
       $.off(d, '4chanXInitFinished', init);
       this.sync = sync;
     };
@@ -101,7 +101,7 @@ export default class DataBoard {
     return $.get(this.key, { boards: dict() }, (items: DataBoardData) => {
       if ((items[this.key].version || 0) > (this.data.version || 0)) {
         this.initData(items[this.key]);
-        for (var change of this.changes) { change(); }
+        for (const change of this.changes) { change(); }
         this.sync?.();
       }
       return cb?.();
@@ -165,8 +165,8 @@ export default class DataBoard {
   ) {
     this.save(() => {
       const oldVal = this.get({ siteID, boardID, threadID, postID, defaultValue: dict() });
-      for (var key in val) {
-        var subVal = val[key];
+      for (const key in val) {
+        const subVal = val[key];
         if (typeof subVal === 'undefined') {
           delete oldVal[key];
         } else {
@@ -244,8 +244,8 @@ export default class DataBoard {
     if (!(board = this.data[siteID].boards[boardID])) return;
     const threads = dict();
     if (response1) {
-      for (var page of response1) {
-        for (var thread of page.threads) {
+      for (const page of response1) {
+        for (const thread of page.threads) {
           ID = thread.no;
           if (ID in board) { threads[ID] = board[ID]; }
         }

@@ -118,11 +118,11 @@ var CrossOrigin = {
       getResponseHeader(headerName) {
         if ((this.responseHeaders == null) && (this.responseHeaderString != null)) {
           this.responseHeaders = dict();
-          for (var header of this.responseHeaderString.split('\r\n')) {
+          for (const header of this.responseHeaderString.split('\r\n')) {
             var i;
             if ((i = header.indexOf(':')) >= 0) {
-              var key = header.slice(0, i).trim().toLowerCase();
-              var val = header.slice(i+1).trim();
+              const key = header.slice(0, i).trim().toLowerCase();
+              const val = header.slice(i+1).trim();
               this.responseHeaders[key] = val;
             }
           }

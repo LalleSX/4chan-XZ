@@ -59,7 +59,7 @@ const CaptchaT = {
     let el;
     let response = {};
     if (this.nodes.container) {
-      for (var key of ['t-response', 't-challenge']) {
+      for (const key of ['t-response', 't-challenge']) {
         response[key] = $(`[name='${key}']`, this.nodes.container).value;
       }
     }

@@ -28,7 +28,7 @@ var QuoteInline = {
   node() {
     const {process} = QuoteInline;
     const {isClone} = this;
-    for (var link of this.nodes.quotelinks.concat([...this.nodes.backlinks], this.nodes.archivelinks)) {
+    for (const link of this.nodes.quotelinks.concat([...this.nodes.backlinks], this.nodes.archivelinks)) {
       process(link, isClone);
     }
   },

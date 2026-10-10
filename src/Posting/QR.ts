@@ -277,7 +277,7 @@ var QR = {
     $.rmClass(QR.nodes.el, 'dump');
     $.addClass(QR.shortcut, 'disabled');
     new QR.post(true);
-    for (var post of QR.posts.splice(0, QR.posts.length - 1)) {
+    for (const post of QR.posts.splice(0, QR.posts.length - 1)) {
       post.delete();
     }
     QR.cooldown.auto = false;
@@ -407,7 +407,7 @@ var QR = {
   notifications: [],
 
   cleanNotifications() {
-    for (var notification of QR.notifications) {
+    for (const notification of QR.notifications) {
       notification.close();
     }
     return QR.notifications = [];
@@ -474,8 +474,8 @@ var QR = {
 
         if (!range.toString().trim()) { continue; }
 
-        var frag  = range.cloneContents();
-        var ancestor = range.commonAncestorContainer;
+        const frag  = range.cloneContents();
+        const ancestor = range.commonAncestorContainer;
         // Quoting the insides of a spoiler/code tag.
         if ($.x('ancestor-or-self::*[self::s or contains(@class,"removed-spoiler")]', ancestor)) {
           $.prepend(frag, $.tn('[spoiler]'));
@@ -632,10 +632,10 @@ var QR = {
     if (!e.clipboardData.items) { return; }
     let file = null;
     let score = -1;
-    for (var item of e.clipboardData.items) {
+    for (const item of e.clipboardData.items) {
       var file2;
       if ((item.kind === 'file') && (file2 = item.getAsFile())) {
-        var score2 = (2* +(file2.size <= QR.max_size)) + +(file2.type === 'image/png');
+        const score2 = (2* +(file2.size <= QR.max_size)) + +(file2.type === 'image/png');
         if (score2 > score) {
           file = file2;
           score = score2;
@@ -656,16 +656,16 @@ var QR = {
     if (!pasteArea.childNodes.length) { return; }
     const images = $$('img', pasteArea);
     $.rmAll(pasteArea);
-    for (var img of images) {
+    for (const img of images) {
       var m;
-      var {src} = img;
+      const {src} = img;
       if (m = src.match(/data:(image\/(\w+));base64,(.+)/)) {
-        var bstr = atob(m[3]);
-        var arr = new Uint8Array(bstr.length);
+        const bstr = atob(m[3]);
+        const arr = new Uint8Array(bstr.length);
         for (let i = 0; i < bstr.length; i++) {
           arr[i] = bstr.charCodeAt(i);
         }
-        var blob = new Blob([arr], {type: m[1]});
+        const blob = new Blob([arr], {type: m[1]});
         blob.name = `${Conf['pastedname']}.${m[2]}`;
         QR.handleFiles([blob]);
       } else if (/^https?:\/\//.test(src)) {
@@ -700,7 +700,7 @@ var QR = {
     }
     if (!files.length) { return; }
     QR.cleanNotifications();
-    for (var file of files) {
+    for (const file of files) {
       QR.handleFile(file, files.length);
     }
     $.addClass(QR.nodes.el, 'dump');
@@ -733,7 +733,7 @@ var QR = {
     if (!QR.nodes) { return; }
     const list    = QR.nodes.thread;
     const options = [list.firstElementChild];
-    for (var thread of g.BOARD.threads.keys) {
+    for (const thread of g.BOARD.threads.keys) {
       options.push($.el('option', {
         value: thread,
         textContent: `Thread ${thread}`
@@ -916,8 +916,8 @@ var QR = {
     const addFlag = (value, textContent) => $.add(select, $.el('option', {value, textContent}));
 
     addFlag('0', (g.BOARD.config.country_flags ? 'Geographic Location' : 'None'));
-    for (var value in g.BOARD.config.board_flags) {
-      var textContent = g.BOARD.config.board_flags[value];
+    for (const value in g.BOARD.config.board_flags) {
+      const textContent = g.BOARD.config.board_flags[value];
       addFlag(value, textContent);
     }
 
@@ -976,7 +976,7 @@ var QR = {
       threadID = null;
       if (!!g.BOARD.config.require_subject && !post.sub) {
         err = 'New threads require a subject.';
-      } else if (!!!g.BOARD.config.text_only && !post.file) {
+      } else if (!g.BOARD.config.text_only && !post.file) {
         err = 'No file selected.';
       }
     } else if (g.BOARD.threads.get(threadID).isClosed) {
@@ -1063,8 +1063,8 @@ var QR = {
             options.form.append('g-recaptcha-response', response.response);
           }
         } else {
-          for (var key in response) {
-            var val = response[key];
+          for (const key in response) {
+            const val = response[key];
             options.form.append(key, val);
           }
         }
@@ -1155,7 +1155,7 @@ var QR = {
       } else if (err.textContent && (m = err.textContent.match(/\d+\s+(?:minute|second)/gi)) && !/duplicate|hour/i.test(err.textContent)) {
         QR.cooldown.auto = !/have\s+been\s+muted/i.test(err.textContent);
         let seconds = 0;
-        for (var mi of m) {
+        for (const mi of m) {
           seconds += (/minute/i.test(mi) ? 60 : 1) * (+mi.match(/\d+/)[0]);
         }
         if (/muted/i.test(err.textContent)) {
@@ -1194,7 +1194,7 @@ var QR = {
     const postsCount = QR.posts.length - 1;
     QR.cooldown.auto = postsCount && isReply;
 
-    const lastPostToThread = !((function() { for (var p of QR.posts.slice(1)) { if (p.thread === post.thread) { return true; } } })());
+    const lastPostToThread = !((function() { for (const p of QR.posts.slice(1)) { if (p.thread === post.thread) { return true; } } })());
 
     if (postsCount) {
       post.rm();
@@ -1242,7 +1242,7 @@ var QR = {
 
   waitForThread(url, cb) {
     let attempts = 0;
-    var check = function() {
+    const check = function() {
       $.ajax(url, {
         onloadend() {
           attempts++;
@@ -1372,8 +1372,8 @@ var QR = {
 
       // The longest reply cooldown, for use in pruning old reply data
       QR.cooldown.maxDelay = 0;
-      for (var type in QR.cooldown.delays) {
-        var delay = QR.cooldown.delays[type];
+      for (const type in QR.cooldown.delays) {
+        const delay = QR.cooldown.delays[type];
         if (!['thread', 'thread_global'].includes(type)) {
           QR.cooldown.maxDelay = Math.max(QR.cooldown.maxDelay, delay);
         }
@@ -1430,7 +1430,7 @@ var QR = {
       let cooldown;
       if (!QR.cooldown.data) { return; }
       const cooldowns = (QR.cooldown.data[post.board.ID] || (QR.cooldown.data[post.board.ID] = dict()));
-      for (var id in cooldowns) {
+      for (const id in cooldowns) {
         cooldown = cooldowns[id];
         if ((cooldown.delay == null) && (cooldown.threadID === post.thread.ID) && (cooldown.postID === post.ID)) {
           QR.cooldown.set(post.board.ID, id, null);
@@ -1442,10 +1442,10 @@ var QR = {
     secondsDeletion(post) {
       if (!QR.cooldown.data || !Conf['Cooldown']) { return 0; }
       const cooldowns = QR.cooldown.data[post.board.ID] || dict();
-      for (var start in cooldowns) {
-        var cooldown = cooldowns[start];
+      for (const start in cooldowns) {
+        const cooldown = cooldowns[start];
         if ((cooldown.delay == null) && (cooldown.threadID === post.thread.ID) && (cooldown.postID === post.ID)) {
-          var seconds = QR.cooldown.delays.deletion - Math.floor((Date.now() - start) / SECOND);
+          const seconds = QR.cooldown.delays.deletion - Math.floor((Date.now() - start) / SECOND);
           return Math.max(seconds, 0);
         }
       }
@@ -1457,7 +1457,7 @@ var QR = {
         return { type: 'thread' };
       } else {
         return {
-          type: !!post.file ? 'image' : 'reply',
+          type: post.file ? 'image' : 'reply',
           threadID: +post.thread
         };
       }
@@ -1481,9 +1481,9 @@ var QR = {
       const { changes } = QR.cooldown;
       if (!Object.keys(changes).length) { return; }
       $.get('cooldowns', dict(), function ({ cooldowns }) {
-        for (var scope in QR.cooldown.changes) {
-          for (var id in QR.cooldown.changes[scope]) {
-            var value = QR.cooldown.changes[scope][id];
+        for (const scope in QR.cooldown.changes) {
+          for (const id in QR.cooldown.changes[scope]) {
+            const value = QR.cooldown.changes[scope][id];
             QR.cooldown.mergeChange(cooldowns, scope, id, value);
           }
           QR.cooldown.data = cooldowns;
@@ -1511,13 +1511,13 @@ var QR = {
       let seconds = 0;
 
       if (Conf['Cooldown']) {
-        for (var scope of [g.BOARD.ID, 'global']) {
-          var cooldowns = (QR.cooldown.data[scope] || (QR.cooldown.data[scope] = dict()));
+        for (const scope of [g.BOARD.ID, 'global']) {
+          const cooldowns = (QR.cooldown.data[scope] || (QR.cooldown.data[scope] = dict()));
 
-          for (var start in cooldowns) {
+          for (let start in cooldowns) {
             cooldown = cooldowns[start];
             start = +start;
-            var elapsed = Math.floor((now - start) / SECOND);
+            const elapsed = Math.floor((now - start) / SECOND);
             if (elapsed < 0) { // clock changed since then?
               QR.cooldown.set(scope, start, null);
               save = true;
@@ -1537,7 +1537,7 @@ var QR = {
             }
 
             // Clean up expired cooldowns
-            var maxDelay = cooldown.threadID !== cooldown.postID ?
+            let maxDelay = cooldown.threadID !== cooldown.postID ?
               QR.cooldown.maxDelay
               :
               QR.cooldown.delays[scope === 'global' ? 'thread_global' : 'thread'];
@@ -1554,7 +1554,7 @@ var QR = {
               // Only cooldowns relevant to this post can set the seconds variable:
               //   reply cooldown with a reply, thread cooldown with a thread.
               // Inter-board thread cooldowns only apply on boards other than the one they were posted on.
-              var suffix = scope === 'global' ?
+              const suffix = scope === 'global' ?
                 '_global'
                 :
                 '';
@@ -1710,7 +1710,7 @@ var QR = {
 
     init() {
       if (!Conf['Quick Reply'] && (!Conf['Menu'] || !Conf['Delete Link'])) { return; }
-      for (var item of Conf['QR.personas'].split('\n')) {
+      for (const item of Conf['QR.personas'].split('\n')) {
         QR.persona.parseItem(item.trim());
       }
     },
@@ -1747,10 +1747,10 @@ var QR = {
     },
 
     load() {
-      for (var type in QR.persona.types) {
-        var arr = QR.persona.types[type];
-        var list = $(`#list-${type}`, QR.nodes.el);
-        for (var val of arr) {
+      for (const type in QR.persona.types) {
+        const arr = QR.persona.types[type];
+        const list = $(`#list-${type}`, QR.nodes.el);
+        for (const val of arr) {
           if (val) {
             $.add(list, $.el('option',
               { textContent: val })
@@ -1841,12 +1841,12 @@ class post {
       if (this === QR.selected) { QR.nodes.spoiler.checked = this.spoiler; }
       return this.preventAutoPost();
     });
-    for (var label of $$('label', el)) {
+    for (const label of $$('label', el)) {
       $.on(label, 'click', e => e.stopPropagation());
     }
     $.add(QR.nodes.dumpList, el);
 
-    for (var event of ['dragStart', 'dragEnter', 'dragLeave', 'dragOver', 'dragEnd', 'drop']) {
+    for (const event of ['dragStart', 'dragEnter', 'dragLeave', 'dragOver', 'dragEnd', 'drop']) {
       $.on(el, event.toLowerCase(), this[event]);
     }
 
@@ -1918,7 +1918,7 @@ class post {
   lock(lock = true) {
     this.isLocked = lock;
     if (this !== QR.selected) { return; }
-    for (var name of ['thread', 'name', 'email', 'sub', 'com', 'fileButton', 'filename', 'spoiler', 'flag']) {
+    for (const name of ['thread', 'name', 'email', 'sub', 'com', 'fileButton', 'filename', 'spoiler', 'flag']) {
       var node;
       if ((node = QR.nodes[name])) {
         node.disabled = lock;
@@ -1951,7 +1951,7 @@ class post {
   load() {
     // Load this post's values.
 
-    for (var name of ['thread', 'name', 'email', 'sub', 'com', 'filename', 'flag']) {
+    for (const name of ['thread', 'name', 'email', 'sub', 'com', 'filename', 'flag']) {
       var node;
       if (!(node = QR.nodes[name])) { continue; }
       node.value = this[name] || node.dataset.default || '';
@@ -1999,7 +1999,7 @@ class post {
     if (this !== QR.selected) { return; }
     // Do this in case people use extensions
     // that do not trigger the `input` event.
-    for (var name of ['thread', 'name', 'email', 'sub', 'com', 'filename', 'spoiler', 'flag']) {
+    for (const name of ['thread', 'name', 'email', 'sub', 'com', 'filename', 'spoiler', 'flag']) {
       var node;
       if (!(node = QR.nodes[name])) { continue; }
       this.save(node, true);
@@ -2039,9 +2039,9 @@ class post {
     e.stopPropagation();
     for (let i = QR.posts.length - 1; i >= 0; i--) {
       var errors;
-      var post = QR.posts[i];
+      const post = QR.posts[i];
       if ((errors = post.errors)) {
-        for (var error of errors) {
+        for (const error of errors) {
           if (doc.contains(error)) {
             post.rm();
             break;
@@ -2076,7 +2076,7 @@ class post {
 
   dismissErrors(test = () => true) {
     if (this.errors) {
-      for (var error of this.errors) {
+      for (const error of this.errors) {
         if (doc.contains(error) && test(error)) {
           error.parentNode.previousElementSibling.click();
         }
@@ -2198,7 +2198,7 @@ class post {
     if (isVideo && !el.canPlayType(this.file.type)) { return; }
 
     const event = isVideo ? 'loadeddata' : 'load';
-    var onload = () => {
+    const onload = () => {
       $.off(el, event, onload);
       $.off(el, 'error', onerror);
       this.checkDimensions(el);
@@ -2323,7 +2323,7 @@ class post {
   }
 
   rmMetadata() {
-    for (var attr of ['type', 'height', 'width', 'duration']) {
+    for (const attr of ['type', 'height', 'width', 'duration']) {
       // XXX https://bugzilla.mozilla.org/show_bug.cgi?id=1021289
       this.nodes.el.removeAttribute(`data-${attr}`);
     }

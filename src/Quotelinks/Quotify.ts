@@ -32,10 +32,10 @@ var Quotify = {
       this.nodes.archivelinks = $$('a.linkify.quotelink', this.nodes.comment);
       return;
     }
-    for (var link of $$('a.linkify', this.nodes.comment)) {
+    for (const link of $$('a.linkify', this.nodes.comment)) {
       Quotify.parseArchivelink.call(this, link);
     }
-    for (var deadlink of $$('.deadlink', this.nodes.comment)) {
+    for (const deadlink of $$('.deadlink', this.nodes.comment)) {
       Quotify.parseDeadlink.call(this, deadlink);
     }
   },

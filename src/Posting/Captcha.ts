@@ -113,7 +113,7 @@ const Captcha = {
         let i;
         const now = Date.now();
         for (i = 0; i < this.captchas.length; i++) {
-          var captcha = this.captchas[i];
+          const captcha = this.captchas[i];
           if (captcha.timeout > now) { break; }
         }
         if (i) {
@@ -266,8 +266,8 @@ const Captcha = {
     },
 
     afterSetup(mutations) {
-      for (var mutation of mutations) {
-        for (var node of mutation.addedNodes) {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
           var iframe, textarea;
           if (iframe = $.x('./descendant-or-self::iframe[starts-with(@src, "https://www.google.com/recaptcha/")]', node)) { this.setupIFrame(iframe); }
           if (textarea = $.x('./descendant-or-self::textarea', node)) { this.setupTextArea(textarea); }

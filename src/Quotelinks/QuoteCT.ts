@@ -33,8 +33,8 @@ var QuoteCT = {
     if (this.isClone && (this.thread === this.context.thread)) { return; }
 
     const {board, thread} = this.context;
-    for (var quotelink of this.nodes.quotelinks) {
-      var {boardID, threadID} = Get.postDataFromLink(quotelink);
+    for (const quotelink of this.nodes.quotelinks) {
+      const {boardID, threadID} = Get.postDataFromLink(quotelink);
       if (!threadID) { continue; } // deadlink
       if (this.isClone) {
         $.rm($('.qmark-ct', quotelink));

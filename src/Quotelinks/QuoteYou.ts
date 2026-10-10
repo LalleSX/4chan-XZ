@@ -78,7 +78,7 @@ var QuoteYou = {
     // Stop there if there's no quotes in that post.
     if (!this.quotes.length) { return; }
 
-    for (var quotelink of this.nodes.quotelinks) {
+    for (const quotelink of this.nodes.quotelinks) {
       if (QuoteYou.db.get(Get.postDataFromLink(quotelink))) {
         if (Conf['Mark Quotes of You']) { $.add(quotelink, QuoteYou.mark.cloneNode(true)); }
         $.addClass(quotelink, 'you');
@@ -114,10 +114,10 @@ var QuoteYou = {
       } else {
         QuoteYou.db.delete(data);
       }
-      for (var clone of [post].concat(post.clones)) {
+      for (const clone of [post].concat(post.clones)) {
         clone.nodes.root.classList.toggle('yourPost', this.checked);
       }
-      for (var quotelink of Get.allQuotelinksLinkingTo(post)) {
+      for (const quotelink of Get.allQuotelinksLinkingTo(post)) {
         if (this.checked) {
           if (Conf['Mark Quotes of You']) { $.add(quotelink, QuoteYou.mark.cloneNode(true)); }
         } else {
@@ -125,7 +125,7 @@ var QuoteYou = {
         }
         quotelink.classList.toggle('you', this.checked);
         if ($.hasClass(quotelink, 'quotelink')) {
-          var quoter = Get.postFromNode(quotelink).nodes.root;
+          const quoter = Get.postFromNode(quotelink).nodes.root;
           quoter.classList.toggle('quotesYou', !!$('.quotelink.you', quoter));
         }
       }
