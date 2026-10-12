@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify on ${{ matrix.os }} / Node ${{ matrix.node }}
+    name: Build on ${{ matrix.os }} / Node ${{ matrix.node }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -28,7 +28,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm run verify
+      - run: npm run build:all
       - uses: actions/upload-artifact@v7
         with:
           name: neox-dev-build-${{ matrix.os }}-node-${{ matrix.node }}
