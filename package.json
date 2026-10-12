@@ -90,9 +90,10 @@
     }
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.0",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@eslint/js": "^10.0.0",
+    "@playwright/test": "^1.64.0",
     "@rollup/plugin-alias": "^6.0.0",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
@@ -127,6 +128,8 @@
   },
   "type": "module",
   "scripts": {
+    "test:extension": "npm run build:crx && playwright test",
+    "test:extension:types": "tsc -p tests/extension/tsconfig.json",
     "build": "node ./tools/rollup.js",
     "build:min": "npm run build:userscript:min",
     "build:userscript": "node ./tools/rollup.js --platform=userscript",

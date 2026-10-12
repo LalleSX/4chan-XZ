@@ -16,6 +16,8 @@ node_modules/
 /.events
 /.events2
 /dist/
+/test-results/
+/playwright-report/
 /builds/*.gz
 /test/
 /builds/crx/crx.7z
