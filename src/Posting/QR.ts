@@ -1032,7 +1032,7 @@ const QR = {
     };
 
     const options = {
-      responseType: 'document',
+      responseType: 'document' as const,
       withCredentials: true,
       onloadend: QR.response,
       form: $.formData(formData)

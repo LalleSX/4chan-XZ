@@ -7,12 +7,31 @@ import { debounce, dict, MINUTE, platform, SECOND } from "./helpers";
 import meta from '../../package.json';
 import PageContextFunctions from "../PageContext/pageContext";
 
+export interface AjaxOptions {
+  onloadend?: (this: XMLHttpRequest, event: ProgressEvent<XMLHttpRequestEventTarget>) => void;
+  timeout?: number;
+  responseType?: XMLHttpRequestResponseType;
+  withCredentials?: boolean;
+  type?: string;
+  onprogress?: (this: XMLHttpRequestUpload, event: ProgressEvent<XMLHttpRequestEventTarget>) => void;
+  form?: Document | XMLHttpRequestBodyInit | null;
+  headers?: Record<string, string>;
+}
+
+type FormValue = string | number | boolean | (Blob & {newName?: string}) | null | undefined;
+// DOM string setters coerce numbers; classList forwards assignments to its value setter.
+type ElementProperties<K extends keyof HTMLElementTagNameMap> = {
+  [P in keyof HTMLElementTagNameMap[K]]?: P extends 'classList' ? DOMTokenList | string :
+    HTMLElementTagNameMap[K][P] extends string ? HTMLElementTagNameMap[K][P] | number : HTMLElementTagNameMap[K][P];
+};
+type AudioVideo = Element & {mozHasAudio?: boolean; webkitAudioDecodedByteCount?: number};
+
 // not chainable
-const $ = (selector, root = document.body) => root.querySelector(selector);
+const $ = (selector, root: ParentNode = document.body) => root.querySelector(selector);
 
-$.id = id => d.getElementById(id);
+$.id = (id: string) => d.getElementById(id);
 
-$.ready = function(fc) {
+$.ready = function(fc: () => void): void {
   if (d.readyState !== 'loading') {
     $.queueTask(fc);
     return;
@@ -24,7 +43,7 @@ $.ready = function(fc) {
   $.on(d, 'DOMContentLoaded', cb);
 };
 
-$.formData = function(form) {
+$.formData = function(form: HTMLFormElement | Record<string, FormValue>): FormData {
   if (form instanceof HTMLFormElement) {
     return new FormData(form);
   }
@@ -35,23 +54,24 @@ $.formData = function(form) {
       if ((typeof val === 'object') && 'newName' in val) {
         fd.append(key, val, val.newName);
       } else {
-        fd.append(key, val);
+        // FormData coerces primitive values to strings; keep the falsy-value filter above.
+        fd.append(key, val as string | Blob);
       }
     }
   }
   return fd;
 };
 
-$.extend = function(object, properties) {
+$.extend = function<P extends object>(object: object, properties: P): void {
   for (const key in properties) {
     const val = properties[key];
-    object[key] = val;
+    (object as P)[key] = val;
   }
 };
 
-$.hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+$.hasOwn = (obj: object, key: PropertyKey): boolean => Object.prototype.hasOwnProperty.call(obj, key);
 
-$.getOwn = function(obj, key) {
+$.getOwn = function(obj, key: PropertyKey) {
   if (Object.prototype.hasOwnProperty.call(obj, key)) { return obj[key]; } else { return undefined; }
 };
 
@@ -63,7 +83,7 @@ $.ajax = (function() {
     } catch (e) {}
   }
 
-  return function (url, options={}) {
+  return function (url: string, options: AjaxOptions = {}): XMLHttpRequest {
     if (options.responseType == null) { options.responseType = 'json'; }
     if (!options.type) { options.type = (options.form && 'post') || 'get'; }
     // XXX https://forums.lanik.us/viewtopic.php?f=64&t=24173&p=78310
@@ -96,11 +116,11 @@ $.ajax = (function() {
 // Status Code 304: Not modified
 // With the `If-Modified-Since` header we only receive the HTTP headers and no body for 304 responses.
 // This saves a lot of bandwidth and CPU time for both the users and the servers.
-$.lastModified = dict();
-$.whenModified = function(url, bucket, cb, options={}) {
+$.lastModified = dict() as Record<string, Record<string, string | null>>;
+$.whenModified = function(url: string, bucket: string, cb, options={}) {
   let t;
   const {timeout, ajax} = options;
-  const headers = dict();
+  const headers: Record<string, string> = dict();
   if ((t = $.lastModified[bucket]?.[url]) != null) {
     headers['If-Modified-Since'] = t;
   }
@@ -117,7 +137,7 @@ $.whenModified = function(url, bucket, cb, options={}) {
 
 (function() {
   const reqs = dict();
-  $.cache = function(url, cb, options={}) {
+  $.cache = function(url: string, cb, options={}) {
     let req;
     const {ajax} = options;
     if (req = reqs[url]) {
@@ -132,8 +152,8 @@ $.whenModified = function(url, bucket, cb, options={}) {
       if (!this.status) {
         delete reqs[url];
       }
-      for (cb of this.callbacks) {
-        (cb => $.queueTask(() => cb.call(this, {isCached: false})))(cb);
+      for (const callback of this.callbacks) {
+        $.queueTask(() => callback.call(this, {isCached: false}));
       }
       return delete this.callbacks;
     };
@@ -141,7 +161,7 @@ $.whenModified = function(url, bucket, cb, options={}) {
     req.callbacks = [cb];
     return reqs[url] = req;
   };
-  return $.cleanCache = function(testf) {
+  return $.cleanCache = function(testf: (url: string) => boolean): void {
     for (const url in reqs) {
       if (testf(url)) {
         delete reqs[url];
@@ -165,7 +185,7 @@ $.cb = {
   }
 };
 
-$.asap = function(test, cb) {
+$.asap = function(test: () => unknown, cb) {
   if (test()) {
     return cb();
   } else {
@@ -179,7 +199,7 @@ $.onExists = function(root, selector, cb) {
     cb(el);
     return;
   }
-  var observer = new MutationObserver(function() {
+  const observer = new MutationObserver(function() {
     if (el = $(selector, root)) {
       observer.disconnect();
       cb(el);
@@ -188,7 +208,7 @@ $.onExists = function(root, selector, cb) {
   observer.observe(root, {childList: true, subtree: true});
 };
 
-$.addStyle = function(css, id, test='head') {
+$.addStyle = function(css: string, id?: string, test = 'head'): HTMLStyleElement {
   const style = $.el('style',
     {textContent: css});
   if (id != null) { style.id = id; }
@@ -196,7 +216,7 @@ $.addStyle = function(css, id, test='head') {
   return style;
 };
 
-$.addCSP = function(policy) {
+$.addCSP = function(policy: string): void {
   const meta = $.el('meta', {
     httpEquiv: 'Content-Security-Policy',
     content:   policy
@@ -212,35 +232,35 @@ $.addCSP = function(policy) {
   }
 };
 
-$.x = function(path, root) {
+$.x = function<T extends Node = Node>(path: string, root?: Node): T | null {
   if (!root) { root = d.body; }
   // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
-  return d.evaluate(path, root, null, 8, null).singleNodeValue;
+  return d.evaluate(path, root, null, 8, null).singleNodeValue as T | null;
 };
 
-$.X = function(path, root) {
+$.X = function(path: string, root?: Node): XPathResult {
   if (!root) { root = d.body; }
   // XPathResult.ORDERED_NODE_SNAPSHOT_TYPE === 7
   return d.evaluate(path, root, null, 7, null);
 };
 
-$.addClass = function(el, ...classNames) {
+$.addClass = function(el, ...classNames: string[]): void {
   el.classList.add(...classNames);
 };
 
-$.rmClass = function(el, ...classNames) {
+$.rmClass = function(el, ...classNames: string[]): void {
   el.classList.remove(...classNames);
 };
 
-$.toggleClass = (el, className) => el.classList.toggle(className);
+$.toggleClass = (el, className: string): boolean => el.classList.toggle(className);
 
-$.hasClass = (el, className) => el.classList.contains(className);
+$.hasClass = (el, className: string): boolean => el.classList.contains(className);
 
-$.rm = el => el?.remove();
+$.rm = (el): void => el?.remove();
 
-$.rmAll = root => root.textContent = null;
+$.rmAll = (root: Node): null => root.textContent = null;
 
-$.tn = s => d.createTextNode(s);
+$.tn = (s: string): Text => d.createTextNode(s);
 
 $.frag = () => d.createDocumentFragment();
 
@@ -267,8 +287,8 @@ $.replace = (root, el) => root.parentNode.replaceChild($.nodes(el), root);
 
 $.el = function <K extends keyof HTMLElementTagNameMap>(
   tag: K,
-  properties?: Record<string, any>,
-  properties2?: Record<string, any>
+  properties?: ElementProperties<K>,
+  properties2?: ElementProperties<K>
 ): HTMLElementTagNameMap[K] {
   const el = d.createElement(tag);
   if (properties) $.extend(el, properties);
@@ -276,27 +296,27 @@ $.el = function <K extends keyof HTMLElementTagNameMap>(
   return el;
 };
 
-$.on = function (el: EventTarget, events: string, handler: (event: Event) => void) {
+$.on = function<E extends Event>(el: EventTarget, events: string, handler: (event: E) => void): void {
   for (const event of events.split(' ')) {
     el.addEventListener(event, handler, false);
   }
 };
 
-$.off = function(el, events, handler) {
+$.off = function(el: EventTarget, events: string, handler: EventListener): void {
   for (const event of events.split(' ')) {
     el.removeEventListener(event, handler, false);
   }
 };
 
-$.one = function(el, events, handler) {
-  const cb = function(e) {
+$.one = function<T extends EventTarget, E extends Event>(el: T, events: string, handler: (this: T, event: E) => void): void {
+  const cb = function(this: T, e: E) {
     $.off(el, events, cb);
     return handler.call(this, e);
   };
   return $.on(el, events, cb);
 };
 
-$.event = function(event, detail, root: EventTarget = d) {
+$.event = function(event: string, detail?: unknown, root: EventTarget = d): boolean {
   if (!globalThis.chrome?.extension) {
     if ((detail != null) && (typeof cloneInto === 'function')) {
       detail = cloneInto(detail, d.defaultView);
@@ -332,7 +352,7 @@ if (platform === 'userscript') {
   })();
 }
 
-$.modifiedClick = e => e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || (e.button !== 0);
+$.modifiedClick = (e: MouseEvent): boolean => e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || (e.button !== 0);
 
 if (!globalThis.chrome?.extension) {
   $.open =
@@ -347,17 +367,17 @@ if (!globalThis.chrome?.extension) {
     url => window.open(url, '_blank');
 }
 
-$.debounce = function(wait, fn) {
+$.debounce = function<T, A extends unknown[], R>(wait: number, fn: (this: T, ...args: A) => R) {
   let lastCall = 0;
-  let timeout  = null;
-  let that     = null;
-  let args     = null;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  let that: T;
+  let args: A;
   const exec = function() {
     lastCall = Date.now();
     return fn.apply(that, args);
   };
-  return function() {
-    args = arguments;
+  return function(this: T, ...nextArgs: A): R | ReturnType<typeof setTimeout> {
+    args = nextArgs;
     that = this;
     if (lastCall < (Date.now() - wait)) {
       return exec();
@@ -370,27 +390,23 @@ $.debounce = function(wait, fn) {
 };
 
 $.queueTask = (function() {
-  const taskQueue = [];
-  const execTask = function() {
-    const [func, ...args] = taskQueue.shift();
-    func(...args);
-  };
-  return function() {
-    taskQueue.push(arguments);
+  const resolved = Promise.resolve();
+  return function<A extends unknown[]>(fn: (...args: A) => unknown, ...args: A): void {
     // setTimeout is throttled in background tabs on firefox
-    Promise.resolve().then(execTask);
+    // Keep one Promise reaction per task, preserving microtask order and rejection behavior.
+    resolved.then(() => { fn(...args); });
   };
-})() as (fn: (fn: any) => any, ...args: any[]) => void;
+})();
 
 if (platform === 'crx') {
-  const callbacks = new Map<number, ((...args: any[]) => any)>();
+  const callbacks = new Map<number, (data: unknown) => void>();
 
   chrome.runtime.onMessage.addListener(({ id, data }) => {
     callbacks.get(id)(data);
     callbacks.delete(id);
   });
 
-  $.eventPageRequest = (params) => new Promise(resolve => {
+  $.eventPageRequest = (params: object): Promise<unknown> => new Promise(resolve => {
     chrome.runtime.sendMessage(params, id => { callbacks.set(id, resolve); });
   });
 }
@@ -425,10 +441,10 @@ $.global = async function(fn: string, data?: Record<string, string>) {
   }
 };
 
-$.bytesToString = function(size) {
+$.bytesToString = function(size: number | string): string {
   let unit = 0; // Bytes
-  while (size >= 1024) {
-    size /= 1024;
+  while (+size >= 1024) {
+    size = +size / 1024;
     unit++;
   }
   // Remove trailing 0s.
@@ -436,10 +452,10 @@ $.bytesToString = function(size) {
     unit > 1 ?
       // Keep the size as a float if the size is greater than 2^20 B.
       // Round to hundredth.
-      Math.round(size * 100) / 100
+      Math.round(+size * 100) / 100
     :
       // Round to an integer otherwise.
-      Math.round(size);
+      Math.round(+size);
   return `${size} ${['B', 'KB', 'MB', 'GB'][unit]}`;
 };
 
@@ -451,19 +467,23 @@ $.minmax = (value, min, max) => value < min ?
   :
     value;
 
-$.hasAudio = video =>
+$.hasAudio = (video: AudioVideo): boolean =>
   video.mozHasAudio || !!video.webkitAudioDecodedByteCount ||
   video.nextElementSibling?.tagName === 'AUDIO'; // sound posts
 
-$.luma = rgb => (rgb[0] * 0.299) + (rgb[1] * 0.587) + (rgb[2] * 0.114);
+$.luma = (rgb: readonly (number | string)[]): number => (+rgb[0] * 0.299) + (+rgb[1] * 0.587) + (+rgb[2] * 0.114);
 
-$.unescape = function(text) {
-  if (text == null) { return text; }
-  return text.replace(/<[^>]*>/g, '').replace(/&(amp|#039|quot|lt|gt|#44);/g, c => ({'&amp;': '&', '&#039;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>', '&#44;': ','})[c]);
-};
+$.unescape = (function() {
+  const entities: Record<string, string> = {'&amp;': '&', '&#039;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>', '&#44;': ','};
+  const decode = (entity: string): string => entities[entity];
+  return function(text: string | null | undefined): string | null | undefined {
+    if (text == null) { return text; }
+    return text.replace(/<[^>]*>/g, '').replace(/&(amp|#039|quot|lt|gt|#44);/g, decode);
+  };
+})();
 
-$.isImage = url => /\.(jpe?g|jfif|png|gif|bmp|webp|avif|jxl)$/i.test(url);
-$.isVideo = url => /\.(webm|mp4|ogv)$/i.test(url);
+$.isImage = (url: string): boolean => /\.(jpe?g|jfif|png|gif|bmp|webp|avif|jxl)$/i.test(url);
+$.isVideo = (url: string): boolean => /\.(webm|mp4|ogv)$/i.test(url);
 
 $.engine = (function() {
   if (/Edge\//.test(navigator.userAgent)) { return 'edge'; }
@@ -482,8 +502,8 @@ $.hasStorage = (function() {
   }
 })();
 
-$.item = function(key, val) {
-  const item = dict();
+$.item = function<T>(key: string, val: T): Record<string, T> {
+  const item: Record<string, T> = dict();
   item[key] = val;
   return item;
 };
@@ -501,7 +521,7 @@ $.oneItemSugar = fn => (function(key, val, cb) {
 
 $.syncing = dict();
 
-$.securityCheck = function(data) {
+$.securityCheck = function(data: Record<string, unknown>): boolean | undefined {
   if (location.protocol !== 'https:') {
     return delete data['Redirect to HTTPS'];
   }
@@ -671,7 +691,7 @@ if (platform === 'crx') {
 
     $.syncChannel = new BroadcastChannel(g.NAMESPACE + 'sync');
 
-    $.on($.syncChannel, 'message', e => (() => {
+    $.on($.syncChannel, 'message', (e: MessageEvent<Record<string, unknown>>) => (() => {
       const result = [];
       for (const key in e.data) {
         var cb;
@@ -687,7 +707,7 @@ if (platform === 'crx') {
 
     $.forceSync = function() {};
 
-    $.delete = function(keys, cb) {
+    $.delete = function(keys: string | string[], cb?: () => void) {
       let key;
       if (!(keys instanceof Array)) {
         keys = [keys];

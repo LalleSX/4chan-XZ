@@ -216,9 +216,9 @@
       "src/platform/$.ts": {
         "TS2300": 13,
         "TS2322": 4,
-        "TS2339": 31,
-        "TS2345": 6,
-        "TS2554": 4
+        "TS2339": 16,
+        "TS2345": 3,
+        "TS2554": 2
       },
       "src/platform/CrossOrigin.ts": {
         "TS2339": 8,

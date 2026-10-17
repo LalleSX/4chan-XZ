@@ -380,7 +380,7 @@
   },
   "src/platform/$.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 9
+      "count": 2
     },
     "@typescript-eslint/no-this-alias": {
       "count": 1
@@ -395,10 +395,7 @@
       "count": 3
     },
     "no-var": {
-      "count": 4
-    },
-    "prefer-rest-params": {
-      "count": 2
+      "count": 3
     }
   },
   "src/platform/CrossOrigin.ts": {

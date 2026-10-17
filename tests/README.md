@@ -4,6 +4,12 @@ For automated checks of the production userscript bundles, see [Userscript QA](u
 
 For Chromium tests of the actual unpacked extension, see [Extension QA](extension/README.md).
 
+Run `node --test tests/dollar.test.ts` for the platform helper regressions: task
+ordering and errors, debounce timing, request caching, form data, entity decoding,
+event listeners, and property copying. These execute `src/platform/$.ts` with
+isolated platform dependencies; they do not replace the browser suites or manual
+userscript-manager testing. Restricted runners can use `--test-isolation=none`.
+
 Run `node --test tests/filter.test.ts` after `npm ci --ignore-scripts`.
 The suite covers the shared parser, literal rule generation, legacy examples,
 and the production filter initialization/matching paths with browser services
