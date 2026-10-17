@@ -19,9 +19,8 @@ tooling are being renewed; the inherited application remains a mixture of
 JavaScript, TypeScript, and custom JSX. Feature development, source conversion,
 and runtime optimization have not started as part of this setup.
 
-There is no XZ release channel configured yet. Files in `builds/` are historical
-XT artifacts, not XZ releases. New local builds go into `dist/` and have
-userscript automatic updates disabled. The inherited release version in
+There is no XZ release channel configured yet. New local builds go into `dist/`
+and have userscript automatic updates disabled. The inherited release version in
 `version.json` is retained until the first XZ release is planned.
 
 ## Direction
