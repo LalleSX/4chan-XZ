@@ -312,20 +312,9 @@
       "count": 2
     }
   },
-  "src/classes/Board.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
   "src/classes/DataBoard.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 6
-    },
     "@typescript-eslint/no-this-alias": {
       "count": 1
-    },
-    "no-cond-assign": {
-      "count": 2
     }
   },
   "src/classes/Fetcher.ts": {
@@ -337,19 +326,8 @@
     }
   },
   "src/classes/Post.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 6
-    },
     "no-cond-assign": {
       "count": 2
-    },
-    "no-var": {
-      "count": 1
-    }
-  },
-  "src/classes/Thread.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 4
     }
   },
   "src/config/Config.ts": {

@@ -3,12 +3,16 @@ import $ from "../platform/$";
 import { g } from "../globals/globals";
 import type Board from "./Board";
 import type Post from "./Post";
+import type CatalogThread from "./CatalogThread";
+import type CatalogThreadNative from "./CatalogThreadNative";
+
+type ThreadStatus = 'Sticky' | 'Closed' | 'Archived';
 
 export default class Thread {
   declare board: Board;
   declare ID: number;
   declare threadID: number;
-  declare boardID: string | number;
+  declare boardID: string;
   declare siteID: string;
   declare fullID: string;
   declare posts: SimpleDict<Post>;
@@ -21,14 +25,16 @@ export default class Thread {
   declare fileLimit: boolean;
   declare lastPost: number;
   declare ipCount: number;
-  declare json: any;
-  declare OP: any;
-  declare catalogView: any
-  declare nodes: any
+  declare json: Record<string, unknown> | null;
+  declare OP: Post | null;
+  declare catalogView: CatalogThread | null;
+  declare catalogViewNative?: CatalogThreadNative;
+  declare nodes: {root: HTMLElement | null};
+  declare callbacksExecuted?: boolean;
 
-  toString() { return this.ID; }
+  toString(): number { return this.ID; }
 
-  constructor(ID: string, board: Board) {
+  constructor(ID: string | number, board: Board) {
     this.board = board;
     this.ID         = +ID;
     this.threadID   = this.ID;
@@ -57,7 +63,7 @@ export default class Thread {
     g.threads.push(this.fullID, this);
   }
 
-  setPage(pageNum) {
+  setPage(pageNum: number) {
     let icon;
     const {info, reply} = this.OP.nodes;
     if (!(icon = $('.page-num', info))) {
@@ -66,18 +72,18 @@ export default class Thread {
     }
     icon.title       = `This thread is on page ${pageNum} in the original index.`;
     icon.textContent = `[${pageNum}]`;
-    if (this.catalogView) { return this.catalogView.nodes.pageCount.textContent = pageNum; }
+    if (this.catalogView) { return this.catalogView.nodes.pageCount.textContent = String(pageNum); }
   }
 
-  setCount(type, count, reachedLimit) {
+  setCount(type: 'post' | 'file', count: number, reachedLimit: boolean | number) {
     if (!this.catalogView) { return; }
     const el = this.catalogView.nodes[`${type}Count`];
-    el.textContent = count;
+    el.textContent = String(count);
     return (reachedLimit ? $.addClass : $.rmClass)(el, 'warning');
   }
 
-  setStatus(type, status) {
-    const name = `is${type}`;
+  setStatus(type: ThreadStatus, status: boolean) {
+    const name = `is${type}` as const;
     if (this[name] === status) { return; }
     this[name] = status;
     if (!this.OP) { return; }
@@ -86,7 +92,7 @@ export default class Thread {
     return this.setIcon('Archived', this.isArchived);
   }
 
-  setIcon(type, status) {
+  setIcon(type: ThreadStatus, status: boolean) {
     const typeLC = type.toLowerCase();
     let icon = $(`.${typeLC}Icon`, this.OP.nodes.info);
     if (!!icon === status) { return; }
@@ -133,7 +139,7 @@ export default class Thread {
     });
     if (!n) {
       g.threads.rm(this.fullID);
-      return this.board.threads.rm(this);
+      return this.board.threads.rm(this.ID);
     }
   }
 }

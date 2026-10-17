@@ -20,9 +20,9 @@ interface HideOptions {
 };
 
 const PostHiding = {
-  db: undefined as DataBoard,
+  db: undefined as DataBoard<'hiddenPosts'>,
   /** poster Ids to filter */
-  posterIdDb: undefined as DataBoard,
+  posterIdDb: undefined as DataBoard<'hiddenPosterIds'>,
 
   init() {
     if (!['index', 'thread'].includes(g.VIEW) || (!Conf['Reply Hiding Buttons'] && !(Conf['Menu'] && Conf['Reply Hiding Link']))) { return; }

@@ -4,6 +4,11 @@ For automated checks of the production userscript bundles, see [Userscript QA](u
 
 For Chromium tests of the actual unpacked extension, see [Extension QA](extension/README.md).
 
+Run `node --test tests/classes.test.ts` for collection ordering, storage migration
+and synchronization, callback error isolation, quote fetching, and clone-index
+regressions. These execute the production classes with isolated browser/platform
+imports; they do not replace manual browser and userscript-manager checks.
+
 Run `node --test tests/dollar.test.ts` for the platform helper regressions: task
 ordering and errors, debounce timing, request caching, form data, entity decoding,
 event listeners, and property copying. These execute `src/platform/$.ts` with

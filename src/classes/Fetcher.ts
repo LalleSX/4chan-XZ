@@ -8,9 +8,22 @@ import Index from "../General/Index";
 import { E, g, Conf, d } from "../globals/globals";
 import CrossOrigin from "../platform/CrossOrigin";
 import Get from "../General/Get";
+import type { RawArchivePost } from "../Archive/Parse";
 import RestoreDeletedFromArchive from "../Archive/RestoreDeletedFromArchive";
 
+interface FetchedPostData {
+  no: number;
+  custom_spoiler?: number;
+}
+
+interface PostRequest {
+  status: number;
+  statusText: string;
+  response: {posts: FetchedPostData[]};
+}
+
 export default class Fetcher {
+  declare static flagCSS: HTMLLinkElement | undefined;
   static archiveTags = {
     '\n':         {innerHTML: "<br>"},
     '[b]':        {innerHTML: "<b>"},
@@ -23,7 +36,7 @@ export default class Fetcher {
     '[/moot]':    {innerHTML: "</div>"},
     '[banned]':   {innerHTML: "<strong style=\"color: red;\">"},
     '[/banned]':  {innerHTML: "</strong>"},
-    '[fortune]'(text) { return {innerHTML: "<span class=\"fortune\" style=\"color:" + E(text.match(/#\w+|$/)[0]) + "\"><b>"}; },
+    '[fortune]'(text: string) { return {innerHTML: "<span class=\"fortune\" style=\"color:" + E(text.match(/#\w+|$/)[0]) + "\"><b>"}; },
     '[/fortune]': {innerHTML: "</b></span>"},
     '[i]':        {innerHTML: "<span class=\"mu-i\">"},
     '[/i]':       {innerHTML: "</span>"},
@@ -37,15 +50,15 @@ export default class Fetcher {
 
   declare boardID: string;
   declare threadID: number;
-  declare postID: string;
+  declare postID: number;
   declare root: HTMLElement;
   declare quoter: Post;
 
-  constructor(boardID: string, threadID: number, postID: string, root: HTMLElement, quoter: Post) {
+  constructor(boardID: string, threadID: number, postID: string | number, root: HTMLElement, quoter?: Post) {
     let post: Post, thread: Thread;
     this.boardID = boardID;
     this.threadID = threadID;
-    this.postID = postID;
+    this.postID = +postID;
     this.root = root;
     this.quoter = quoter;
     if (post = g.posts.get(`${this.boardID}.${this.postID}`)) {
@@ -73,7 +86,7 @@ export default class Fetcher {
     }
   }
 
-  insert(post) {
+  insert(post: Post) {
     // Stop here if the container has been removed while loading.
     if (!this.root.parentNode) { return; }
     if (!this.quoter) { this.quoter = post; }
@@ -110,10 +123,10 @@ export default class Fetcher {
     return $.event('PostsInserted', null, this.root);
   }
 
-  fetchedPost(req, isCached) {
+  fetchedPost(req: PostRequest, isCached: boolean) {
     // In case of multiple callbacks for the same request,
     // don't parse the same original post more than once.
-    let post;
+    let post: Post;
     if (post = g.posts.get(`${this.boardID}.${this.postID}`)) {
       this.insert(post);
       return;
@@ -136,12 +149,10 @@ export default class Fetcher {
     }
 
     const {posts} = req.response;
-    g.SITE.Build.spoilerRange[this.boardID] = posts[0].custom_spoiler;
-    for (post of posts) {
-      if (post.no === this.postID) { break; }
-    } // we found it!
+    g.SITE.Build.spoilerRange[this.boardID] = posts[0]?.custom_spoiler;
+    const postData = posts.find(data => data.no === this.postID);
 
-    if (post.no !== this.postID) {
+    if (!postData) {
       // Cached requests can be stale and must be rechecked.
       if (isCached) {
         const api = g.SITE.urls.threadJSON({boardID: this.boardID, threadID: this.threadID});
@@ -165,7 +176,7 @@ export default class Fetcher {
       new Board(this.boardID);
     const thread = g.threads.get(`${this.boardID}.${this.threadID}`) ||
       new Thread(this.threadID, board);
-    post = new Post(g.SITE.Build.postFromObject(post, this.boardID), thread, board, {isFetchedQuote: true});
+    post = new Post(g.SITE.Build.postFromObject(postData, this.boardID), thread, board, {isFetchedQuote: true});
     Main.callbackNodes('Post', [post]);
     return this.insert(post);
   }
@@ -196,7 +207,7 @@ export default class Fetcher {
     return false;
   }
 
-  parseArchivedPost(data, url, archive) {
+  parseArchivedPost(data: RawArchivePost & {error?: string}, url: string, archive: {name: string}) {
     // In case of multiple callbacks for the same request,
     // don't parse the same original post more than once.
     let post: Post;

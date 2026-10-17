@@ -1,8 +1,15 @@
 import $ from "../platform/$";
 import { g } from "../globals/globals";
 
-export default class Connection {
-  constructor(target, origin, cb={}) {
+type MessageData = Record<string, unknown>;
+type MessageCallbacks<T> = {[K in keyof T]?: (value: T[K]) => void};
+
+export default class Connection<T extends MessageData = MessageData> {
+  declare target: Window | HTMLIFrameElement;
+  declare origin: string;
+  declare cb: MessageCallbacks<T>;
+
+  constructor(target: Window | HTMLIFrameElement, origin: string, cb: MessageCallbacks<T> = {}) {
     this.send = this.send.bind(this);
     this.onMessage = this.onMessage.bind(this);
     this.target = target;
@@ -11,7 +18,7 @@ export default class Connection {
     $.on(window, 'message', this.onMessage);
   }
 
-  targetWindow() {
+  targetWindow(): Window | null {
     if (this.target instanceof window.HTMLIFrameElement) {
       return this.target.contentWindow;
     } else {
@@ -19,16 +26,16 @@ export default class Connection {
     }
   }
 
-  send(data) {
+  send(data: T): void {
     return this.targetWindow().postMessage(`${g.NAMESPACE}${JSON.stringify(data)}`, this.origin);
   }
 
-  onMessage(e) {
+  onMessage(e: MessageEvent<unknown>): void {
     if ((e.source !== this.targetWindow()) ||
       (e.origin !== this.origin) ||
       (typeof e.data !== 'string') ||
       (e.data.slice(0, g.NAMESPACE.length) !== g.NAMESPACE)) { return; }
-    const data = JSON.parse(e.data.slice(g.NAMESPACE.length));
+    const data = JSON.parse(e.data.slice(g.NAMESPACE.length)) as T;
     for (const type in data) {
       const value = data[type];
       if ($.hasOwn(this.cb, type)) {

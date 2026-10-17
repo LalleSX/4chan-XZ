@@ -1,11 +1,27 @@
-export default class RandomAccessList {
-  constructor(items) {
+export interface ListData {
+  ID?: string | number;
+  id?: string | number;
+}
+
+export interface ListItem<T> {
+  prev?: ListItem<T> | null;
+  next?: ListItem<T> | null;
+  data: T;
+  ID: string | number;
+}
+
+export default class RandomAccessList<T extends ListData = ListData> {
+  declare length: number;
+  declare first: ListItem<T> | null | undefined;
+  declare last: ListItem<T> | null | undefined;
+
+  constructor(items?: Iterable<T>) {
     this.length = 0;
     if (items) { for (const item of items) { this.push(item); } }
   }
 
-  push(data) {
-    let item;
+  push(data: T): number | undefined {
+    let item: ListItem<T>;
     let {ID} = data;
     if (!ID) { ID = data.id; }
     if (this[ID]) { return; }
@@ -16,7 +32,6 @@ export default class RandomAccessList {
       data,
       ID
     });
-    item.prev = last;
     this.last = last ?
       (last.next = item)
     :
@@ -24,7 +39,7 @@ export default class RandomAccessList {
     return this.length++;
   }
 
-  before(root, item) {
+  before(root: ListItem<T>, item: ListItem<T>): ListItem<T> | undefined {
     if ((item.next === root) || (item === root)) { return; }
 
     this.rmi(item);
@@ -40,7 +55,7 @@ export default class RandomAccessList {
     }
   }
 
-  after(root, item) {
+  after(root: ListItem<T>, item: ListItem<T>): ListItem<T> | undefined {
     if ((item.prev === root) || (item === root)) { return; }
 
     this.rmi(item);
@@ -56,7 +71,7 @@ export default class RandomAccessList {
     }
   }
 
-  prepend(item) {
+  prepend(item: ListItem<T>): boolean | undefined {
     const {first} = this;
     if ((item === first) || !this[item.ID]) { return; }
     this.rmi(item);
@@ -70,19 +85,18 @@ export default class RandomAccessList {
     return delete item.prev;
   }
 
-  shift() {
-    return this.rm(this.first.ID);
+  shift(): boolean | undefined {
+    return this.first ? this.rm(this.first.ID) : undefined;
   }
 
-  order() {
-    let item;
-    const order = [(item = this.first)];
-    while ((item = item.next)) { order.push(item); }
+  order(): ListItem<T>[] {
+    const order: ListItem<T>[] = [];
+    for (let item = this.first; item; item = item.next) { order.push(item); }
     return order;
   }
 
-  rm(ID) {
-    const item = this[ID];
+  rm(ID: string | number): boolean | undefined {
+    const item: ListItem<T> = this[ID];
     if (!item) { return; }
     delete this[ID];
     this.length--;
@@ -91,7 +105,7 @@ export default class RandomAccessList {
     return delete item.prev;
   }
 
-  rmi(item) {
+  rmi(item: ListItem<T>): ListItem<T> | null | undefined {
     const {prev, next} = item;
     if (prev) {
       prev.next = next;

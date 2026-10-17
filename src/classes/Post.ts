@@ -12,10 +12,10 @@ import Callbacks from "./Callbacks";
 import type Thread from "./Thread";
 
 export interface File {
-  text:        string,
+  text:        HTMLElement,
   link:        HTMLAnchorElement,
-  thumb:       HTMLElement,
-  thumbLink:   HTMLElement,
+  thumb:       HTMLImageElement | HTMLVideoElement,
+  thumbLink:   HTMLAnchorElement,
   size:        string,
   sizeInBytes: number,
   isDead:      boolean,
@@ -24,8 +24,8 @@ export interface File {
   name:        string,
   isImage:     boolean,
   isVideo:     boolean,
-  isExpanding: boolean,
-  isExpanded:  boolean,
+  isExpanding?:boolean,
+  isExpanded?: boolean,
   fullImage?:  HTMLImageElement | HTMLVideoElement,
   audio?:      HTMLAudioElement,
   audioSlider?:HTMLSpanElement,
@@ -33,11 +33,49 @@ export interface File {
   dimensions?: string,
   height?:     string,
   width?:      string,
-  theight:     string,
-  twidth:      string,
+  theight?:    string | number,
+  twidth?:     string | number,
   MD5?:        string,
   isSpoiler?:  boolean,
+  index:       number,
+  docIndex:    number,
+  videoThumb?: boolean,
+  videoControls?: HTMLElement,
+  scrollIntoView?: boolean,
+  tag?:        string,
 };
+
+interface PostFlags {
+  isFetchedQuote?: boolean;
+  forBuildTest?: boolean;
+}
+
+export interface PostNodes {
+  root: HTMLElement;
+  bottom: HTMLElement;
+  post: HTMLElement;
+  info: HTMLElement;
+  comment: HTMLElement;
+  commentClean?: HTMLElement;
+  quotelinks: HTMLAnchorElement[];
+  archivelinks: HTMLAnchorElement[];
+  embedlinks: HTMLAnchorElement[];
+  backlinks: HTMLCollectionOf<HTMLAnchorElement>;
+  uniqueIDRoot?: HTMLElement;
+  uniqueID?: HTMLElement;
+  subject?: HTMLElement;
+  name?: HTMLElement;
+  email?: HTMLAnchorElement;
+  tripcode?: HTMLElement;
+  capcode?: HTMLElement;
+  pass?: HTMLElement;
+  flag?: HTMLElement;
+  date?: HTMLElement;
+  quote?: HTMLAnchorElement;
+  reply?: HTMLAnchorElement;
+  stub?: HTMLElement;
+  threadContainer?: HTMLElement;
+}
 
 export default class Post {
   declare root:           HTMLElement;
@@ -50,21 +88,22 @@ export default class Post {
   declare siteID:         string;
   declare fullID:         string;
   declare context:        Post;
-  declare isReply:        boolean
-  declare nodes:          ReturnType<Post['parseNodes']>;
+  declare isReply:        boolean;
+  declare nodes:          PostNodes;
   declare isDead:         boolean;
   declare isHidden:       boolean;
-  declare clones:         any[];
+  declare clones:         PostClone[];
   declare isRebuilt?:     boolean;
   declare isFetchedQuote: boolean | undefined;
   declare isClone:        boolean | undefined;
   declare quotes:         string[];
-  declare file:           ReturnType<Post['parseFile']>;
-  declare files:          ReturnType<Post['parseFile']>[];
+  declare file:           File | undefined;
+  declare files:          File[];
   declare forBuildTest?:  boolean;
-  declare normalizedOriginal?: any;
+  declare normalizedOriginal?: HTMLElement;
   declare highlights?:    string[];
   declare filterResults:  FilterResults;
+  declare callbacksExecuted?: boolean;
 
   declare info: {
     subject:       string | undefined,
@@ -79,6 +118,7 @@ export default class Post {
     flag:          string | undefined,
     date:          Date | undefined,
     nameBlock:     string,
+    comment?:      string,
   };
 
   // because of a circular dependency $ might not be initialized, so we can't use $.el
@@ -90,9 +130,9 @@ export default class Post {
     return el;
   })();
 
-  toString() { return this.ID; }
+  toString(): number { return this.ID; }
 
-  constructor(root?: HTMLElement, thread?: Thread, board?: Board, flags={}) {
+  constructor(root?: HTMLElement, thread?: Thread, board?: Board, flags: PostFlags = {}) {
     // #region tests_enabled
     if (root) this.normalizedOriginal = Test.normalize(root);
     // #endregion
@@ -119,8 +159,8 @@ export default class Post {
 
     if (!this.isReply) {
       this.thread.OP = this;
-      for (const key of ['isSticky', 'isClosed', 'isArchived']) {
-        var selector;
+      for (const key of ['isSticky', 'isClosed', 'isArchived'] as const) {
+        let selector: string;
         if (selector = g.SITE.selectors.icons[key]) {
           this.thread[key] = !!$(selector, this.nodes.info);
         }
@@ -163,9 +203,10 @@ export default class Post {
     // #region tests_enabled
     if (this.forBuildTest)  return;
     // #endregion
-    if (g.posts.get(this.fullID)) {
+    const previous = g.posts.get(this.fullID);
+    if (previous) {
       this.isRebuilt = true;
-      this.clones = g.posts.get(this.fullID).clones;
+      this.clones = previous.clones;
       for (const clone of this.clones) { clone.origin = this; }
     }
 
@@ -182,27 +223,12 @@ export default class Post {
     }
   }
 
-  parseNodes(root: HTMLElement) {
+  parseNodes(root: HTMLElement): PostNodes {
     const s = g.SITE.selectors;
     const post: HTMLElement = $(s.post, root) || root;
     const info: HTMLElement = $(s.infoRoot, post);
 
-    interface Node {
-      root:         HTMLElement,
-      bottom:       false | HTMLElement,
-      post:         HTMLElement,
-      info:         HTMLElement,
-      comment:      HTMLElement;
-      quotelinks:   HTMLAnchorElement[],
-      archivelinks: HTMLAnchorElement[],
-      embedlinks:   HTMLAnchorElement[],
-      backlinks:    HTMLCollectionOf<HTMLAnchorElement>;
-      uniqueIDRoot: any,
-      uniqueID:     any,
-      stub?:        HTMLElement,
-    };
-
-    const nodes: Node & Partial<Record<keyof Post['info'], HTMLElement>> = {
+    const nodes: PostNodes = {
       root,
       bottom:     this.isReply || !g.SITE.isOPContainerThread ? root : $(s.opBottom, root),
       post,
@@ -212,8 +238,8 @@ export default class Post {
       archivelinks: [],
       embedlinks:   [],
       backlinks:    post.getElementsByClassName('backlink') as HTMLCollectionOf<HTMLAnchorElement>,
-      uniqueIDRoot: undefined as any,
-      uniqueID:     undefined as any,
+      uniqueIDRoot: undefined,
+      uniqueID:     undefined,
     };
     for (const key in s.info) {
       const selector = s.info[key];
@@ -222,12 +248,11 @@ export default class Post {
     g.SITE.parseNodes?.(this, nodes);
     if (!nodes.uniqueIDRoot) { nodes.uniqueIDRoot = nodes.uniqueID; }
 
-    return nodes as Node & Record<keyof Post['info'], HTMLElement>;
+    return nodes;
   }
 
   parseComment() {
     // Merge text nodes and remove empty ones.
-    let bq;
     this.nodes.comment.normalize();
 
     // Get the comment's text.
@@ -235,7 +260,8 @@ export default class Post {
     // Remove:
     //   'Comment too long'...
     //   EXIF data. (/p/)
-    this.nodes.commentClean = (bq = this.nodes.comment.cloneNode(true));
+    const bq = this.nodes.comment.cloneNode(true) as HTMLElement;
+    this.nodes.commentClean = bq;
     g.SITE.cleanComment?.(bq);
     return this.info.comment = this.nodesToText(bq);
   }
@@ -248,7 +274,7 @@ export default class Post {
     //   Fortunes. (/s4s/)
     //   Preceding and following new lines.
     //   Trailing spaces.
-    const bq = this.nodes.commentClean.cloneNode(true);
+    const bq = this.nodes.commentClean.cloneNode(true) as HTMLElement;
     if (!Conf['Remove Spoilers'] && !Conf['Reveal Spoilers']) { this.cleanSpoilers(bq); }
     g.SITE.cleanCommentDisplay?.(bq);
     return this.nodesToText(bq).trim().replace(/\s+$/gm, '');
@@ -256,37 +282,37 @@ export default class Post {
 
   commentOrig() {
     // Get the comment's text for reposting purposes.
-    const bq = this.nodes.commentClean.cloneNode(true);
+    const bq = this.nodes.commentClean.cloneNode(true) as HTMLElement;
     g.SITE.insertTags?.(bq);
     return this.nodesToText(bq);
   }
 
-  nodesToText(bq) {
-    let node;
+  nodesToText(bq: Node): string {
+    let node: Node;
     let text = "";
     const nodes = $.X('.//br|.//text()', bq);
     let i = 0;
     while ((node = nodes.snapshotItem(i++))) {
-      text += node.data || '\n';
+      text += (node as CharacterData).data || '\n';
     }
     return text;
   }
 
-  cleanSpoilers(bq) {
+  cleanSpoilers(bq: HTMLElement): void {
     const spoilers = $$(g.SITE.selectors.spoiler, bq);
     for (const node of spoilers) {
       $.replace(node, $.tn('[spoiler]'));
     }
   }
 
-  parseQuotes() {
+  parseQuotes(): void {
     this.quotes = [];
     for (const quotelink of $$(g.SITE.selectors.quotelink, this.nodes.comment)) {
       this.parseQuote(quotelink);
     }
   }
 
-  parseQuote(quotelink) {
+  parseQuote(quotelink: HTMLAnchorElement): void {
     // Only add quotes that link to posts on an imageboard.
     // Don't add:
     //  - board links. (>>>/b/)
@@ -306,7 +332,7 @@ export default class Post {
   }
 
   parseFiles() {
-    let file;
+    let file: File;
     this.files = [];
     const fileRoots = this.fileRoots();
     let index = 0;
@@ -323,7 +349,7 @@ export default class Post {
     }
   }
 
-  fileRoots() {
+  fileRoots(): HTMLElement[] {
     if (g.SITE.selectors.multifile) {
       const roots = $$(g.SITE.selectors.multifile, this.nodes.root);
       if (roots.length) { return roots; }
@@ -331,15 +357,13 @@ export default class Post {
     return [this.nodes.root];
   }
 
-  parseFile(fileRoot: HTMLElement) {
-
-
+  parseFile(fileRoot: HTMLElement): File | undefined {
     const file: Partial<File> = { isDead: false };
     for (const key in g.SITE.selectors.file) {
       const selector = g.SITE.selectors.file[key];
       file[key] = $(selector, fileRoot);
     }
-    file.thumbLink = file.thumb?.parentNode as HTMLElement;
+    file.thumbLink = file.thumb?.parentNode as HTMLAnchorElement;
 
     if (!(file.text && file.link)) { return; }
     if (!g.SITE.parseFile(this, file)) { return; }
@@ -441,24 +465,25 @@ export default class Post {
 
   collect() {
     g.posts.rm(this.fullID);
-    this.thread.posts.rm(this);
-    this.board.posts.rm(this);
+    this.thread.posts.rm(this.ID);
+    this.board.posts.rm(this.ID);
   }
 
-  addClone(context, contractThumb) {
+  addClone(context: Post, contractThumb: boolean): PostClone {
     // Callbacks may not have been run yet due to anti-browser-lock delay in Main.callbackNodesDB.
     Callbacks.Post.execute(this);
     return new PostClone(this, context, contractThumb);
   }
 
-  rmClone(index) {
-    this.clones.splice(index, 1);
-    for (const clone of this.clones.slice(index)) {
-      clone.nodes.root.dataset.clone = index++;
+  rmClone(index: string | number): void {
+    let cloneIndex = +index;
+    this.clones.splice(cloneIndex, 1);
+    for (const clone of this.clones.slice(cloneIndex)) {
+      clone.nodes.root.dataset.clone = String(cloneIndex++);
     }
   }
 
-  setCatalogOP(isCatalogOP) {
+  setCatalogOP(isCatalogOP: boolean): void {
     this.nodes.root.classList.toggle('catalog-container', isCatalogOP);
     this.nodes.root.classList.toggle('opContainer', !isCatalogOP);
     this.nodes.post.classList.toggle('catalog-post', isCatalogOP);
@@ -472,20 +497,28 @@ export class PostClone extends Post {
 
   static suffix = 0;
 
-  constructor(origin, context, contractThumb) {
+  constructor(origin: Post, context: Post, contractThumb: boolean) {
     super();
     this.isClone = true;
 
-    let file, fileRoots, key;
+    let fileRoots: HTMLElement[];
     this.origin = origin;
     this.context = context;
-    for (key of ['ID', 'postID', 'threadID', 'boardID', 'siteID', 'fullID', 'board', 'thread', 'info', 'quotes', 'isReply']) {
-      // Copy or point to the origin's key value.
-      this[key] = this.origin[key];
-    }
+    // Copy scalar values and retain the origin's shared model references.
+    this.ID = origin.ID;
+    this.postID = origin.postID;
+    this.threadID = origin.threadID;
+    this.boardID = origin.boardID;
+    this.siteID = origin.siteID;
+    this.fullID = origin.fullID;
+    this.board = origin.board;
+    this.thread = origin.thread;
+    this.info = origin.info;
+    this.quotes = origin.quotes;
+    this.isReply = origin.isReply;
 
     const { nodes } = this.origin;
-    const root = contractThumb ? this.cloneWithoutVideo(nodes.root) : nodes.root.cloneNode(true);
+    const root = (contractThumb ? this.cloneWithoutVideo(nodes.root) : nodes.root.cloneNode(true)) as HTMLElement;
     for (const node of [root, ...$$('[id]', root)]) {
       node.id += `_${PostClone.suffix}`;
     }
@@ -520,16 +553,16 @@ export class PostClone extends Post {
     if (this.origin.files.length) { fileRoots = this.fileRoots(); }
     for (const originFile of this.origin.files) {
       // Copy values, point to relevant elements.
-      file = { ...originFile };
+      const file: File = { ...originFile };
       const fileRoot = fileRoots[file.docIndex];
-      for (key in g.SITE.selectors.file) {
+      for (const key in g.SITE.selectors.file) {
         const selector = g.SITE.selectors.file[key];
         file[key] = $(selector, fileRoot);
       }
-      file.thumbLink = file.thumb?.parentNode;
+      file.thumbLink = file.thumb?.parentNode as HTMLAnchorElement;
       if (file.thumbLink) { file.fullImage = $('.full-image', file.thumbLink); }
       file.videoControls = $('.video-controls', file.text);
-      if (file.videoThumb) { file.thumb.muted = true; }
+      if (file.videoThumb) { (file.thumb as HTMLVideoElement).muted = true; }
       this.files.push(file);
     }
 
@@ -541,14 +574,15 @@ export class PostClone extends Post {
     }
 
     if (this.origin.isDead) { this.isDead = true; }
-    root.dataset.clone = this.origin.clones.push(this) - 1;
+    root.dataset.clone = String(this.origin.clones.push(this) - 1);
     return this;
   }
 
-  cloneWithoutVideo(node) {
-    if ((node.tagName === 'VIDEO') && !node.dataset.md5) { // (exception for WebM thumbnails)
+  cloneWithoutVideo(node: Node): Node | [] {
+    const element = node as HTMLElement;
+    if ((element.tagName === 'VIDEO') && !element.dataset.md5) { // (exception for WebM thumbnails)
       return [];
-    } else if ((node.nodeType === Node.ELEMENT_NODE) && $('video', node)) {
+    } else if ((node.nodeType === Node.ELEMENT_NODE) && $('video', element)) {
       const clone = node.cloneNode(false);
       for (const child of node.childNodes) { $.add(clone, this.cloneWithoutVideo(child)); }
       return clone;

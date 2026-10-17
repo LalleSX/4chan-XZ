@@ -15,23 +15,12 @@
       "src/Archive/RestoreDeletedFromArchive.ts": {
         "TS2339": 2
       },
-      "src/classes/Board.ts": {
-        "TS2536": 1
-      },
-      "src/classes/CatalogThreadNative.ts": {
-        "TS2345": 1
-      },
       "src/classes/DataBoard.ts": {
-        "TS2322": 1,
         "TS2339": 4,
-        "TS2345": 4
+        "TS2345": 2
       },
       "src/classes/Fetcher.ts": {
-        "TS2339": 7,
-        "TS2345": 3
-      },
-      "src/classes/Notice.ts": {
-        "TS2322": 2
+        "TS2339": 7
       },
       "src/classes/Post.ts": {
         "TS2339": 5
@@ -40,13 +29,12 @@
         "TS2339": 1
       },
       "src/Filtering/Filter.ts": {
-        "TS2339": 7,
+        "TS2339": 6,
         "TS2345": 2
       },
       "src/Filtering/PostHiding.ts": {
         "TS2322": 1,
-        "TS2339": 4,
-        "TS2554": 4
+        "TS2339": 4
       },
       "src/Filtering/ThreadHiding.ts": {
         "TS2339": 2,
@@ -55,13 +43,12 @@
       "src/General/Header.ts": {
         "TS2322": 1,
         "TS2339": 16,
-        "TS2551": 4,
-        "TS2554": 6
+        "TS2551": 4
       },
       "src/General/Index.ts": {
         "TS2322": 1,
         "TS2339": 9,
-        "TS2345": 4
+        "TS2345": 2
       },
       "src/General/Settings.tsx": {
         "TS2339": 6,
@@ -98,7 +85,7 @@
         "TS2353": 1
       },
       "src/Images/ImageExpand.ts": {
-        "TS2339": 28,
+        "TS2339": 26,
         "TS2551": 1,
         "TS2554": 2
       },
@@ -107,12 +94,11 @@
         "TS2345": 1
       },
       "src/Images/ImageLoader.ts": {
-        "TS2339": 3,
+        "TS2339": 2,
         "TS2551": 1
       },
       "src/Images/Metadata.ts": {
         "TS2322": 1,
-        "TS2339": 1,
         "TS2367": 1
       },
       "src/Images/Volume.ts": {
@@ -130,7 +116,7 @@
       },
       "src/main/Main.ts": {
         "TS2339": 13,
-        "TS2345": 2,
+        "TS2345": 1,
         "TS2363": 1
       },
       "src/Miscellaneous/Banner.ts": {
@@ -154,7 +140,7 @@
         "TS2554": 1
       },
       "src/Miscellaneous/Fourchan.ts": {
-        "TS2339": 7
+        "TS2339": 6
       },
       "src/Miscellaneous/IDColor.ts": {
         "TS2345": 1
@@ -199,7 +185,6 @@
       },
       "src/Monitoring/ThreadWatcher.ts": {
         "TS2339": 23,
-        "TS2345": 1,
         "TS2365": 1
       },
       "src/Monitoring/Unread.ts": {
@@ -218,7 +203,7 @@
         "TS2322": 4,
         "TS2339": 16,
         "TS2345": 3,
-        "TS2554": 2
+        "TS2554": 1
       },
       "src/platform/CrossOrigin.ts": {
         "TS2339": 8,
@@ -250,7 +235,7 @@
         "TS2339": 1
       },
       "src/Quotelinks/QuoteInline.ts": {
-        "TS2339": 5,
+        "TS2339": 4,
         "TS2345": 1
       },
       "src/Quotelinks/QuotePreview.ts": {

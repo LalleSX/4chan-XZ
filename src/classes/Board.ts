@@ -1,5 +1,5 @@
 import BoardConfig from "../General/BoardConfig";
-import { d, g } from "../globals/globals";
+import { type BoardConfig as BoardConfiguration, d, g } from "../globals/globals";
 import SimpleDict from "./SimpleDict";
 import type Post from "./Post";
 import type Thread from "./Thread";
@@ -10,11 +10,11 @@ export default class Board {
   declare siteID: string;
   declare threads: SimpleDict<Thread>;
   declare posts: SimpleDict<Post>;
-  declare config: any;
+  declare config: Partial<BoardConfiguration>;
 
-  toString() { return this.ID; }
+  toString(): string { return this.ID; }
 
-  constructor(ID) {
+  constructor(ID: string) {
     this.ID = ID;
     this.boardID = this.ID;
     this.siteID  = g.SITE.ID;
@@ -22,11 +22,11 @@ export default class Board {
     this.posts   = new SimpleDict();
     this.config  = BoardConfig.boards?.[this.ID] || {};
 
-    g.boards[this] = this;
+    g.boards[this.ID] = this;
   }
 
   cooldowns() {
-    const c2 = (this.config || {}).cooldowns || {};
+    const c2: Partial<BoardConfiguration['cooldowns']> = this.config.cooldowns || {};
     const c = {
       thread: c2.threads || 0,
       reply:  c2.replies || 0,
@@ -35,7 +35,7 @@ export default class Board {
     };
     // Pass users have reduced cooldowns.
     if (d.cookie.indexOf('pass_enabled=1') >= 0) {
-      for (const key of ['reply', 'image']) {
+      for (const key of ['reply', 'image'] as const) {
         c[key] = Math.ceil(c[key] / 2);
       }
     }
