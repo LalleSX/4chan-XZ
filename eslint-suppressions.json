@@ -119,11 +119,6 @@
       "count": 2
     }
   },
-  "src/Images/Sauce.ts": {
-    "no-cond-assign": {
-      "count": 3
-    }
-  },
   "src/Linkification/Embedding.tsx": {
     "@typescript-eslint/no-unused-vars": {
       "count": 5
@@ -330,11 +325,6 @@
       "count": 2
     }
   },
-  "src/config/Config.ts": {
-    "no-useless-escape": {
-      "count": 1
-    }
-  },
   "src/css/CSS.ts": {
     "no-useless-escape": {
       "count": 1
@@ -363,16 +353,7 @@
     "@typescript-eslint/no-this-alias": {
       "count": 1
     },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 5
-    },
-    "no-cond-assign": {
-      "count": 6
-    },
     "no-empty": {
-      "count": 3
-    },
-    "no-var": {
       "count": 3
     }
   },
@@ -388,9 +369,6 @@
     },
     "no-useless-escape": {
       "count": 1
-    },
-    "no-var": {
-      "count": 2
     },
     "prefer-const": {
       "count": 3

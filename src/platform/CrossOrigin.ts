@@ -111,7 +111,7 @@ const CrossOrigin = {
         if ((this.responseHeaders == null) && (this.responseHeaderString != null)) {
           this.responseHeaders = dict();
           for (const header of this.responseHeaderString.split('\r\n')) {
-            var i;
+            let i: number;
             if ((i = header.indexOf(':')) >= 0) {
               const key = header.slice(0, i).trim().toLowerCase();
               const val = header.slice(i+1).trim();
