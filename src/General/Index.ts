@@ -1026,57 +1026,119 @@ const Index = {
     $.add(thread.OP.nodes.post, nodes.replies);
   },
 
-  sort() {
-    let threadIDs;
-    const {liveThreadIDs, liveThreadData} = Index;
-    if (!liveThreadData) { return; }
-    const tmp_time = new Date().getTime()/1000;
-    const sortType = Index.currentSort.replace(/-rev$/, '');
-    Index.sortedThreadIDs = (() => { switch (sortType) {
-      case 'lastreply': case 'lastlong':
-        var repliesAvailable = liveThreadData.some(thread => thread.last_replies?.length);
-        var lastlong = function(thread) {
-          if (!repliesAvailable) {
-            return thread.last_modified;
+
+  sort(): void {
+    const { liveThreadIDs, liveThreadData, currentSort } = Index;
+    if (!liveThreadData) return;
+
+    const sortType = currentSort.replace(/-rev$/, '');
+    const reversed = currentSort.endsWith('-rev');
+
+    const getLastReplyID = (thread: (typeof liveThreadData)[number]): number => {
+      const replies = thread.last_replies;
+
+      if (!repliesAvailable) return thread.last_modified;
+
+      if (replies?.length) {
+        for (let i = replies.length - 1; i >= 0; i--) {
+          const reply = replies[i];
+          if (Index.isHiddenReply(thread.no, reply)) continue;
+
+          if (sortType === 'lastreply') return reply.no;
+
+          const length = reply.com
+            ? g.SITE.Build.parseComment(reply.com)
+              .replace(/[^a-z]/gi, '').length
+            : 0;
+
+          if (length >= Index.lastLongThresholds[Number(!!reply.ext)]) {
+            return reply.no;
           }
-          const iterable = thread.last_replies || [];
-          for (let i = iterable.length - 1; i >= 0; i--) {
-            const r = iterable[i];
-            if (Index.isHiddenReply(thread.no, r)) { continue; }
-            if (sortType === 'lastreply') {
-              return r;
-            }
-            const len = r.com ? g.SITE.Build.parseComment(r.com).replace(/[^a-z]/ig, '').length : 0;
-            if (len >= Index.lastLongThresholds[+!!r.ext]) {
-              return r;
-            }
-          }
-          if (thread.omitted_posts && thread.last_replies?.length) { return thread.last_replies[0]; } else { return thread; }
-        };
-        var lastlongD = dict();
-        for (const thread of liveThreadData) {
-          lastlongD[thread.no] = lastlong(thread).no;
         }
-        return [...liveThreadData].sort((a, b) => lastlongD[b.no] - lastlongD[a.no]).map(post => post.no);
-      case 'bump':       return liveThreadIDs;
-      case 'birth':      return [...liveThreadIDs ].sort((a, b) => b - a);
-      case 'replycount': return [...liveThreadData].sort((a, b) => b.replies - a.replies).map(post => post.no);
-      case 'filecount':  return [...liveThreadData].sort((a, b) => b.images  - a.images).map(post => post.no);
-      case 'activity':   return [...liveThreadData].sort((a, b) => ((tmp_time-a.time)/(a.replies+1)) - ((tmp_time-b.time)/(b.replies+1))).map(post => post.no);
-      default: return liveThreadIDs;
-    } })();
-    if (/-rev$/.test(Index.currentSort)) {
-      Index.sortedThreadIDs.reverse();
+
+        if (thread.omitted_posts) return replies[0].no;
+      }
+
+      return thread.no;
+    };
+
+    let sortedIDs: number[];
+    let repliesAvailable = false;
+
+    switch (sortType) {
+      case 'lastreply':
+      case 'lastlong': {
+        repliesAvailable = liveThreadData.some(
+          thread => !!thread.last_replies?.length
+        );
+
+        const timestamps = new Map<number, number>();
+
+        for (const thread of liveThreadData) {
+          timestamps.set(thread.no, getLastReplyID(thread));
+        }
+
+        sortedIDs = [...liveThreadData]
+          .sort((a, b) =>
+            timestamps.get(b.no)! - timestamps.get(a.no)!
+          )
+          .map(thread => thread.no);
+        break;
+      }
+
+      case 'bump':
+        sortedIDs = [...liveThreadIDs];
+        break;
+
+      case 'birth':
+        sortedIDs = [...liveThreadIDs].sort((a, b) => b - a);
+        break;
+
+      case 'replycount':
+        sortedIDs = [...liveThreadData]
+          .sort((a, b) => b.replies - a.replies)
+          .map(thread => thread.no);
+        break;
+
+      case 'filecount':
+        sortedIDs = [...liveThreadData]
+          .sort((a, b) => b.images - a.images)
+          .map(thread => thread.no);
+        break;
+
+      case 'activity': {
+        const now = Date.now() / 1000;
+
+        sortedIDs = [...liveThreadData]
+          .sort((a, b) =>
+            (now - a.time) / (a.replies + 1) -
+            (now - b.time) / (b.replies + 1)
+          )
+          .map(thread => thread.no);
+        break;
+      }
+
+      default:
+        sortedIDs = [...liveThreadIDs];
     }
-    if (Index.search && (threadIDs = Index.querySearch(Index.search))) {
-      Index.sortedThreadIDs = threadIDs;
+
+    if (reversed) sortedIDs.reverse();
+
+    Index.sortedThreadIDs =
+      Index.search && Index.querySearch(Index.search) || sortedIDs;
+
+    // Apply priority sorting in the original order.
+    Index.sortOnTop(thread => thread.isSticky);
+
+    Index.sortOnTop(thread =>
+      thread.isOnTop ||
+      (Conf['Pin Watched Threads'] &&
+        ThreadWatcher.isWatchedRaw(thread.boardID, thread.threadID))
+    );
+
+    if (Conf['Anchor Hidden Threads']) {
+      Index.sortOnTop(thread => !Index.isHidden(thread.threadID));
     }
-    // Sticky threads
-    Index.sortOnTop(obj => obj.isSticky);
-    // Highlighted threads
-    Index.sortOnTop(obj => obj.isOnTop || (Conf['Pin Watched Threads'] && ThreadWatcher.isWatchedRaw(obj.boardID, obj.threadID)));
-    // Non-hidden threads
-    if (Conf['Anchor Hidden Threads']) { return Index.sortOnTop(obj => !Index.isHidden(obj.threadID)); }
   },
 
   sortOnTop(match) {

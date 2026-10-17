@@ -1,7 +1,7 @@
 {
   "name": "4chan-XZ",
   "private": true,
-  "description": "4chan-XZ revives 4chan XT to complete its TypeScript migration and modernize the imageboard enhancement script.",
+  "description": "4chan-XZ continues 4chan X while completing its TypeScript migration and improving the imageboard enhancement script.",
   "meta": {
     "name": "4chan-XZ",
     "path": "4chan-XZ",
@@ -121,13 +121,20 @@
     "Tuxedo Takodachi <TuxedoTako@proton.me>"
   ],
   "license": "MIT",
-  "readmeFilename": "README.md",
   "engines": {
     "node": "^24.0.0 || >=26.0.0",
     "npm": ">=11.0.0"
   },
   "type": "module",
   "scripts": {
+    "check": "npm run lint && npm run typecheck",
+    "lint": "eslint . --suppressions-location eslint-suppressions.json --max-warnings=0",
+    "lint:full": "eslint . --no-suppressions --max-warnings=0",
+    "lint:prune": "eslint . --suppressions-location eslint-suppressions.json --prune-suppressions",
+    "typecheck": "node ./tools/typecheck.js",
+    "typecheck:full": "node ./tools/typecheck.js --full",
+    "typecheck:baseline": "node ./tools/typecheck.js --update-baseline",
+    "verify": "npm run check && npm run build:all",
     "test:userscript": "npm run test:userscript:types && npm run build:userscript && npm run build:userscript:min && playwright test --config=playwright.userscript.config.ts",
     "test:userscript:types": "tsc -p tests/userscript/tsconfig.json",
     "test:extension": "npm run build:crx && playwright test",
@@ -139,14 +146,6 @@
     "build:userscript:min": "node ./tools/rollup.js --minify --platform=userscript",
     "build:crx:min": "node ./tools/rollup.js --minify --platform=crx",
     "build:all": "npm run clean && npm run build:userscript && npm run build:userscript:min && npm run build:crx && npm run build:crx:min",
-    "clean": "node ./tools/clean.js",
-    "lint": "eslint . --max-warnings=0",
-    "lint:full": "eslint . --no-suppressions --max-warnings=0",
-    "lint:prune": "eslint . --prune-suppressions",
-    "typecheck": "node ./tools/typecheck.js",
-    "typecheck:full": "node ./tools/typecheck.js --full",
-    "typecheck:baseline": "node ./tools/typecheck.js --update-baseline",
-    "check": "npm run lint && npm run typecheck",
-    "verify": "npm run check && npm run build:all"
+    "clean": "node ./tools/clean.js"
   }
 }

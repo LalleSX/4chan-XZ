@@ -23,7 +23,7 @@ import { dict, HOUR, MINUTE } from '../platform/helpers';
 import Icon from '../Icons/icon';
 
 
-var ThreadWatcher = {
+const ThreadWatcher = {
   init() {
     let sc;
     if (!(this.enabled = Conf['Thread Watcher'])) { return; }
