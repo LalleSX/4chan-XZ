@@ -5,11 +5,6 @@ import $$ from "../platform/$$";
 import { dict } from "../platform/helpers";
 import SWYotsuba from "./SW.yotsuba";
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 const SWTinyboard = {
   isOPContainerThread: true,
   mayLackJSON: true,

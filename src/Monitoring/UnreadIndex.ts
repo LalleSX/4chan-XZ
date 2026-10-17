@@ -10,12 +10,6 @@ import { dict } from "../platform/helpers";
 import QuoteYou from "../Quotelinks/QuoteYou";
 import ThreadWatcher from "./ThreadWatcher";
 
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 var UnreadIndex = {
   lastReadPost: dict(),
   hr:           dict(),
