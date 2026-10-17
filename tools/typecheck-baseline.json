@@ -133,15 +133,6 @@
         "TS2345": 2,
         "TS2363": 1
       },
-      "src/Menu/ArchiveLink.ts": {
-        "TS2353": 1
-      },
-      "src/Menu/DeleteLink.ts": {
-        "TS2339": 2
-      },
-      "src/Menu/ReportLink.ts": {
-        "TS2345": 1
-      },
       "src/Miscellaneous/Banner.ts": {
         "TS2345": 2
       },

@@ -3,11 +3,23 @@ import { g, Conf } from "../globals/globals";
 import $ from "../platform/$";
 import { dict } from "../platform/helpers";
 import QR from "../Posting/QR";
-import Menu from "./Menu";
-const DeleteLink = {
-  auto: [dict(), dict()],
+import Menu, { type MenuPost, type PostMenuEntry } from "./Menu";
 
-  init() {
+type AutoDelete = Partial<Record<string, true>>;
+interface DeleteLinkNodes {
+  menu: ChildNode;
+  links: [HTMLAnchorElement, HTMLAnchorElement];
+}
+
+const auto: [AutoDelete, AutoDelete] = [dict(), dict()];
+const seconds: Partial<Record<string, number>> = dict();
+
+const DeleteLink = {
+  auto,
+  nodes: null as DeleteLinkNodes | null,
+  post: null as MenuPost | null,
+
+  init(): void {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Delete Link']) { return; }
 
     const div = $.el('div', {
@@ -30,7 +42,7 @@ const DeleteLink = {
       links: [postEl, fileEl]
     };
 
-    const postEntry = {
+    const postEntry: PostMenuEntry = {
       el: postEl,
       open() {
         postEl.textContent = DeleteLink.linkText(false);
@@ -38,7 +50,7 @@ const DeleteLink = {
         return true;
       }
     };
-    const fileEntry = {
+    const fileEntry: PostMenuEntry = {
       el: fileEl,
       open({file}) {
         if (!file || file.isDead) { return false; }
@@ -48,7 +60,7 @@ const DeleteLink = {
       }
     };
 
-    return Menu.menu.addEntry({
+    const entry: PostMenuEntry = {
       el: div,
       order: 40,
       open(post) {
@@ -58,30 +70,28 @@ const DeleteLink = {
         DeleteLink.cooldown.start(post);
         return true;
       },
-      subEntries: [postEntry, fileEntry]});
+      subEntries: [postEntry, fileEntry]
+    };
+    Menu.menu.addEntry(entry);
   },
 
-  menuText() {
-    let seconds;
-    if ((seconds = DeleteLink.cooldown.seconds[DeleteLink.post.fullID])) {
-      return `Delete (${seconds})`;
-    } else {
-      return 'Delete';
-    }
+  menuText(): string {
+    const seconds = DeleteLink.cooldown.seconds[DeleteLink.post.fullID];
+    return seconds ? `Delete (${seconds})` : 'Delete';
   },
 
-  linkText(fileOnly) {
+  linkText(fileOnly: boolean): string {
     let text = fileOnly ? 'File' : 'Post';
-    if (DeleteLink.auto[+fileOnly][DeleteLink.post.fullID]) {
+    if (DeleteLink.auto[fileOnly ? 1 : 0][DeleteLink.post.fullID]) {
       text = `Deleting ${text.toLowerCase()}...`;
     }
     return text;
   },
 
-  toggle() {
+  toggle(this: HTMLAnchorElement): void {
     const {post} = DeleteLink;
     const fileOnly = $.hasClass(this, 'delete-file');
-    const auto = DeleteLink.auto[+fileOnly];
+    const auto = DeleteLink.auto[fileOnly ? 1 : 0];
 
     if (auto[post.fullID]) {
       delete auto[post.fullID];
@@ -91,35 +101,38 @@ const DeleteLink = {
     this.textContent = DeleteLink.linkText(fileOnly);
 
     if (!DeleteLink.cooldown.seconds[post.fullID]) {
-      return DeleteLink.delete(post, fileOnly);
+      DeleteLink.delete(post, fileOnly);
     }
   },
 
-  delete(post, fileOnly) {
-    const link = DeleteLink.nodes.links[+fileOnly];
-    delete DeleteLink.auto[+fileOnly][post.fullID];
+  delete(post: MenuPost, fileOnly: boolean): XMLHttpRequest | undefined {
+    const formEl = document.querySelector<HTMLFormElement>('form#delform');
+    if (!formEl) { return; }
+
+    const index = fileOnly ? 1 : 0;
+    const link = DeleteLink.nodes.links[index];
+    delete DeleteLink.auto[index][post.fullID];
     if (post.fullID === DeleteLink.post.fullID) { $.off(link, 'click', DeleteLink.toggle); }
 
-    const form = {
+    const form: Record<string, string | boolean> = {
       mode: 'usrdel',
       onlyimgdel: fileOnly,
       pwd: QR.persona.getPassword()
     };
     form[+post.ID] = 'delete';
 
-    return $.ajax($.id('delform').action.replace(`/${g.BOARD}/`, `/${post.board}/`), {
+    return $.ajax(formEl.action.replace(`/${g.BOARD}/`, `/${post.board.ID}/`), {
       responseType: 'document',
       withCredentials: true,
-      onloadend() { return DeleteLink.load(link, post, fileOnly, this.response); },
+      onloadend(this: XMLHttpRequest): void { DeleteLink.load(link, post, fileOnly, this.responseXML); },
       form: $.formData(form)
     }
     );
   },
 
-  load(link, post, fileOnly, resDoc) {
-    let msg;
+  load(link: HTMLAnchorElement, post: MenuPost, fileOnly: boolean, resDoc: Document | null): void {
     if (!resDoc) {
-      new Notice('warning', 'Connection error, please retry.', 20);
+      new Notice('warning', 'Connection error, please retry.', 20, undefined);
       if (post.fullID === DeleteLink.post.fullID) { $.on(link, 'click', DeleteLink.toggle); }
       return;
     }
@@ -127,14 +140,18 @@ const DeleteLink = {
     link.textContent = DeleteLink.linkText(fileOnly);
     if (resDoc.title === '4chan - Banned') { // Ban/warn check
       const el = $.el('span', {innerHTML: "You can&#039;t delete posts because you are <a href=\"//www.4chan.org/banned\" target=\"_blank\">banned</a>."});
-      return new Notice('warning', el, 20);
-    } else if (msg = resDoc.getElementById('errmsg')) { // error!
-      new Notice('warning', msg.textContent, 20);
+      new Notice('warning', el, 20, undefined);
+      return;
+    }
+
+    const msg = resDoc.getElementById('errmsg');
+    if (msg) { // error!
+      new Notice('warning', msg.textContent, 20, undefined);
       if (post.fullID === DeleteLink.post.fullID) { $.on(link, 'click', DeleteLink.toggle); }
       if (QR.cooldown.data && Conf['Cooldown'] && /\bwait\b/i.test(msg.textContent)) {
         DeleteLink.cooldown.start(post, 5);
-        DeleteLink.auto[+fileOnly][post.fullID] = true;
-        return DeleteLink.nodes.links[+fileOnly].textContent = DeleteLink.linkText(fileOnly);
+        DeleteLink.auto[fileOnly ? 1 : 0][post.fullID] = true;
+        DeleteLink.nodes.links[fileOnly ? 1 : 0].textContent = DeleteLink.linkText(fileOnly);
       }
     } else {
       if (!fileOnly) { QR.cooldown.delete(post); }
@@ -142,25 +159,25 @@ const DeleteLink = {
         // We're 100% sure.
         (post.origin || post).kill(fileOnly);
       }
-      if (post.fullID === DeleteLink.post.fullID) { return link.textContent = 'Deleted'; }
+      if (post.fullID === DeleteLink.post.fullID) { link.textContent = 'Deleted'; }
     }
   },
 
   cooldown: {
-    seconds: dict(),
+    seconds,
 
-    start(post, seconds) {
+    start(post: MenuPost, seconds?: number): void {
       // Already counting.
       if (DeleteLink.cooldown.seconds[post.fullID] != null) { return; }
 
       if (seconds == null) { seconds = QR.cooldown.secondsDeletion(post); }
       if (seconds > 0) {
         DeleteLink.cooldown.seconds[post.fullID] = seconds;
-        return DeleteLink.cooldown.count(post);
+        DeleteLink.cooldown.count(post);
       }
     },
 
-    count(post) {
+    count(post: MenuPost): void {
       if (post.fullID === DeleteLink.post.fullID) { DeleteLink.nodes.menu.textContent = DeleteLink.menuText(); }
       if ((DeleteLink.cooldown.seconds[post.fullID] > 0) && Conf['Cooldown']) {
         DeleteLink.cooldown.seconds[post.fullID]--;
@@ -168,7 +185,7 @@ const DeleteLink = {
       } else {
         delete DeleteLink.cooldown.seconds[post.fullID];
         for (const fileOnly of [false, true]) {
-          if (DeleteLink.auto[+fileOnly][post.fullID]) {
+          if (DeleteLink.auto[fileOnly ? 1 : 0][post.fullID]) {
             DeleteLink.delete(post, fileOnly);
           }
         }

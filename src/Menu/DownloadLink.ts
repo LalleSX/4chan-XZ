@@ -1,10 +1,10 @@
 import { g, Conf } from "../globals/globals";
 import ImageCommon from "../Images/ImageCommon";
 import $ from "../platform/$";
-import Menu from "./Menu";
+import Menu, { type PostMenuEntry } from "./Menu";
 
 const DownloadLink = {
-  init() {
+  init(): void {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Download Link']) { return; }
 
     const a = $.el('a', {
@@ -16,7 +16,7 @@ const DownloadLink = {
     // Specifying the filename with the download attribute only works for same-origin links.
     $.on(a, 'click', ImageCommon.download);
 
-    return Menu.menu.addEntry({
+    const entry: PostMenuEntry = {
       el: a,
       order: 100,
       open({file}) {
@@ -25,7 +25,8 @@ const DownloadLink = {
         a.download = file.name;
         return true;
       }
-    });
+    };
+    Menu.menu.addEntry(entry);
   }
 };
 export default DownloadLink;

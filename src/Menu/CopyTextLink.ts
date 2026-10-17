@@ -1,9 +1,11 @@
 import { g, Conf, d } from "../globals/globals";
 import $ from "../platform/$";
-import Menu from "./Menu";
+import Menu, { type MenuPost, type PostMenuEntry } from "./Menu";
 
 const CopyTextLink = {
-  init() {
+  post: null as MenuPost | null,
+
+  init(): void {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu'] || !Conf['Copy Text Link']) { return; }
 
     const a = $.el('a', {
@@ -14,28 +16,35 @@ const CopyTextLink = {
     );
     $.on(a, 'click', CopyTextLink.copy);
 
-    return Menu.menu.addEntry({
+    const entry: PostMenuEntry = {
       el: a,
       order: 12,
       open(post) {
-        CopyTextLink.text = (post.origin || post).commentOrig();
+        CopyTextLink.post = post.origin || post;
         return true;
       }
-    });
+    };
+    Menu.menu.addEntry(entry);
   },
 
-  copy() {
+  copy(): void {
+    const {post} = CopyTextLink;
+    if (!post) { return; }
+
     const el = $.el('textarea', {
       className: 'copy-text-element',
-      value: CopyTextLink.text
+      value: post.commentOrig()
     }
     );
     $.add(d.body, el);
     el.select();
     try {
       d.execCommand('copy');
-    } catch (error) {}
-    return $.rm(el);
+    } catch {
+      // Some browsers deny clipboard access even after a user gesture.
+    } finally {
+      $.rm(el);
+    }
   }
 };
 export default CopyTextLink;

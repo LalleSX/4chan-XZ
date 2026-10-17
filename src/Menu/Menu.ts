@@ -3,9 +3,31 @@ import UI from "../General/UI";
 import { g, Conf } from "../globals/globals";
 import $ from "../platform/$";
 import Icon from "../Icons/icon";
+import type Post from "../classes/Post";
+
+export type MenuPost = Post & { origin?: Post };
+
+export interface PostMenuEntry {
+  el: HTMLElement;
+  order?: number;
+  open?: (post: MenuPost) => boolean;
+  subEntries?: PostMenuEntry[];
+}
+
+interface CatalogMenuContext {
+  nodes: { icons: HTMLElement };
+  thread: { OP: MenuPost };
+}
+
+interface MenuCallbacks<T> {
+  push(callback: { name: string; cb: (this: T) => void }): void;
+}
 
 const Menu = {
-  init() {
+  button: null as HTMLAnchorElement | null,
+  menu: null as InstanceType<typeof UI.Menu> | null,
+
+  init(): void {
     if (!['index', 'thread'].includes(g.VIEW) || !Conf['Menu']) { return; }
 
     this.button = $.el('a', {
@@ -17,36 +39,45 @@ const Menu = {
     Icon.set(this.button, 'caretDown');
 
     this.menu = new UI.Menu('post');
-    Callbacks.Post.push({
+    // The legacy callback class creates these static registries in initClass().
+    const callbacks = Callbacks as typeof Callbacks & {
+      Post: MenuCallbacks<MenuPost>;
+      CatalogThread: MenuCallbacks<CatalogMenuContext>;
+    };
+    callbacks.Post.push({
       name: 'Menu',
       cb:   this.node
     });
 
-    return Callbacks.CatalogThread.push({
+    callbacks.CatalogThread.push({
       name: 'Menu',
       cb:   this.catalogNode
     });
   },
 
-  node() {
+  node(this: MenuPost): void {
     if (this.isClone) {
-      const button = $('.menu-button', this.nodes.info);
-      $.rmClass(button, 'active');
-      $.rm($('.dialog', this.nodes.info));
-      Menu.makeButton(this, button);
+      const button = this.nodes.info.querySelector<HTMLAnchorElement>('.menu-button');
+      button?.classList.remove('active');
+      this.nodes.info.querySelector('.dialog')?.remove();
+      if (button) {
+        Menu.makeButton(this, button);
+      } else {
+        $.add(this.nodes.info, Menu.makeButton(this));
+      }
       return;
     }
-    return $.add(this.nodes.info, Menu.makeButton(this));
+    $.add(this.nodes.info, Menu.makeButton(this));
   },
 
-  catalogNode() {
-    return $.after(this.nodes.icons, Menu.makeButton(this.thread.OP));
+  catalogNode(this: CatalogMenuContext): void {
+    $.after(this.nodes.icons, Menu.makeButton(this.thread.OP));
   },
 
-  makeButton(post, button) {
-    if (!button) { button = Menu.button.cloneNode(true); }
-    $.on(button, 'click', function(e) {
-      return Menu.menu.toggle(e, this, post);
+  makeButton(post: MenuPost, button?: HTMLAnchorElement): HTMLAnchorElement {
+    if (!button) { button = Menu.button.cloneNode(true) as HTMLAnchorElement; }
+    $.on(button, 'click', function(this: HTMLAnchorElement, e: MouseEvent): void {
+      Menu.menu.toggle(e, this, post);
     });
     return button;
   }

@@ -12,7 +12,7 @@ On Linux CI, install the browser and its system dependencies with
 `npx playwright install --with-deps chromium`.
 
 The command checks the test types, builds the readable and minified production
-userscripts, and runs 24 checks in Chromium: six checks for each combination of
+userscripts, and runs 32 checks in Chromium: eight checks for each combination of
 bundle and GM API style. It uses the existing Playwright dependency. It does not
 enable the build's historical `--test` regions. The extension suite and its
 configuration remain separate.
@@ -43,6 +43,10 @@ test binary. No developer browser profile or installed userscript is changed.
   preserve control posts, disable that exact rule, and restore the reply.
 - Duplicate injection: one initialization event and one settings control after
   executing the same bundle twice.
+- Post menus: switching between posts, copying the selected comment, report URLs
+  and pass-dependent popup sizes, archive links, and keyboard closing.
+- Post deletion: selected post form data, server error notices, and retry followed
+  by success. Deletion requests receive local mock responses.
 
 All browser tests fail on uncaught exceptions or application `console.error`
 calls, including errors caught by production feature initialization. They use

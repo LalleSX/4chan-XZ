@@ -157,16 +157,6 @@
       "count": 1
     }
   },
-  "src/Menu/CopyTextLink.ts": {
-    "no-empty": {
-      "count": 1
-    }
-  },
-  "src/Menu/DeleteLink.ts": {
-    "no-cond-assign": {
-      "count": 1
-    }
-  },
   "src/Miscellaneous/Banner.ts": {
     "no-cond-assign": {
       "count": 2
