@@ -10,7 +10,7 @@ import QuoteYou from "../Quotelinks/QuoteYou";
 import Favicon from "./Favicon";
 import ThreadWatcher from "./ThreadWatcher";
 
-var Unread = {
+const Unread = {
   init() {
     if ((g.VIEW !== 'thread') || (
       !Conf['Unread Count'] &&

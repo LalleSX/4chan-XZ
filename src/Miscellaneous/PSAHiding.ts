@@ -2,7 +2,7 @@ import Header from "../General/Header";
 import { Conf, doc, g } from "../globals/globals";
 import $ from "../platform/$";
 import Icon from "../Icons/icon";
-var PSAHiding = {
+const PSAHiding = {
   init() {
     if (!Conf['Announcement Hiding'] || !g.SITE.selectors.psa) { return; }
     $.addClass(doc, 'hide-announcement');

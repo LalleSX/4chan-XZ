@@ -4,7 +4,7 @@ import UI from "../General/UI";
 import { Conf, doc, g } from "../globals/globals";
 import $ from "../platform/$";
 
-var FappeTyme = {
+const FappeTyme = {
   init() {
     if ((!Conf['Fappe Tyme'] && !Conf['Werk Tyme']) || !['index', 'thread', 'archive'].includes(g.VIEW)) { return; }
 

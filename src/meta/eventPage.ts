@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   sendResponse(id);
 });
 
-var handlers = {
+const handlers = {
   permission(request) {
     return new Promise(resolve => {
       const origins = request.origins || ['*://*/'];

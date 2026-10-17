@@ -5,7 +5,7 @@ import UI from "../General/UI";
 import { g, Conf, E } from "../globals/globals";
 import $ from "../platform/$";
 
-var Volume = {
+const Volume = {
   init() {
     if (!['index', 'thread'].includes(g.VIEW) ||
       (!Conf['Image Expansion'] && !Conf['Image Hover'] && !Conf['Image Hover in Catalog'] && !Conf['Gallery'])) { return; }
