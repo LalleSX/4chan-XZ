@@ -6,15 +6,8 @@
     "jsx": "react",
     "jsxFactory": "h",
     "jsxFragmentFactory": "hFragment",
-    "types": [
-      "@violentmonkey/types",
-      "chrome"
-    ],
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2020"
-    ],
+    "types": ["@violentmonkey/types", "chrome", "node"],
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "importHelpers": true,
     "paths": {
       "@fa/*": ["./node_modules/@fortawesome/free-regular-svg-icons/*"],
