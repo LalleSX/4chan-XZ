@@ -2,7 +2,33 @@ name: Userscript browser tests
 
 on:
   push:
+    paths:
+      - '.github/workflows/userscript-tests.yml'
+      - 'src/**'
+      - 'tools/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'version.json'
+      - 'LICENSE'
+      - '.nvmrc'
+      - '.node-version'
+      - 'tests/**'
+      - 'playwright.userscript.config.ts'
   pull_request:
+    paths:
+      - '.github/workflows/userscript-tests.yml'
+      - 'src/**'
+      - 'tools/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'version.json'
+      - 'LICENSE'
+      - '.nvmrc'
+      - '.node-version'
+      - 'tests/**'
+      - 'playwright.userscript.config.ts'
   workflow_dispatch:
 
 permissions:

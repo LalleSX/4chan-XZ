@@ -2,7 +2,29 @@ name: CI
 
 on:
   push:
+    paths:
+      - '.github/workflows/ci.yml'
+      - 'src/**'
+      - 'tools/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'version.json'
+      - 'LICENSE'
+      - '.nvmrc'
+      - '.node-version'
   pull_request:
+    paths:
+      - '.github/workflows/ci.yml'
+      - 'src/**'
+      - 'tools/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - 'version.json'
+      - 'LICENSE'
+      - '.nvmrc'
+      - '.node-version'
   workflow_dispatch:
 
 permissions:

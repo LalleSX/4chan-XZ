@@ -158,10 +158,8 @@ historical context and will need review as XZ evolves.
 
 ## Contributing and credits
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development and bug-report guidance and
-[AGENTS.md](AGENTS.md) for repository-specific instructions for coding agents.
-[CHANGELOG.md](CHANGELOG.md) preserves XT history; the
-[original 4chan X changelog](original%204chan%20X%20CHANGELOG.md) preserves upstream history.
+See [AGENTS.md](AGENTS.md) for repository-specific development instructions for
+coding agents.
 
 XZ builds on the work of Tuxedo Takodachi and the 4chan X authors, including
 James Campos, Nicolas Stepien, ihavenoface, Zixaphir, Seaweed, Spittie, ccd0, and
