@@ -2,15 +2,10 @@
 
 ## Purpose and scope
 
-4chan-XZ continues 4chan XT, which ported the original 4chan X from CoffeeScript
-to JavaScript and TypeScript. The long-term goals are a complete TypeScript
+4chan-XZ continues 4chan X, by converting from CoffeeScript to TypeScript. The long-term goals are a complete TypeScript
 migration, clearer architecture, and measured performance improvements.
 
-The current phase prepares the repository and tooling. Do not start converting
-application files, changing features, fixing inherited runtime bugs, or redesigning
-the script unless the user explicitly requests that work. A future task that
-requests implementation authorizes its stated scope; it does not require another
-confirmation merely because this file describes the preparation phase.
+The current phase is currently focused at the userscript version, and that it works as expected
 
 ## Repository map
 
@@ -29,7 +24,6 @@ confirmation merely because this file describes the preparation phase.
 ## Environment and commands
 
 Use Node 24 LTS with npm 11 or newer. The Node engine also permits Node 26+.
-Run `npm ci --ignore-scripts` from the repository root for a reproducible install.
 
 - `npm run check`: ESLint and TypeScript checks against the inherited baseline.
 - `npm run build`: build both userscript and unpacked extension without platform pruning.

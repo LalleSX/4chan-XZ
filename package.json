@@ -128,6 +128,8 @@
   },
   "type": "module",
   "scripts": {
+    "test:userscript": "npm run test:userscript:types && npm run build:userscript && npm run build:userscript:min && playwright test --config=playwright.userscript.config.ts",
+    "test:userscript:types": "tsc -p tests/userscript/tsconfig.json",
     "test:extension": "npm run build:crx && playwright test",
     "test:extension:types": "tsc -p tests/extension/tsconfig.json",
     "build": "node ./tools/rollup.js",

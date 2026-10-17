@@ -1,5 +1,7 @@
 # Filter Checks
 
+For automated checks of the production userscript bundles, see [Userscript QA](userscript/README.md).
+
 For Chromium tests of the actual unpacked extension, see [Extension QA](extension/README.md).
 
 Run `node --test tests/filter.test.ts` after `npm ci --ignore-scripts`.
