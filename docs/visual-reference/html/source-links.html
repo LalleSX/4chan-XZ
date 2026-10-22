@@ -1,0 +1,33 @@
+<div class="source-links-preferences">
+  <fieldset>
+    <legend>Attachment source links</legend>
+    <label><input type="checkbox"> Show source and reverse-search links beside attachments</label>
+    <table>
+      <thead><tr><th>Destination</th><th>Applies to</th><th>Enabled</th><th></th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Reverse image search</td>
+          <td>Images</td>
+          <td><input type="checkbox" aria-label="Enable image search"></td>
+          <td><button type="button">Edit</button></td>
+        </tr>
+        <tr>
+          <td>Find matching attachments</td>
+          <td>Attachments with a known hash</td>
+          <td><input type="checkbox" aria-label="Enable attachment matching"></td>
+          <td><button type="button">Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button">Add destination</button>
+  </fieldset>
+  <fieldset>
+    <legend>Edit destination</legend>
+    <label>Label <input class="field" type="text"></label>
+    <label>Destination URL <input class="field" type="url"></label>
+    <label>Attachment types <select class="field"><option>All supported types</option><option>Images</option><option>Video</option></select></label>
+    <label>Board scope <input class="field" type="text" placeholder="All boards"></label>
+    <p class="note">Available attachment details include image, thumbnail, filename, board and hash.</p>
+    <div class="filter-actions"><button type="button">Save destination</button><button type="button">Cancel</button></div>
+  </fieldset>
+</div>

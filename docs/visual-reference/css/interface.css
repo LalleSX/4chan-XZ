@@ -52,7 +52,7 @@ a[href="javascript:;"] {
 :root.sw-yotsuba #boardNavDesktop, :root.sw-yotsuba #boardNavMobile {
   display: none !important;
 }
-:root.hide-bottom-board-list $site$boardListBottom {
+:root.hide-bottom-board-list #boardNavDesktopFoot > .boardList {
   display: none;
 }
 body.hasDropDownNav{
@@ -1079,7 +1079,7 @@ textarea.copy-text-element {
 }
 
 /* Announcement Hiding */
-:root.hide-announcement $site$psa {
+:root.hide-announcement #globalMessage {
   display: none;
 }
 .hide-announcement-button {
@@ -1411,12 +1411,12 @@ input[name="Default Volume"] {
   margin: 0px;
 }
 /* Fappe and Werk Tyme */
-:root.fappeTyme $site$replyOriginal.noFile,
-:root.fappeTyme $site$replyOriginal.noFile + br {
+:root.fappeTyme .replyContainer:not([data-clone]).noFile,
+:root.fappeTyme .replyContainer:not([data-clone]).noFile + br {
   display: none;
 }
-:root.werkTyme $site$thumbLink,
-:root.werkTyme $site$file$thumb,
+:root.werkTyme a.fileThumb,
+:root.werkTyme a.fileThumb > [data-md5],
 :root.werkTyme .catalog-thumb:not(.deleted-file):not(.no-file),
 :root:not(.werkTyme) .werkTyme-filename {
   display: none;
@@ -1460,17 +1460,17 @@ input[name="Default Volume"] {
 :root.catalog-mode #navlinks {
   display: none;
 }
-:root.highlight-own .yourPost$site$highlightable$op::after,
-:root.highlight-you .quotesYou$site$highlightable$op::after,
-.filter-highlight$site$highlightable$op::after {
+:root.highlight-own .yourPost.opContainer::after,
+:root.highlight-you .quotesYou.opContainer::after,
+.filter-highlight.opContainer::after {
   content: "";
   display: block;
   clear: both;
 }
 
 /* Spoiler text */
-:root.reveal-spoilers $site$spoiler,
-:root.reveal-spoilers $site$spoiler > a {
+:root.reveal-spoilers s,
+:root.reveal-spoilers s > a {
   color: white !important;
 }
 :root.reveal-spoilers .removed-spoiler::before {
@@ -1487,7 +1487,7 @@ input[name="Default Volume"] {
   margin-right: 4px;
   padding: 2px;
 }
-$site$infoRoot a.hide-reply-button {
+.postInfo a.hide-reply-button {
   margin-right: 6px;
   padding: 0;
 }
@@ -1523,10 +1523,10 @@ $site$infoRoot a.hide-reply-button {
 .stub-reasons::before { content: ' ('; }
 .stub-reasons::after { content: ')'; }
 .stub-reason:not(:last-of-type)::after { content: ' & '; }
-$site$thread[hidden] + hr {
+.thread[hidden] + hr {
   display: none;
 }
-:root.reply-hide $site$sideArrows {
+:root.reply-hide div.sideArrows {
   display: none;
 }
 :root.sw-yotsuba.thread-hide .party-hat {
@@ -1534,15 +1534,15 @@ $site$thread[hidden] + hr {
 }
 
 /* Anonymize */
-:root.anonymize $site$info$name,
+:root.anonymize .name,
 :root.sw-yotsuba.anonymize .post-author:not([class*=capcode]) {
   font-size: 0;
 }
-:root.anonymize $site$info$tripcode,
+:root.anonymize .postertrip,
 :root.sw-yotsuba.anonymize .n-pu {
   display: none;
 }
-:root.anonymize $site$info$name::before,
+:root.anonymize .name::before,
 :root.sw-yotsuba.anonymize .post-author:not([class*=capcode])::before {
   content: "Anonymous";
   font-size: 10pt;

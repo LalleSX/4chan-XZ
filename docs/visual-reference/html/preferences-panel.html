@@ -1,0 +1,56 @@
+<div id="fourchanx-settings" class="dialog" role="dialog" aria-label="Preferences">
+  <nav>
+    <div class="sections-list" aria-label="Preference categories">
+      <a href="#browsing-preferences">Browsing</a>
+      <a href="#reading-preferences">Reading</a>
+      <a href="#media-preferences">Media</a>
+      <a href="#posting-preferences">Posting</a>
+      <a href="#appearance-preferences">Appearance</a>
+    </div>
+    <p class="imp-exp-result" role="status"></p>
+    <div class="credits">
+      <button type="button">Export</button>
+      <button type="button">Import</button>
+      <button type="button">Reset preferences</button>
+      <button type="button" class="close" aria-label="Close preferences">×</button>
+    </div>
+  </nav>
+  <div class="section-container">
+    <section>
+      <fieldset id="browsing-preferences">
+        <legend>Browsing</legend>
+        <label><input type="checkbox"> Keep navigation visible</label>
+        <label><input type="checkbox"> Open threads in a new tab</label>
+        <label>Preferred view
+          <select class="field"><option>Thread list</option><option>Catalog</option><option>Infinite scrolling</option></select>
+        </label>
+      </fieldset>
+      <fieldset id="reading-preferences">
+        <legend>Reading and activity</legend>
+        <label><input type="checkbox"> Remember reading position</label>
+        <label><input type="checkbox"> Highlight replies to me</label>
+        <label><input type="checkbox"> Update open threads automatically</label>
+        <label><input type="checkbox"> Notify me about replies</label>
+      </fieldset>
+      <fieldset id="media-preferences">
+        <legend>Media</legend>
+        <label><input type="checkbox"> Preview attachments on hover</label>
+        <label><input type="checkbox"> Play video when opened</label>
+        <label><input type="checkbox"> Allow sound</label>
+        <label>Volume <input type="range" min="0" max="100" aria-label="Media volume"></label>
+      </fieldset>
+      <fieldset id="posting-preferences">
+        <legend>Posting</legend>
+        <label><input type="checkbox"> Keep the composer open after posting</label>
+        <label><input type="checkbox"> Remember spoiler choice</label>
+        <label><input type="checkbox"> Watch threads I participate in</label>
+      </fieldset>
+      <fieldset id="appearance-preferences">
+        <legend>Appearance</legend>
+        <label>Theme <select class="field"><option>Follow board</option><option>Light</option><option>Dark</option></select></label>
+        <label>Custom styles <textarea class="field" spellcheck="false" aria-label="Custom styles"></textarea></label>
+        <button type="button">Preview appearance</button>
+      </fieldset>
+    </section>
+  </div>
+</div>

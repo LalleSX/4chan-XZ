@@ -18,6 +18,6 @@
 }
 
 /* Anonymize */
-:root.burichan.anonymize $site$info$name::before {
+:root.burichan.anonymize .name::before {
   font-size: 12pt;
 }
