@@ -1,0 +1,53 @@
+<form class="filter-builder">
+  <div class="filter-grid">
+    <label>Match<select data-field="mode">
+      <option value="contains">Contains text</option><option value="equals">Equals text</option>
+      <option value="starts">Starts with text</option><option value="ends">Ends with text</option>
+      <option value="regex">Regular expression</option>
+    </select></label>
+    <label>Value<input data-field="value" type="text" autocomplete="off" required></label>
+    <label class="filter-check"><input data-field="case" type="checkbox">Case sensitive</label>
+    <label>Action<select data-field="action">
+      <option value="hide">Hide</option><option value="highlight">Highlight</option>
+      <option value="notify">Notify</option><option value="both">Hide and highlight</option>
+    </select></label>
+    <label>Boards<input data-field="boards" type="text" placeholder="All boards" title="Comma-separated board names, for example g, v or 4chan.org:g"></label>
+    <label>Excluded boards<input data-field="exclude" type="text" placeholder="None"></label>
+  </div>
+  <details class="filter-options">
+    <summary>Advanced options</summary>
+    <div class="filter-grid">
+      <label>Extra regex flags<input data-field="flags" type="text" placeholder="m, s, u, g, y (no separators)" title="m: multiline, s: dot matches newlines, u: Unicode, g: global, y: sticky"></label>
+      <label>Posts<select data-field="op"><option value="">All posts</option><option value="only">Threads only</option><option value="no">Replies only</option></select></label>
+      <label>Attachments<select data-field="file"><option value="">Any</option><option value="only">With files</option><option value="no">Without files</option></select></label>
+      <label>Stub<select data-field="stub"><option value="">Use global setting</option><option value="yes">Show</option><option value="no">Hide</option></select></label>
+      <label>Reason<input data-field="reason" type="text"></label>
+      <label>Highlight class<input data-field="highlight" type="text" placeholder="filter-highlight"></label>
+      <label class="filter-check"><input data-field="top" type="checkbox" checked>Move highlighted threads to top</label>
+      <label class="filter-check"><input data-field="notify" type="checkbox">Also notify</label>
+      <label class="filter-check"><input data-field="poster" type="checkbox">Include same poster</label>
+      <label class="filter-check"><input data-field="replies" type="checkbox">Include replies recursively</label>
+    </div>
+    <fieldset class="filter-types"><legend>Match any selected field</legend></fieldset>
+  </details>
+  <output class="filter-preview"></output>
+  <div class="filter-actions"><button type="submit">Add rule</button><span class="filter-builder-error" role="status"></span></div>
+  <details class="filter-test">
+    <summary>Test match</summary>
+    <label>Sample field value<textarea data-field="sample" spellcheck="false"></textarea></label>
+    <button type="button" data-command="test">Test pattern</button>
+    <output class="filter-test-result" aria-live="polite"></output>
+  </details>
+</form>
+<details class="filter-saved" open>
+  <summary>Saved rules <span class="filter-count"></span></summary>
+  <div class="filter-rule-list"></div>
+  <button type="button" data-command="undo" disabled>Undo removal</button>
+</details>
+<details class="filter-raw">
+  <summary>Raw rules</summary>
+  <textarea class="field" spellcheck="false" aria-label="Raw filter rules"></textarea>
+  <button type="button" data-command="save">Save rules</button>
+  <div class="filter-diagnostics" role="status"></div>
+</details>
+<div class="filter-save-status" role="status"></div>
